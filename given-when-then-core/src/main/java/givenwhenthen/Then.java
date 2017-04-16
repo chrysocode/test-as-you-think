@@ -13,4 +13,9 @@ public class Then<$SystemUnderTest, $Result> {
     public void then(Consumer<$Result> thenStep) {
         thenStep.accept(steps.returnResult());
     }
+
+    public void then(Runnable thenStep) {
+        steps.returnResult();
+        thenStep.run();
+    }
 }

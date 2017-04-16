@@ -55,7 +55,7 @@ public class GivenWhenThenTest {
                 .when(sut -> {
                     sut.voidMethod();
                 }) //
-                .then((Void) -> {
+                .then(() -> {
                     givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                 });
     }
