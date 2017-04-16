@@ -2,7 +2,6 @@ package givenwhenthen;
 
 import static givenwhenthen.GivenWhenThenTest.GivenWhenThen.givenSut;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
 import static org.easymock.EasyMock.mock;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.verify;
@@ -47,16 +46,20 @@ public class GivenWhenThenTest {
 
     @Test
     public void should_follow_the_given_when_then_full_sequence_given_a_void_method() {
+        // WHEN
         givenSut(sut) //
                 .given(() -> {
-                    fail("Not yet implemented!");
+                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
                 }) //
                 .when(sut -> {
                     sut.voidMethod();
                 }) //
                 .then((Void) -> {
-                    fail("Not yet implemented!");
+                    assertThat(sut.getVoidMethodResult()).isEqualTo("expected result");
                 });
+
+        // THEN
+        verify(givenWhenThenDefinitionMock);
     }
 
     public static class GivenWhenThen {
@@ -145,7 +148,13 @@ public class GivenWhenThenTest {
         }
 
         public Then<S, Void> when(Consumer<S> whenStep) {
-            throw new RuntimeException("Not yet implemented!");
+            GivenWhenThenSteps<S, Void> steps = new GivenWhenThenSteps<>(given.getSystemUnderTest());
+            steps.setGivenStep(given.getGivenStep());
+            steps.setWhenStep((sut) -> {
+                whenStep.accept(sut);
+                return null;
+            });
+            return new Then<>(steps);
         }
     }
 
@@ -164,12 +173,18 @@ public class GivenWhenThenTest {
 
     public static class SystemUnderTest {
 
+        private String voidMethodResult;
+
         public String nonVoidMethod() {
             return "expected result";
         }
 
         public void voidMethod() {
-            throw new RuntimeException("Not yet implemented!");
+            voidMethodResult = "expected result";
+        }
+
+        public String getVoidMethodResult() {
+            return voidMethodResult;
         }
     }
 
