@@ -24,8 +24,24 @@ public class GivenWhenThenTest {
                 .given(() -> {
                     fail("Not yet implemented!");
                 }) //
-                .when(sut -> sut.process()) //
+                .when(sut -> {
+                    return sut.nonVoidMethod();
+                }) //
                 .then(result -> {
+                    fail("Not yet implemented!");
+                });
+    }
+
+    @Test
+    public void should_follow_the_given_when_then_full_sequence_given_a_void_method() {
+        givenSut(sut) //
+                .given(() -> {
+                    fail("Not yet implemented!");
+                }) //
+                .when(sut -> {
+                    sut.voidMethod();
+                }) //
+                .then((Void) -> {
                     fail("Not yet implemented!");
                 });
     }
@@ -49,6 +65,10 @@ public class GivenWhenThenTest {
         public <R> Then<R> when(Function<S, R> whenStep) {
             throw new RuntimeException("Not yet implemented!");
         }
+
+        public Then<Void> when(Consumer<S> whenStep) {
+            throw new RuntimeException("Not yet implemented!");
+        }
     }
 
     public static class Then<R> {
@@ -60,7 +80,11 @@ public class GivenWhenThenTest {
 
     public static class SystemUnderTest {
 
-        public String process() {
+        public String nonVoidMethod() {
+            throw new RuntimeException("Not yet implemented!");
+        }
+
+        public void voidMethod() {
             throw new RuntimeException("Not yet implemented!");
         }
     }
