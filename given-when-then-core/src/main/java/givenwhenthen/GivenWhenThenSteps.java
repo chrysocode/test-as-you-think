@@ -2,26 +2,26 @@ package givenwhenthen;
 
 import java.util.function.Function;
 
-class GivenWhenThenSteps<S, R> {
+class GivenWhenThenSteps<$SystemUnderTest, $Result> {
 
-    private S systemUnderTest;
+    private $SystemUnderTest systemUnderTest;
     private Runnable givenStep;
-    private Function<S, R> whenStep;
+    private Function<$SystemUnderTest, $Result> whenStep;
 
-    GivenWhenThenSteps(S systemUnderTest) {
+    GivenWhenThenSteps($SystemUnderTest systemUnderTest) {
         this.systemUnderTest = systemUnderTest;
     }
 
-    R returnResult() {
+    $Result returnResult() {
         givenStep.run();
         return whenStep.apply(systemUnderTest);
     }
 
-    S getSystemUnderTest() {
+    $SystemUnderTest getSystemUnderTest() {
         return systemUnderTest;
     }
 
-    void setSystemUnderTest(S systemUnderTest) {
+    void setSystemUnderTest($SystemUnderTest systemUnderTest) {
         this.systemUnderTest = systemUnderTest;
     }
 
@@ -33,11 +33,11 @@ class GivenWhenThenSteps<S, R> {
         this.givenStep = givenStep;
     }
 
-    Function<S, R> getWhenStep() {
+    Function<$SystemUnderTest, $Result> getWhenStep() {
         return whenStep;
     }
 
-    void setWhenStep(Function<S, R> whenStep) {
+    void setWhenStep(Function<$SystemUnderTest, $Result> whenStep) {
         this.whenStep = whenStep;
     }
 }

@@ -1,20 +1,20 @@
 package givenwhenthen;
 
-public class Given<S> {
+public class Given<$SystemUnderTest> {
 
-    private S systemUnderTest;
+    private $SystemUnderTest systemUnderTest;
     private Runnable givenStep;
 
-    Given(S systemUnderTest) {
+    Given($SystemUnderTest systemUnderTest) {
         this.systemUnderTest = systemUnderTest;
     }
 
-    public When<S> given(Runnable givenStep) {
+    public When<$SystemUnderTest> given(Runnable givenStep) {
         this.givenStep = givenStep;
-        return new When<S>(this);
+        return new When<$SystemUnderTest>(this);
     }
 
-    S getSystemUnderTest() {
+    $SystemUnderTest getSystemUnderTest() {
         return systemUnderTest;
     }
 

@@ -2,7 +2,7 @@ package givenwhenthen;
 
 public class GivenWhenThen {
 
-    public static <S> Given<S> givenSut(S systemUnderTest) {
+    public static <$SystemUnderTest> Given<$SystemUnderTest> givenSut($SystemUnderTest systemUnderTest) {
         return new Given<>(systemUnderTest);
     }
 }

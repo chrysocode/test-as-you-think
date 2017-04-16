@@ -2,15 +2,15 @@ package givenwhenthen;
 
 import java.util.function.Consumer;
 
-public class Then<S, R> {
+public class Then<$SystemUnderTest, $Result> {
 
-    private GivenWhenThenSteps<S, R> steps;
+    private GivenWhenThenSteps<$SystemUnderTest, $Result> steps;
 
-    Then(GivenWhenThenSteps<S, R> steps) {
+    Then(GivenWhenThenSteps<$SystemUnderTest, $Result> steps) {
         this.steps = steps;
     }
 
-    public void then(Consumer<R> thenStep) {
+    public void then(Consumer<$Result> thenStep) {
         thenStep.accept(steps.returnResult());
     }
 }
