@@ -10,6 +10,8 @@ public interface GivenWhenThenDsl {
         When<$SystemUnderTest> given(Runnable givenStep);
 
         When<$SystemUnderTest> given(Consumer<$SystemUnderTest> givenStep);
+
+        When<$SystemUnderTest> given(String fixtureSpecification, Runnable givenStep);
     }
 
     public static interface When<$SystemUnderTest> {

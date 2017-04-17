@@ -43,6 +43,12 @@ public class GivenWhenThen<$SystemUnderTest> implements Given<$SystemUnderTest>,
     }
 
     @Override
+    public When<$SystemUnderTest> given(String fixtureSpecification, Runnable givenStep) {
+        given(givenStep);
+        return this;
+    }
+
+    @Override
     public <$Result> Then<$SystemUnderTest, $Result> when(Function<$SystemUnderTest, $Result> whenStep) {
         return toThenStep(whenStep);
     }
