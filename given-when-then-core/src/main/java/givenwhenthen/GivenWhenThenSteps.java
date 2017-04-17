@@ -18,24 +18,8 @@ class GivenWhenThenSteps<$SystemUnderTest, $Result> {
         return whenStep.apply(systemUnderTest);
     }
 
-    $SystemUnderTest getSystemUnderTest() {
-        return systemUnderTest;
-    }
-
-    void setSystemUnderTest($SystemUnderTest systemUnderTest) {
-        this.systemUnderTest = systemUnderTest;
-    }
-
-    Consumer<$SystemUnderTest> getGivenStep() {
-        return givenStep;
-    }
-
     void setGivenStep(Consumer<$SystemUnderTest> givenStep) {
         this.givenStep = givenStep;
-    }
-
-    Function<$SystemUnderTest, $Result> getWhenStep() {
-        return whenStep;
     }
 
     void setWhenStep(Function<$SystemUnderTest, $Result> whenStep) {

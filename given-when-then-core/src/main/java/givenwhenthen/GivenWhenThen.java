@@ -41,20 +41,21 @@ public class GivenWhenThen<$SystemUnderTest> implements GivenDsl<$SystemUnderTes
 
     @Override
     public <$Result> ThenDsl<$SystemUnderTest, $Result> when(Function<$SystemUnderTest, $Result> whenStep) {
-        GivenWhenThenSteps<$SystemUnderTest, $Result> steps = new GivenWhenThenSteps<>(systemUnderTest);
-        steps.setGivenStep(givenStep);
-        steps.setWhenStep(whenStep);
-        return new Then<>(steps);
+        return toThenStep(whenStep);
     }
 
     @Override
     public ThenDsl<$SystemUnderTest, Void> when(Consumer<$SystemUnderTest> whenStep) {
-        GivenWhenThenSteps<$SystemUnderTest, Void> steps = new GivenWhenThenSteps<>(systemUnderTest);
-        steps.setGivenStep(givenStep);
-        steps.setWhenStep(sut -> {
+        return toThenStep(sut -> {
             whenStep.accept(sut);
             return null;
         });
+    }
+
+    private <$Result> ThenDsl<$SystemUnderTest, $Result> toThenStep(Function<$SystemUnderTest, $Result> whenStep) {
+        GivenWhenThenSteps<$SystemUnderTest, $Result> steps = new GivenWhenThenSteps<>(systemUnderTest);
+        steps.setGivenStep(givenStep);
+        steps.setWhenStep(whenStep);
         return new Then<>(steps);
     }
 }
