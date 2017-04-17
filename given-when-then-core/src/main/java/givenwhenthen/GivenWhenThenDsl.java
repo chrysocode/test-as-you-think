@@ -5,21 +5,21 @@ import java.util.function.Function;
 
 public interface GivenWhenThenDsl {
 
-    public static interface GivenDsl<$SystemUnderTest> {
+    public static interface Given<$SystemUnderTest> {
 
-        WhenDsl<$SystemUnderTest> given(Runnable givenStep);
+        When<$SystemUnderTest> given(Runnable givenStep);
 
-        WhenDsl<$SystemUnderTest> given(Consumer<$SystemUnderTest> givenStep);
+        When<$SystemUnderTest> given(Consumer<$SystemUnderTest> givenStep);
     }
 
-    public static interface WhenDsl<$SystemUnderTest> {
+    public static interface When<$SystemUnderTest> {
 
-        <$Result> ThenDsl<$SystemUnderTest, $Result> when(Function<$SystemUnderTest, $Result> whenStep);
+        <$Result> Then<$SystemUnderTest, $Result> when(Function<$SystemUnderTest, $Result> whenStep);
 
-        ThenDsl<$SystemUnderTest, Void> when(Consumer<$SystemUnderTest> whenStep);
+        Then<$SystemUnderTest, Void> when(Consumer<$SystemUnderTest> whenStep);
     }
 
-    public static interface ThenDsl<$SystemUnderTest, $Result> {
+    public static interface Then<$SystemUnderTest, $Result> {
 
         void then(Consumer<$Result> thenStep);
 

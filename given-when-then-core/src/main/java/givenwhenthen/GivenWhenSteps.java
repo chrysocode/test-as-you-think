@@ -3,13 +3,13 @@ package givenwhenthen;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-class GivenWhenThenSteps<$SystemUnderTest, $Result> {
+class GivenWhenSteps<$SystemUnderTest, $Result> {
 
     private $SystemUnderTest systemUnderTest;
     private Consumer<$SystemUnderTest> givenStep;
     private Function<$SystemUnderTest, $Result> whenStep;
 
-    GivenWhenThenSteps($SystemUnderTest systemUnderTest) {
+    GivenWhenSteps($SystemUnderTest systemUnderTest) {
         this.systemUnderTest = systemUnderTest;
     }
 

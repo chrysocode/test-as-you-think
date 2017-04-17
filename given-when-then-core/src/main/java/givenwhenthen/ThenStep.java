@@ -2,11 +2,11 @@ package givenwhenthen;
 
 import java.util.function.Consumer;
 
-public class Then<$SystemUnderTest, $Result> implements GivenWhenThenDsl.ThenDsl<$SystemUnderTest, $Result> {
+public class ThenStep<$SystemUnderTest, $Result> implements GivenWhenThenDsl.Then<$SystemUnderTest, $Result> {
 
-    private GivenWhenThenSteps<$SystemUnderTest, $Result> steps;
+    private GivenWhenSteps<$SystemUnderTest, $Result> steps;
 
-    Then(GivenWhenThenSteps<$SystemUnderTest, $Result> steps) {
+    ThenStep(GivenWhenSteps<$SystemUnderTest, $Result> steps) {
         this.steps = steps;
     }
 

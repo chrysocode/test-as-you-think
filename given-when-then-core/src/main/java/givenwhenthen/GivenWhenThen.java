@@ -3,11 +3,11 @@ package givenwhenthen;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import givenwhenthen.GivenWhenThenDsl.GivenDsl;
-import givenwhenthen.GivenWhenThenDsl.ThenDsl;
-import givenwhenthen.GivenWhenThenDsl.WhenDsl;
+import givenwhenthen.GivenWhenThenDsl.Given;
+import givenwhenthen.GivenWhenThenDsl.Then;
+import givenwhenthen.GivenWhenThenDsl.When;
 
-public class GivenWhenThen<$SystemUnderTest> implements GivenDsl<$SystemUnderTest>, WhenDsl<$SystemUnderTest> {
+public class GivenWhenThen<$SystemUnderTest> implements Given<$SystemUnderTest>, When<$SystemUnderTest> {
 
     private $SystemUnderTest systemUnderTest;
     private Consumer<$SystemUnderTest> givenStep;
@@ -16,17 +16,17 @@ public class GivenWhenThen<$SystemUnderTest> implements GivenDsl<$SystemUnderTes
         this.systemUnderTest = systemUnderTest;
     }
 
-    public static <$SystemUnderTest> GivenDsl<$SystemUnderTest> givenSut($SystemUnderTest systemUnderTest) {
+    public static <$SystemUnderTest> Given<$SystemUnderTest> givenSut($SystemUnderTest systemUnderTest) {
         return new GivenWhenThen<>(systemUnderTest);
     }
 
-    public static <$SystemUnderTest> GivenDsl<$SystemUnderTest> givenSutClass(Class<$SystemUnderTest> sutClass)
+    public static <$SystemUnderTest> Given<$SystemUnderTest> givenSutClass(Class<$SystemUnderTest> sutClass)
             throws InstantiationException, IllegalAccessException {
         return new GivenWhenThen<$SystemUnderTest>(sutClass.newInstance());
     }
 
     @Override
-    public WhenDsl<$SystemUnderTest> given(Runnable givenStep) {
+    public When<$SystemUnderTest> given(Runnable givenStep) {
         this.givenStep = sut -> {
             givenStep.run();
         };
@@ -34,28 +34,28 @@ public class GivenWhenThen<$SystemUnderTest> implements GivenDsl<$SystemUnderTes
     }
 
     @Override
-    public WhenDsl<$SystemUnderTest> given(Consumer<$SystemUnderTest> givenStep) {
+    public When<$SystemUnderTest> given(Consumer<$SystemUnderTest> givenStep) {
         this.givenStep = givenStep;
         return this;
     }
 
     @Override
-    public <$Result> ThenDsl<$SystemUnderTest, $Result> when(Function<$SystemUnderTest, $Result> whenStep) {
+    public <$Result> Then<$SystemUnderTest, $Result> when(Function<$SystemUnderTest, $Result> whenStep) {
         return toThenStep(whenStep);
     }
 
     @Override
-    public ThenDsl<$SystemUnderTest, Void> when(Consumer<$SystemUnderTest> whenStep) {
+    public Then<$SystemUnderTest, Void> when(Consumer<$SystemUnderTest> whenStep) {
         return toThenStep(sut -> {
             whenStep.accept(sut);
             return null;
         });
     }
 
-    private <$Result> ThenDsl<$SystemUnderTest, $Result> toThenStep(Function<$SystemUnderTest, $Result> whenStep) {
-        GivenWhenThenSteps<$SystemUnderTest, $Result> steps = new GivenWhenThenSteps<>(systemUnderTest);
+    private <$Result> Then<$SystemUnderTest, $Result> toThenStep(Function<$SystemUnderTest, $Result> whenStep) {
+        GivenWhenSteps<$SystemUnderTest, $Result> steps = new GivenWhenSteps<>(systemUnderTest);
         steps.setGivenStep(givenStep);
         steps.setWhenStep(whenStep);
-        return new Then<>(steps);
+        return new ThenStep<>(steps);
     }
 }
