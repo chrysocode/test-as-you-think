@@ -20,4 +20,9 @@ public class ThenStep<$SystemUnderTest, $Result> implements GivenWhenThenDsl.The
         steps.returnResult();
         thenStep.run();
     }
+
+    @Override
+    public void then(String expectationSpecification, Consumer<$Result> thenStep) {
+        then(thenStep);
+    }
 }
