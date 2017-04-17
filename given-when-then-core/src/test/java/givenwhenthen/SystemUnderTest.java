@@ -11,7 +11,9 @@ public class SystemUnderTest {
     }
 
     public String nonVoidMethod() {
-        givenWhenThenDefinition.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+        if (givenWhenThenDefinition != null) {
+            givenWhenThenDefinition.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+        }
         return "expected result";
     }
 

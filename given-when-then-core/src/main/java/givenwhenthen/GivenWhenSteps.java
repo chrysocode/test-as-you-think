@@ -14,7 +14,9 @@ class GivenWhenSteps<$SystemUnderTest, $Result> {
     }
 
     $Result returnResult() {
-        givenStep.accept(systemUnderTest);
+        if (givenStep != null) {
+            givenStep.accept(systemUnderTest);
+        }
         return whenStep.apply(systemUnderTest);
     }
 
