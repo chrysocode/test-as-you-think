@@ -17,7 +17,15 @@ public class ThenSpecifiedExpectationsTest {
 
     @Before
     public void prepareFixtures() {
-        givenWhenThenDefinitionMock = strictMock(GivenWhenThenDefinition.class);
+        // GIVEN
+        ordered_steps: {
+            givenWhenThenDefinitionMock = strictMock(GivenWhenThenDefinition.class);
+            givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+            givenWhenThenDefinitionMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+            givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+        }
+        replay(givenWhenThenDefinitionMock);
+
     }
 
     @After
@@ -28,14 +36,6 @@ public class ThenSpecifiedExpectationsTest {
 
     @Test
     public void should_specify_an_expectation_given_a_non_void_method() {
-        // GIVEN
-        ordered_steps: {
-            givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-            givenWhenThenDefinitionMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
-            givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-        }
-        replay(givenWhenThenDefinitionMock);
-
         // WHEN
         givenSutClass(SystemUnderTest.class) //
                 .given(sut -> {
@@ -51,14 +51,6 @@ public class ThenSpecifiedExpectationsTest {
 
     @Test
     public void should_specify_an_expectation_given_a_void_method() {
-        // GIVEN
-        ordered_steps: {
-            givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-            givenWhenThenDefinitionMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
-            givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-        }
-        replay(givenWhenThenDefinitionMock);
-
         // WHEN
         givenSutClass(SystemUnderTest.class) //
                 .given(sut -> {
