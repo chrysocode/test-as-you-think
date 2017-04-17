@@ -66,13 +66,29 @@ public class GivenWhenThenTest {
         // WHEN
         givenSutClass(SystemUnderTest.class) //
                 .given(sut -> {
-                    sut.setGivenWhenThenDefinition(givenWhenThenDefinitionMock);
                     givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                    sut.setGivenWhenThenDefinition(givenWhenThenDefinitionMock);
                 }).when(sut -> {
                     return sut.nonVoidMethod();
                 }).then(result -> {
                     givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                     assertThat(result).isEqualTo("expected result");
+                });
+    }
+
+    @Test
+    public void should_check_expectations_on_the_system_under_test_given_a_non_void_method() {
+        // WHEN
+        givenSutClass(SystemUnderTest.class) //
+                .given(sut -> {
+                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                    sut.setGivenWhenThenDefinition(givenWhenThenDefinitionMock);
+                }).when(sut -> {
+                    return sut.nonVoidMethod();
+                }).then((result, sut) -> {
+                    givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                    assertThat(result).isEqualTo("expected result");
+                    assertThat(sut.getState()).isNotNull();
                 });
     }
 }
