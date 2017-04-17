@@ -37,8 +37,8 @@ public class GivenWhenThenTest {
                 }).when(sut -> {
                     return sut.nonVoidMethod();
                 }).then(result -> {
-                    assertThat(result).isEqualTo("expected result");
                     givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                    assertThat(result).isEqualTo("expected result");
                 });
     }
 
@@ -63,8 +63,8 @@ public class GivenWhenThenTest {
                 }).when(sut -> {
                     return sut.nonVoidMethod();
                 }).then(result -> {
-                    assertThat(result).isEqualTo("expected result");
                     givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                    assertThat(result).isEqualTo("expected result");
                 });
     }
 }

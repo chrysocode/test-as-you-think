@@ -5,7 +5,7 @@ import java.util.function.Function;
 
 public interface GivenWhenThenDsl {
 
-    public static interface Given<$SystemUnderTest> {
+    public static interface Given<$SystemUnderTest> extends When<$SystemUnderTest> {
 
         When<$SystemUnderTest> given(Runnable givenStep);
 
