@@ -35,7 +35,7 @@ public interface GivenWhenThenDsl {
 
         void then(Consumer<$Result> thenStep);
 
-        void then(BiConsumer<$Result, $SystemUnderTest> thenStep);
+        void then(BiConsumer<$SystemUnderTest, $Result> thenStep);
 
         void then(Runnable thenStep);
 

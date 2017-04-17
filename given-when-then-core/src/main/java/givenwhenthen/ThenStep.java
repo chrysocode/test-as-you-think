@@ -19,8 +19,8 @@ public class ThenStep<$SystemUnderTest, $Result> implements Then<$SystemUnderTes
     }
 
     @Override
-    public void then(BiConsumer<$Result, $SystemUnderTest> thenStep) {
-        thenStep.accept(steps.returnResult(), steps.getSystemUnderTest());
+    public void then(BiConsumer<$SystemUnderTest, $Result> thenStep) {
+        thenStep.accept(steps.getSystemUnderTest(), steps.returnResult());
     }
 
     @Override
