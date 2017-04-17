@@ -72,7 +72,7 @@ public class GivenSpecifiedFixturesTest {
     public void should_specify_multiple_fixtures() {
         // GIVEN
         givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-        expectLastCall().times(2);
+        expectLastCall().times(3);
         givenWhenThenDefinitionMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
         givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
         replay(givenWhenThenDefinitionMock);
@@ -83,8 +83,10 @@ public class GivenSpecifiedFixturesTest {
                     givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
                 }).and("what it makes the second fixture specific to the current use case", () -> {
                     givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                }).and("what it makes the third fixture specific to the current use case", sut -> {
+                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                    sut.setGivenWhenThenDefinition(givenWhenThenDefinitionMock);
                 }).when(sut -> {
-                    givenWhenThenDefinitionMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
                     return sut.nonVoidMethod();
                 }).then(result -> {
                     givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();

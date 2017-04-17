@@ -19,6 +19,8 @@ public interface GivenWhenThenDsl {
     public static interface AndGiven<$SystemUnderTest> extends When<$SystemUnderTest> {
 
         AndGiven<$SystemUnderTest> and(String fixtureSpecification, Runnable givenStep);
+
+        AndGiven<$SystemUnderTest> and(String fixtureSpecification, Consumer<$SystemUnderTest> givenStep);
     }
 
     public static interface When<$SystemUnderTest> {

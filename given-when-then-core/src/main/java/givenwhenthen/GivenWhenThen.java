@@ -8,7 +8,6 @@ import java.util.function.Function;
 import givenwhenthen.GivenWhenThenDsl.AndGiven;
 import givenwhenthen.GivenWhenThenDsl.Given;
 import givenwhenthen.GivenWhenThenDsl.Then;
-import givenwhenthen.GivenWhenThenDsl.When;
 
 public class GivenWhenThen<$SystemUnderTest> implements Given<$SystemUnderTest> {
 
@@ -41,7 +40,7 @@ public class GivenWhenThen<$SystemUnderTest> implements Given<$SystemUnderTest> 
     }
 
     @Override
-    public When<$SystemUnderTest> given(Consumer<$SystemUnderTest> givenStep) {
+    public Given<$SystemUnderTest> given(Consumer<$SystemUnderTest> givenStep) {
         this.givenSteps.add(givenStep);
         return this;
     }
@@ -52,12 +51,17 @@ public class GivenWhenThen<$SystemUnderTest> implements Given<$SystemUnderTest> 
     }
 
     @Override
-    public When<$SystemUnderTest> given(String fixtureSpecification, Consumer<$SystemUnderTest> givenStep) {
+    public Given<$SystemUnderTest> given(String fixtureSpecification, Consumer<$SystemUnderTest> givenStep) {
         return given(givenStep);
     }
 
     @Override
     public AndGiven<$SystemUnderTest> and(String fixtureSpecification, Runnable givenStep) {
+        return given(fixtureSpecification, givenStep);
+    }
+
+    @Override
+    public AndGiven<$SystemUnderTest> and(String fixtureSpecification, Consumer<$SystemUnderTest> givenStep) {
         return given(fixtureSpecification, givenStep);
     }
 
