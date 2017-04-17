@@ -20,9 +20,9 @@ public class GivenWhenThen<$SystemUnderTest> implements GivenDsl<$SystemUnderTes
         return new GivenWhenThen<>(systemUnderTest);
     }
 
-    public static <$SystemUnderTest> Given<$SystemUnderTest> givenSutClass(Class<$SystemUnderTest> sutClass)
+    public static <$SystemUnderTest> GivenDsl<$SystemUnderTest> givenSutClass(Class<$SystemUnderTest> sutClass)
             throws InstantiationException, IllegalAccessException {
-        return new Given<$SystemUnderTest>(sutClass.newInstance());
+        return new GivenWhenThen<$SystemUnderTest>(sutClass.newInstance());
     }
 
     @Override
@@ -35,7 +35,8 @@ public class GivenWhenThen<$SystemUnderTest> implements GivenDsl<$SystemUnderTes
 
     @Override
     public WhenDsl<$SystemUnderTest> given(Consumer<$SystemUnderTest> givenStep) {
-        throw new RuntimeException("Not yet implemented!");
+        this.givenStep = givenStep;
+        return this;
     }
 
     @Override
