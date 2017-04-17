@@ -1,12 +1,13 @@
 package givenwhenthen;
 
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
 class GivenWhenSteps<$SystemUnderTest, $Result> {
 
     private $SystemUnderTest systemUnderTest;
-    private Consumer<$SystemUnderTest> givenStep;
+    private List<Consumer<$SystemUnderTest>> givenSteps;
     private Function<$SystemUnderTest, $Result> whenStep;
 
     GivenWhenSteps($SystemUnderTest systemUnderTest) {
@@ -14,14 +15,14 @@ class GivenWhenSteps<$SystemUnderTest, $Result> {
     }
 
     $Result returnResult() {
-        if (givenStep != null) {
-            givenStep.accept(systemUnderTest);
+        if (givenSteps != null && !givenSteps.isEmpty()) {
+            givenSteps.stream().forEach(step -> step.accept(systemUnderTest));
         }
         return whenStep.apply(systemUnderTest);
     }
 
-    void setGivenStep(Consumer<$SystemUnderTest> givenStep) {
-        this.givenStep = givenStep;
+    void setGivenSteps(List<Consumer<$SystemUnderTest>> givenSteps) {
+        this.givenSteps = givenSteps;
     }
 
     void setWhenStep(Function<$SystemUnderTest, $Result> whenStep) {

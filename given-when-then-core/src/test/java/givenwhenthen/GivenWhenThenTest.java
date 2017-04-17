@@ -67,32 +67,4 @@ public class GivenWhenThenTest {
                     assertThat(result).isEqualTo("expected result");
                 });
     }
-
-    @Test
-    public void should_specify_a_fixture() {
-        givenSutClass(SystemUnderTest.class) //
-                .given("what it makes this fixture specific to the current use case", () -> {
-                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-                }).when(sut -> {
-                    givenWhenThenDefinitionMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
-                    return sut.nonVoidMethod();
-                }).then(result -> {
-                    givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                    assertThat(result).isEqualTo("expected result");
-                });
-    }
-
-    @Test
-    public void should_specify_another_fixture() {
-        givenSutClass(SystemUnderTest.class) //
-                .given("what it makes this fixture specific to the current use case", sut -> {
-                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-                    sut.setGivenWhenThenDefinition(givenWhenThenDefinitionMock);
-                }).when(sut -> {
-                    return sut.nonVoidMethod();
-                }).then(result -> {
-                    givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                    assertThat(result).isEqualTo("expected result");
-                });
-    }
 }
