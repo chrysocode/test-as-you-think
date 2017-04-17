@@ -5,11 +5,22 @@ import java.util.function.Function;
 
 public interface GivenWhenThenDsl {
 
-    public static interface Given<$SystemUnderTest> extends When<$SystemUnderTest> {
+    public static interface Given<$SystemUnderTest> extends AndGiven<$SystemUnderTest>, When<$SystemUnderTest> {
 
         When<$SystemUnderTest> given(Runnable givenStep);
 
         When<$SystemUnderTest> given(Consumer<$SystemUnderTest> givenStep);
+
+        Given<$SystemUnderTest> given(String fixtureSpecification, Runnable givenStep);
+
+        When<$SystemUnderTest> given(String fixtureSpecification, Consumer<$SystemUnderTest> givenStep);
+    }
+
+    public static interface AndGiven<$SystemUnderTest> extends When<$SystemUnderTest> {
+
+        AndGiven<$SystemUnderTest> and(String fixtureSpecification, Runnable givenStep);
+
+        AndGiven<$SystemUnderTest> and(String fixtureSpecification, Consumer<$SystemUnderTest> givenStep);
     }
 
     public static interface When<$SystemUnderTest> {

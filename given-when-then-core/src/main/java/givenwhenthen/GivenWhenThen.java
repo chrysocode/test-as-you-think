@@ -1,19 +1,22 @@
 package givenwhenthen;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import givenwhenthen.GivenWhenThenDsl.AndGiven;
 import givenwhenthen.GivenWhenThenDsl.Given;
 import givenwhenthen.GivenWhenThenDsl.Then;
-import givenwhenthen.GivenWhenThenDsl.When;
 
-public class GivenWhenThen<$SystemUnderTest> implements Given<$SystemUnderTest>, When<$SystemUnderTest> {
+public class GivenWhenThen<$SystemUnderTest> implements Given<$SystemUnderTest> {
 
     private $SystemUnderTest systemUnderTest;
-    private Consumer<$SystemUnderTest> givenStep;
+    private List<Consumer<$SystemUnderTest>> givenSteps;
 
     private GivenWhenThen($SystemUnderTest systemUnderTest) {
         this.systemUnderTest = systemUnderTest;
+        this.givenSteps = new ArrayList<>();
     }
 
     public static <$SystemUnderTest> Given<$SystemUnderTest> givenSut($SystemUnderTest systemUnderTest) {
@@ -29,17 +32,37 @@ public class GivenWhenThen<$SystemUnderTest> implements Given<$SystemUnderTest>,
     }
 
     @Override
-    public When<$SystemUnderTest> given(Runnable givenStep) {
-        this.givenStep = sut -> {
+    public Given<$SystemUnderTest> given(Runnable givenStep) {
+        this.givenSteps.add(sut -> {
             givenStep.run();
-        };
+        });
         return this;
     }
 
     @Override
-    public When<$SystemUnderTest> given(Consumer<$SystemUnderTest> givenStep) {
-        this.givenStep = givenStep;
+    public Given<$SystemUnderTest> given(Consumer<$SystemUnderTest> givenStep) {
+        this.givenSteps.add(givenStep);
         return this;
+    }
+
+    @Override
+    public Given<$SystemUnderTest> given(String fixtureSpecification, Runnable givenStep) {
+        return given(givenStep);
+    }
+
+    @Override
+    public Given<$SystemUnderTest> given(String fixtureSpecification, Consumer<$SystemUnderTest> givenStep) {
+        return given(givenStep);
+    }
+
+    @Override
+    public AndGiven<$SystemUnderTest> and(String fixtureSpecification, Runnable givenStep) {
+        return given(fixtureSpecification, givenStep);
+    }
+
+    @Override
+    public AndGiven<$SystemUnderTest> and(String fixtureSpecification, Consumer<$SystemUnderTest> givenStep) {
+        return given(fixtureSpecification, givenStep);
     }
 
     @Override
@@ -57,7 +80,7 @@ public class GivenWhenThen<$SystemUnderTest> implements Given<$SystemUnderTest>,
 
     private <$Result> Then<$SystemUnderTest, $Result> toThenStep(Function<$SystemUnderTest, $Result> whenStep) {
         GivenWhenSteps<$SystemUnderTest, $Result> steps = new GivenWhenSteps<>(systemUnderTest);
-        steps.setGivenStep(givenStep);
+        steps.setGivenSteps(givenSteps);
         steps.setWhenStep(whenStep);
         return new ThenStep<>(steps);
     }
