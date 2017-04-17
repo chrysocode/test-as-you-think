@@ -55,7 +55,7 @@ public class GivenWhenThenTest {
     }
 
     @Test
-    public void should_follow_the_given_when_then_full_sequence_given_a_sut_class_to_be_instanciated() {
+    public void should_follow_the_given_when_then_full_sequence_given_a_sut_class_to_be_instantiated() {
         givenSutClass(SystemUnderTest.class) //
                 .given(sut -> {
                     sut.setGivenWhenThenDefinition(givenWhenThenDefinitionMock);

@@ -48,4 +48,16 @@ public class WhenThenTest {
                     givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                 });
     }
+
+    @Test
+    public void should_follow_the_when_then_partial_sequence_given_a_sut_class_to_be_instantiated() {
+        GivenWhenThen.givenSutClass(SystemUnderTest.class) //
+                .when(sut -> {
+                    givenWhenThenDefinitionMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+                    return sut.nonVoidMethod();
+                }).then(result -> {
+                    givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                    assertThat(result).isEqualTo("expected result");
+                });
+    }
 }
