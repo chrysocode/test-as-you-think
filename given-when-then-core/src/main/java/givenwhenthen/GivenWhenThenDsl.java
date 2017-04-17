@@ -30,21 +30,14 @@ public interface GivenWhenThenDsl {
         Then<$SystemUnderTest, Void> when(Consumer<$SystemUnderTest> whenStep);
     }
 
-    public static interface Then<$SystemUnderTest, $Result> extends AndThen<$SystemUnderTest, $Result> {
+    public static interface Then<$SystemUnderTest, $Result> {
 
         void then(Consumer<$Result> thenStep);
 
         void then(Runnable thenStep);
 
-        AndThen<$SystemUnderTest, $Result> then(String expectationSpecification, Consumer<$Result> thenStep);
+        void then(String expectationSpecification, Consumer<$Result> thenStep);
 
         void then(String expectationSpecification, Runnable thenStep);
-    }
-
-    public static interface AndThen<$SystemUnderTest, $Result> {
-
-        AndThen<$SystemUnderTest, $Result> and(String expectationSpecification, Consumer<$Result> thenStep);
-
-        void go();
     }
 }

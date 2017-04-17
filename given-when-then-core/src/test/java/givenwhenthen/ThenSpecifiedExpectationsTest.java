@@ -2,7 +2,6 @@ package givenwhenthen;
 
 import static givenwhenthen.GivenWhenThen.givenSutClass;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.strictMock;
 import static org.easymock.EasyMock.verify;
@@ -47,7 +46,7 @@ public class ThenSpecifiedExpectationsTest {
                 }).then("what the focus of this expectation is", result -> {
                     givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                     assertThat(result).isEqualTo("expected result");
-                }).go();
+                });
     }
 
     @Test
@@ -70,32 +69,5 @@ public class ThenSpecifiedExpectationsTest {
                 }).then("what the focus of this expectation is", () -> {
                     givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                 });
-    }
-
-    @Test
-    public void should_specify_multiple_expectations() {
-        // GIVEN
-        ordered_steps: {
-            givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-            givenWhenThenDefinitionMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
-            givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-            expectLastCall().times(2);
-        }
-        replay(givenWhenThenDefinitionMock);
-
-        // WHEN
-        givenSutClass(SystemUnderTest.class) //
-                .given(sut -> {
-                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-                    sut.setGivenWhenThenDefinition(givenWhenThenDefinitionMock);
-                }).when(sut -> {
-                    return sut.nonVoidMethod();
-                }).then("what the focus of this expectation is", result -> {
-                    givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                    assertThat(result).contains("expected");
-                }).and("what the focus of this expectation is", result -> {
-                    givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                    assertThat(result).contains("result");
-                }).go();
     }
 }
