@@ -27,7 +27,7 @@ public class ThenSpecifiedExpectationsTest {
     }
 
     @Test
-    public void should_specify_an_expectation() {
+    public void should_specify_an_expectation_given_a_non_void_method() {
         // GIVEN
         ordered_steps: {
             givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
@@ -46,6 +46,28 @@ public class ThenSpecifiedExpectationsTest {
                 }).then("what the focus of this expectation is", result -> {
                     givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                     assertThat(result).isEqualTo("expected result");
+                });
+    }
+
+    @Test
+    public void should_specify_an_expectation_given_a_void_method() {
+        // GIVEN
+        ordered_steps: {
+            givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+            givenWhenThenDefinitionMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+            givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+            replay(givenWhenThenDefinitionMock);
+        }
+
+        // WHEN
+        givenSutClass(SystemUnderTest.class) //
+                .given(sut -> {
+                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                    sut.setGivenWhenThenDefinition(givenWhenThenDefinitionMock);
+                }).when(sut -> {
+                    sut.nonVoidMethod();
+                }).then("what the focus of this expectation is", () -> {
+                    givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                 });
     }
 }

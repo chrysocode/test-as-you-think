@@ -37,5 +37,7 @@ public interface GivenWhenThenDsl {
         void then(Runnable thenStep);
 
         void then(String expectationSpecification, Consumer<$Result> thenStep);
+
+        void then(String expectationSpecification, Runnable thenStep);
     }
 }
