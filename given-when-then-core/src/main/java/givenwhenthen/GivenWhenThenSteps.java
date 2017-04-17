@@ -1,11 +1,12 @@
 package givenwhenthen;
 
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 class GivenWhenThenSteps<$SystemUnderTest, $Result> {
 
     private $SystemUnderTest systemUnderTest;
-    private Runnable givenStep;
+    private Consumer<$SystemUnderTest> givenStep;
     private Function<$SystemUnderTest, $Result> whenStep;
 
     GivenWhenThenSteps($SystemUnderTest systemUnderTest) {
@@ -13,7 +14,7 @@ class GivenWhenThenSteps<$SystemUnderTest, $Result> {
     }
 
     $Result returnResult() {
-        givenStep.run();
+        givenStep.accept(systemUnderTest);
         return whenStep.apply(systemUnderTest);
     }
 
@@ -25,11 +26,11 @@ class GivenWhenThenSteps<$SystemUnderTest, $Result> {
         this.systemUnderTest = systemUnderTest;
     }
 
-    Runnable getGivenStep() {
+    Consumer<$SystemUnderTest> getGivenStep() {
         return givenStep;
     }
 
-    void setGivenStep(Runnable givenStep) {
+    void setGivenStep(Consumer<$SystemUnderTest> givenStep) {
         this.givenStep = givenStep;
     }
 

@@ -1,6 +1,7 @@
 package givenwhenthen;
 
 import static givenwhenthen.GivenWhenThen.givenSut;
+import static givenwhenthen.GivenWhenThen.givenSutClass;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.strictMock;
@@ -56,6 +57,21 @@ public class GivenWhenThenTest {
                     sut.voidMethod();
                 }) //
                 .then(() -> {
+                    givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                });
+    }
+
+    @Test
+    public void should_follow_the_given_when_then_full_sequence_given_a_sut_class_to_be_instanciated()
+            throws Exception {
+        givenSutClass(SystemUnderTest.class) //
+                .given(sut -> {
+                    sut.setGivenWhenThenDefinition(givenWhenThenDefinitionMock);
+                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                }).when(sut -> {
+                    return sut.nonVoidMethod();
+                }).then(result -> {
+                    assertThat(result).isEqualTo("expected result");
                     givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                 });
     }
