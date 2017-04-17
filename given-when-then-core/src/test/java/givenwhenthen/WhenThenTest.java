@@ -38,4 +38,14 @@ public class WhenThenTest {
                 });
         ;
     }
+
+    @Test
+    public void should_follow_the_when_then_partial_sequence_given_a_void_method() {
+        givenSut(new SystemUnderTest(givenWhenThenDefinitionMock)) //
+                .when(sut -> {
+                    sut.voidMethod();
+                }).then(() -> {
+                    givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                });
+    }
 }
