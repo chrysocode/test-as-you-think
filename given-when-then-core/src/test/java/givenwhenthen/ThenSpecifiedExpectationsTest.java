@@ -33,8 +33,8 @@ public class ThenSpecifiedExpectationsTest {
             givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
             givenWhenThenDefinitionMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
             givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-            replay(givenWhenThenDefinitionMock);
         }
+        replay(givenWhenThenDefinitionMock);
 
         // WHEN
         givenSutClass(SystemUnderTest.class) //
@@ -56,8 +56,8 @@ public class ThenSpecifiedExpectationsTest {
             givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
             givenWhenThenDefinitionMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
             givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-            replay(givenWhenThenDefinitionMock);
         }
+        replay(givenWhenThenDefinitionMock);
 
         // WHEN
         givenSutClass(SystemUnderTest.class) //

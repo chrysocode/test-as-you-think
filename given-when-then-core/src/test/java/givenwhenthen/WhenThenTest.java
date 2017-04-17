@@ -10,25 +10,31 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+@SuppressWarnings("unused")
 public class WhenThenTest {
 
     private GivenWhenThenDefinition givenWhenThenDefinitionMock;
 
     @Before
     public void prepareFixtures() {
-        givenWhenThenDefinitionMock = strictMock(GivenWhenThenDefinition.class);
-        givenWhenThenDefinitionMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
-        givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+        // GIVEN
+        ordered_steps: {
+            givenWhenThenDefinitionMock = strictMock(GivenWhenThenDefinition.class);
+            givenWhenThenDefinitionMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+            givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+        }
         replay(givenWhenThenDefinitionMock);
     }
 
     @After
     public void verifyMocks() {
+        // THEN
         verify(givenWhenThenDefinitionMock);
     }
 
     @Test
     public void should_follow_the_when_then_partial_sequence_given_a_non_void_method() {
+        // WHEN
         givenSut(new SystemUnderTest(givenWhenThenDefinitionMock)) //
                 .when(sut -> {
                     return sut.nonVoidMethod();
@@ -41,6 +47,7 @@ public class WhenThenTest {
 
     @Test
     public void should_follow_the_when_then_partial_sequence_given_a_void_method() {
+        // WHEN
         givenSut(new SystemUnderTest(givenWhenThenDefinitionMock)) //
                 .when(sut -> {
                     sut.voidMethod();
@@ -51,6 +58,7 @@ public class WhenThenTest {
 
     @Test
     public void should_follow_the_when_then_partial_sequence_given_a_sut_class_to_be_instantiated() {
+        // WHEN
         GivenWhenThen.givenSutClass(SystemUnderTest.class) //
                 .when(sut -> {
                     givenWhenThenDefinitionMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
