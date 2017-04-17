@@ -20,9 +20,12 @@ public class GivenWhenThen<$SystemUnderTest> implements Given<$SystemUnderTest>,
         return new GivenWhenThen<>(systemUnderTest);
     }
 
-    public static <$SystemUnderTest> Given<$SystemUnderTest> givenSutClass(Class<$SystemUnderTest> sutClass)
-            throws InstantiationException, IllegalAccessException {
-        return new GivenWhenThen<$SystemUnderTest>(sutClass.newInstance());
+    public static <$SystemUnderTest> Given<$SystemUnderTest> givenSutClass(Class<$SystemUnderTest> sutClass) {
+        try {
+            return new GivenWhenThen<$SystemUnderTest>(sutClass.newInstance());
+        } catch (Exception exception) {
+            throw new RuntimeException(exception.getMessage());
+        }
     }
 
     @Override
