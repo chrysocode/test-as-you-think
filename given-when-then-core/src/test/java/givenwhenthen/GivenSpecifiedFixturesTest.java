@@ -11,6 +11,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+@SuppressWarnings("unused")
 public class GivenSpecifiedFixturesTest {
 
     private GivenWhenThenDefinition givenWhenThenDefinitionMock;
@@ -29,9 +30,11 @@ public class GivenSpecifiedFixturesTest {
     @Test
     public void should_specify_a_fixture() {
         // GIVEN
-        givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-        givenWhenThenDefinitionMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
-        givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+        ordered_steps: {
+            givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+            givenWhenThenDefinitionMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+            givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+        }
         replay(givenWhenThenDefinitionMock);
 
         // WHEN
@@ -50,9 +53,11 @@ public class GivenSpecifiedFixturesTest {
     @Test
     public void should_specify_another_fixture() {
         // GIVEN
-        givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-        givenWhenThenDefinitionMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
-        givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+        ordered_steps: {
+            givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+            givenWhenThenDefinitionMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+            givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+        }
         replay(givenWhenThenDefinitionMock);
 
         // WHEN
@@ -71,10 +76,12 @@ public class GivenSpecifiedFixturesTest {
     @Test
     public void should_specify_multiple_fixtures() {
         // GIVEN
-        givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-        expectLastCall().times(3);
-        givenWhenThenDefinitionMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
-        givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+        ordered_steps: {
+            givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+            expectLastCall().times(3);
+            givenWhenThenDefinitionMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+            givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+        }
         replay(givenWhenThenDefinitionMock);
 
         // WHEN
