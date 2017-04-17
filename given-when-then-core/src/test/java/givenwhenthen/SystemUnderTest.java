@@ -4,6 +4,8 @@ public class SystemUnderTest {
 
     private GivenWhenThenDefinition givenWhenThenDefinition;
 
+    public SystemUnderTest() {}
+
     public SystemUnderTest(GivenWhenThenDefinition givenWhenThenDefinition) {
         this.givenWhenThenDefinition = givenWhenThenDefinition;
     }
@@ -15,5 +17,9 @@ public class SystemUnderTest {
 
     public void voidMethod() {
         givenWhenThenDefinition.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+    }
+
+    public void setGivenWhenThenDefinition(GivenWhenThenDefinition givenWhenThenDefinition) {
+        this.givenWhenThenDefinition = givenWhenThenDefinition;
     }
 }
