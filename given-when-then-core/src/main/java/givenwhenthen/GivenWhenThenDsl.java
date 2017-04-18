@@ -1,5 +1,6 @@
 package givenwhenthen;
 
+import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -45,5 +46,7 @@ public interface GivenWhenThenDsl {
         void then(String expectationSpecification, Runnable thenStep);
 
         void then(Predicate<$Result> thenStep);
+
+        void then(List<Predicate<$Result>> thenSteps);
     }
 }
