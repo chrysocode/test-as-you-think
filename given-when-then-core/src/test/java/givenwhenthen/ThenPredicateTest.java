@@ -33,7 +33,7 @@ public class ThenPredicateTest {
     }
 
     @Test
-    public void should_provide_a_then_step_as_a_predicate_given_a_non_void_method() {
+    public void should_provide_a_then_step_as_a_predicate_on_the_result_given_a_non_void_method() {
         // GIVEN
         orderedSteps(1);
 
@@ -51,7 +51,7 @@ public class ThenPredicateTest {
     }
 
     @Test(expected = ComparisonFailure.class)
-    public void should_provide_a_failing_then_step_as_a_predicate_given_a_non_void_method() {
+    public void should_provide_a_failing_then_step_as_a_predicate_on_the_result_given_a_non_void_method() {
         // GIVEN
         orderedSteps(1);
 
@@ -105,7 +105,7 @@ public class ThenPredicateTest {
     }
 
     @Test
-    public void should_provide_the_then_steps_as_predicates_given_a_non_void_method() {
+    public void should_provide_the_then_steps_as_predicates_on_the_result_given_a_non_void_method() {
         // GIVEN
         orderedSteps(2);
 
@@ -126,7 +126,7 @@ public class ThenPredicateTest {
     }
 
     @Test(expected = ComparisonFailure.class)
-    public void should_provide_the_then_steps_as_predicates_given_a_void_method_and_a_failing_then_step() {
+    public void should_provide_the_then_steps_as_predicates_on_the_result_given_a_non_void_method_and_a_failing_then_step() {
         // GIVEN
         orderedSteps(2);
 
@@ -144,5 +144,41 @@ public class ThenPredicateTest {
                     givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                     return false;
                 }));
+    }
+
+    @Test
+    public void should_provide_a_then_step_as_a_predicate_on_the_system_and_the_result_given_a_non_void_method() {
+        // GIVEN
+        orderedSteps(1);
+
+        // WHEN
+        givenSutClass(SystemUnderTest.class) //
+                .given(sut -> {
+                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                    sut.setGivenWhenThenDefinition(givenWhenThenDefinitionMock);
+                }).when(sut -> {
+                    return sut.nonVoidMethod();
+                }).then((sut, result) -> {
+                    givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                    return "expected result".equals(result) && sut instanceof SystemUnderTest;
+                });
+    }
+
+    @Test(expected = ComparisonFailure.class)
+    public void should_provide_a_failing_then_step_as_a_predicate_on_the_system_and_the_result_given_a_non_void_method() {
+        // GIVEN
+        orderedSteps(1);
+
+        // WHEN
+        givenSutClass(SystemUnderTest.class) //
+                .given(sut -> {
+                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                    sut.setGivenWhenThenDefinition(givenWhenThenDefinitionMock);
+                }).when(sut -> {
+                    return sut.nonVoidMethod();
+                }).then((sut, result) -> {
+                    givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                    return false;
+                });
     }
 }
