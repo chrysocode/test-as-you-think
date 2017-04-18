@@ -3,6 +3,7 @@ package givenwhenthen;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 public interface GivenWhenThenDsl {
 
@@ -42,5 +43,7 @@ public interface GivenWhenThenDsl {
         void then(String expectationSpecification, Consumer<$Result> thenStep);
 
         void then(String expectationSpecification, Runnable thenStep);
+
+        void then(Predicate<$Result> thenStep);
     }
 }
