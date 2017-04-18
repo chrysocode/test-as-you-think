@@ -46,4 +46,18 @@ public class ThenPredicateTest {
                     return true;
                 });
     }
+
+    @Test
+    public void should_provide_then_step_as_a_predicate_given_a_void_method() {
+        givenSutClass(SystemUnderTest.class) //
+                .given(sut -> {
+                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                    sut.setGivenWhenThenDefinition(givenWhenThenDefinitionMock);
+                }).when(sut -> {
+                    sut.voidMethod();
+                }).then((Void) -> {
+                    givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                    return true;
+                });
+    }
 }
