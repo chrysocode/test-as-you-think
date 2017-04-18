@@ -51,5 +51,7 @@ public interface GivenWhenThenDsl {
         void then(BiConsumer<$SystemUnderTest, $Result> thenStep);
 
         void then(BiPredicate<$SystemUnderTest, $Result> thenStep);
+
+        void then(Predicate<$Result> thenStepAboutResult, Predicate<$SystemUnderTest> thenStepAboutSystemUnderTest);
     }
 }

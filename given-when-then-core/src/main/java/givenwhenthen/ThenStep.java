@@ -59,4 +59,10 @@ public class ThenStep<$SystemUnderTest, $Result> implements Then<$SystemUnderTes
     public void then(BiPredicate<$SystemUnderTest, $Result> thenStep) {
         assertThat(thenStep.test(steps.getSystemUnderTest(), steps.returnResult())).isTrue();
     }
+
+    @Override
+    public void then(Predicate<$Result> thenStepAboutResult, Predicate<$SystemUnderTest> thenStepAboutSystemUnderTest) {
+        then(thenStepAboutResult);
+        assertThat(thenStepAboutSystemUnderTest.test(steps.getSystemUnderTest())).isTrue();
+    }
 }
