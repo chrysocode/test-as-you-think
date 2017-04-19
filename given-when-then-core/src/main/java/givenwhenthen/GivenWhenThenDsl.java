@@ -53,5 +53,7 @@ public interface GivenWhenThenDsl {
         void then(BiPredicate<$SystemUnderTest, $Result> thenStep);
 
         void then(Predicate<$Result> thenStepAboutResult, Predicate<$SystemUnderTest> thenStepAboutSystemUnderTest);
+
+        void thenItFailed();
     }
 }

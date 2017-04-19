@@ -26,6 +26,10 @@ public class SystemUnderTest {
         changeState();
     }
 
+    public void fail() {
+        throw new RuntimeException("It failed!");
+    }
+
     private void changeState() {
         state = "state";
     }

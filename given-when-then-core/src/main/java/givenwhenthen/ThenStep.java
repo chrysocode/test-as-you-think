@@ -1,6 +1,7 @@
 package givenwhenthen;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 import java.util.List;
 import java.util.function.BiConsumer;
@@ -8,9 +9,14 @@ import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import givenwhenthen.GivenWhenThenDsl.Then;
 
 public class ThenStep<$SystemUnderTest, $Result> implements Then<$SystemUnderTest, $Result> {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ThenStep.class);
 
     private GivenWhenSteps<$SystemUnderTest, $Result> steps;
 
@@ -64,5 +70,15 @@ public class ThenStep<$SystemUnderTest, $Result> implements Then<$SystemUnderTes
     public void then(Predicate<$Result> thenStepAboutResult, Predicate<$SystemUnderTest> thenStepAboutSystemUnderTest) {
         then(thenStepAboutResult);
         assertThat(thenStepAboutSystemUnderTest.test(steps.getSystemUnderTest())).isTrue();
+    }
+
+    @Override
+    public void thenItFailed() {
+        try {
+            steps.returnResult();
+            fail("The system under test was expected to fail, but it did not.");
+        } catch (Exception exception) {
+            LOGGER.error(exception.getMessage());
+        }
     }
 }
