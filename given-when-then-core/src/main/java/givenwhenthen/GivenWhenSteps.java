@@ -21,6 +21,10 @@ class GivenWhenSteps<$SystemUnderTest, $Result> {
         return whenStep.apply(systemUnderTest);
     }
 
+    $SystemUnderTest getSystemUnderTest() {
+        return systemUnderTest;
+    }
+
     void setGivenSteps(List<Consumer<$SystemUnderTest>> givenSteps) {
         this.givenSteps = givenSteps;
     }

@@ -1,5 +1,6 @@
 package givenwhenthen;
 
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -33,6 +34,8 @@ public interface GivenWhenThenDsl {
     public static interface Then<$SystemUnderTest, $Result> {
 
         void then(Consumer<$Result> thenStep);
+
+        void then(BiConsumer<$SystemUnderTest, $Result> thenStep);
 
         void then(Runnable thenStep);
 

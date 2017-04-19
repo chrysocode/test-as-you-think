@@ -1,8 +1,11 @@
 package givenwhenthen;
 
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-public class ThenStep<$SystemUnderTest, $Result> implements GivenWhenThenDsl.Then<$SystemUnderTest, $Result> {
+import givenwhenthen.GivenWhenThenDsl.Then;
+
+public class ThenStep<$SystemUnderTest, $Result> implements Then<$SystemUnderTest, $Result> {
 
     private GivenWhenSteps<$SystemUnderTest, $Result> steps;
 
@@ -13,6 +16,11 @@ public class ThenStep<$SystemUnderTest, $Result> implements GivenWhenThenDsl.The
     @Override
     public void then(Consumer<$Result> thenStep) {
         thenStep.accept(steps.returnResult());
+    }
+
+    @Override
+    public void then(BiConsumer<$SystemUnderTest, $Result> thenStep) {
+        thenStep.accept(steps.getSystemUnderTest(), steps.returnResult());
     }
 
     @Override
