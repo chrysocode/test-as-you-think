@@ -27,15 +27,19 @@ public class GivenSpecifiedFixturesTest {
         verify(givenWhenThenDefinitionMock);
     }
 
+    private void orderedSteps(int numberOfGivenSteps) {
+        givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+        expectLastCall().times(numberOfGivenSteps);
+        givenWhenThenDefinitionMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+        givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+
+        replay(givenWhenThenDefinitionMock);
+    }
+
     @Test
     public void should_specify_a_fixture() {
         // GIVEN
-        ordered_steps: {
-            givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-            givenWhenThenDefinitionMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
-            givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-        }
-        replay(givenWhenThenDefinitionMock);
+        orderedSteps(1);
 
         // WHEN
         givenSutClass(SystemUnderTest.class) //
@@ -53,12 +57,7 @@ public class GivenSpecifiedFixturesTest {
     @Test
     public void should_specify_another_fixture() {
         // GIVEN
-        ordered_steps: {
-            givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-            givenWhenThenDefinitionMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
-            givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-        }
-        replay(givenWhenThenDefinitionMock);
+        orderedSteps(1);
 
         // WHEN
         givenSutClass(SystemUnderTest.class) //
@@ -76,13 +75,7 @@ public class GivenSpecifiedFixturesTest {
     @Test
     public void should_specify_multiple_fixtures() {
         // GIVEN
-        ordered_steps: {
-            givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-            expectLastCall().times(3);
-            givenWhenThenDefinitionMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
-            givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-        }
-        replay(givenWhenThenDefinitionMock);
+        orderedSteps(3);
 
         // WHEN
         givenSutClass(SystemUnderTest.class) //

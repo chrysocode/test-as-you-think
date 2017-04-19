@@ -1,8 +1,11 @@
 package givenwhenthen;
 
+import java.util.List;
 import java.util.function.BiConsumer;
+import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 public interface GivenWhenThenDsl {
 
@@ -35,12 +38,20 @@ public interface GivenWhenThenDsl {
 
         void then(Consumer<$Result> thenStep);
 
-        void then(BiConsumer<$SystemUnderTest, $Result> thenStep);
+        void then(String expectationSpecification, Consumer<$Result> thenStep);
 
         void then(Runnable thenStep);
 
-        void then(String expectationSpecification, Consumer<$Result> thenStep);
-
         void then(String expectationSpecification, Runnable thenStep);
+
+        void then(Predicate<$Result> thenStep);
+
+        void then(List<Predicate<$Result>> thenSteps);
+
+        void then(BiConsumer<$SystemUnderTest, $Result> thenStep);
+
+        void then(BiPredicate<$SystemUnderTest, $Result> thenStep);
+
+        void then(Predicate<$Result> thenStepAboutResult, Predicate<$SystemUnderTest> thenStepAboutSystemUnderTest);
     }
 }

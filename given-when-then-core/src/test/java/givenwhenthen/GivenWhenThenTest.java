@@ -77,7 +77,7 @@ public class GivenWhenThenTest {
     }
 
     @Test
-    public void should_check_expectations_on_the_system_under_test_given_a_non_void_method() {
+    public void should_check_expectations_on_the_sut_given_a_non_void_method() {
         // WHEN
         givenSutClass(SystemUnderTest.class) //
                 .given(sut -> {
@@ -93,7 +93,7 @@ public class GivenWhenThenTest {
     }
 
     @Test
-    public void should_check_expectations_on_the_system_under_test_given_a_void_method() {
+    public void should_check_expectations_on_the_sut_given_a_void_method() {
         // WHEN
         givenSutClass(SystemUnderTest.class) //
                 .given(sut -> {
