@@ -32,15 +32,26 @@ public class ThenFailuresTest {
     }
 
     @Test
-    public void should_verify_the_sut_failed() {
+    public void should_verify_the_sut_fails() {
         // WHEN
         givenSutClass(SystemUnderTest.class) //
                 .given(sut -> {
                     givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
                     sut.setGivenWhenThenDefinition(givenWhenThenDefinitionMock);
-                }).when(sut -> {
-                    givenWhenThenDefinitionMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+                }).whenSutRunsOutsideOperatingConditions(sut -> {
                     sut.fail();
-                }).thenItFailed();
+                }).thenItFails();
+    }
+
+    @Test
+    public void should_verify_the_sut_fails_by_raising_an_expected_exception() {
+        // WHEN
+        givenSutClass(SystemUnderTest.class) //
+                .given(sut -> {
+                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                    sut.setGivenWhenThenDefinition(givenWhenThenDefinitionMock);
+                }).whenSutRunsOutsideOperatingConditions(sut -> {
+                    sut.fail(IllegalStateException.class);
+                }).thenItFails(IllegalStateException.class);
     }
 }

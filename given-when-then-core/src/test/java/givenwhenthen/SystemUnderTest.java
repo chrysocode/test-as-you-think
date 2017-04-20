@@ -13,21 +13,31 @@ public class SystemUnderTest {
         this.givenWhenThenDefinition = givenWhenThenDefinition;
     }
 
-    public String nonVoidMethod() {
+    private void whenAnEventHappens() {
         if (givenWhenThenDefinition != null) {
             givenWhenThenDefinition.whenAnEventHappensInRelationToAnActionOfTheConsumer();
         }
+    }
+
+    public String nonVoidMethod() {
+        whenAnEventHappens();
         changeState();
         return "expected result";
     }
 
     public void voidMethod() {
-        givenWhenThenDefinition.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+        whenAnEventHappens();
         changeState();
     }
 
-    public void fail() {
+    public void fail() throws Throwable {
+        whenAnEventHappens();
         throw new RuntimeException("It failed!");
+    }
+
+    public void fail(Class<? extends Throwable> throwableClass) throws Throwable {
+        whenAnEventHappens();
+        throw throwableClass.newInstance();
     }
 
     private void changeState() {

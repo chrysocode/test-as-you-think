@@ -32,6 +32,8 @@ public interface GivenWhenThenDsl {
         <$Result> Then<$SystemUnderTest, $Result> when(Function<$SystemUnderTest, $Result> whenStep);
 
         Then<$SystemUnderTest, Void> when(Consumer<$SystemUnderTest> whenStep);
+
+        ThenFailure whenSutRunsOutsideOperatingConditions(CheckedConsumer<$SystemUnderTest> whenStep);
     }
 
     public static interface Then<$SystemUnderTest, $Result> {
@@ -53,7 +55,12 @@ public interface GivenWhenThenDsl {
         void then(BiPredicate<$SystemUnderTest, $Result> thenStep);
 
         void then(Predicate<$Result> thenStepAboutResult, Predicate<$SystemUnderTest> thenStepAboutSystemUnderTest);
+    }
 
-        void thenItFailed();
+    public static interface ThenFailure {
+
+        void thenItFails();
+
+        void thenItFails(Class<? extends Throwable> expectedThrowableClass);
     }
 }
