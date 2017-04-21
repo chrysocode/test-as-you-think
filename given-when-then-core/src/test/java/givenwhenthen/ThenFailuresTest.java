@@ -1,6 +1,7 @@
 package givenwhenthen;
 
 import static givenwhenthen.GivenWhenThen.givenSutClass;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.strictMock;
 import static org.easymock.EasyMock.verify;
@@ -53,5 +54,20 @@ public class ThenFailuresTest {
                 }).whenSutRunsOutsideOperatingConditions(sut -> {
                     sut.fail(IllegalStateException.class);
                 }).thenItFails(IllegalStateException.class);
+    }
+
+    @Test(expected = AssertionError.class)
+    public void should_fail_because_of_an_unexpected_failure_given_a_non_void_method() {
+        // WHEN
+        givenSutClass(SystemUnderTest.class) //
+                .given(sut -> {
+                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                    sut.setGivenWhenThenDefinition(givenWhenThenDefinitionMock);
+                }).when(sut -> {
+                    return sut.nonVoidFail();
+                }).then(result -> {
+                    assertThat(result).isEqualTo("Unexpected failure must happen before this assertions.");
+                });
+        ;
     }
 }

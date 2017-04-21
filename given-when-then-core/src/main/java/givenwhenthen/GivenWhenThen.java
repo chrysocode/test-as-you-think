@@ -3,7 +3,6 @@ package givenwhenthen;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 import givenwhenthen.GivenWhenThenDsl.AndGiven;
 import givenwhenthen.GivenWhenThenDsl.Given;
@@ -67,7 +66,7 @@ public class GivenWhenThen<$SystemUnderTest> implements Given<$SystemUnderTest> 
     }
 
     @Override
-    public <$Result> Then<$SystemUnderTest, $Result> when(Function<$SystemUnderTest, $Result> whenStep) {
+    public <$Result> Then<$SystemUnderTest, $Result> when(CheckedFunction<$SystemUnderTest, $Result> whenStep) {
         return toThenStep(whenStep);
     }
 
@@ -79,7 +78,7 @@ public class GivenWhenThen<$SystemUnderTest> implements Given<$SystemUnderTest> 
         });
     }
 
-    private <$Result> Then<$SystemUnderTest, $Result> toThenStep(Function<$SystemUnderTest, $Result> whenStep) {
+    private <$Result> Then<$SystemUnderTest, $Result> toThenStep(CheckedFunction<$SystemUnderTest, $Result> whenStep) {
         GivenWhenSteps<$SystemUnderTest, $Result> steps = new GivenWhenSteps<>(systemUnderTest);
         steps.setGivenSteps(givenSteps);
         steps.setWhenStep(whenStep);

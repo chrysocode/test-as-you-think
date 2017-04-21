@@ -32,7 +32,12 @@ public class SystemUnderTest {
 
     public void fail() throws Throwable {
         whenAnEventHappens();
-        throw new RuntimeException("It failed!");
+        throw new Exception("It fails!");
+    }
+
+    public String nonVoidFail() throws Throwable {
+        whenAnEventHappens();
+        throw new Exception("It fails!");
     }
 
     public void fail(Class<? extends Throwable> throwableClass) throws Throwable {
