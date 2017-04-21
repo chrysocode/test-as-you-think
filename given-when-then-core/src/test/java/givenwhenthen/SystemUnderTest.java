@@ -45,6 +45,11 @@ public class SystemUnderTest {
         throw throwableClass.newInstance();
     }
 
+    public void fail(Class<? extends Throwable> throwableClass, String message) throws Throwable {
+        whenAnEventHappens();
+        throw (Throwable) Class.forName(throwableClass.getName()).getConstructor(String.class).newInstance(message);
+    }
+
     private void changeState() {
         state = "state";
     }

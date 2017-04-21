@@ -76,4 +76,11 @@ public class ThenStep<$SystemUnderTest, $Result> implements Then<$SystemUnderTes
     public void thenItFails(Class<? extends Throwable> expectedThrowableClass) {
         assertThat(steps.returnResult()).isInstanceOf(expectedThrowableClass);
     }
+
+    @Override
+    public void thenItFails(Class<? extends Throwable> expectedThrowableClass, String expectedMessage) {
+        $Result result = steps.returnResult();
+        assertThat(result).isInstanceOf(expectedThrowableClass);
+        assertThat(((Throwable) result).getMessage()).isEqualTo(expectedMessage);
+    }
 }

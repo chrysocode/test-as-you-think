@@ -61,5 +61,7 @@ public interface GivenWhenThenDsl {
         void thenItFails();
 
         void thenItFails(Class<? extends Throwable> expectedThrowableClass);
+
+        void thenItFails(Class<? extends Throwable> expectedThrowableClass, String expectedMessage);
     }
 }
