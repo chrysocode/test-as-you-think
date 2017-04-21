@@ -30,7 +30,7 @@ public interface GivenWhenThenDsl {
 
         <$Result> Then<$SystemUnderTest, $Result> when(CheckedFunction<$SystemUnderTest, $Result> whenStep);
 
-        Then<$SystemUnderTest, Void> when(Consumer<$SystemUnderTest> whenStep);
+        Then<$SystemUnderTest, Void> when(CheckedConsumer<$SystemUnderTest> whenStep);
 
         ThenFailure whenSutRunsOutsideOperatingConditions(CheckedConsumer<$SystemUnderTest> whenStep);
     }

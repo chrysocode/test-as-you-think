@@ -70,4 +70,18 @@ public class ThenFailuresTest {
                 });
         ;
     }
+
+    @Test(expected = AssertionError.class)
+    public void should_fail_because_of_an_unexpected_failure_given_a_void_method() {
+        // WHEN
+        givenSutClass(SystemUnderTest.class) //
+                .given(sut -> {
+                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                    sut.setGivenWhenThenDefinition(givenWhenThenDefinitionMock);
+                }).when(sut -> {
+                    sut.fail();
+                }).then(result -> {
+                    assertThat(result).isEqualTo("Unexpected failure must happen before this assertions.");
+                });
+    }
 }

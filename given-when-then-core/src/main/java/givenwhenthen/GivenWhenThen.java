@@ -71,7 +71,7 @@ public class GivenWhenThen<$SystemUnderTest> implements Given<$SystemUnderTest> 
     }
 
     @Override
-    public Then<$SystemUnderTest, Void> when(Consumer<$SystemUnderTest> whenStep) {
+    public Then<$SystemUnderTest, Void> when(CheckedConsumer<$SystemUnderTest> whenStep) {
         return toThenStep(sut -> {
             whenStep.accept(sut);
             return null;
