@@ -1,44 +1,90 @@
 package givenwhenthen;
 
-import static org.assertj.core.api.Assertions.fail;
-
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-class GivenWhenSteps<$SystemUnderTest, $Result> {
+import givenwhenthen.GivenWhenThenDsl.AndGiven;
+import givenwhenthen.GivenWhenThenDsl.Given;
+import givenwhenthen.GivenWhenThenDsl.Then;
+import givenwhenthen.GivenWhenThenDsl.ThenFailure;
 
+public class GivenWhenSteps<$SystemUnderTest> implements Given<$SystemUnderTest> {
     private $SystemUnderTest systemUnderTest;
     private List<Consumer<$SystemUnderTest>> givenSteps;
-    private CheckedFunction<$SystemUnderTest, $Result> whenStep;
 
     GivenWhenSteps($SystemUnderTest systemUnderTest) {
         this.systemUnderTest = systemUnderTest;
+        this.givenSteps = new ArrayList<>();
     }
 
-    $Result returnResult() {
-        if (givenSteps != null && !givenSteps.isEmpty()) {
-            givenSteps.stream().forEach(step -> step.accept(systemUnderTest));
-        }
-
-        $Result result = null;
-        try {
-            result = whenStep.apply(systemUnderTest);
-        } catch (Throwable throwable) {
-            fail("Unexpected exception happened!", throwable);
-        }
-
-        return result;
+    @Override
+    public Given<$SystemUnderTest> given(Runnable givenStep) {
+        this.givenSteps.add(sut -> {
+            givenStep.run();
+        });
+        return this;
     }
 
-    $SystemUnderTest getSystemUnderTest() {
-        return systemUnderTest;
+    @Override
+    public Given<$SystemUnderTest> given(Consumer<$SystemUnderTest> givenStep) {
+        this.givenSteps.add(givenStep);
+        return this;
     }
 
-    void setGivenSteps(List<Consumer<$SystemUnderTest>> givenSteps) {
-        this.givenSteps = givenSteps;
+    @Override
+    public Given<$SystemUnderTest> given(String fixtureSpecification, Runnable givenStep) {
+        return given(givenStep);
     }
 
-    void setWhenStep(CheckedFunction<$SystemUnderTest, $Result> whenStep) {
-        this.whenStep = whenStep;
+    @Override
+    public Given<$SystemUnderTest> given(String fixtureSpecification, Consumer<$SystemUnderTest> givenStep) {
+        return given(givenStep);
+    }
+
+    @Override
+    public AndGiven<$SystemUnderTest> and(String fixtureSpecification, Runnable givenStep) {
+        return given(fixtureSpecification, givenStep);
+    }
+
+    @Override
+    public AndGiven<$SystemUnderTest> and(String fixtureSpecification, Consumer<$SystemUnderTest> givenStep) {
+        return given(fixtureSpecification, givenStep);
+    }
+
+    @Override
+    public <$Result> Then<$SystemUnderTest, $Result> when(CheckedFunction<$SystemUnderTest, $Result> whenStep) {
+        return toThenStep(whenStep);
+    }
+
+    @Override
+    public Then<$SystemUnderTest, Void> when(CheckedConsumer<$SystemUnderTest> whenStep) {
+        return toThenStep(sut -> {
+            whenStep.accept(sut);
+            return null;
+        });
+    }
+
+    private <$Result> Then<$SystemUnderTest, $Result> toThenStep(CheckedFunction<$SystemUnderTest, $Result> whenStep) {
+        GivenWhenContext<$SystemUnderTest, $Result> steps = new GivenWhenContext<>(systemUnderTest);
+        steps.setGivenSteps(givenSteps);
+        steps.setWhenStep(whenStep);
+        return new ThenStep<>(steps);
+    }
+
+    @Override
+    public ThenFailure whenSutRunsOutsideOperatingConditions(CheckedConsumer<$SystemUnderTest> whenStep) {
+        GivenWhenContext<$SystemUnderTest, Throwable> steps = new GivenWhenContext<>(systemUnderTest);
+        steps.setGivenSteps(givenSteps);
+        steps.setWhenStep(sut -> {
+            Throwable result = null;
+            try {
+                whenStep.accept(sut);
+            } catch (Throwable throwable) {
+                result = throwable;
+            }
+            return result;
+        });
+        return new ThenStep<$SystemUnderTest, Throwable>(steps);
     }
 }

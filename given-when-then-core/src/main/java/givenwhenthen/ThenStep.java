@@ -13,9 +13,9 @@ import givenwhenthen.GivenWhenThenDsl.ThenFailure;
 
 public class ThenStep<$SystemUnderTest, $Result> implements Then<$SystemUnderTest, $Result>, ThenFailure {
 
-    private GivenWhenSteps<$SystemUnderTest, $Result> steps;
+    private GivenWhenContext<$SystemUnderTest, $Result> steps;
 
-    ThenStep(GivenWhenSteps<$SystemUnderTest, $Result> steps) {
+    ThenStep(GivenWhenContext<$SystemUnderTest, $Result> steps) {
         this.steps = steps;
     }
 
