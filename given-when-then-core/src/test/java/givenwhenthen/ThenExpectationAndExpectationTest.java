@@ -52,4 +52,20 @@ public class ThenExpectationAndExpectationTest {
                     assertThat(result).endsWith("result");
                 });
     }
+
+    @Test
+    public void should_receive_expectations_separately_given_a_void_method() {
+        // WHEN
+        givenSutClass(SystemUnderTest.class) //
+                .given(() -> {
+                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                }).when(sut -> {
+                    givenWhenThenDefinitionMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+                    sut.voidMethod();
+                }).then(() -> {
+                    givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                }).and(() -> {
+                    givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                });
+    }
 }

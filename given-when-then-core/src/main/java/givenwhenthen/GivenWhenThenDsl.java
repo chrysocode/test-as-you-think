@@ -41,7 +41,7 @@ public interface GivenWhenThenDsl {
 
         void then(String expectationSpecification, Consumer<$Result> thenStep);
 
-        void then(Runnable thenStep);
+        AndThen<$SystemUnderTest, $Result> then(Runnable thenStep);
 
         void then(String expectationSpecification, Runnable thenStep);
 
@@ -69,5 +69,6 @@ public interface GivenWhenThenDsl {
 
         AndThen<$SystemUnderTest, $Result> and(Consumer<$Result> thenStep);
 
+        AndThen<$SystemUnderTest, $Result> and(Runnable thenStep);
     }
 }

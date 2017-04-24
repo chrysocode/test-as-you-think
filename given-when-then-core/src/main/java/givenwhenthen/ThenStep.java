@@ -15,7 +15,7 @@ import givenwhenthen.GivenWhenThenDsl.ThenFailure;
 public class ThenStep<$SystemUnderTest, $Result>
         implements Then<$SystemUnderTest, $Result>, ThenFailure, AndThen<$SystemUnderTest, $Result> {
 
-    private GivenWhenContext<$SystemUnderTest, $Result> steps;
+    private final GivenWhenContext<$SystemUnderTest, $Result> steps;
     private $Result result;
 
     ThenStep(GivenWhenContext<$SystemUnderTest, $Result> steps) {
@@ -38,9 +38,10 @@ public class ThenStep<$SystemUnderTest, $Result>
     }
 
     @Override
-    public void then(Runnable thenStep) {
-        steps.returnResult();
+    public AndThen<$SystemUnderTest, $Result> then(Runnable thenStep) {
+        result();
         thenStep.run();
+        return this;
     }
 
     @Override
@@ -95,6 +96,12 @@ public class ThenStep<$SystemUnderTest, $Result>
     @Override
     public AndThen<$SystemUnderTest, $Result> and(Consumer<$Result> thenStep) {
         thenStep.accept(result());
+        return this;
+    }
+
+    @Override
+    public AndThen<$SystemUnderTest, $Result> and(Runnable thenStep) {
+        thenStep.run();
         return this;
     }
 }
