@@ -44,7 +44,7 @@ public class ThenExpectationAndExpectationTest {
                 }).when(sut -> {
                     givenWhenThenDefinitionMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
                     return sut.nonVoidMethod();
-                }).thenMultipleExpectations(result -> {
+                }).then(result -> {
                     givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                     assertThat(result).startsWith("expected");
                 }).and(result -> {

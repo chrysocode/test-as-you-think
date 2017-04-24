@@ -22,9 +22,14 @@ public class ThenStep<$SystemUnderTest, $Result>
         this.steps = steps;
     }
 
+    private $Result result() {
+        return result == null ? result = steps.returnResult() : result;
+    }
+
     @Override
-    public void then(Consumer<$Result> thenStep) {
-        thenStep.accept(steps.returnResult());
+    public AndThen<$SystemUnderTest, $Result> then(Consumer<$Result> thenStep) {
+        thenStep.accept(result());
+        return this;
     }
 
     @Override
@@ -88,15 +93,8 @@ public class ThenStep<$SystemUnderTest, $Result>
     }
 
     @Override
-    public AndThen<$SystemUnderTest, $Result> thenMultipleExpectations(Consumer<$Result> thenStep) {
-        result = steps.returnResult();
-        thenStep.accept(result);
-        return this;
-    }
-
-    @Override
     public AndThen<$SystemUnderTest, $Result> and(Consumer<$Result> thenStep) {
-        thenStep.accept(result);
+        thenStep.accept(result());
         return this;
     }
 }
