@@ -45,8 +45,9 @@ public class ThenStep<$SystemUnderTest, $Result>
     }
 
     @Override
-    public void then(String expectationSpecification, Consumer<$Result> thenStep) {
+    public AndThen<$SystemUnderTest, $Result> then(String expectationSpecification, Consumer<$Result> thenStep) {
         then(thenStep);
+        return this;
     }
 
     @Override
@@ -103,5 +104,10 @@ public class ThenStep<$SystemUnderTest, $Result>
     public AndThen<$SystemUnderTest, $Result> and(Runnable thenStep) {
         thenStep.run();
         return this;
+    }
+
+    @Override
+    public AndThen<$SystemUnderTest, $Result> and(String expectationSpecification, Consumer<$Result> thenStep) {
+        return then(expectationSpecification, thenStep);
     }
 }
