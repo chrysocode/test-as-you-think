@@ -8,10 +8,12 @@ import givenwhenthen.GivenWhenThenDsl.AndGiven;
 import givenwhenthen.GivenWhenThenDsl.Given;
 import givenwhenthen.GivenWhenThenDsl.Then;
 import givenwhenthen.GivenWhenThenDsl.ThenFailure;
+import givenwhenthen.GivenWhenThenDsl.ThenWithoutResult;
 
 public class GivenWhenSteps<$SystemUnderTest> implements Given<$SystemUnderTest> {
-    private $SystemUnderTest systemUnderTest;
-    private List<Consumer<$SystemUnderTest>> givenSteps;
+
+    private final $SystemUnderTest systemUnderTest;
+    private final List<Consumer<$SystemUnderTest>> givenSteps;
 
     GivenWhenSteps($SystemUnderTest systemUnderTest) {
         this.systemUnderTest = systemUnderTest;
@@ -57,26 +59,33 @@ public class GivenWhenSteps<$SystemUnderTest> implements Given<$SystemUnderTest>
         return toThenStep(whenStep);
     }
 
+    private <$Result> Then<$SystemUnderTest, $Result> toThenStep(CheckedFunction<$SystemUnderTest, $Result> whenStep) {
+        GivenWhenContext<$SystemUnderTest, $Result> context = new GivenWhenContext<>(systemUnderTest);
+        context.setGivenSteps(givenSteps);
+        context.setWhenStep(whenStep);
+        return new ThenStep<>(context);
+    }
+
     @Override
-    public Then<$SystemUnderTest, Void> when(CheckedConsumer<$SystemUnderTest> whenStep) {
-        return toThenStep(sut -> {
+    public ThenWithoutResult<$SystemUnderTest> when(CheckedConsumer<$SystemUnderTest> whenStep) {
+        return toThenStep(whenStep);
+    }
+
+    private ThenWithoutResult<$SystemUnderTest> toThenStep(CheckedConsumer<$SystemUnderTest> whenStep) {
+        GivenWhenContext<$SystemUnderTest, Void> context = new GivenWhenContext<>(systemUnderTest);
+        context.setGivenSteps(givenSteps);
+        context.setWhenStep(sut -> {
             whenStep.accept(sut);
             return null;
         });
-    }
-
-    private <$Result> Then<$SystemUnderTest, $Result> toThenStep(CheckedFunction<$SystemUnderTest, $Result> whenStep) {
-        GivenWhenContext<$SystemUnderTest, $Result> steps = new GivenWhenContext<>(systemUnderTest);
-        steps.setGivenSteps(givenSteps);
-        steps.setWhenStep(whenStep);
-        return new ThenStep<>(steps);
+        return new ThenWithoutResultStep<>(context);
     }
 
     @Override
     public ThenFailure whenSutRunsOutsideOperatingConditions(CheckedConsumer<$SystemUnderTest> whenStep) {
-        GivenWhenContext<$SystemUnderTest, Throwable> steps = new GivenWhenContext<>(systemUnderTest);
-        steps.setGivenSteps(givenSteps);
-        steps.setWhenStep(sut -> {
+        GivenWhenContext<$SystemUnderTest, Throwable> context = new GivenWhenContext<>(systemUnderTest);
+        context.setGivenSteps(givenSteps);
+        context.setWhenStep(sut -> {
             Throwable result = null;
             try {
                 whenStep.accept(sut);
@@ -85,6 +94,6 @@ public class GivenWhenSteps<$SystemUnderTest> implements Given<$SystemUnderTest>
             }
             return result;
         });
-        return new ThenStep<$SystemUnderTest, Throwable>(steps);
+        return new ThenStep<>(context);
     }
 }

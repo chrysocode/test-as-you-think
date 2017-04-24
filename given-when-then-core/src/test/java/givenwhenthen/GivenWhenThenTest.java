@@ -101,7 +101,7 @@ public class GivenWhenThenTest {
                     sut.setGivenWhenThenDefinition(givenWhenThenDefinitionMock);
                 }).when(sut -> {
                     sut.voidMethod();
-                }).then((sut, Void) -> {
+                }).then(sut -> {
                     givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                     assertThat(sut.getState()).isNotNull();
                 });

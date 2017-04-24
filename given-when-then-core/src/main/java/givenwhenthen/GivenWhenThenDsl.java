@@ -3,6 +3,7 @@ package givenwhenthen;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
+import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -30,7 +31,7 @@ public interface GivenWhenThenDsl {
 
         <$Result> Then<$SystemUnderTest, $Result> when(CheckedFunction<$SystemUnderTest, $Result> whenStep);
 
-        Then<$SystemUnderTest, Void> when(CheckedConsumer<$SystemUnderTest> whenStep);
+        ThenWithoutResult<$SystemUnderTest> when(CheckedConsumer<$SystemUnderTest> whenStep);
 
         ThenFailure whenSutRunsOutsideOperatingConditions(CheckedConsumer<$SystemUnderTest> whenStep);
     }
@@ -56,6 +57,31 @@ public interface GivenWhenThenDsl {
         void then(Predicate<$Result> thenStepAboutResult, Predicate<$SystemUnderTest> thenStepAboutSystemUnderTest);
     }
 
+    public static interface AndThen<$SystemUnderTest, $Result> {
+
+        AndThen<$SystemUnderTest, $Result> and(Consumer<$Result> thenStep);
+
+        AndThen<$SystemUnderTest, $Result> and(Runnable thenStep);
+
+        AndThen<$SystemUnderTest, $Result> and(String expectationSpecification, Consumer<$Result> thenStep);
+    }
+
+    public static interface ThenWithoutResult<$SystemUnderTest> {
+
+        AndThenWithoutResult<$SystemUnderTest> then(Runnable thenStep);
+
+        void then(String expectationSpecification, Runnable thenStep);
+
+        void then(Consumer<$SystemUnderTest> thenStep);
+
+        void then(BooleanSupplier thenStep);
+    }
+
+    public static interface AndThenWithoutResult<$SystemUnderTest> {
+
+        AndThenWithoutResult<$SystemUnderTest> and(Runnable thenStep);
+    }
+
     public static interface ThenFailure {
 
         void thenItFails();
@@ -65,12 +91,4 @@ public interface GivenWhenThenDsl {
         void thenItFails(Class<? extends Throwable> expectedThrowableClass, String expectedMessage);
     }
 
-    public static interface AndThen<$SystemUnderTest, $Result> {
-
-        AndThen<$SystemUnderTest, $Result> and(Consumer<$Result> thenStep);
-
-        AndThen<$SystemUnderTest, $Result> and(Runnable thenStep);
-
-        AndThen<$SystemUnderTest, $Result> and(String expectationSpecification, Consumer<$Result> thenStep);
-    }
 }

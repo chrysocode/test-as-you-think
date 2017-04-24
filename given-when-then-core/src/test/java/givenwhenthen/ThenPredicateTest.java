@@ -80,7 +80,7 @@ public class ThenPredicateTest {
                     sut.setGivenWhenThenDefinition(givenWhenThenDefinitionMock);
                 }).when(sut -> {
                     sut.voidMethod();
-                }).then(Void -> {
+                }).then(() -> {
                     givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                     return true;
                 });
@@ -98,7 +98,7 @@ public class ThenPredicateTest {
                     sut.setGivenWhenThenDefinition(givenWhenThenDefinitionMock);
                 }).when(sut -> {
                     sut.voidMethod();
-                }).then(Void -> {
+                }).then(() -> {
                     givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                     return false;
                 });
@@ -119,7 +119,7 @@ public class ThenPredicateTest {
                 }).then(asList(result -> {
                     givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                     return true;
-                } , result -> {
+                }, result -> {
                     givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                     return true;
                 }));
@@ -140,7 +140,7 @@ public class ThenPredicateTest {
                 }).then(asList(result -> {
                     givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                     return true;
-                } , result -> {
+                }, result -> {
                     givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                     return false;
                 }));
@@ -197,7 +197,7 @@ public class ThenPredicateTest {
                 }).then(result -> {
                     givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                     return true;
-                } , sut -> {
+                }, sut -> {
                     givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                     return true;
                 });
@@ -218,7 +218,7 @@ public class ThenPredicateTest {
                 }).then(result -> {
                     givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                     return false;
-                } , sut -> {
+                }, sut -> {
                     givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                     return true;
                 });
@@ -239,7 +239,7 @@ public class ThenPredicateTest {
                 }).then(result -> {
                     givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                     return true;
-                } , sut -> {
+                }, sut -> {
                     givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                     return false;
                 });

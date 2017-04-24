@@ -15,15 +15,15 @@ import givenwhenthen.GivenWhenThenDsl.ThenFailure;
 public class ThenStep<$SystemUnderTest, $Result>
         implements Then<$SystemUnderTest, $Result>, ThenFailure, AndThen<$SystemUnderTest, $Result> {
 
-    private final GivenWhenContext<$SystemUnderTest, $Result> steps;
+    private final GivenWhenContext<$SystemUnderTest, $Result> context;
     private $Result result;
 
-    ThenStep(GivenWhenContext<$SystemUnderTest, $Result> steps) {
-        this.steps = steps;
+    ThenStep(GivenWhenContext<$SystemUnderTest, $Result> context) {
+        this.context = context;
     }
 
     private $Result result() {
-        return result == null ? result = steps.returnResult() : result;
+        return result == null ? result = context.returnResult() : result;
     }
 
     @Override
@@ -34,7 +34,7 @@ public class ThenStep<$SystemUnderTest, $Result>
 
     @Override
     public void then(BiConsumer<$SystemUnderTest, $Result> thenStep) {
-        thenStep.accept(steps.getSystemUnderTest(), steps.returnResult());
+        thenStep.accept(context.getSystemUnderTest(), context.returnResult());
     }
 
     @Override
@@ -57,39 +57,39 @@ public class ThenStep<$SystemUnderTest, $Result>
 
     @Override
     public void then(Predicate<$Result> thenStep) {
-        assertThat(thenStep.test(steps.returnResult())).isTrue();
+        assertThat(thenStep.test(context.returnResult())).isTrue();
     }
 
     @Override
     public void then(List<Predicate<$Result>> thenSteps) {
         assertThat(thenSteps.stream().reduce((predicate, another) -> predicate.and(another)).get()
-                .test(steps.returnResult())).isTrue();
+                .test(context.returnResult())).isTrue();
     }
 
     @Override
     public void then(BiPredicate<$SystemUnderTest, $Result> thenStep) {
-        assertThat(thenStep.test(steps.getSystemUnderTest(), steps.returnResult())).isTrue();
+        assertThat(thenStep.test(context.getSystemUnderTest(), context.returnResult())).isTrue();
     }
 
     @Override
     public void then(Predicate<$Result> thenStepAboutResult, Predicate<$SystemUnderTest> thenStepAboutSystemUnderTest) {
         then(thenStepAboutResult);
-        assertThat(thenStepAboutSystemUnderTest.test(steps.getSystemUnderTest())).isTrue();
+        assertThat(thenStepAboutSystemUnderTest.test(context.getSystemUnderTest())).isTrue();
     }
 
     @Override
     public void thenItFails() {
-        assertThat(steps.returnResult()).isInstanceOf(Throwable.class);
+        assertThat(context.returnResult()).isInstanceOf(Throwable.class);
     }
 
     @Override
     public void thenItFails(Class<? extends Throwable> expectedThrowableClass) {
-        assertThat(steps.returnResult()).isInstanceOf(expectedThrowableClass);
+        assertThat(context.returnResult()).isInstanceOf(expectedThrowableClass);
     }
 
     @Override
     public void thenItFails(Class<? extends Throwable> expectedThrowableClass, String expectedMessage) {
-        $Result result = steps.returnResult();
+        $Result result = context.returnResult();
         assertThat(result).isInstanceOf(expectedThrowableClass);
         assertThat(((Throwable) result).getMessage()).isEqualTo(expectedMessage);
     }
