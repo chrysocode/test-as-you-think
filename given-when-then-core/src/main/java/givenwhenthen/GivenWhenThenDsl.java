@@ -54,6 +54,8 @@ public interface GivenWhenThenDsl {
         void then(BiPredicate<$SystemUnderTest, $Result> thenStep);
 
         void then(Predicate<$Result> thenStepAboutResult, Predicate<$SystemUnderTest> thenStepAboutSystemUnderTest);
+
+        AndThen<$SystemUnderTest, $Result> thenMultipleExpectations(Consumer<$Result> thenStep);
     }
 
     public static interface ThenFailure {
@@ -63,5 +65,11 @@ public interface GivenWhenThenDsl {
         void thenItFails(Class<? extends Throwable> expectedThrowableClass);
 
         void thenItFails(Class<? extends Throwable> expectedThrowableClass, String expectedMessage);
+    }
+
+    public static interface AndThen<$SystemUnderTest, $Result> {
+
+        AndThen<$SystemUnderTest, $Result> and(Consumer<$Result> thenStep);
+
     }
 }

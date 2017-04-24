@@ -8,12 +8,15 @@ import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
+import givenwhenthen.GivenWhenThenDsl.AndThen;
 import givenwhenthen.GivenWhenThenDsl.Then;
 import givenwhenthen.GivenWhenThenDsl.ThenFailure;
 
-public class ThenStep<$SystemUnderTest, $Result> implements Then<$SystemUnderTest, $Result>, ThenFailure {
+public class ThenStep<$SystemUnderTest, $Result>
+        implements Then<$SystemUnderTest, $Result>, ThenFailure, AndThen<$SystemUnderTest, $Result> {
 
     private GivenWhenContext<$SystemUnderTest, $Result> steps;
+    private $Result result;
 
     ThenStep(GivenWhenContext<$SystemUnderTest, $Result> steps) {
         this.steps = steps;
@@ -82,5 +85,18 @@ public class ThenStep<$SystemUnderTest, $Result> implements Then<$SystemUnderTes
         $Result result = steps.returnResult();
         assertThat(result).isInstanceOf(expectedThrowableClass);
         assertThat(((Throwable) result).getMessage()).isEqualTo(expectedMessage);
+    }
+
+    @Override
+    public AndThen<$SystemUnderTest, $Result> thenMultipleExpectations(Consumer<$Result> thenStep) {
+        result = steps.returnResult();
+        thenStep.accept(result);
+        return this;
+    }
+
+    @Override
+    public AndThen<$SystemUnderTest, $Result> and(Consumer<$Result> thenStep) {
+        thenStep.accept(result);
+        return this;
     }
 }
