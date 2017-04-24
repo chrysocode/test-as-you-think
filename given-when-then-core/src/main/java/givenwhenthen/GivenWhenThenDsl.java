@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Predicate;
 
 public interface GivenWhenThenDsl {
@@ -29,9 +28,11 @@ public interface GivenWhenThenDsl {
 
     public static interface When<$SystemUnderTest> {
 
-        <$Result> Then<$SystemUnderTest, $Result> when(Function<$SystemUnderTest, $Result> whenStep);
+        <$Result> Then<$SystemUnderTest, $Result> when(CheckedFunction<$SystemUnderTest, $Result> whenStep);
 
-        Then<$SystemUnderTest, Void> when(Consumer<$SystemUnderTest> whenStep);
+        Then<$SystemUnderTest, Void> when(CheckedConsumer<$SystemUnderTest> whenStep);
+
+        ThenFailure whenSutRunsOutsideOperatingConditions(CheckedConsumer<$SystemUnderTest> whenStep);
     }
 
     public static interface Then<$SystemUnderTest, $Result> {
@@ -53,5 +54,14 @@ public interface GivenWhenThenDsl {
         void then(BiPredicate<$SystemUnderTest, $Result> thenStep);
 
         void then(Predicate<$Result> thenStepAboutResult, Predicate<$SystemUnderTest> thenStepAboutSystemUnderTest);
+    }
+
+    public static interface ThenFailure {
+
+        void thenItFails();
+
+        void thenItFails(Class<? extends Throwable> expectedThrowableClass);
+
+        void thenItFails(Class<? extends Throwable> expectedThrowableClass, String expectedMessage);
     }
 }

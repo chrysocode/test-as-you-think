@@ -9,12 +9,13 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import givenwhenthen.GivenWhenThenDsl.Then;
+import givenwhenthen.GivenWhenThenDsl.ThenFailure;
 
-public class ThenStep<$SystemUnderTest, $Result> implements Then<$SystemUnderTest, $Result> {
+public class ThenStep<$SystemUnderTest, $Result> implements Then<$SystemUnderTest, $Result>, ThenFailure {
 
-    private GivenWhenSteps<$SystemUnderTest, $Result> steps;
+    private GivenWhenContext<$SystemUnderTest, $Result> steps;
 
-    ThenStep(GivenWhenSteps<$SystemUnderTest, $Result> steps) {
+    ThenStep(GivenWhenContext<$SystemUnderTest, $Result> steps) {
         this.steps = steps;
     }
 
@@ -64,5 +65,22 @@ public class ThenStep<$SystemUnderTest, $Result> implements Then<$SystemUnderTes
     public void then(Predicate<$Result> thenStepAboutResult, Predicate<$SystemUnderTest> thenStepAboutSystemUnderTest) {
         then(thenStepAboutResult);
         assertThat(thenStepAboutSystemUnderTest.test(steps.getSystemUnderTest())).isTrue();
+    }
+
+    @Override
+    public void thenItFails() {
+        assertThat(steps.returnResult()).isInstanceOf(Throwable.class);
+    }
+
+    @Override
+    public void thenItFails(Class<? extends Throwable> expectedThrowableClass) {
+        assertThat(steps.returnResult()).isInstanceOf(expectedThrowableClass);
+    }
+
+    @Override
+    public void thenItFails(Class<? extends Throwable> expectedThrowableClass, String expectedMessage) {
+        $Result result = steps.returnResult();
+        assertThat(result).isInstanceOf(expectedThrowableClass);
+        assertThat(((Throwable) result).getMessage()).isEqualTo(expectedMessage);
     }
 }
