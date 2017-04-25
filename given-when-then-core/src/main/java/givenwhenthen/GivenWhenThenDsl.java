@@ -72,7 +72,7 @@ public interface GivenWhenThenDsl {
 
         AndThenWithoutResult<$SystemUnderTest> then(String expectationSpecification, Runnable thenStep);
 
-        void then(Consumer<$SystemUnderTest> thenStep);
+        AndThenWithoutResult<$SystemUnderTest> then(Consumer<$SystemUnderTest> thenStep);
 
         void then(BooleanSupplier thenStep);
     }
@@ -82,6 +82,8 @@ public interface GivenWhenThenDsl {
         AndThenWithoutResult<$SystemUnderTest> and(Runnable thenStep);
 
         AndThenWithoutResult<$SystemUnderTest> and(String expectationSpecification, Runnable thenStep);
+
+        AndThenWithoutResult<$SystemUnderTest> and(Consumer<$SystemUnderTest> thenStep);
     }
 
     public static interface ThenFailure {

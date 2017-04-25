@@ -16,7 +16,7 @@ public class ThenExpectationAndExpectationTest {
     @Before
     public void prepareFixtures() {
         // GIVEN
-        givenWhenThenDefinitionMock = orderedSteps(1, 2);
+        givenWhenThenDefinitionMock = orderedSteps(1, 3);
     }
 
     @After
@@ -26,7 +26,7 @@ public class ThenExpectationAndExpectationTest {
     }
 
     @Test
-    public void should_verify_expectations_separately_given_a_non_void_method() {
+    public void should_verify_result_expectations_separately_given_a_non_void_method() {
         // WHEN
         givenSutClass(SystemUnderTest.class) //
                 .given(() -> {
@@ -37,6 +37,9 @@ public class ThenExpectationAndExpectationTest {
                 }).then(result -> {
                     givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                     assertThat(result).startsWith("expected");
+                }).and(result -> {
+                    givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                    assertThat(result).contains(" ");
                 }).and(result -> {
                     givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                     assertThat(result).endsWith("result");
@@ -55,6 +58,26 @@ public class ThenExpectationAndExpectationTest {
                 }).then(() -> {
                     givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                 }).and(() -> {
+                    givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                }).and(() -> {
+                    givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                });
+    }
+
+    @Test
+    public void should_verify_sut_expectations_separately_given_a_void_method() {
+        // WHEN
+        givenSutClass(SystemUnderTest.class) //
+                .given(sut -> {
+                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                }).when(sut -> {
+                    givenWhenThenDefinitionMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+                    sut.voidMethod();
+                }).then(sut -> {
+                    givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                }).and(sut -> {
+                    givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                }).and(sut -> {
                     givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                 });
     }

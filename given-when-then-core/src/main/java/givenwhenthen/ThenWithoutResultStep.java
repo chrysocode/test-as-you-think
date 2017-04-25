@@ -32,9 +32,10 @@ public class ThenWithoutResultStep<$SystemUnderTest>
     }
 
     @Override
-    public void then(Consumer<$SystemUnderTest> thenStep) {
+    public AndThenWithoutResult<$SystemUnderTest> then(Consumer<$SystemUnderTest> thenStep) {
         context.returnResultOrVoid();
         thenStep.accept(context.getSystemUnderTest());
+        return this;
     }
 
     @Override
@@ -52,6 +53,12 @@ public class ThenWithoutResultStep<$SystemUnderTest>
     @Override
     public AndThenWithoutResult<$SystemUnderTest> and(String expectationSpecification, Runnable thenStep) {
         thenStep.run();
+        return this;
+    }
+
+    @Override
+    public AndThenWithoutResult<$SystemUnderTest> and(Consumer<$SystemUnderTest> thenStep) {
+        thenStep.accept(context.getSystemUnderTest());
         return this;
     }
 }
