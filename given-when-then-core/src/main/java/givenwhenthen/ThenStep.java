@@ -51,8 +51,9 @@ public class ThenStep<$SystemUnderTest, $Result>
     }
 
     @Override
-    public void then(String expectationSpecification, Runnable thenStep) {
+    public AndThen<$SystemUnderTest, $Result> then(String expectationSpecification, Runnable thenStep) {
         then(thenStep);
+        return this;
     }
 
     @Override
@@ -115,5 +116,10 @@ public class ThenStep<$SystemUnderTest, $Result>
     @Override
     public AndThen<$SystemUnderTest, $Result> and(Predicate<$Result> thenStep) {
         return then(thenStep);
+    }
+
+    @Override
+    public AndThen<$SystemUnderTest, $Result> and(String expectationSpecification, Runnable thenStep) {
+        return then(expectationSpecification, thenStep);
     }
 }

@@ -26,7 +26,7 @@ public class ThenSpecifiedExpectationsTest {
     }
 
     @Test
-    public void should_specify_an_expectation_given_a_non_void_method() {
+    public void should_specify_a_result_expectation_given_a_non_void_method() {
         // GIVEN
         givenWhenThenDefinitionMock = orderedSteps(1, 1);
 
@@ -63,7 +63,7 @@ public class ThenSpecifiedExpectationsTest {
     @Test
     public void should_specify_separated_expectations_given_a_non_void_method() {
         // GIVEN
-        givenWhenThenDefinitionMock = orderedSteps(1, 2);
+        givenWhenThenDefinitionMock = orderedSteps(1, 3);
 
         // WHEN
         givenSutClass(SystemUnderTest.class) //
@@ -75,9 +75,11 @@ public class ThenSpecifiedExpectationsTest {
                 }).then("what the focus of this expectation is", result -> {
                     givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                     assertThat(result).contains("expected");
-                }).and("what the focus of this other expectation is", result -> {
+                }).and("what the focus of this expectation is", result -> {
                     givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                     assertThat(result).contains("result");
+                }).and("what the focus of this expectation is", () -> {
+                    givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                 });
     }
 
