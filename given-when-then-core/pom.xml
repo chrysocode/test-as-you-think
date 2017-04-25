@@ -5,9 +5,25 @@
     <parent>
         <groupId>givenwhenthen</groupId>
         <artifactId>given-when-then-project</artifactId>
-        <version>0.1-SNAPSHOT</version>
+        <version>0.1-RELEASE</version>
     </parent>
 
     <artifactId>given-when-then-core</artifactId>
     <name>${project.groupId}:${project.artifactId}:${project.packaging}</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.easymock</groupId>
+            <artifactId>easymock</artifactId>
+        </dependency>
+    </dependencies>
 </project>
