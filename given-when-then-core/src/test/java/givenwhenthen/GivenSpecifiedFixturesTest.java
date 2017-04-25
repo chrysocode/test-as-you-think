@@ -1,24 +1,16 @@
 package givenwhenthen;
 
 import static givenwhenthen.GivenWhenThen.givenSutClass;
+import static givenwhenthen.GivenWhenThenDefinition.orderedSteps;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.easymock.EasyMock.expectLastCall;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.strictMock;
 import static org.easymock.EasyMock.verify;
 
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
 public class GivenSpecifiedFixturesTest {
 
     private GivenWhenThenDefinition givenWhenThenDefinitionMock;
-
-    @Before
-    public void prepareFixtures() {
-        givenWhenThenDefinitionMock = strictMock(GivenWhenThenDefinition.class);
-    }
 
     @After
     public void verifyMocks() {
@@ -26,19 +18,10 @@ public class GivenSpecifiedFixturesTest {
         verify(givenWhenThenDefinitionMock);
     }
 
-    private void orderedSteps(int numberOfGivenSteps) {
-        givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-        expectLastCall().times(numberOfGivenSteps);
-        givenWhenThenDefinitionMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
-        givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-
-        replay(givenWhenThenDefinitionMock);
-    }
-
     @Test
     public void should_specify_a_fixture() {
         // GIVEN
-        orderedSteps(1);
+        givenWhenThenDefinitionMock = orderedSteps(1);
 
         // WHEN
         givenSutClass(SystemUnderTest.class) //
@@ -56,7 +39,7 @@ public class GivenSpecifiedFixturesTest {
     @Test
     public void should_specify_another_fixture() {
         // GIVEN
-        orderedSteps(1);
+        givenWhenThenDefinitionMock = orderedSteps(1);
 
         // WHEN
         givenSutClass(SystemUnderTest.class) //
@@ -74,7 +57,7 @@ public class GivenSpecifiedFixturesTest {
     @Test
     public void should_specify_multiple_fixtures() {
         // GIVEN
-        orderedSteps(3);
+        givenWhenThenDefinitionMock = orderedSteps(3);
 
         // WHEN
         givenSutClass(SystemUnderTest.class) //

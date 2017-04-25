@@ -1,8 +1,8 @@
 package givenwhenthen;
 
 import static givenwhenthen.GivenWhenThen.givenSutClass;
+import static givenwhenthen.GivenWhenThenDefinition.orderedSteps;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.strictMock;
 import static org.easymock.EasyMock.verify;
 
@@ -10,22 +10,13 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-@SuppressWarnings("unused")
 public class ThenSpecifiedExpectationsTest {
 
     private GivenWhenThenDefinition givenWhenThenDefinitionMock;
 
     @Before
     public void prepareFixtures() {
-        // GIVEN
-        ordered_steps: {
-            givenWhenThenDefinitionMock = strictMock(GivenWhenThenDefinition.class);
-            givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-            givenWhenThenDefinitionMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
-            givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-        }
-        replay(givenWhenThenDefinitionMock);
-
+        givenWhenThenDefinitionMock = strictMock(GivenWhenThenDefinition.class);
     }
 
     @After
@@ -35,7 +26,10 @@ public class ThenSpecifiedExpectationsTest {
     }
 
     @Test
-    public void should_specify_an_expectation_given_a_non_void_method() {
+    public void should_specify_a_result_expectation_given_a_non_void_method() {
+        // GIVEN
+        givenWhenThenDefinitionMock = orderedSteps(1, 1);
+
         // WHEN
         givenSutClass(SystemUnderTest.class) //
                 .given(sut -> {
@@ -51,6 +45,9 @@ public class ThenSpecifiedExpectationsTest {
 
     @Test
     public void should_specify_an_expectation_given_a_void_method() {
+        // GIVEN
+        givenWhenThenDefinitionMock = orderedSteps(1, 1);
+
         // WHEN
         givenSutClass(SystemUnderTest.class) //
                 .given(sut -> {
@@ -59,6 +56,71 @@ public class ThenSpecifiedExpectationsTest {
                 }).when(sut -> {
                     sut.nonVoidMethod();
                 }).then("what the focus of this expectation is", () -> {
+                    givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                });
+    }
+
+    @Test
+    public void should_specify_separated_expectations_given_a_non_void_method() {
+        // GIVEN
+        givenWhenThenDefinitionMock = orderedSteps(1, 3);
+
+        // WHEN
+        givenSutClass(SystemUnderTest.class) //
+                .given(sut -> {
+                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                    sut.setGivenWhenThenDefinition(givenWhenThenDefinitionMock);
+                }).when(sut -> {
+                    return sut.nonVoidMethod();
+                }).then("what the focus of this expectation is", result -> {
+                    givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                    assertThat(result).contains("expected");
+                }).and("what the focus of this expectation is", result -> {
+                    givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                    assertThat(result).contains("result");
+                }).and("what the focus of this expectation is", () -> {
+                    givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                });
+    }
+
+    @Test
+    public void should_specify_separated_expectations_given_a_void_method() {
+        // GIVEN
+        givenWhenThenDefinitionMock = orderedSteps(1, 3);
+
+        // WHEN
+        givenSutClass(SystemUnderTest.class) //
+                .given(sut -> {
+                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                    sut.setGivenWhenThenDefinition(givenWhenThenDefinitionMock);
+                }).when(sut -> {
+                    sut.voidMethod();
+                }).then("what the focus of this expectation is", () -> {
+                    givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                }).and("what the focus of this other expectation is", () -> {
+                    givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                }).and("what the focus of this other expectation is", () -> {
+                    givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                });
+    }
+
+    @Test
+    public void should_specify_separated_sut_expectations_given_a_void_method() {
+        // GIVEN
+        givenWhenThenDefinitionMock = orderedSteps(1, 3);
+
+        // WHEN
+        givenSutClass(SystemUnderTest.class) //
+                .given(sut -> {
+                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                    sut.setGivenWhenThenDefinition(givenWhenThenDefinitionMock);
+                }).when(sut -> {
+                    sut.voidMethod();
+                }).then("what the focus of this expectation is", sut -> {
+                    givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                }).and("what the focus of this other expectation is", sut -> {
+                    givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                }).and("what the focus of this other expectation is", sut -> {
                     givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                 });
     }
