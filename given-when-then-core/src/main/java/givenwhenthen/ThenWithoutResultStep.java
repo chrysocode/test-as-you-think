@@ -25,9 +25,10 @@ public class ThenWithoutResultStep<$SystemUnderTest>
     }
 
     @Override
-    public void then(String expectationSpecification, Runnable thenStep) {
+    public AndThenWithoutResult<$SystemUnderTest> then(String expectationSpecification, Runnable thenStep) {
         context.returnResultOrVoid();
         thenStep.run();
+        return this;
     }
 
     @Override
@@ -44,6 +45,12 @@ public class ThenWithoutResultStep<$SystemUnderTest>
 
     @Override
     public AndThenWithoutResult<$SystemUnderTest> and(Runnable thenStep) {
+        thenStep.run();
+        return this;
+    }
+
+    @Override
+    public AndThenWithoutResult<$SystemUnderTest> and(String expectationSpecification, Runnable thenStep) {
         thenStep.run();
         return this;
     }

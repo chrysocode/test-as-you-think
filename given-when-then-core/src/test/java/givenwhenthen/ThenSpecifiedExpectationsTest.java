@@ -80,4 +80,23 @@ public class ThenSpecifiedExpectationsTest {
                     assertThat(result).contains("result");
                 });
     }
+
+    @Test
+    public void should_specify_separated_expectations_given_a_void_method() {
+        // GIVEN
+        givenWhenThenDefinitionMock = orderedSteps(1, 2);
+
+        // WHEN
+        givenSutClass(SystemUnderTest.class) //
+                .given(sut -> {
+                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                    sut.setGivenWhenThenDefinition(givenWhenThenDefinitionMock);
+                }).when(sut -> {
+                    sut.voidMethod();
+                }).then("what the focus of this expectation is", () -> {
+                    givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                }).and("what the focus of this other expectation is", () -> {
+                    givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                });
+    }
 }
