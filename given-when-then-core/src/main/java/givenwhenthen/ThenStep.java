@@ -56,8 +56,9 @@ public class ThenStep<$SystemUnderTest, $Result>
     }
 
     @Override
-    public void then(Predicate<$Result> thenStep) {
-        assertThat(thenStep.test(context.returnResultOrVoid())).isTrue();
+    public AndThen<$SystemUnderTest, $Result> then(Predicate<$Result> thenStep) {
+        assertThat(thenStep.test(result())).isTrue();
+        return this;
     }
 
     @Override
@@ -109,5 +110,10 @@ public class ThenStep<$SystemUnderTest, $Result>
     @Override
     public AndThen<$SystemUnderTest, $Result> and(String expectationSpecification, Consumer<$Result> thenStep) {
         return then(expectationSpecification, thenStep);
+    }
+
+    @Override
+    public AndThen<$SystemUnderTest, $Result> and(Predicate<$Result> thenStep) {
+        return then(thenStep);
     }
 }

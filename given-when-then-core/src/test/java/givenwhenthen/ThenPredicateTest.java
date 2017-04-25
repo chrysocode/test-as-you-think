@@ -20,9 +20,9 @@ public class ThenPredicateTest {
     }
 
     @Test
-    public void should_receive_a_then_step_as_a_predicate_on_the_result_given_a_non_void_method() {
+    public void should_receive_a_then_step_as_a_result_predicate_given_a_non_void_method() {
         // GIVEN
-        givenWhenThenDefinitionMock = orderedSteps(1, 1);
+        givenWhenThenDefinitionMock = orderedSteps(1, 3);
 
         // WHEN
         givenSutClass(SystemUnderTest.class) //
@@ -32,6 +32,12 @@ public class ThenPredicateTest {
                 }).when(sut -> {
                     return sut.nonVoidMethod();
                 }).then(result -> {
+                    givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                    return true;
+                }).and(result -> {
+                    givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                    return true;
+                }).and(result -> {
                     givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                     return true;
                 });
@@ -50,6 +56,27 @@ public class ThenPredicateTest {
                 }).when(sut -> {
                     return sut.nonVoidMethod();
                 }).then(result -> {
+                    givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                    return false;
+                });
+    }
+
+    @Test(expected = ComparisonFailure.class)
+    public void should_receive_a_failing_andthen_step_as_a_predicate_on_the_result_given_a_non_void_method() {
+        // GIVEN
+        givenWhenThenDefinitionMock = orderedSteps(1, 2);
+
+        // WHEN
+        givenSutClass(SystemUnderTest.class) //
+                .given(sut -> {
+                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                    sut.setGivenWhenThenDefinition(givenWhenThenDefinitionMock);
+                }).when(sut -> {
+                    return sut.nonVoidMethod();
+                }).then(result -> {
+                    givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                    return true;
+                }).and(result -> {
                     givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                     return false;
                 });
