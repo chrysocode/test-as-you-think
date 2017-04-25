@@ -68,4 +68,17 @@ public class ThenWithoutResultStep<$SystemUnderTest>
         assertThat(thenStep.getAsBoolean()).isTrue();
         return this;
     }
+
+    @Override
+    public AndThenWithoutResult<$SystemUnderTest> then(String expectationSpecification,
+            Consumer<$SystemUnderTest> thenStep) {
+        return then(thenStep);
+    }
+
+    @Override
+    public AndThenWithoutResult<$SystemUnderTest> and(String expectationSpecification,
+            Consumer<$SystemUnderTest> thenStep) {
+        thenStep.accept(context.getSystemUnderTest());
+        return this;
+    }
 }

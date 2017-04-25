@@ -86,7 +86,7 @@ public class ThenSpecifiedExpectationsTest {
     @Test
     public void should_specify_separated_expectations_given_a_void_method() {
         // GIVEN
-        givenWhenThenDefinitionMock = orderedSteps(1, 2);
+        givenWhenThenDefinitionMock = orderedSteps(1, 3);
 
         // WHEN
         givenSutClass(SystemUnderTest.class) //
@@ -98,6 +98,29 @@ public class ThenSpecifiedExpectationsTest {
                 }).then("what the focus of this expectation is", () -> {
                     givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                 }).and("what the focus of this other expectation is", () -> {
+                    givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                }).and("what the focus of this other expectation is", () -> {
+                    givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                });
+    }
+
+    @Test
+    public void should_specify_separated_sut_expectations_given_a_void_method() {
+        // GIVEN
+        givenWhenThenDefinitionMock = orderedSteps(1, 3);
+
+        // WHEN
+        givenSutClass(SystemUnderTest.class) //
+                .given(sut -> {
+                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                    sut.setGivenWhenThenDefinition(givenWhenThenDefinitionMock);
+                }).when(sut -> {
+                    sut.voidMethod();
+                }).then("what the focus of this expectation is", sut -> {
+                    givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                }).and("what the focus of this other expectation is", sut -> {
+                    givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                }).and("what the focus of this other expectation is", sut -> {
                     givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                 });
     }
