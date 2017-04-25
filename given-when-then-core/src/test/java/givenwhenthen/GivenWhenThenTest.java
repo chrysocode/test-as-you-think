@@ -2,9 +2,8 @@ package givenwhenthen;
 
 import static givenwhenthen.GivenWhenThen.givenSut;
 import static givenwhenthen.GivenWhenThen.givenSutClass;
+import static givenwhenthen.GivenWhenThenDefinition.orderedSteps;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.strictMock;
 import static org.easymock.EasyMock.verify;
 
 import org.junit.After;
@@ -19,13 +18,7 @@ public class GivenWhenThenTest {
     @Before
     public void prepareFixtures() {
         // GIVEN
-        ordered_steps: {
-            givenWhenThenDefinitionMock = strictMock(GivenWhenThenDefinition.class);
-            givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-            givenWhenThenDefinitionMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
-            givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-        }
-        replay(givenWhenThenDefinitionMock);
+        givenWhenThenDefinitionMock = orderedSteps();
     }
 
     @After

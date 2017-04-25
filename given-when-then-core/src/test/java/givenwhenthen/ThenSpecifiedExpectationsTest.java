@@ -1,9 +1,8 @@
 package givenwhenthen;
 
 import static givenwhenthen.GivenWhenThen.givenSutClass;
+import static givenwhenthen.GivenWhenThenDefinition.orderedSteps;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.easymock.EasyMock.expectLastCall;
-import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.strictMock;
 import static org.easymock.EasyMock.verify;
 
@@ -20,15 +19,6 @@ public class ThenSpecifiedExpectationsTest {
         givenWhenThenDefinitionMock = strictMock(GivenWhenThenDefinition.class);
     }
 
-    private void orderedSteps(int numberOfThenSteps) {
-        givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-        givenWhenThenDefinitionMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
-        givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-        expectLastCall().times(numberOfThenSteps);
-
-        replay(givenWhenThenDefinitionMock);
-    }
-
     @After
     public void verifyMocks() {
         // THEN
@@ -38,7 +28,7 @@ public class ThenSpecifiedExpectationsTest {
     @Test
     public void should_specify_an_expectation_given_a_non_void_method() {
         // GIVEN
-        orderedSteps(1);
+        givenWhenThenDefinitionMock = orderedSteps(1, 1);
 
         // WHEN
         givenSutClass(SystemUnderTest.class) //
@@ -56,7 +46,7 @@ public class ThenSpecifiedExpectationsTest {
     @Test
     public void should_specify_an_expectation_given_a_void_method() {
         // GIVEN
-        orderedSteps(1);
+        givenWhenThenDefinitionMock = orderedSteps(1, 1);
 
         // WHEN
         givenSutClass(SystemUnderTest.class) //
@@ -73,7 +63,7 @@ public class ThenSpecifiedExpectationsTest {
     @Test
     public void should_specify_separated_expectations_given_a_non_void_method() {
         // GIVEN
-        orderedSteps(2);
+        givenWhenThenDefinitionMock = orderedSteps(1, 2);
 
         // WHEN
         givenSutClass(SystemUnderTest.class) //
