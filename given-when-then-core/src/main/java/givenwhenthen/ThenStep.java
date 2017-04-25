@@ -23,7 +23,7 @@ public class ThenStep<$SystemUnderTest, $Result>
     }
 
     private $Result result() {
-        return result == null ? result = context.returnResult() : result;
+        return result == null ? result = context.returnResultOrVoid() : result;
     }
 
     @Override
@@ -34,7 +34,7 @@ public class ThenStep<$SystemUnderTest, $Result>
 
     @Override
     public void then(BiConsumer<$SystemUnderTest, $Result> thenStep) {
-        thenStep.accept(context.getSystemUnderTest(), context.returnResult());
+        thenStep.accept(context.getSystemUnderTest(), context.returnResultOrVoid());
     }
 
     @Override
@@ -57,18 +57,18 @@ public class ThenStep<$SystemUnderTest, $Result>
 
     @Override
     public void then(Predicate<$Result> thenStep) {
-        assertThat(thenStep.test(context.returnResult())).isTrue();
+        assertThat(thenStep.test(context.returnResultOrVoid())).isTrue();
     }
 
     @Override
     public void then(List<Predicate<$Result>> thenSteps) {
         assertThat(thenSteps.stream().reduce((predicate, another) -> predicate.and(another)).get()
-                .test(context.returnResult())).isTrue();
+                .test(context.returnResultOrVoid())).isTrue();
     }
 
     @Override
     public void then(BiPredicate<$SystemUnderTest, $Result> thenStep) {
-        assertThat(thenStep.test(context.getSystemUnderTest(), context.returnResult())).isTrue();
+        assertThat(thenStep.test(context.getSystemUnderTest(), context.returnResultOrVoid())).isTrue();
     }
 
     @Override
@@ -79,17 +79,17 @@ public class ThenStep<$SystemUnderTest, $Result>
 
     @Override
     public void thenItFails() {
-        assertThat(context.returnResult()).isInstanceOf(Throwable.class);
+        assertThat(context.returnResultOrVoid()).isInstanceOf(Throwable.class);
     }
 
     @Override
     public void thenItFails(Class<? extends Throwable> expectedThrowableClass) {
-        assertThat(context.returnResult()).isInstanceOf(expectedThrowableClass);
+        assertThat(context.returnResultOrVoid()).isInstanceOf(expectedThrowableClass);
     }
 
     @Override
     public void thenItFails(Class<? extends Throwable> expectedThrowableClass, String expectedMessage) {
-        $Result result = context.returnResult();
+        $Result result = context.returnResultOrVoid();
         assertThat(result).isInstanceOf(expectedThrowableClass);
         assertThat(((Throwable) result).getMessage()).isEqualTo(expectedMessage);
     }

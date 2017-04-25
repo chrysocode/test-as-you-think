@@ -9,7 +9,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-@SuppressWarnings("unused")
 public class ThenExpectationAndExpectationTest {
 
     private GivenWhenThenDefinition givenWhenThenDefinitionMock;
@@ -27,7 +26,7 @@ public class ThenExpectationAndExpectationTest {
     }
 
     @Test
-    public void should_receive_expectations_separately_given_a_non_void_method() {
+    public void should_verify_expectations_separately_given_a_non_void_method() {
         // WHEN
         givenSutClass(SystemUnderTest.class) //
                 .given(() -> {
@@ -45,7 +44,7 @@ public class ThenExpectationAndExpectationTest {
     }
 
     @Test
-    public void should_receive_expectations_separately_given_a_void_method() {
+    public void should_verify_expectations_separately_given_a_void_method() {
         // WHEN
         givenSutClass(SystemUnderTest.class) //
                 .given(() -> {

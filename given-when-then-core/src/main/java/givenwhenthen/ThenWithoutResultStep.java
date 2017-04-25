@@ -19,26 +19,26 @@ public class ThenWithoutResultStep<$SystemUnderTest>
 
     @Override
     public AndThenWithoutResult<$SystemUnderTest> then(Runnable thenStep) {
-        context.returnResult();
+        context.returnResultOrVoid();
         thenStep.run();
         return this;
     }
 
     @Override
     public void then(String expectationSpecification, Runnable thenStep) {
-        context.returnResult();
+        context.returnResultOrVoid();
         thenStep.run();
     }
 
     @Override
     public void then(Consumer<$SystemUnderTest> thenStep) {
-        context.returnResult();
+        context.returnResultOrVoid();
         thenStep.accept(context.getSystemUnderTest());
     }
 
     @Override
     public void then(BooleanSupplier thenStep) {
-        context.returnResult();
+        context.returnResultOrVoid();
         assertThat(thenStep.getAsBoolean()).isTrue();
     }
 

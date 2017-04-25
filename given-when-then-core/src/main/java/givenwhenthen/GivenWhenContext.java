@@ -15,7 +15,7 @@ class GivenWhenContext<$SystemUnderTest, $Result> {
         this.systemUnderTest = systemUnderTest;
     }
 
-    $Result returnResult() {
+    $Result returnResultOrVoid() {
         if (givenSteps != null && !givenSteps.isEmpty()) {
             givenSteps.stream().forEach(step -> step.accept(systemUnderTest));
         }
