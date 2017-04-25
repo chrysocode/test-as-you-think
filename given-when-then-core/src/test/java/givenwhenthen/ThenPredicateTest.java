@@ -85,7 +85,7 @@ public class ThenPredicateTest {
     @Test
     public void should_receive_a_then_step_as_a_predicate_given_a_void_method() {
         // GIVEN
-        givenWhenThenDefinitionMock = orderedSteps(1, 1);
+        givenWhenThenDefinitionMock = orderedSteps(1, 3);
 
         // WHEN
         givenSutClass(SystemUnderTest.class) //
@@ -95,6 +95,12 @@ public class ThenPredicateTest {
                 }).when(sut -> {
                     sut.voidMethod();
                 }).then(() -> {
+                    givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                    return true;
+                }).and(() -> {
+                    givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                    return true;
+                }).and(() -> {
                     givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                     return true;
                 });
@@ -113,6 +119,27 @@ public class ThenPredicateTest {
                 }).when(sut -> {
                     sut.voidMethod();
                 }).then(() -> {
+                    givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                    return false;
+                });
+    }
+
+    @Test(expected = ComparisonFailure.class)
+    public void should_receive_a_failing_andthen_step_as_a_predicate_given_a_void_method() {
+        // GIVEN
+        givenWhenThenDefinitionMock = orderedSteps(1, 2);
+
+        // WHEN
+        givenSutClass(SystemUnderTest.class) //
+                .given(sut -> {
+                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                    sut.setGivenWhenThenDefinition(givenWhenThenDefinitionMock);
+                }).when(sut -> {
+                    sut.voidMethod();
+                }).then(() -> {
+                    givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                    return true;
+                }).and(() -> {
                     givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                     return false;
                 });

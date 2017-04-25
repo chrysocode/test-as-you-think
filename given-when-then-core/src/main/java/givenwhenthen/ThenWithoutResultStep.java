@@ -39,9 +39,10 @@ public class ThenWithoutResultStep<$SystemUnderTest>
     }
 
     @Override
-    public void then(BooleanSupplier thenStep) {
+    public AndThenWithoutResult<$SystemUnderTest> then(BooleanSupplier thenStep) {
         context.returnResultOrVoid();
         assertThat(thenStep.getAsBoolean()).isTrue();
+        return this;
     }
 
     @Override
@@ -59,6 +60,12 @@ public class ThenWithoutResultStep<$SystemUnderTest>
     @Override
     public AndThenWithoutResult<$SystemUnderTest> and(Consumer<$SystemUnderTest> thenStep) {
         thenStep.accept(context.getSystemUnderTest());
+        return this;
+    }
+
+    @Override
+    public AndThenWithoutResult<$SystemUnderTest> and(BooleanSupplier thenStep) {
+        assertThat(thenStep.getAsBoolean()).isTrue();
         return this;
     }
 }
