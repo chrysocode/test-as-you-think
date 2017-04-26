@@ -4,7 +4,7 @@
 
     <groupId>givenwhenthen</groupId>
     <artifactId>given-when-then-project</artifactId>
-    <version>0.1-RELEASE</version>
+    <version>0.2-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>${project.groupId}:${project.artifactId}:${project.packaging}</name>
 
