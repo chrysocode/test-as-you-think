@@ -7,7 +7,7 @@ import java.util.function.Consumer;
 
 class GivenWhenContext<$SystemUnderTest, $Result> {
 
-    private $SystemUnderTest systemUnderTest;
+    private final $SystemUnderTest systemUnderTest;
     private List<Consumer<$SystemUnderTest>> givenSteps;
     private CheckedFunction<$SystemUnderTest, $Result> whenStep;
 
