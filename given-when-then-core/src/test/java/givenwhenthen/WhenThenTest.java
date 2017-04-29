@@ -10,6 +10,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import givenwhenthen.fixture.SystemUnderTest;
+
 @SuppressWarnings("unused")
 public class WhenThenTest {
 

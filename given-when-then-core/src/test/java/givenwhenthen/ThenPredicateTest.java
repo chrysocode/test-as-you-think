@@ -9,6 +9,8 @@ import org.junit.After;
 import org.junit.ComparisonFailure;
 import org.junit.Test;
 
+import givenwhenthen.fixture.SystemUnderTest;
+
 public class ThenPredicateTest {
 
     private GivenWhenThenDefinition givenWhenThenDefinitionMock;

@@ -1,4 +1,6 @@
-package givenwhenthen;
+package givenwhenthen.fixture;
+
+import givenwhenthen.GivenWhenThenDefinition;
 
 public class SystemUnderTest {
 

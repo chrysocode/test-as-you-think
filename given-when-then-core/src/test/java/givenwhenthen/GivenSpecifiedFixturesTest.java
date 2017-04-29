@@ -8,6 +8,8 @@ import static org.easymock.EasyMock.verify;
 import org.junit.After;
 import org.junit.Test;
 
+import givenwhenthen.fixture.SystemUnderTest;
+
 public class GivenSpecifiedFixturesTest {
 
     private GivenWhenThenDefinition givenWhenThenDefinitionMock;
