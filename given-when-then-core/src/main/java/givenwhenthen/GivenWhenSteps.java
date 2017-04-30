@@ -56,8 +56,8 @@ public class GivenWhenSteps<$SystemUnderTest> implements Given<$SystemUnderTest>
     }
 
     private <$Result> Then<$SystemUnderTest, $Result> toThenStep(CheckedFunction<$SystemUnderTest, $Result> whenStep) {
-        GivenWhenContext<$SystemUnderTest, $Result> context = new GivenWhenContext<>(preparation);
-        context.setWhenStep(whenStep);
+        Event<$SystemUnderTest, $Result> event = new Event<>(preparation.getSystemUnderTest(), whenStep);
+        GivenWhenContext<$SystemUnderTest, $Result> context = new GivenWhenContext<>(preparation, event);
         return new ThenStep<>(context);
     }
 
@@ -67,18 +67,14 @@ public class GivenWhenSteps<$SystemUnderTest> implements Given<$SystemUnderTest>
     }
 
     private ThenWithoutResult<$SystemUnderTest> toThenStep(CheckedConsumer<$SystemUnderTest> whenStep) {
-        GivenWhenContext<$SystemUnderTest, Void> context = new GivenWhenContext<>(preparation);
-        context.setWhenStep(sut -> {
-            whenStep.accept(sut);
-            return null;
-        });
+        Event<$SystemUnderTest, Void> event = new Event<>(preparation.getSystemUnderTest(), whenStep);
+        GivenWhenContext<$SystemUnderTest, Void> context = new GivenWhenContext<>(preparation, event);
         return new ThenWithoutResultStep<>(context);
     }
 
     @Override
     public ThenFailure whenSutRunsOutsideOperatingConditions(CheckedConsumer<$SystemUnderTest> whenStep) {
-        GivenWhenContext<$SystemUnderTest, Throwable> context = new GivenWhenContext<>(preparation);
-        context.setWhenStep(sut -> {
+        Event<$SystemUnderTest, Throwable> event = new Event<>(preparation.getSystemUnderTest(), sut -> {
             Throwable result = null;
             try {
                 whenStep.accept(sut);
@@ -87,6 +83,7 @@ public class GivenWhenSteps<$SystemUnderTest> implements Given<$SystemUnderTest>
             }
             return result;
         });
+        GivenWhenContext<$SystemUnderTest, Throwable> context = new GivenWhenContext<>(preparation, event);
         return new ThenStep<>(context);
     }
 }
