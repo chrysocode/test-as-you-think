@@ -1,12 +1,12 @@
 package givenwhenthen;
 
-import java.util.function.Consumer;
-
 import givenwhenthen.GivenWhenThenDsl.AndGiven;
 import givenwhenthen.GivenWhenThenDsl.Given;
 import givenwhenthen.GivenWhenThenDsl.Then;
 import givenwhenthen.GivenWhenThenDsl.ThenFailure;
 import givenwhenthen.GivenWhenThenDsl.ThenWithoutResult;
+
+import java.util.function.Consumer;
 
 public class GivenWhenSteps<$SystemUnderTest> implements Given<$SystemUnderTest> {
 
@@ -56,8 +56,7 @@ public class GivenWhenSteps<$SystemUnderTest> implements Given<$SystemUnderTest>
     }
 
     private <$Result> Then<$SystemUnderTest, $Result> toThenStep(CheckedFunction<$SystemUnderTest, $Result> whenStep) {
-        GivenWhenContext<$SystemUnderTest, $Result> context = new GivenWhenContext<>(preparation.getSystemUnderTest());
-        context.setGivenSteps(preparation.getGivenSteps());
+        GivenWhenContext<$SystemUnderTest, $Result> context = new GivenWhenContext<>(preparation);
         context.setWhenStep(whenStep);
         return new ThenStep<>(context);
     }
@@ -68,8 +67,7 @@ public class GivenWhenSteps<$SystemUnderTest> implements Given<$SystemUnderTest>
     }
 
     private ThenWithoutResult<$SystemUnderTest> toThenStep(CheckedConsumer<$SystemUnderTest> whenStep) {
-        GivenWhenContext<$SystemUnderTest, Void> context = new GivenWhenContext<>(preparation.getSystemUnderTest());
-        context.setGivenSteps(preparation.getGivenSteps());
+        GivenWhenContext<$SystemUnderTest, Void> context = new GivenWhenContext<>(preparation);
         context.setWhenStep(sut -> {
             whenStep.accept(sut);
             return null;
@@ -79,9 +77,7 @@ public class GivenWhenSteps<$SystemUnderTest> implements Given<$SystemUnderTest>
 
     @Override
     public ThenFailure whenSutRunsOutsideOperatingConditions(CheckedConsumer<$SystemUnderTest> whenStep) {
-        GivenWhenContext<$SystemUnderTest, Throwable> context = new GivenWhenContext<>(
-                preparation.getSystemUnderTest());
-        context.setGivenSteps(preparation.getGivenSteps());
+        GivenWhenContext<$SystemUnderTest, Throwable> context = new GivenWhenContext<>(preparation);
         context.setWhenStep(sut -> {
             Throwable result = null;
             try {

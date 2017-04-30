@@ -2,27 +2,21 @@ package givenwhenthen;
 
 import static org.assertj.core.api.Assertions.fail;
 
-import java.util.List;
-import java.util.function.Consumer;
-
 class GivenWhenContext<$SystemUnderTest, $Result> {
 
-    private final $SystemUnderTest systemUnderTest;
-    private List<Consumer<$SystemUnderTest>> givenSteps;
+    private final Preparation<$SystemUnderTest> preparation;
     private CheckedFunction<$SystemUnderTest, $Result> whenStep;
 
-    GivenWhenContext($SystemUnderTest systemUnderTest) {
-        this.systemUnderTest = systemUnderTest;
+    GivenWhenContext(Preparation<$SystemUnderTest> preparation) {
+        this.preparation = preparation;
     }
 
     $Result returnResultOrVoid() {
-        if (givenSteps != null && !givenSteps.isEmpty()) {
-            givenSteps.stream().forEach(step -> step.accept(systemUnderTest));
-        }
+        preparation.prepareFixtures();
 
         $Result result = null;
         try {
-            result = whenStep.apply(systemUnderTest);
+            result = whenStep.apply(preparation.getSystemUnderTest());
         } catch (Throwable throwable) {
             fail("Unexpected exception happened!", throwable);
         }
@@ -31,11 +25,7 @@ class GivenWhenContext<$SystemUnderTest, $Result> {
     }
 
     $SystemUnderTest getSystemUnderTest() {
-        return systemUnderTest;
-    }
-
-    void setGivenSteps(List<Consumer<$SystemUnderTest>> givenSteps) {
-        this.givenSteps = givenSteps;
+        return preparation.getSystemUnderTest();
     }
 
     void setWhenStep(CheckedFunction<$SystemUnderTest, $Result> whenStep) {

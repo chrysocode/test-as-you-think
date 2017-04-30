@@ -19,20 +19,18 @@ class Preparation<$SystemUnderTest> {
     }
 
     private Consumer<$SystemUnderTest> toConsumer(Runnable givenStep) {
-        return sut -> {
-            givenStep.run();
-        };
+        return sut -> givenStep.run();
     }
 
     void recordGivenStep(Consumer<$SystemUnderTest> givenStep) {
         givenSteps.add(givenStep);
     }
 
-    $SystemUnderTest getSystemUnderTest() {
-        return systemUnderTest;
+    void prepareFixtures() {
+        givenSteps.stream().forEach(step -> step.accept(systemUnderTest));
     }
 
-    List<Consumer<$SystemUnderTest>> getGivenSteps() {
-        return givenSteps;
+    $SystemUnderTest getSystemUnderTest() {
+        return systemUnderTest;
     }
 }
