@@ -10,10 +10,12 @@ import java.util.function.Consumer;
 
 public class GivenWhenSteps<$SystemUnderTest> implements Given<$SystemUnderTest> {
 
+    private final Functions functions;
     private final Preparation<$SystemUnderTest> preparation;
 
     GivenWhenSteps($SystemUnderTest systemUnderTest) {
         preparation = new Preparation<>(systemUnderTest);
+        functions = new Functions();
     }
 
     @Override
@@ -74,15 +76,8 @@ public class GivenWhenSteps<$SystemUnderTest> implements Given<$SystemUnderTest>
 
     @Override
     public ThenFailure whenSutRunsOutsideOperatingConditions(CheckedConsumer<$SystemUnderTest> whenStep) {
-        Event<$SystemUnderTest, Throwable> event = new Event<>(preparation.getSystemUnderTest(), sut -> {
-            Throwable result = null;
-            try {
-                whenStep.accept(sut);
-            } catch (Throwable throwable) {
-                result = throwable;
-            }
-            return result;
-        });
+        Event<$SystemUnderTest, Throwable> event = new Event<>(preparation.getSystemUnderTest(), functions
+                .returnThrowable(whenStep));
         GivenWhenContext<$SystemUnderTest, Throwable> context = new GivenWhenContext<>(preparation, event);
         return new ThenStep<>(context);
     }
