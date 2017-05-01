@@ -32,6 +32,10 @@ public class SystemUnderTest {
         voidMethod();
     }
 
+    public <$Input> String nonVoidMethodWithArgument($Input input) {
+        return nonVoidMethod();
+    }
+
     public void fail() throws Throwable {
         whenAnEventHappens();
         throw new Exception("It fails!");

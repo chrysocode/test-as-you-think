@@ -2,6 +2,7 @@ package givenwhenthen;
 
 import java.util.List;
 import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
@@ -33,6 +34,8 @@ public interface GivenWhenThenDsl {
     interface WhenApplyingInput<$SystemUnderTest, $Input> {
 
         ThenWithoutResult<$SystemUnderTest> when(BiConsumer<$SystemUnderTest, $Input> whenStep);
+
+        <$Result> Then<$SystemUnderTest, $Result> when(BiFunction<$SystemUnderTest, $Input, $Result> whenStep);
     }
 
     interface When<$SystemUnderTest> {
