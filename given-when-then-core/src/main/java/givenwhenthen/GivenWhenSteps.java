@@ -10,12 +10,11 @@ import java.util.function.Consumer;
 
 public class GivenWhenSteps<$SystemUnderTest> implements Given<$SystemUnderTest> {
 
-    private final Functions functions;
+    private final Functions functions = Functions.INSTANCE;
     private final Preparation<$SystemUnderTest> preparation;
 
     GivenWhenSteps($SystemUnderTest systemUnderTest) {
         preparation = new Preparation<>(systemUnderTest);
-        functions = new Functions();
     }
 
     @Override

@@ -6,12 +6,11 @@ import java.util.function.Consumer;
 
 class Preparation<$SystemUnderTest> {
 
-    private final Functions functions;
+    private final Functions functions = Functions.INSTANCE;
     private final $SystemUnderTest systemUnderTest;
     private final List<Consumer<$SystemUnderTest>> givenSteps;
 
     Preparation($SystemUnderTest systemUnderTest) {
-        functions = new Functions();
         this.systemUnderTest = systemUnderTest;
         this.givenSteps = new ArrayList<>();
     }

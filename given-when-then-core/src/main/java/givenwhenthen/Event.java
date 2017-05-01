@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.fail;
 
 class Event<$SystemUnderTest, $Result> {
 
-    private final Functions functions = new Functions();
+    private final Functions functions = Functions.INSTANCE;
     private final $SystemUnderTest systemUnderTest;
     private final CheckedFunction<$SystemUnderTest, $Result> whenStep;
 

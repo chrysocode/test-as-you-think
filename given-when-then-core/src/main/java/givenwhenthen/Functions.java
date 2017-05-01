@@ -2,7 +2,9 @@ package givenwhenthen;
 
 import java.util.function.Consumer;
 
-class Functions {
+enum Functions {
+
+    INSTANCE;
 
     <T> Consumer<T> toConsumer(Runnable runnable) {
         return toBeConsumed -> runnable.run();
