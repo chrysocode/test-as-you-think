@@ -5,8 +5,11 @@ import givenwhenthen.GivenWhenThenDsl.Given;
 import givenwhenthen.GivenWhenThenDsl.Then;
 import givenwhenthen.GivenWhenThenDsl.ThenFailure;
 import givenwhenthen.GivenWhenThenDsl.ThenWithoutResult;
+import givenwhenthen.GivenWhenThenDsl.WhenApplyingInput;
 
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public class GivenWhenSteps<$SystemUnderTest> implements Given<$SystemUnderTest> {
 
@@ -49,6 +52,21 @@ public class GivenWhenSteps<$SystemUnderTest> implements Given<$SystemUnderTest>
     @Override
     public AndGiven<$SystemUnderTest> and(String fixtureSpecification, Consumer<$SystemUnderTest> givenStep) {
         return given(fixtureSpecification, givenStep);
+    }
+
+    @Override
+    public <$Input> WhenApplyingInput<$SystemUnderTest, $Input> andInput(Supplier<$Input> givenStep) {
+        return new WhenApplyingInput<$SystemUnderTest, $Input>() {
+            @Override
+            public ThenWithoutResult<$SystemUnderTest> when(BiConsumer<$SystemUnderTest, $Input> whenStep) {
+                Event<$SystemUnderTest, Void> event = new Event<>(preparation.getSystemUnderTest(), sut -> {
+                    whenStep.accept(sut, givenStep.get());
+                    return null;
+                });
+                GivenWhenContext<$SystemUnderTest, Void> context = new GivenWhenContext<>(preparation, event);
+                return new ThenWithoutResultStep<>(context);
+            }
+        };
     }
 
     @Override

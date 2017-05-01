@@ -7,9 +7,7 @@ public class SystemUnderTest {
     private GivenWhenThenDefinition givenWhenThenDefinition;
     private String state;
 
-    public SystemUnderTest() {
-        state = null;
-    }
+    public SystemUnderTest() {}
 
     public SystemUnderTest(GivenWhenThenDefinition givenWhenThenDefinition) {
         this.givenWhenThenDefinition = givenWhenThenDefinition;
@@ -30,6 +28,10 @@ public class SystemUnderTest {
     public void voidMethod() {
         whenAnEventHappens();
         changeState();
+    }
+
+    public <$Input> void voidMethodWithArgument($Input input) {
+        voidMethod();
     }
 
     public void fail() throws Throwable {
@@ -53,7 +55,7 @@ public class SystemUnderTest {
     }
 
     private void changeState() {
-        state = "state";
+        state = "state updated";
     }
 
     public void setGivenWhenThenDefinition(GivenWhenThenDefinition givenWhenThenDefinition) {

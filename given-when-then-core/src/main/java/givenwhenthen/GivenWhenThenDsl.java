@@ -6,6 +6,7 @@ import java.util.function.BiPredicate;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 public interface GivenWhenThenDsl {
 
@@ -13,7 +14,7 @@ public interface GivenWhenThenDsl {
 
         When<$SystemUnderTest> given(Runnable givenStep);
 
-        When<$SystemUnderTest> given(Consumer<$SystemUnderTest> givenStep);
+        Given<$SystemUnderTest> given(Consumer<$SystemUnderTest> givenStep);
 
         Given<$SystemUnderTest> given(String fixtureSpecification, Runnable givenStep);
 
@@ -25,6 +26,13 @@ public interface GivenWhenThenDsl {
         AndGiven<$SystemUnderTest> and(String fixtureSpecification, Runnable givenStep);
 
         AndGiven<$SystemUnderTest> and(String fixtureSpecification, Consumer<$SystemUnderTest> givenStep);
+
+        <$Input> WhenApplyingInput<$SystemUnderTest, $Input> andInput(Supplier<$Input> givenStep);
+    }
+
+    interface WhenApplyingInput<$SystemUnderTest, $Input> {
+
+        ThenWithoutResult<$SystemUnderTest> when(BiConsumer<$SystemUnderTest, $Input> whenStep);
     }
 
     interface When<$SystemUnderTest> {
