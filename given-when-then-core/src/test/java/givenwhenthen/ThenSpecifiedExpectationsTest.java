@@ -1,14 +1,16 @@
 package givenwhenthen;
 
-import static givenwhenthen.GivenWhenThen.givenSutClass;
-import static givenwhenthen.GivenWhenThenDefinition.orderedSteps;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.easymock.EasyMock.strictMock;
-import static org.easymock.EasyMock.verify;
-
+import givenwhenthen.fixture.GivenWhenThenDefinition;
+import givenwhenthen.fixture.SystemUnderTest;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import static givenwhenthen.GivenWhenThen.givenSutClass;
+import static givenwhenthen.fixture.GivenWhenThenDefinition.orderedSteps;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.easymock.EasyMock.strictMock;
+import static org.easymock.EasyMock.verify;
 
 public class ThenSpecifiedExpectationsTest {
 
@@ -31,13 +33,13 @@ public class ThenSpecifiedExpectationsTest {
         givenWhenThenDefinitionMock = orderedSteps(1, 1);
 
         // WHEN
-        givenSutClass(SystemUnderTest.class) //
+        givenSutClass(SystemUnderTest.class)
                 .given(sut -> {
                     givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
                     sut.setGivenWhenThenDefinition(givenWhenThenDefinitionMock);
-                }).when(sut -> {
-                    return sut.nonVoidMethod();
-                }).then("what the focus of this expectation is", result -> {
+                })
+                .when(SystemUnderTest::nonVoidMethod)
+                .then("what the focus of this expectation is", result -> {
                     givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                     assertThat(result).isEqualTo("expected result");
                 });
@@ -49,15 +51,14 @@ public class ThenSpecifiedExpectationsTest {
         givenWhenThenDefinitionMock = orderedSteps(1, 1);
 
         // WHEN
-        givenSutClass(SystemUnderTest.class) //
+        givenSutClass(SystemUnderTest.class)
                 .given(sut -> {
                     givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
                     sut.setGivenWhenThenDefinition(givenWhenThenDefinitionMock);
-                }).when(sut -> {
-                    sut.nonVoidMethod();
-                }).then("what the focus of this expectation is", () -> {
-                    givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                });
+                })
+                .when(SystemUnderTest::nonVoidMethod)
+                .then("what the focus of this expectation is", () -> givenWhenThenDefinitionMock
+                        .thenTheActualResultIsInKeepingWithTheExpectedResult());
     }
 
     @Test
@@ -66,21 +67,22 @@ public class ThenSpecifiedExpectationsTest {
         givenWhenThenDefinitionMock = orderedSteps(1, 3);
 
         // WHEN
-        givenSutClass(SystemUnderTest.class) //
+        givenSutClass(SystemUnderTest.class)
                 .given(sut -> {
                     givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
                     sut.setGivenWhenThenDefinition(givenWhenThenDefinitionMock);
-                }).when(sut -> {
-                    return sut.nonVoidMethod();
-                }).then("what the focus of this expectation is", result -> {
+                })
+                .when(SystemUnderTest::nonVoidMethod)
+                .then("what the focus of this expectation is", result -> {
                     givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                     assertThat(result).contains("expected");
-                }).and("what the focus of this expectation is", result -> {
+                })
+                .and("what the focus of this expectation is", result -> {
                     givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                     assertThat(result).contains("result");
-                }).and("what the focus of this expectation is", () -> {
-                    givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                });
+                })
+                .and("what the focus of this expectation is", () -> givenWhenThenDefinitionMock
+                        .thenTheActualResultIsInKeepingWithTheExpectedResult());
     }
 
     @Test
@@ -89,19 +91,18 @@ public class ThenSpecifiedExpectationsTest {
         givenWhenThenDefinitionMock = orderedSteps(1, 3);
 
         // WHEN
-        givenSutClass(SystemUnderTest.class) //
+        givenSutClass(SystemUnderTest.class)
                 .given(sut -> {
                     givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
                     sut.setGivenWhenThenDefinition(givenWhenThenDefinitionMock);
-                }).when(sut -> {
-                    sut.voidMethod();
-                }).then("what the focus of this expectation is", () -> {
-                    givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                }).and("what the focus of this other expectation is", () -> {
-                    givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                }).and("what the focus of this other expectation is", () -> {
-                    givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                });
+                })
+                .when(SystemUnderTest::voidMethod)
+                .then("what the focus of this expectation is", () -> givenWhenThenDefinitionMock
+                        .thenTheActualResultIsInKeepingWithTheExpectedResult())
+                .and("what the focus of this other expectation is", () -> givenWhenThenDefinitionMock
+                        .thenTheActualResultIsInKeepingWithTheExpectedResult())
+                .and("what the focus of this other expectation is", () -> givenWhenThenDefinitionMock
+                        .thenTheActualResultIsInKeepingWithTheExpectedResult());
     }
 
     @Test
@@ -110,18 +111,17 @@ public class ThenSpecifiedExpectationsTest {
         givenWhenThenDefinitionMock = orderedSteps(1, 3);
 
         // WHEN
-        givenSutClass(SystemUnderTest.class) //
+        givenSutClass(SystemUnderTest.class)
                 .given(sut -> {
                     givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
                     sut.setGivenWhenThenDefinition(givenWhenThenDefinitionMock);
-                }).when(sut -> {
-                    sut.voidMethod();
-                }).then("what the focus of this expectation is", sut -> {
-                    givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                }).and("what the focus of this other expectation is", sut -> {
-                    givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                }).and("what the focus of this other expectation is", sut -> {
-                    givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                });
+                })
+                .when(SystemUnderTest::voidMethod)
+                .then("what the focus of this expectation is", sut -> givenWhenThenDefinitionMock
+                        .thenTheActualResultIsInKeepingWithTheExpectedResult())
+                .and("what the focus of this other expectation is", sut -> givenWhenThenDefinitionMock
+                        .thenTheActualResultIsInKeepingWithTheExpectedResult())
+                .and("what the focus of this other expectation is", sut -> givenWhenThenDefinitionMock
+                        .thenTheActualResultIsInKeepingWithTheExpectedResult());
     }
 }

@@ -1,13 +1,11 @@
-package givenwhenthen;
+package givenwhenthen.fixture;
 
 public class SystemUnderTest {
 
     private GivenWhenThenDefinition givenWhenThenDefinition;
     private String state;
 
-    public SystemUnderTest() {
-        state = null;
-    }
+    public SystemUnderTest() {}
 
     public SystemUnderTest(GivenWhenThenDefinition givenWhenThenDefinition) {
         this.givenWhenThenDefinition = givenWhenThenDefinition;
@@ -30,6 +28,14 @@ public class SystemUnderTest {
         changeState();
     }
 
+    public <$Input> void voidMethodWithArgument($Input input) {
+        voidMethod();
+    }
+
+    public <$Input> String nonVoidMethodWithArgument($Input input) {
+        return nonVoidMethod();
+    }
+
     public void fail() throws Throwable {
         whenAnEventHappens();
         throw new Exception("It fails!");
@@ -47,11 +53,14 @@ public class SystemUnderTest {
 
     public void fail(Class<? extends Throwable> throwableClass, String message) throws Throwable {
         whenAnEventHappens();
-        throw (Throwable) Class.forName(throwableClass.getName()).getConstructor(String.class).newInstance(message);
+        throw (Throwable) Class
+                .forName(throwableClass.getName())
+                .getConstructor(String.class)
+                .newInstance(message);
     }
 
     private void changeState() {
-        state = "state";
+        state = "state updated";
     }
 
     public void setGivenWhenThenDefinition(GivenWhenThenDefinition givenWhenThenDefinition) {

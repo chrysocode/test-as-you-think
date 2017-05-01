@@ -1,17 +1,17 @@
 package givenwhenthen;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import givenwhenthen.GivenWhenThenDsl.AndThenWithoutResult;
+import givenwhenthen.GivenWhenThenDsl.ThenWithoutResult;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 
-import givenwhenthen.GivenWhenThenDsl.AndThenWithoutResult;
-import givenwhenthen.GivenWhenThenDsl.ThenWithoutResult;
+import static org.assertj.core.api.Assertions.assertThat;
 
-public class ThenWithoutResultStep<$SystemUnderTest>
-        implements ThenWithoutResult<$SystemUnderTest>, AndThenWithoutResult<$SystemUnderTest> {
+public class ThenWithoutResultStep<$SystemUnderTest> implements ThenWithoutResult<$SystemUnderTest>,
+        AndThenWithoutResult<$SystemUnderTest> {
 
-    private GivenWhenContext<$SystemUnderTest, Void> context;
+    private final GivenWhenContext<$SystemUnderTest, Void> context;
 
     public ThenWithoutResultStep(GivenWhenContext<$SystemUnderTest, Void> context) {
         this.context = context;
@@ -70,14 +70,14 @@ public class ThenWithoutResultStep<$SystemUnderTest>
     }
 
     @Override
-    public AndThenWithoutResult<$SystemUnderTest> then(String expectationSpecification,
-            Consumer<$SystemUnderTest> thenStep) {
+    public AndThenWithoutResult<$SystemUnderTest> then(String expectationSpecification, Consumer<$SystemUnderTest>
+            thenStep) {
         return then(thenStep);
     }
 
     @Override
-    public AndThenWithoutResult<$SystemUnderTest> and(String expectationSpecification,
-            Consumer<$SystemUnderTest> thenStep) {
+    public AndThenWithoutResult<$SystemUnderTest> and(String expectationSpecification, Consumer<$SystemUnderTest>
+            thenStep) {
         thenStep.accept(context.getSystemUnderTest());
         return this;
     }
