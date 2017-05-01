@@ -1,7 +1,5 @@
 package givenwhenthen.fixture;
 
-import givenwhenthen.GivenWhenThenDefinition;
-
 public class SystemUnderTest {
 
     private GivenWhenThenDefinition givenWhenThenDefinition;
@@ -51,7 +49,10 @@ public class SystemUnderTest {
 
     public void fail(Class<? extends Throwable> throwableClass, String message) throws Throwable {
         whenAnEventHappens();
-        throw (Throwable) Class.forName(throwableClass.getName()).getConstructor(String.class).newInstance(message);
+        throw (Throwable) Class
+                .forName(throwableClass.getName())
+                .getConstructor(String.class)
+                .newInstance(message);
     }
 
     private void changeState() {
