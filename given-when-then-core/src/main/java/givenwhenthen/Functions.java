@@ -1,12 +1,25 @@
 package givenwhenthen;
 
+import java.util.function.Consumer;
+
 class Functions {
 
-    <T> CheckedFunction<T, Throwable> returnThrowable(CheckedConsumer<T> checkedFunction) {
-        return sut -> {
+    <T> Consumer<T> toConsumer(Runnable runnable) {
+        return toBeConsumed -> runnable.run();
+    }
+
+    <T, R> CheckedFunction<T, R> toCheckedFunction(CheckedConsumer<T> checkedConsumer) {
+        return toBeConsumed -> {
+            checkedConsumer.accept(toBeConsumed);
+            return null;
+        };
+    }
+
+    <T> CheckedFunction<T, Throwable> toCheckedFunctionWithThrowableAsResult(CheckedConsumer<T> checkedConsumer) {
+        return toBeConsumed -> {
             Throwable result = null;
             try {
-                checkedFunction.accept(sut);
+                checkedConsumer.accept(toBeConsumed);
             } catch (Throwable throwable) {
                 result = throwable;
             }

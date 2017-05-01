@@ -6,20 +6,18 @@ import java.util.function.Consumer;
 
 class Preparation<$SystemUnderTest> {
 
+    private final Functions functions;
     private final $SystemUnderTest systemUnderTest;
     private final List<Consumer<$SystemUnderTest>> givenSteps;
 
     Preparation($SystemUnderTest systemUnderTest) {
+        functions = new Functions();
         this.systemUnderTest = systemUnderTest;
         this.givenSteps = new ArrayList<>();
     }
 
     void recordGivenStep(Runnable givenStep) {
-        givenSteps.add(toConsumer(givenStep));
-    }
-
-    private Consumer<$SystemUnderTest> toConsumer(Runnable givenStep) {
-        return sut -> givenStep.run();
+        givenSteps.add(functions.toConsumer(givenStep));
     }
 
     void recordGivenStep(Consumer<$SystemUnderTest> givenStep) {

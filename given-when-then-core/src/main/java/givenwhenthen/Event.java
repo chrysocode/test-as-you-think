@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.fail;
 
 class Event<$SystemUnderTest, $Result> {
 
+    private final Functions functions = new Functions();
     private final $SystemUnderTest systemUnderTest;
     private final CheckedFunction<$SystemUnderTest, $Result> whenStep;
 
@@ -14,14 +15,7 @@ class Event<$SystemUnderTest, $Result> {
 
     Event($SystemUnderTest systemUnderTest, CheckedConsumer<$SystemUnderTest> whenStep) {
         this.systemUnderTest = systemUnderTest;
-        this.whenStep = toCheckedFunction(whenStep);
-    }
-
-    private CheckedFunction<$SystemUnderTest, $Result> toCheckedFunction(CheckedConsumer<$SystemUnderTest> whenStep) {
-        return sut -> {
-            whenStep.accept(sut);
-            return null;
-        };
+        this.whenStep = functions.toCheckedFunction(whenStep);
     }
 
     $Result happen() {
