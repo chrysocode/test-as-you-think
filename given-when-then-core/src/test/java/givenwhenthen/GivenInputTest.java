@@ -121,4 +121,31 @@ public class GivenInputTest {
                 .when(SystemUnderTest::voidMethodWithThreeArguments)
                 .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult());
     }
+
+    @Test
+    public void should_receive_three_input_arguments_given_a_non_void_method() {
+        //GIVEN
+        givenWhenThenDefinitionMock = orderedSteps(3);
+
+        // WHEN
+        givenSutClass(SystemUnderTest.class)
+                .given(sut -> sut.setGivenWhenThenDefinition(givenWhenThenDefinitionMock))
+                .andInput(() -> {
+                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                    return "given input";
+                })
+                .andInput(() -> {
+                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                    return 20170502;
+                })
+                .andInput(() -> {
+                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                    return true;
+                })
+                .when(SystemUnderTest::nonVoidMethodWithThreeArguments)
+                .then(result -> {
+                    givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                    assertThat(result).isEqualTo("expected result");
+                });
+    }
 }
