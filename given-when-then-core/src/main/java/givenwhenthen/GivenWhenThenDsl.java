@@ -28,14 +28,27 @@ public interface GivenWhenThenDsl {
 
         AndGiven<$SystemUnderTest> and(String fixtureSpecification, Consumer<$SystemUnderTest> givenStep);
 
-        <$Input> WhenApplyingInput<$SystemUnderTest, $Input> andInput(Supplier<$Input> givenStep);
+        <$Input> AndGivenInput<$SystemUnderTest, $Input> andInput(Supplier<$Input> givenStep);
     }
 
-    interface WhenApplyingInput<$SystemUnderTest, $Input> {
+    interface AndGivenInput<$SystemUnderTest, $Input> extends WhenApplyingOneInput<$SystemUnderTest, $Input> {
+
+        <$Input2> WhenApplyingTwoInputs<$SystemUnderTest, $Input, $Input2> andInput(Supplier<$Input2> givenStep);
+    }
+
+    interface WhenApplyingOneInput<$SystemUnderTest, $Input> {
 
         ThenWithoutResult<$SystemUnderTest> when(BiConsumer<$SystemUnderTest, $Input> whenStep);
 
         <$Result> Then<$SystemUnderTest, $Result> when(BiFunction<$SystemUnderTest, $Input, $Result> whenStep);
+    }
+
+    interface WhenApplyingTwoInputs<$SystemUnderTest, $Input1, $Input2> {
+
+        ThenWithoutResult<$SystemUnderTest> when(TriConsumer<$SystemUnderTest, $Input1, $Input2> whenStep);
+
+        <$Result> Then<$SystemUnderTest, $Result> when(TriFunction<$SystemUnderTest, $Input1, $Input2, $Result>
+                                                               whenStep);
     }
 
     interface When<$SystemUnderTest> {

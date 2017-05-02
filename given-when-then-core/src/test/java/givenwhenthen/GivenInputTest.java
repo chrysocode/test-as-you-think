@@ -32,9 +32,7 @@ public class GivenInputTest {
                     givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
                     return "given input";
                 })
-                .when((sut, input) -> {
-                    sut.voidMethodWithArgument(input);
-                })
+                .when(SystemUnderTest::voidMethodWithArgument)
                 .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult());
     }
 
@@ -50,9 +48,50 @@ public class GivenInputTest {
                     givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
                     return "given input";
                 })
-                .when((sut, input) -> {
-                    return sut.nonVoidMethodWithArgument(input);
+                .when(SystemUnderTest::nonVoidMethodWithArgument)
+                .then(result -> {
+                    givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                    assertThat(result).isEqualTo("expected result");
+                });
+    }
+
+    @Test
+    public void should_receive_two_input_arguments_given_a_void_method() {
+        // GIVEN
+        givenWhenThenDefinitionMock = orderedSteps(2);
+
+        // WHEN
+        givenSutClass(SystemUnderTest.class)
+                .given(sut -> sut.setGivenWhenThenDefinition(givenWhenThenDefinitionMock))
+                .andInput(() -> {
+                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                    return "given input";
                 })
+                .andInput(() -> {
+                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                    return 20170502;
+                })
+                .when(SystemUnderTest::voidMethodWithTwoArguments)
+                .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult());
+    }
+
+    @Test
+    public void should_receive_two_input_arguments_given_a_non_void_method() {
+        // GIVEN
+        givenWhenThenDefinitionMock = orderedSteps(2);
+
+        // WHEN
+        givenSutClass(SystemUnderTest.class)
+                .given(sut -> sut.setGivenWhenThenDefinition(givenWhenThenDefinitionMock))
+                .andInput(() -> {
+                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                    return "given input";
+                })
+                .andInput(() -> {
+                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                    return 20170502;
+                })
+                .when(SystemUnderTest::nonVoidMethodWithTwoArguments)
                 .then(result -> {
                     givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                     assertThat(result).isEqualTo("expected result");

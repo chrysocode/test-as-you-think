@@ -1,11 +1,11 @@
 package givenwhenthen;
 
 import givenwhenthen.GivenWhenThenDsl.AndGiven;
+import givenwhenthen.GivenWhenThenDsl.AndGivenInput;
 import givenwhenthen.GivenWhenThenDsl.Given;
 import givenwhenthen.GivenWhenThenDsl.Then;
 import givenwhenthen.GivenWhenThenDsl.ThenFailure;
 import givenwhenthen.GivenWhenThenDsl.ThenWithoutResult;
-import givenwhenthen.GivenWhenThenDsl.WhenApplyingInput;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -54,9 +54,9 @@ public class GivenWhenSteps<$SystemUnderTest> implements Given<$SystemUnderTest>
     }
 
     @Override
-    public <$Input> WhenApplyingInput<$SystemUnderTest, $Input> andInput(Supplier<$Input> givenStep) {
+    public <$Input> AndGivenInput<$SystemUnderTest, $Input> andInput(Supplier<$Input> givenStep) {
         preparation.recordGivenStep(givenStep);
-        return new WhenApplyingInputStep<>(preparation);
+        return new GivenInputWhenSteps<>(preparation);
     }
 
     @Override

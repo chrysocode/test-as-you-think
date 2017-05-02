@@ -28,11 +28,19 @@ public class SystemUnderTest {
         changeState();
     }
 
-    public <$Input> void voidMethodWithArgument($Input input) {
+    public void voidMethodWithArgument(String input) {
         voidMethod();
     }
 
-    public <$Input> String nonVoidMethodWithArgument($Input input) {
+    public String nonVoidMethodWithArgument(String input) {
+        return nonVoidMethod();
+    }
+
+    public void voidMethodWithTwoArguments(String input1, Integer input2) {
+        voidMethod();
+    }
+
+    public String nonVoidMethodWithTwoArguments(String input1, Integer input2) {
         return nonVoidMethod();
     }
 
