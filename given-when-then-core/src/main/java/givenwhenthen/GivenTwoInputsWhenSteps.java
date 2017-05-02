@@ -1,16 +1,26 @@
 package givenwhenthen;
 
+import givenwhenthen.GivenWhenThenDsl.AndGivenTwoInputs;
 import givenwhenthen.GivenWhenThenDsl.Then;
 import givenwhenthen.GivenWhenThenDsl.ThenWithoutResult;
-import givenwhenthen.GivenWhenThenDsl.WhenApplyingTwoInputs;
+import givenwhenthen.GivenWhenThenDsl.WhenApplyingThreeInputs;
+
+import java.util.function.Supplier;
 
 public class GivenTwoInputsWhenSteps<$SystemUnderTest, $Input1, $Input2> implements
-        WhenApplyingTwoInputs<$SystemUnderTest, $Input1, $Input2> {
+        AndGivenTwoInputs<$SystemUnderTest, $Input1, $Input2> {
 
     private final Preparation<$SystemUnderTest> preparation;
 
     GivenTwoInputsWhenSteps(Preparation<$SystemUnderTest> preparation) {
         this.preparation = preparation;
+    }
+
+    @Override
+    public <$Input3> WhenApplyingThreeInputs<$SystemUnderTest, $Input1, $Input2, $Input3> andInput(Supplier<$Input3>
+                                                                                                               givenStep) {
+        preparation.recordGivenStep(givenStep);
+        return new GivenThreeInputsWhenSteps<>(preparation);
     }
 
     @Override

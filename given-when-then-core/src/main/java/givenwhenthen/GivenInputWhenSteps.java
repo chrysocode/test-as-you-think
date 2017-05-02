@@ -1,9 +1,9 @@
 package givenwhenthen;
 
 import givenwhenthen.GivenWhenThenDsl.AndGivenInput;
+import givenwhenthen.GivenWhenThenDsl.AndGivenTwoInputs;
 import givenwhenthen.GivenWhenThenDsl.Then;
 import givenwhenthen.GivenWhenThenDsl.ThenWithoutResult;
-import givenwhenthen.GivenWhenThenDsl.WhenApplyingTwoInputs;
 
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
@@ -16,7 +16,7 @@ public class GivenInputWhenSteps<$SystemUnderTest, $Input> implements AndGivenIn
     GivenInputWhenSteps(Preparation<$SystemUnderTest> preparation) {this.preparation = preparation;}
 
     @Override
-    public <$Input2> WhenApplyingTwoInputs<$SystemUnderTest, $Input, $Input2> andInput(Supplier<$Input2> givenStep) {
+    public <$Input2> AndGivenTwoInputs<$SystemUnderTest, $Input, $Input2> andInput(Supplier<$Input2> givenStep) {
         preparation.recordGivenStep(givenStep);
         return new GivenTwoInputsWhenSteps<>(preparation);
     }

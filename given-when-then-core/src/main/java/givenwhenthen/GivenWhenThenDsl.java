@@ -33,7 +33,7 @@ public interface GivenWhenThenDsl {
 
     interface AndGivenInput<$SystemUnderTest, $Input> extends WhenApplyingOneInput<$SystemUnderTest, $Input> {
 
-        <$Input2> WhenApplyingTwoInputs<$SystemUnderTest, $Input, $Input2> andInput(Supplier<$Input2> givenStep);
+        <$Input2> AndGivenTwoInputs<$SystemUnderTest, $Input, $Input2> andInput(Supplier<$Input2> givenStep);
     }
 
     interface WhenApplyingOneInput<$SystemUnderTest, $Input> {
@@ -43,12 +43,24 @@ public interface GivenWhenThenDsl {
         <$Result> Then<$SystemUnderTest, $Result> when(BiFunction<$SystemUnderTest, $Input, $Result> whenStep);
     }
 
+    interface AndGivenTwoInputs<$SystemUnderTest, $Input1, $Input2> extends WhenApplyingTwoInputs<$SystemUnderTest,
+            $Input1, $Input2> {
+
+        <$Input3> WhenApplyingThreeInputs<$SystemUnderTest, $Input1, $Input2, $Input3> andInput(Supplier<$Input3>
+                                                                                                        givenStep);
+    }
+
     interface WhenApplyingTwoInputs<$SystemUnderTest, $Input1, $Input2> {
 
         ThenWithoutResult<$SystemUnderTest> when(TriConsumer<$SystemUnderTest, $Input1, $Input2> whenStep);
 
         <$Result> Then<$SystemUnderTest, $Result> when(TriFunction<$SystemUnderTest, $Input1, $Input2, $Result>
                                                                whenStep);
+    }
+
+    interface WhenApplyingThreeInputs<$SystemUnderTest, $Input1, $Input2, $Input3> {
+
+        ThenWithoutResult<$SystemUnderTest> when(QuadriConsumer<$SystemUnderTest, $Input1, $Input2, $Input3> whenStep);
     }
 
     interface When<$SystemUnderTest> {
