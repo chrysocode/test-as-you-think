@@ -183,6 +183,16 @@ When an unexpected failure occurs - because of a regression for example -, the t
 
 # Release Notes
 
+## Version 0.2
+
+- Include a data as a method argument during the preparation phase.
+- Include two data as method arguments during the preparation phase.
+- Include three data as method arguments during the preparation phase.
+- Receive method arguments directly as values.
+- Specify method arguments.
+- Verify failures while invoking methods with arguments.
+- Verify the expected exception and the expected message separately.
+
 ## Version 0.1
 
 - Write an unit or integration test by using the Given-When-Then canvas and full sequence.
@@ -193,4 +203,5 @@ When an unexpected failure occurs - because of a regression for example -, the t
 - Verify the expectations on the system under test, in addition to the result.
 - Provide expectations as predicates.
 - Verify failures.
+- Separate preparations.
 - Separate expectations.
