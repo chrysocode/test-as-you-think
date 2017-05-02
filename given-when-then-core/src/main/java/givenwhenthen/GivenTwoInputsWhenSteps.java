@@ -1,5 +1,6 @@
 package givenwhenthen;
 
+import givenwhenthen.GivenWhenThenDsl.Then;
 import givenwhenthen.GivenWhenThenDsl.ThenWithoutResult;
 import givenwhenthen.GivenWhenThenDsl.WhenApplyingTwoInputs;
 
@@ -19,5 +20,15 @@ public class GivenTwoInputsWhenSteps<$SystemUnderTest, $Input1, $Input2> impleme
         });
         GivenWhenContext<$SystemUnderTest, Void> context = new GivenWhenContext<>(preparation, event);
         return new ThenWithoutResultStep<>(context);
+    }
+
+    @Override
+    public <$Result> Then<$SystemUnderTest, $Result> when(TriFunction<$SystemUnderTest, $Input1, $Input2, $Result>
+                                                                      whenStep) {
+        Event<$SystemUnderTest, $Result> event = new Event<>(preparation.getSystemUnderTest(), sut -> {
+            return whenStep.apply(sut, ($Input1) preparation.supplyInput(), ($Input2) preparation.supplyInput());
+        });
+        GivenWhenContext<$SystemUnderTest, $Result> context = new GivenWhenContext<>(preparation, event);
+        return new ThenStep<>(context);
     }
 }

@@ -40,6 +40,10 @@ public class SystemUnderTest {
         voidMethod();
     }
 
+    public String nonVoidMethodWithTwoArguments(String input1, Integer input2) {
+        return nonVoidMethod();
+    }
+
     public void fail() throws Throwable {
         whenAnEventHappens();
         throw new Exception("It fails!");

@@ -11,7 +11,6 @@ import java.util.function.Supplier;
 
 public class GivenInputWhenSteps<$SystemUnderTest, $Input> implements AndGivenInput<$SystemUnderTest, $Input> {
 
-    private final Functions functions = Functions.INSTANCE;
     private final Preparation<$SystemUnderTest> preparation;
 
     GivenInputWhenSteps(Preparation<$SystemUnderTest> preparation) {this.preparation = preparation;}
@@ -24,8 +23,9 @@ public class GivenInputWhenSteps<$SystemUnderTest, $Input> implements AndGivenIn
 
     @Override
     public ThenWithoutResult<$SystemUnderTest> when(BiConsumer<$SystemUnderTest, $Input> whenStep) {
-        Event<$SystemUnderTest, Void> event = new Event<>(preparation.getSystemUnderTest(), functions
-                .toCheckedFunction(sut -> whenStep.accept(sut, ($Input) preparation.supplyInput())));
+        Event<$SystemUnderTest, Void> event = new Event<>(preparation.getSystemUnderTest(), sut -> {
+            whenStep.accept(sut, ($Input) preparation.supplyInput());
+        });
         GivenWhenContext<$SystemUnderTest, Void> context = new GivenWhenContext<>(preparation, event);
         return new ThenWithoutResultStep<>(context);
     }

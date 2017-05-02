@@ -46,6 +46,9 @@ public interface GivenWhenThenDsl {
     interface WhenApplyingTwoInputs<$SystemUnderTest, $Input1, $Input2> {
 
         ThenWithoutResult<$SystemUnderTest> when(TriConsumer<$SystemUnderTest, $Input1, $Input2> whenStep);
+
+        <$Result> Then<$SystemUnderTest, $Result> when(TriFunction<$SystemUnderTest, $Input1, $Input2, $Result>
+                                                               whenStep);
     }
 
     interface When<$SystemUnderTest> {
