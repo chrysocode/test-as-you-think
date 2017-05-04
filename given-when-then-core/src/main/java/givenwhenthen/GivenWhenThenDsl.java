@@ -11,15 +11,17 @@ import java.util.function.Supplier;
 
 public interface GivenWhenThenDsl {
 
-    interface Given<$SystemUnderTest> extends AndGiven<$SystemUnderTest>, When<$SystemUnderTest> {
+    interface Given<$SystemUnderTest> extends When<$SystemUnderTest> {
 
-        When<$SystemUnderTest> given(Runnable givenStep);
+        AndGiven<$SystemUnderTest> given(Runnable givenStep);
 
-        Given<$SystemUnderTest> given(Consumer<$SystemUnderTest> givenStep);
+        AndGiven<$SystemUnderTest> given(Consumer<$SystemUnderTest> givenStep);
 
-        Given<$SystemUnderTest> given(String fixtureSpecification, Runnable givenStep);
+        AndGiven<$SystemUnderTest> given(String fixtureSpecification, Runnable givenStep);
 
-        When<$SystemUnderTest> given(String fixtureSpecification, Consumer<$SystemUnderTest> givenStep);
+        AndGiven<$SystemUnderTest> given(String fixtureSpecification, Consumer<$SystemUnderTest> givenStep);
+
+        <$Input> AndGivenInput<$SystemUnderTest, $Input> givenInput(Supplier<$Input> givenStep);
     }
 
     interface AndGiven<$SystemUnderTest> extends When<$SystemUnderTest> {
@@ -28,7 +30,7 @@ public interface GivenWhenThenDsl {
 
         AndGiven<$SystemUnderTest> and(String fixtureSpecification, Consumer<$SystemUnderTest> givenStep);
 
-        <$Input> AndGivenInput<$SystemUnderTest, $Input> andInput(Supplier<$Input> givenStep);
+        <$Input> AndGivenInput<$SystemUnderTest, $Input> givenInput(Supplier<$Input> givenStep);
     }
 
     interface AndGivenInput<$SystemUnderTest, $Input> extends WhenApplyingOneInput<$SystemUnderTest, $Input> {
