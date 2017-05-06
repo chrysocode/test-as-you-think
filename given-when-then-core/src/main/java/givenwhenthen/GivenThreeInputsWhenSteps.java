@@ -4,6 +4,8 @@ import givenwhenthen.GivenWhenThenDsl.Then;
 import givenwhenthen.GivenWhenThenDsl.ThenWithoutResult;
 import givenwhenthen.GivenWhenThenDsl.WhenApplyingThreeInputs;
 
+import java.util.function.BiFunction;
+
 public class GivenThreeInputsWhenSteps<$SystemUnderTest, $Input1, $Input2, $Input3> implements
         WhenApplyingThreeInputs<$SystemUnderTest, $Input1, $Input2, $Input3> {
 
@@ -27,10 +29,14 @@ public class GivenThreeInputsWhenSteps<$SystemUnderTest, $Input1, $Input2, $Inpu
     @Override
     public <$Result> Then<$SystemUnderTest, $Result> when(QuadriFunction<$SystemUnderTest, $Input1, $Input2, $Input3,
             $Result> whenStep) {
-        Event<$SystemUnderTest, $Result> event = new Event<>(preparation.getSystemUnderTest(), sut -> {
-            return whenStep.apply(sut, ($Input1) preparation.supplyInput(), ($Input2) preparation.supplyInput(),
-                    ($Input3) preparation.supplyInput());
-        });
+        TriFunction<$SystemUnderTest, $Input1, $Input2, $Result> triFunction = (sut, input1, input2) -> whenStep
+                .apply(sut, input1, input2, ($Input3) preparation.supplyInput());
+        BiFunction<$SystemUnderTest, $Input1, $Result> biFunction = (sut, input1) -> triFunction.apply(sut, input1,
+                ($Input2) preparation.supplyInput());
+        CheckedFunction<$SystemUnderTest, $Result> elementaryWhenStep = sut -> biFunction.apply(sut, ($Input1)
+                preparation.supplyInput());
+
+        Event<$SystemUnderTest, $Result> event = new Event<>(preparation.getSystemUnderTest(), elementaryWhenStep);
         GivenWhenContext<$SystemUnderTest, $Result> context = new GivenWhenContext<>(preparation, event);
         return new ThenStep<>(context);
     }
