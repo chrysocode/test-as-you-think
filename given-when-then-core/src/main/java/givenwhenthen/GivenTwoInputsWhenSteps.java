@@ -5,12 +5,12 @@ import givenwhenthen.GivenWhenThenDsl.Then;
 import givenwhenthen.GivenWhenThenDsl.ThenWithoutResult;
 import givenwhenthen.GivenWhenThenDsl.WhenApplyingThreeInputs;
 
-import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
 public class GivenTwoInputsWhenSteps<$SystemUnderTest, $Input1, $Input2> implements
         AndGivenTwoInputs<$SystemUnderTest, $Input1, $Input2> {
 
+    private final Functions functions = Functions.INSTANCE;
     private final Preparation<$SystemUnderTest> preparation;
 
     GivenTwoInputsWhenSteps(Preparation<$SystemUnderTest> preparation) {
@@ -36,11 +36,8 @@ public class GivenTwoInputsWhenSteps<$SystemUnderTest, $Input1, $Input2> impleme
     @Override
     public <$Result> Then<$SystemUnderTest, $Result> when(TriFunction<$SystemUnderTest, $Input1, $Input2, $Result>
                                                                       whenStep) {
-        BiFunction<$SystemUnderTest, $Input1, $Result> biFunction = (sut, input1) -> whenStep.apply(sut, input1,
-                ($Input2) preparation.supplyInput());
-        CheckedFunction<$SystemUnderTest, $Result> elementaryWhenStep = sut -> biFunction.apply(sut, ($Input1)
-                preparation.supplyInput());
-
+        CheckedFunction<$SystemUnderTest, $Result> elementaryWhenStep = functions.toCheckedFunction(whenStep,
+                preparation.getInputSuppliers());
         Event<$SystemUnderTest, $Result> event = new Event<>(preparation.getSystemUnderTest(), elementaryWhenStep);
         GivenWhenContext<$SystemUnderTest, $Result> context = new GivenWhenContext<>(preparation, event);
         return new ThenStep<>(context);

@@ -38,6 +38,10 @@ class Preparation<$SystemUnderTest> {
                 .get();
     }
 
+    Queue<Supplier> getInputSuppliers() {
+        return inputSuppliers;
+    }
+
     void prepareFixtures() {
         givenSteps
                 .stream()
