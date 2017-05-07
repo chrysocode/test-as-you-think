@@ -46,8 +46,22 @@ enum Functions {
                 .get());
     }
 
+    <$Target, $Argument1, $Argument2, $Argument3, $Result> TriFunction<$Target, $Argument1, $Argument2, $Result>
+    toTriFunction(QuadriFunction<$Target, $Argument1, $Argument2, $Argument3, $Result> whenStep, Queue<Supplier>
+            suppliers) {
+        return (sut, input1, input2) -> whenStep.apply(sut, input1, input2, ($Argument3) suppliers
+                .remove()
+                .get());
+    }
+
     <$Target, $Argument1, $Argument2, $Result> CheckedFunction<$Target, $Result> toCheckedFunction
             (TriFunction<$Target, $Argument1, $Argument2, $Result> triFunction, Queue<Supplier> arguments) {
         return toCheckedFunction(toBiFunction(triFunction, arguments), arguments);
+    }
+
+    <$Target, $Argument1, $Argument2, $Argument3, $Result> CheckedFunction<$Target, $Result> toCheckedFunction
+            (QuadriFunction<$Target, $Argument1, $Argument2, $Argument3, $Result> quadriFunction, Queue<Supplier>
+                    arguments) {
+        return toCheckedFunction(toBiFunction(toTriFunction(quadriFunction, arguments), arguments), arguments);
     }
 }
