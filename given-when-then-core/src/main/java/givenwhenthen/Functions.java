@@ -1,6 +1,7 @@
 package givenwhenthen;
 
 import java.util.Queue;
+import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -64,4 +65,12 @@ enum Functions {
                     arguments) {
         return toCheckedFunction(toBiFunction(toTriFunction(quadriFunction, arguments), arguments), arguments);
     }
+
+    <$Target, $Argument> CheckedConsumer<$Target> toCheckedConsumer(BiConsumer<$Target, $Argument> whenStep,
+                                                                    Queue<Supplier> arguments) {
+        return sut -> whenStep.accept(sut, ($Argument) arguments
+                .remove()
+                .get());
+    }
+
 }

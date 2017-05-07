@@ -24,9 +24,8 @@ public class GivenInputWhenSteps<$SystemUnderTest, $Input> implements AndGivenIn
 
     @Override
     public ThenWithoutResult<$SystemUnderTest> when(BiConsumer<$SystemUnderTest, $Input> whenStep) {
-        Event<$SystemUnderTest, Void> event = new Event<>(preparation.getSystemUnderTest(), sut -> {
-            whenStep.accept(sut, ($Input) preparation.supplyInput());
-        });
+        Event<$SystemUnderTest, Void> event = new Event<>(preparation.getSystemUnderTest(), functions
+                .toCheckedConsumer(whenStep, preparation.getInputSuppliers()));
         GivenWhenContext<$SystemUnderTest, Void> context = new GivenWhenContext<>(preparation, event);
         return new ThenWithoutResultStep<>(context);
     }
