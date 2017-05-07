@@ -11,6 +11,7 @@ import java.util.function.Supplier;
 
 public class GivenInputWhenSteps<$SystemUnderTest, $Input> implements AndGivenInput<$SystemUnderTest, $Input> {
 
+    private final Functions functions = Functions.INSTANCE;
     private final Preparation<$SystemUnderTest> preparation;
 
     GivenInputWhenSteps(Preparation<$SystemUnderTest> preparation) {this.preparation = preparation;}
@@ -32,9 +33,8 @@ public class GivenInputWhenSteps<$SystemUnderTest, $Input> implements AndGivenIn
 
     @Override
     public <$Result> Then<$SystemUnderTest, $Result> when(BiFunction<$SystemUnderTest, $Input, $Result> whenStep) {
-        Event<$SystemUnderTest, $Result> event = new Event<>(preparation.getSystemUnderTest(), sut -> {
-            return whenStep.apply(sut, ($Input) preparation.supplyInput());
-        });
+        Event<$SystemUnderTest, $Result> event = new Event<>(preparation.getSystemUnderTest(), functions
+                .toCheckedFunction(whenStep, preparation.getInputSuppliers()));
         GivenWhenContext<$SystemUnderTest, $Result> context = new GivenWhenContext<>(preparation, event);
         return new ThenStep<>(context);
     }

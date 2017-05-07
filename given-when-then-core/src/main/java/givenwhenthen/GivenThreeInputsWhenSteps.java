@@ -28,9 +28,8 @@ public class GivenThreeInputsWhenSteps<$SystemUnderTest, $Input1, $Input2, $Inpu
     @Override
     public <$Result> Then<$SystemUnderTest, $Result> when(QuadriFunction<$SystemUnderTest, $Input1, $Input2, $Input3,
             $Result> whenStep) {
-        CheckedFunction<$SystemUnderTest, $Result> elementaryWhenStep = functions.toCheckedFunction(whenStep,
-                preparation.getInputSuppliers());
-        Event<$SystemUnderTest, $Result> event = new Event<>(preparation.getSystemUnderTest(), elementaryWhenStep);
+        Event<$SystemUnderTest, $Result> event = new Event<>(preparation.getSystemUnderTest(), functions
+                .toCheckedFunction(whenStep, preparation.getInputSuppliers()));
         GivenWhenContext<$SystemUnderTest, $Result> context = new GivenWhenContext<>(preparation, event);
         return new ThenStep<>(context);
     }
