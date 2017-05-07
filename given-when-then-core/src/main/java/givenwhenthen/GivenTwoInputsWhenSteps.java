@@ -5,8 +5,6 @@ import givenwhenthen.GivenWhenThenDsl.Then;
 import givenwhenthen.GivenWhenThenDsl.ThenWithoutResult;
 import givenwhenthen.GivenWhenThenDsl.WhenApplyingThreeInputs;
 
-import java.util.Queue;
-import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
 public class GivenTwoInputsWhenSteps<$SystemUnderTest, $Input1, $Input2> implements
@@ -28,30 +26,10 @@ public class GivenTwoInputsWhenSteps<$SystemUnderTest, $Input1, $Input2> impleme
 
     @Override
     public ThenWithoutResult<$SystemUnderTest> when(TriConsumer<$SystemUnderTest, $Input1, $Input2> whenStep) {
-        CheckedConsumer<$SystemUnderTest> elementaryWhenStep = toCheckedConsumer(whenStep, preparation
-                .getInputSuppliers());
-        Event<$SystemUnderTest, Void> event = new Event<>(preparation.getSystemUnderTest(), elementaryWhenStep);
+        Event<$SystemUnderTest, Void> event = new Event<>(preparation.getSystemUnderTest(), functions
+                .toCheckedConsumer(whenStep, preparation.getInputSuppliers()));
         GivenWhenContext<$SystemUnderTest, Void> context = new GivenWhenContext<>(preparation, event);
         return new ThenWithoutResultStep<>(context);
-    }
-
-    private CheckedConsumer<$SystemUnderTest> toCheckedConsumer(TriConsumer<$SystemUnderTest, $Input1, $Input2>
-                                                                        whenStep, Queue<Supplier> suppliers) {
-        return toCheckedConsumer(toBiConsumer(whenStep, suppliers), suppliers);
-    }
-
-    private CheckedConsumer<$SystemUnderTest> toCheckedConsumer(BiConsumer<$SystemUnderTest, $Input1> biConsumer,
-                                                                Queue<Supplier> suppliers) {
-        return sut -> biConsumer.accept(sut, ($Input1) suppliers
-                .remove()
-                .get());
-    }
-
-    private BiConsumer<$SystemUnderTest, $Input1> toBiConsumer(TriConsumer<$SystemUnderTest, $Input1, $Input2>
-                                                                       whenStep, Queue<Supplier> suppliers) {
-        return (sut, input1) -> whenStep.accept(sut, input1, ($Input2) suppliers
-                .remove()
-                .get());
     }
 
     @Override

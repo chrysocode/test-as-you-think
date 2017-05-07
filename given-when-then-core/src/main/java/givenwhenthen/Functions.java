@@ -35,22 +35,23 @@ enum Functions {
 
     <$Target, $Argument, $Result> CheckedFunction<$Target, $Result> toCheckedFunction(BiFunction<$Target, $Argument,
             $Result> biFunction, Queue<Supplier> arguments) {
-        return sut -> biFunction.apply(sut, ($Argument) arguments
+        return target -> biFunction.apply(target, ($Argument) arguments
                 .remove()
                 .get());
     }
 
     <$Target, $Argument1, $Argument2, $Result> BiFunction<$Target, $Argument1, $Result> toBiFunction
             (TriFunction<$Target, $Argument1, $Argument2, $Result> triFunction, Queue<Supplier> arguments) {
-        return (sut, argument1) -> triFunction.apply(sut, argument1, ($Argument2) arguments
+        return (target, argument1) -> triFunction.apply(target, argument1, ($Argument2) arguments
                 .remove()
                 .get());
     }
 
     <$Target, $Argument1, $Argument2, $Argument3, $Result> TriFunction<$Target, $Argument1, $Argument2, $Result>
-    toTriFunction(QuadriFunction<$Target, $Argument1, $Argument2, $Argument3, $Result> whenStep, Queue<Supplier>
-            suppliers) {
-        return (sut, input1, input2) -> whenStep.apply(sut, input1, input2, ($Argument3) suppliers
+    toTriFunction(QuadriFunction<$Target, $Argument1, $Argument2, $Argument3, $Result> quadriFunction,
+                  Queue<Supplier> arguments) {
+        return (target, argument1, argument2) -> quadriFunction.apply(target, argument1, argument2, ($Argument3)
+                arguments
                 .remove()
                 .get());
     }
@@ -66,11 +67,22 @@ enum Functions {
         return toCheckedFunction(toBiFunction(toTriFunction(quadriFunction, arguments), arguments), arguments);
     }
 
-    <$Target, $Argument> CheckedConsumer<$Target> toCheckedConsumer(BiConsumer<$Target, $Argument> whenStep,
+    <$Target, $Argument> CheckedConsumer<$Target> toCheckedConsumer(BiConsumer<$Target, $Argument> biConsumer,
                                                                     Queue<Supplier> arguments) {
-        return sut -> whenStep.accept(sut, ($Argument) arguments
+        return target -> biConsumer.accept(target, ($Argument) arguments
                 .remove()
                 .get());
     }
 
+    <$Target, $Argument1, $Argument2> BiConsumer<$Target, $Argument1> toBiConsumer(TriConsumer<$Target, $Argument1,
+            $Argument2> triConsumer, Queue<Supplier> arguments) {
+        return (target, argument1) -> triConsumer.accept(target, argument1, ($Argument2) arguments
+                .remove()
+                .get());
+    }
+
+    <$Target, $Argument1, $Argument2> CheckedConsumer<$Target> toCheckedConsumer(TriConsumer<$Target, $Argument1,
+            $Argument2> triConsumer, Queue<Supplier> arguments) {
+        return toCheckedConsumer(toBiConsumer(triConsumer, arguments), arguments);
+    }
 }
