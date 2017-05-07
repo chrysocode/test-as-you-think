@@ -4,6 +4,9 @@ import givenwhenthen.GivenWhenThenDsl.Then;
 import givenwhenthen.GivenWhenThenDsl.ThenWithoutResult;
 import givenwhenthen.GivenWhenThenDsl.WhenApplyingThreeInputs;
 
+import java.util.Queue;
+import java.util.function.Supplier;
+
 public class GivenThreeInputsWhenSteps<$SystemUnderTest, $Input1, $Input2, $Input3> implements
         WhenApplyingThreeInputs<$SystemUnderTest, $Input1, $Input2, $Input3> {
 
@@ -17,12 +20,23 @@ public class GivenThreeInputsWhenSteps<$SystemUnderTest, $Input1, $Input2, $Inpu
     @Override
     public ThenWithoutResult<$SystemUnderTest> when(QuadriConsumer<$SystemUnderTest, $Input1, $Input2, $Input3>
                                                                 whenStep) {
-        Event<$SystemUnderTest, Void> event = new Event<>(preparation.getSystemUnderTest(), sut -> {
-            whenStep.accept(sut, ($Input1) preparation.supplyInput(), ($Input2) preparation.supplyInput(), ($Input3)
-                    preparation.supplyInput());
-        });
+        Event<$SystemUnderTest, Void> event = new Event<>(preparation.getSystemUnderTest(), toCheckedConsumer
+                (whenStep, preparation.getInputSuppliers()));
         GivenWhenContext<$SystemUnderTest, Void> context = new GivenWhenContext<>(preparation, event);
         return new ThenWithoutResultStep<>(context);
+    }
+
+    private TriConsumer<$SystemUnderTest, $Input1, $Input2> toTriConsumer(QuadriConsumer<$SystemUnderTest, $Input1,
+            $Input2, $Input3> whenStep, Queue<Supplier> suppliers) {
+        return (sut, input1, input2) -> whenStep.accept(sut, input1, input2, ($Input3) suppliers
+                .remove()
+                .get());
+    }
+
+    private CheckedConsumer<$SystemUnderTest> toCheckedConsumer(QuadriConsumer<$SystemUnderTest, $Input1, $Input2,
+            $Input3> whenStep, Queue<Supplier> suppliers) {
+        return functions.toCheckedConsumer(functions.toBiConsumer(toTriConsumer(whenStep, suppliers), suppliers),
+                suppliers);
     }
 
     @Override
