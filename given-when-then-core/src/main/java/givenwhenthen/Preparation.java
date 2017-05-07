@@ -32,12 +32,6 @@ class Preparation<$SystemUnderTest> {
         inputSuppliers.add(givenStep);
     }
 
-    Object supplyInput() {
-        return inputSuppliers
-                .remove()
-                .get();
-    }
-
     Queue<Supplier> getInputSuppliers() {
         return inputSuppliers;
     }

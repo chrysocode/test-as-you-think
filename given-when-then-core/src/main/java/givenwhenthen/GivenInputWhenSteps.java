@@ -12,6 +12,7 @@ import java.util.function.Supplier;
 public class GivenInputWhenSteps<$SystemUnderTest, $Input> implements AndGivenInput<$SystemUnderTest, $Input> {
 
     private final Functions functions = Functions.INSTANCE;
+    private final ThenStepFactory thenStepFactory = ThenStepFactory.INSTANCE;
     private final Preparation<$SystemUnderTest> preparation;
 
     GivenInputWhenSteps(Preparation<$SystemUnderTest> preparation) {this.preparation = preparation;}
@@ -24,17 +25,13 @@ public class GivenInputWhenSteps<$SystemUnderTest, $Input> implements AndGivenIn
 
     @Override
     public ThenWithoutResult<$SystemUnderTest> when(BiConsumer<$SystemUnderTest, $Input> whenStep) {
-        Event<$SystemUnderTest, Void> event = new Event<>(preparation.getSystemUnderTest(), functions
-                .toCheckedConsumer(whenStep, preparation.getInputSuppliers()));
-        GivenWhenContext<$SystemUnderTest, Void> context = new GivenWhenContext<>(preparation, event);
-        return new ThenWithoutResultStep<>(context);
+        return thenStepFactory.createThenWithoutResultStep(preparation, functions.toCheckedConsumer(whenStep,
+                preparation.getInputSuppliers()));
     }
 
     @Override
     public <$Result> Then<$SystemUnderTest, $Result> when(BiFunction<$SystemUnderTest, $Input, $Result> whenStep) {
-        Event<$SystemUnderTest, $Result> event = new Event<>(preparation.getSystemUnderTest(), functions
-                .toCheckedFunction(whenStep, preparation.getInputSuppliers()));
-        GivenWhenContext<$SystemUnderTest, $Result> context = new GivenWhenContext<>(preparation, event);
-        return new ThenStep<>(context);
+        return thenStepFactory.createThenStep(preparation, functions.toCheckedFunction(whenStep, preparation
+                .getInputSuppliers()));
     }
 }

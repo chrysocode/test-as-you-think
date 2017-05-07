@@ -11,6 +11,7 @@ public class GivenTwoInputsWhenSteps<$SystemUnderTest, $Input1, $Input2> impleme
         AndGivenTwoInputs<$SystemUnderTest, $Input1, $Input2> {
 
     private final Functions functions = Functions.INSTANCE;
+    private final ThenStepFactory thenStepFactory = ThenStepFactory.INSTANCE;
     private final Preparation<$SystemUnderTest> preparation;
 
     GivenTwoInputsWhenSteps(Preparation<$SystemUnderTest> preparation) {
@@ -26,18 +27,14 @@ public class GivenTwoInputsWhenSteps<$SystemUnderTest, $Input1, $Input2> impleme
 
     @Override
     public ThenWithoutResult<$SystemUnderTest> when(TriConsumer<$SystemUnderTest, $Input1, $Input2> whenStep) {
-        Event<$SystemUnderTest, Void> event = new Event<>(preparation.getSystemUnderTest(), functions
-                .toCheckedConsumer(whenStep, preparation.getInputSuppliers()));
-        GivenWhenContext<$SystemUnderTest, Void> context = new GivenWhenContext<>(preparation, event);
-        return new ThenWithoutResultStep<>(context);
+        return thenStepFactory.createThenWithoutResultStep(preparation, functions.toCheckedConsumer(whenStep,
+                preparation.getInputSuppliers()));
     }
 
     @Override
     public <$Result> Then<$SystemUnderTest, $Result> when(TriFunction<$SystemUnderTest, $Input1, $Input2, $Result>
                                                                       whenStep) {
-        Event<$SystemUnderTest, $Result> event = new Event<>(preparation.getSystemUnderTest(), functions
-                .toCheckedFunction(whenStep, preparation.getInputSuppliers()));
-        GivenWhenContext<$SystemUnderTest, $Result> context = new GivenWhenContext<>(preparation, event);
-        return new ThenStep<>(context);
+        return thenStepFactory.createThenStep(preparation, functions.toCheckedFunction(whenStep, preparation
+                .getInputSuppliers()));
     }
 }
