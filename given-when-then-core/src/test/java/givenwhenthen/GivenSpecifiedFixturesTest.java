@@ -27,8 +27,8 @@ public class GivenSpecifiedFixturesTest {
 
         // WHEN
         givenSutClass(SystemUnderTest.class)
-                .given("what it makes this fixture specific to the current use case", () ->
-                        givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem())
+                .given("what it makes this fixture specific to the current use case",
+                        () -> givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem())
                 .when(sut -> {
                     givenWhenThenDefinitionMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
                     return sut.nonVoidMethod();
@@ -64,10 +64,10 @@ public class GivenSpecifiedFixturesTest {
 
         // WHEN
         givenSutClass(SystemUnderTest.class)
-                .given("what it makes the first fixture specific to the current use " + "case", () ->
-                        givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem())
-                .and("what it makes the second fixture specific to the current use " + "case", () ->
-                        givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem())
+                .given("what it makes the first fixture specific to the current use " + "case",
+                        () -> givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem())
+                .and("what it makes the second fixture specific to the current use " + "case",
+                        () -> givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem())
                 .and("what it makes the third fixture specific to the current use case", sut -> {
                     givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
                     sut.setGivenWhenThenDefinition(givenWhenThenDefinitionMock);

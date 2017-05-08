@@ -44,8 +44,8 @@ public class GivenInputTest {
         // WHEN
         givenSutClass(SystemUnderTest.class)
                 .given(sut -> sut.setGivenWhenThenDefinition(givenWhenThenDefinitionMock))
-                .and("specified fixture", () -> givenWhenThenDefinitionMock
-                        .givenAContextThatDefinesTheInitialStateOfTheSystem())
+                .and("specified fixture",
+                        () -> givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem())
                 .givenInput(() -> {
                     givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
                     return "given input";

@@ -25,13 +25,13 @@ public class GivenInputWhenSteps<$SystemUnderTest, $Input> implements AndGivenIn
 
     @Override
     public ThenWithoutResult<$SystemUnderTest> when(BiConsumer<$SystemUnderTest, $Input> whenStep) {
-        return thenStepFactory.createThenWithoutResultStep(preparation, functions.toCheckedConsumer(whenStep,
-                preparation.getInputSuppliers()));
+        return thenStepFactory.createThenStep(preparation,
+                functions.toCheckedConsumer(whenStep, preparation.getInputSuppliers()));
     }
 
     @Override
     public <$Result> Then<$SystemUnderTest, $Result> when(BiFunction<$SystemUnderTest, $Input, $Result> whenStep) {
-        return thenStepFactory.createThenStep(preparation, functions.toCheckedFunction(whenStep, preparation
-                .getInputSuppliers()));
+        return thenStepFactory.createThenStep(preparation,
+                functions.toCheckedFunction(whenStep, preparation.getInputSuppliers()));
     }
 }

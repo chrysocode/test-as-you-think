@@ -48,24 +48,24 @@ public interface GivenWhenThenDsl {
     interface AndGivenTwoInputs<$SystemUnderTest, $Input1, $Input2> extends WhenApplyingTwoInputs<$SystemUnderTest,
             $Input1, $Input2> {
 
-        <$Input3> WhenApplyingThreeInputs<$SystemUnderTest, $Input1, $Input2, $Input3> andInput(Supplier<$Input3>
-                                                                                                        givenStep);
+        <$Input3> WhenApplyingThreeInputs<$SystemUnderTest, $Input1, $Input2, $Input3> andInput(
+                Supplier<$Input3> givenStep);
     }
 
     interface WhenApplyingTwoInputs<$SystemUnderTest, $Input1, $Input2> {
 
         ThenWithoutResult<$SystemUnderTest> when(TriConsumer<$SystemUnderTest, $Input1, $Input2> whenStep);
 
-        <$Result> Then<$SystemUnderTest, $Result> when(TriFunction<$SystemUnderTest, $Input1, $Input2, $Result>
-                                                               whenStep);
+        <$Result> Then<$SystemUnderTest, $Result> when(
+                TriFunction<$SystemUnderTest, $Input1, $Input2, $Result> whenStep);
     }
 
     interface WhenApplyingThreeInputs<$SystemUnderTest, $Input1, $Input2, $Input3> {
 
         ThenWithoutResult<$SystemUnderTest> when(QuadriConsumer<$SystemUnderTest, $Input1, $Input2, $Input3> whenStep);
 
-        <$Result> Then<$SystemUnderTest, $Result> when(QuadriFunction<$SystemUnderTest, $Input1, $Input2, $Input3,
-                $Result> whenStep);
+        <$Result> Then<$SystemUnderTest, $Result> when(
+                QuadriFunction<$SystemUnderTest, $Input1, $Input2, $Input3, $Result> whenStep);
     }
 
     interface When<$SystemUnderTest> {
@@ -119,8 +119,8 @@ public interface GivenWhenThenDsl {
 
         AndThenWithoutResult<$SystemUnderTest> then(Consumer<$SystemUnderTest> thenStep);
 
-        AndThenWithoutResult<$SystemUnderTest> then(String expectationSpecification, Consumer<$SystemUnderTest>
-                thenStep);
+        AndThenWithoutResult<$SystemUnderTest> then(String expectationSpecification,
+                Consumer<$SystemUnderTest> thenStep);
 
         AndThenWithoutResult<$SystemUnderTest> then(BooleanSupplier thenStep);
     }
@@ -133,8 +133,8 @@ public interface GivenWhenThenDsl {
 
         AndThenWithoutResult<$SystemUnderTest> and(Consumer<$SystemUnderTest> thenStep);
 
-        AndThenWithoutResult<$SystemUnderTest> and(String expectationSpecification, Consumer<$SystemUnderTest>
-                thenStep);
+        AndThenWithoutResult<$SystemUnderTest> and(String expectationSpecification,
+                Consumer<$SystemUnderTest> thenStep);
 
         AndThenWithoutResult<$SystemUnderTest> and(BooleanSupplier thenStep);
     }

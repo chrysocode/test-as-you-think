@@ -83,8 +83,8 @@ public class GivenWhenSteps<$SystemUnderTest> implements Given<$SystemUnderTest>
 
     @Override
     public ThenFailure whenSutRunsOutsideOperatingConditions(CheckedConsumer<$SystemUnderTest> whenStep) {
-        Event<$SystemUnderTest, Throwable> event = new Event<>(preparation.getSystemUnderTest(), functions
-                .toCheckedFunctionWithThrowableAsResult(whenStep));
+        Event<$SystemUnderTest, Throwable> event = new Event<>(preparation.getSystemUnderTest(),
+                functions.toCheckedFunctionWithThrowableAsResult(whenStep));
         GivenWhenContext<$SystemUnderTest, Throwable> context = new GivenWhenContext<>(preparation, event);
         return new ThenStep<>(context);
     }

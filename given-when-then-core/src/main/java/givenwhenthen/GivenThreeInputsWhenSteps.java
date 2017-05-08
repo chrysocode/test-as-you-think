@@ -16,16 +16,16 @@ public class GivenThreeInputsWhenSteps<$SystemUnderTest, $Input1, $Input2, $Inpu
     }
 
     @Override
-    public ThenWithoutResult<$SystemUnderTest> when(QuadriConsumer<$SystemUnderTest, $Input1, $Input2, $Input3>
-                                                                whenStep) {
-        return thenStepFactory.createThenWithoutResultStep(preparation, functions.toCheckedConsumer(whenStep,
-                preparation.getInputSuppliers()));
+    public ThenWithoutResult<$SystemUnderTest> when(
+            QuadriConsumer<$SystemUnderTest, $Input1, $Input2, $Input3> whenStep) {
+        return thenStepFactory.createThenStep(preparation,
+                functions.toCheckedConsumer(whenStep, preparation.getInputSuppliers()));
     }
 
     @Override
-    public <$Result> Then<$SystemUnderTest, $Result> when(QuadriFunction<$SystemUnderTest, $Input1, $Input2, $Input3,
-            $Result> whenStep) {
-        return thenStepFactory.createThenStep(preparation, functions.toCheckedFunction(whenStep, preparation
-                .getInputSuppliers()));
+    public <$Result> Then<$SystemUnderTest, $Result> when(
+            QuadriFunction<$SystemUnderTest, $Input1, $Input2, $Input3, $Result> whenStep) {
+        return thenStepFactory.createThenStep(preparation,
+                functions.toCheckedFunction(whenStep, preparation.getInputSuppliers()));
     }
 }
