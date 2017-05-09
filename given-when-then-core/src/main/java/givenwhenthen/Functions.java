@@ -51,15 +51,15 @@ enum Functions {
         return toCheckedFunction(toBiFunction(toTriFunction(quadriFunction, arguments), arguments), arguments);
     }
 
-    <$Target, $Argument1, $Argument2, $Result> BiFunction<$Target, $Argument1, $Result> toBiFunction(
+    private <$Target, $Argument1, $Argument2, $Result> BiFunction<$Target, $Argument1, $Result> toBiFunction(
             TriFunction<$Target, $Argument1, $Argument2, $Result> triFunction, Queue<Supplier> arguments) {
         return (target, argument1) -> triFunction.apply(target, argument1, ($Argument2) arguments
                 .remove()
                 .get());
     }
 
-    <$Target, $Argument1, $Argument2, $Argument3, $Result> TriFunction<$Target, $Argument1, $Argument2, $Result>
-    toTriFunction(
+    private <$Target, $Argument1, $Argument2, $Argument3, $Result> TriFunction<$Target, $Argument1, $Argument2,
+            $Result> toTriFunction(
             QuadriFunction<$Target, $Argument1, $Argument2, $Argument3, $Result> quadriFunction,
             Queue<Supplier> arguments) {
         return (target, argument1, argument2) -> quadriFunction.apply(target, argument1, argument2,
@@ -85,14 +85,14 @@ enum Functions {
         return toCheckedConsumer(toBiConsumer(toTriConsumer(quadriConsumer, arguments), arguments), arguments);
     }
 
-    <$Target, $Argument1, $Argument2> BiConsumer<$Target, $Argument1> toBiConsumer(
+    private <$Target, $Argument1, $Argument2> BiConsumer<$Target, $Argument1> toBiConsumer(
             TriConsumer<$Target, $Argument1, $Argument2> triConsumer, Queue<Supplier> arguments) {
         return (target, argument1) -> triConsumer.accept(target, argument1, ($Argument2) arguments
                 .remove()
                 .get());
     }
 
-    <$Target, $Argument1, $Argument2, $Argument3> TriConsumer<$Target, $Argument1, $Argument2> toTriConsumer(
+    private <$Target, $Argument1, $Argument2, $Argument3> TriConsumer<$Target, $Argument1, $Argument2> toTriConsumer(
             QuadriConsumer<$Target, $Argument1, $Argument2, $Argument3> quadriConsumer, Queue<Supplier> arguments) {
         return (target, argument1, argument2) -> quadriConsumer.accept(target, argument1, argument2,
                 ($Argument3) arguments
