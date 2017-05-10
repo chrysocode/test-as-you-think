@@ -1,6 +1,8 @@
 package givenwhenthen;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import givenwhenthen.GivenWhenThenDsl.AndThen;
+import givenwhenthen.GivenWhenThenDsl.Then;
+import givenwhenthen.GivenWhenThenDsl.ThenFailure;
 
 import java.util.List;
 import java.util.function.BiConsumer;
@@ -8,12 +10,10 @@ import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-import givenwhenthen.GivenWhenThenDsl.AndThen;
-import givenwhenthen.GivenWhenThenDsl.Then;
-import givenwhenthen.GivenWhenThenDsl.ThenFailure;
+import static org.assertj.core.api.Assertions.assertThat;
 
-public class ThenStep<$SystemUnderTest, $Result>
-        implements Then<$SystemUnderTest, $Result>, ThenFailure, AndThen<$SystemUnderTest, $Result> {
+public class ThenStep<$SystemUnderTest, $Result> implements Then<$SystemUnderTest, $Result>, ThenFailure,
+        AndThen<$SystemUnderTest, $Result> {
 
     private final GivenWhenContext<$SystemUnderTest, $Result> context;
     private $Result result;
@@ -64,7 +64,10 @@ public class ThenStep<$SystemUnderTest, $Result>
 
     @Override
     public void then(List<Predicate<$Result>> thenSteps) {
-        assertThat(thenSteps.stream().reduce((predicate, another) -> predicate.and(another)).get()
+        assertThat(thenSteps
+                .stream()
+                .reduce((predicate, another) -> predicate.and(another))
+                .get()
                 .test(context.returnResultOrVoid())).isTrue();
     }
 

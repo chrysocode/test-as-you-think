@@ -57,8 +57,8 @@ public class ThenSpecifiedExpectationsTest {
                     sut.setGivenWhenThenDefinition(givenWhenThenDefinitionMock);
                 })
                 .when(SystemUnderTest::nonVoidMethod)
-                .then("what the focus of this expectation is", () -> givenWhenThenDefinitionMock
-                        .thenTheActualResultIsInKeepingWithTheExpectedResult());
+                .then("what the focus of this expectation is",
+                        () -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult());
     }
 
     @Test
@@ -81,8 +81,8 @@ public class ThenSpecifiedExpectationsTest {
                     givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                     assertThat(result).contains("result");
                 })
-                .and("what the focus of this expectation is", () -> givenWhenThenDefinitionMock
-                        .thenTheActualResultIsInKeepingWithTheExpectedResult());
+                .and("what the focus of this expectation is",
+                        () -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult());
     }
 
     @Test
@@ -97,12 +97,12 @@ public class ThenSpecifiedExpectationsTest {
                     sut.setGivenWhenThenDefinition(givenWhenThenDefinitionMock);
                 })
                 .when(SystemUnderTest::voidMethod)
-                .then("what the focus of this expectation is", () -> givenWhenThenDefinitionMock
-                        .thenTheActualResultIsInKeepingWithTheExpectedResult())
-                .and("what the focus of this other expectation is", () -> givenWhenThenDefinitionMock
-                        .thenTheActualResultIsInKeepingWithTheExpectedResult())
-                .and("what the focus of this other expectation is", () -> givenWhenThenDefinitionMock
-                        .thenTheActualResultIsInKeepingWithTheExpectedResult());
+                .then("what the focus of this expectation is",
+                        () -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult())
+                .and("what the focus of this other expectation is",
+                        () -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult())
+                .and("what the focus of this other expectation is",
+                        () -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult());
     }
 
     @Test
@@ -117,11 +117,11 @@ public class ThenSpecifiedExpectationsTest {
                     sut.setGivenWhenThenDefinition(givenWhenThenDefinitionMock);
                 })
                 .when(SystemUnderTest::voidMethod)
-                .then("what the focus of this expectation is", sut -> givenWhenThenDefinitionMock
-                        .thenTheActualResultIsInKeepingWithTheExpectedResult())
-                .and("what the focus of this other expectation is", sut -> givenWhenThenDefinitionMock
-                        .thenTheActualResultIsInKeepingWithTheExpectedResult())
-                .and("what the focus of this other expectation is", sut -> givenWhenThenDefinitionMock
-                        .thenTheActualResultIsInKeepingWithTheExpectedResult());
+                .then("what the focus of this expectation is",
+                        sut -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult())
+                .and("what the focus of this other expectation is",
+                        sut -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult())
+                .and("what the focus of this other expectation is",
+                        sut -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult());
     }
 }

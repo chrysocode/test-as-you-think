@@ -28,7 +28,7 @@ public class GivenInputTest {
         // WHEN
         givenSutClass(SystemUnderTest.class)
                 .given(sut -> sut.setGivenWhenThenDefinition(givenWhenThenDefinitionMock))
-                .andInput(() -> {
+                .givenInput(() -> {
                     givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
                     return "given input";
                 })
@@ -39,12 +39,14 @@ public class GivenInputTest {
     @Test
     public void should_receive_an_input_argument_given_a_non_void_method() {
         // GIVEN
-        givenWhenThenDefinitionMock = orderedSteps();
+        givenWhenThenDefinitionMock = orderedSteps(2);
 
         // WHEN
         givenSutClass(SystemUnderTest.class)
                 .given(sut -> sut.setGivenWhenThenDefinition(givenWhenThenDefinitionMock))
-                .andInput(() -> {
+                .and("specified fixture",
+                        () -> givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem())
+                .givenInput(() -> {
                     givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
                     return "given input";
                 })
@@ -63,7 +65,7 @@ public class GivenInputTest {
         // WHEN
         givenSutClass(SystemUnderTest.class)
                 .given(sut -> sut.setGivenWhenThenDefinition(givenWhenThenDefinitionMock))
-                .andInput(() -> {
+                .givenInput(() -> {
                     givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
                     return "given input";
                 })
@@ -83,7 +85,7 @@ public class GivenInputTest {
         // WHEN
         givenSutClass(SystemUnderTest.class)
                 .given(sut -> sut.setGivenWhenThenDefinition(givenWhenThenDefinitionMock))
-                .andInput(() -> {
+                .givenInput(() -> {
                     givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
                     return "given input";
                 })
@@ -92,6 +94,57 @@ public class GivenInputTest {
                     return 20170502;
                 })
                 .when(SystemUnderTest::nonVoidMethodWithTwoArguments)
+                .then(result -> {
+                    givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                    assertThat(result).isEqualTo("expected result");
+                });
+    }
+
+    @Test
+    public void should_receive_three_input_arguments_given_a_void_method() {
+        //GIVEN
+        givenWhenThenDefinitionMock = orderedSteps(3);
+
+        // WHEN
+        givenSutClass(SystemUnderTest.class)
+                .given(sut -> sut.setGivenWhenThenDefinition(givenWhenThenDefinitionMock))
+                .givenInput(() -> {
+                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                    return "given input";
+                })
+                .andInput(() -> {
+                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                    return 20170502;
+                })
+                .andInput(() -> {
+                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                    return true;
+                })
+                .when(SystemUnderTest::voidMethodWithThreeArguments)
+                .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult());
+    }
+
+    @Test
+    public void should_receive_three_input_arguments_given_a_non_void_method() {
+        //GIVEN
+        givenWhenThenDefinitionMock = orderedSteps(3);
+
+        // WHEN
+        givenSutClass(SystemUnderTest.class)
+                .given(sut -> sut.setGivenWhenThenDefinition(givenWhenThenDefinitionMock))
+                .givenInput(() -> {
+                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                    return "given input";
+                })
+                .andInput(() -> {
+                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                    return 20170502;
+                })
+                .andInput(() -> {
+                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                    return true;
+                })
+                .when(SystemUnderTest::nonVoidMethodWithThreeArguments)
                 .then(result -> {
                     givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                     assertThat(result).isEqualTo("expected result");

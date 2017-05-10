@@ -10,7 +10,7 @@ import givenwhenthen.GivenWhenThenDsl.ThenWithoutResult;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public class GivenWhenSteps<$SystemUnderTest> implements Given<$SystemUnderTest> {
+public class GivenWhenSteps<$SystemUnderTest> implements Given<$SystemUnderTest>, AndGiven<$SystemUnderTest> {
 
     private final Functions functions = Functions.INSTANCE;
     private final Preparation<$SystemUnderTest> preparation;
@@ -20,25 +20,25 @@ public class GivenWhenSteps<$SystemUnderTest> implements Given<$SystemUnderTest>
     }
 
     @Override
-    public Given<$SystemUnderTest> given(Runnable givenStep) {
+    public AndGiven<$SystemUnderTest> given(Runnable givenStep) {
         preparation.recordGivenStep(givenStep);
         return this;
     }
 
     @Override
-    public Given<$SystemUnderTest> given(Consumer<$SystemUnderTest> givenStep) {
+    public AndGiven<$SystemUnderTest> given(Consumer<$SystemUnderTest> givenStep) {
         preparation.recordGivenStep(givenStep);
         return this;
     }
 
     @Override
-    public Given<$SystemUnderTest> given(String fixtureSpecification, Runnable givenStep) {
+    public AndGiven<$SystemUnderTest> given(String fixtureSpecification, Runnable givenStep) {
         preparation.recordGivenStep(givenStep);
         return this;
     }
 
     @Override
-    public Given<$SystemUnderTest> given(String fixtureSpecification, Consumer<$SystemUnderTest> givenStep) {
+    public AndGiven<$SystemUnderTest> given(String fixtureSpecification, Consumer<$SystemUnderTest> givenStep) {
         preparation.recordGivenStep(givenStep);
         return this;
     }
@@ -54,7 +54,7 @@ public class GivenWhenSteps<$SystemUnderTest> implements Given<$SystemUnderTest>
     }
 
     @Override
-    public <$Input> AndGivenInput<$SystemUnderTest, $Input> andInput(Supplier<$Input> givenStep) {
+    public <$Input> AndGivenInput<$SystemUnderTest, $Input> givenInput(Supplier<$Input> givenStep) {
         preparation.recordGivenStep(givenStep);
         return new GivenInputWhenSteps<>(preparation);
     }
@@ -83,8 +83,8 @@ public class GivenWhenSteps<$SystemUnderTest> implements Given<$SystemUnderTest>
 
     @Override
     public ThenFailure whenSutRunsOutsideOperatingConditions(CheckedConsumer<$SystemUnderTest> whenStep) {
-        Event<$SystemUnderTest, Throwable> event = new Event<>(preparation.getSystemUnderTest(), functions
-                .toCheckedFunctionWithThrowableAsResult(whenStep));
+        Event<$SystemUnderTest, Throwable> event = new Event<>(preparation.getSystemUnderTest(),
+                functions.toCheckedFunctionWithThrowableAsResult(whenStep));
         GivenWhenContext<$SystemUnderTest, Throwable> context = new GivenWhenContext<>(preparation, event);
         return new ThenStep<>(context);
     }

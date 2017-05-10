@@ -18,8 +18,8 @@ public class GivenWhenThenDefinition {
         return orderedSteps(numberOfGivenSteps, DEFAULT_NUMBER_OF_STEPS, numberOfThenSteps);
     }
 
-    public static GivenWhenThenDefinition orderedSteps(int numberOfGivenSteps, int numberOfWhenSteps, int
-            numberOfThenSteps) {
+    public static GivenWhenThenDefinition orderedSteps(int numberOfGivenSteps, int numberOfWhenSteps,
+            int numberOfThenSteps) {
         GivenWhenThenDefinition mock = strictMock(GivenWhenThenDefinition.class);
 
         if (numberOfGivenSteps > 0) {

@@ -44,6 +44,14 @@ public class SystemUnderTest {
         return nonVoidMethod();
     }
 
+    public void voidMethodWithThreeArguments(String input1, Integer input2, Boolean input3) {
+        voidMethod();
+    }
+
+    public String nonVoidMethodWithThreeArguments(String input1, Integer input2, Boolean input3) {
+        return nonVoidMethod();
+    }
+
     public void fail() throws Throwable {
         whenAnEventHappens();
         throw new Exception("It fails!");

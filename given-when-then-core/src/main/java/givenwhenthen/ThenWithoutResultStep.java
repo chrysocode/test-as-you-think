@@ -70,14 +70,14 @@ public class ThenWithoutResultStep<$SystemUnderTest> implements ThenWithoutResul
     }
 
     @Override
-    public AndThenWithoutResult<$SystemUnderTest> then(String expectationSpecification, Consumer<$SystemUnderTest>
-            thenStep) {
+    public AndThenWithoutResult<$SystemUnderTest> then(String expectationSpecification,
+            Consumer<$SystemUnderTest> thenStep) {
         return then(thenStep);
     }
 
     @Override
-    public AndThenWithoutResult<$SystemUnderTest> and(String expectationSpecification, Consumer<$SystemUnderTest>
-            thenStep) {
+    public AndThenWithoutResult<$SystemUnderTest> and(String expectationSpecification,
+            Consumer<$SystemUnderTest> thenStep) {
         thenStep.accept(context.getSystemUnderTest());
         return this;
     }
