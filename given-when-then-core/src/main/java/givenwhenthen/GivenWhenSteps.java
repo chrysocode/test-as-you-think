@@ -60,6 +60,12 @@ public class GivenWhenSteps<$SystemUnderTest> implements Given<$SystemUnderTest>
     }
 
     @Override
+    public <$Input> AndGivenInput<$SystemUnderTest, $Input> givenInput($Input input) {
+        preparation.recordGivenStep(() -> input);
+        return new GivenInputWhenSteps<>(preparation);
+    }
+
+    @Override
     public <$Result> Then<$SystemUnderTest, $Result> when(CheckedFunction<$SystemUnderTest, $Result> whenStep) {
         return toThenStep(whenStep);
     }

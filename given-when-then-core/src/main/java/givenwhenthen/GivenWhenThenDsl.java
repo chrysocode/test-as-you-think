@@ -22,6 +22,8 @@ public interface GivenWhenThenDsl {
         AndGiven<$SystemUnderTest> given(String fixtureSpecification, Consumer<$SystemUnderTest> givenStep);
 
         <$Input> AndGivenInput<$SystemUnderTest, $Input> givenInput(Supplier<$Input> givenStep);
+
+        <$Input> AndGivenInput<$SystemUnderTest, $Input> givenInput($Input input);
     }
 
     interface AndGiven<$SystemUnderTest> extends When<$SystemUnderTest> {

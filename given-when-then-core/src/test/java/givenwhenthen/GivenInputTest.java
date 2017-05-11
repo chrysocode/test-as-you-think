@@ -150,4 +150,20 @@ public class GivenInputTest {
                     assertThat(result).isEqualTo("expected result");
                 });
     }
+
+    @Test
+    public void should_receive_an_argument_value_given_a_void_method() {
+        //GIVEN
+        givenWhenThenDefinitionMock = orderedSteps();
+
+        // WHEN
+        givenSutClass(SystemUnderTest.class)
+                .given(sut -> {
+                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                    sut.setGivenWhenThenDefinition(givenWhenThenDefinitionMock);
+                })
+                .givenInput("given input")
+                .when(SystemUnderTest::voidMethodWithArgument)
+                .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult());
+    }
 }
