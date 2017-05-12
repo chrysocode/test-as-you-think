@@ -33,6 +33,8 @@ public interface GivenWhenThenDsl {
         AndGiven<$SystemUnderTest> and(String fixtureSpecification, Consumer<$SystemUnderTest> givenStep);
 
         <$Input> AndGivenInput<$SystemUnderTest, $Input> givenInput(Supplier<$Input> givenStep);
+
+        <$Input> AndGivenInput<$SystemUnderTest, $Input> givenInput($Input input);
     }
 
     interface AndGivenInput<$SystemUnderTest, $Input> extends WhenApplyingOneInput<$SystemUnderTest, $Input> {

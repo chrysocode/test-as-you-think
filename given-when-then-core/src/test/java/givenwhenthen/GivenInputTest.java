@@ -184,4 +184,26 @@ public class GivenInputTest {
         // THEN
         mocksControl.verify();
     }
+
+    @Test
+    public void should_receive_an_argument_value_given_a_void_method_and_two_preparation_steps() {
+        //GIVEN
+        IMocksControl mocksControl = createStrictControl();
+        givenWhenThenDefinitionMock = mocksControl.createMock(GivenWhenThenDefinition.class);
+        givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+        SystemUnderTest systemUnderTestMock = mocksControl.createMock(SystemUnderTest.class);
+        systemUnderTestMock.voidMethodWithArgument("given input");
+        givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+        mocksControl.replay();
+
+        // WHEN
+        givenSut(systemUnderTestMock)
+                .given(() -> givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem())
+                .givenInput("given input")
+                .when(SystemUnderTest::voidMethodWithArgument)
+                .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult());
+
+        // THEN
+        mocksControl.verify();
+    }
 }
