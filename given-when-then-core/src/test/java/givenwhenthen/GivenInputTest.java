@@ -2,23 +2,19 @@ package givenwhenthen;
 
 import givenwhenthen.fixture.GivenWhenThenDefinition;
 import givenwhenthen.fixture.SystemUnderTest;
-import org.junit.After;
+import org.easymock.IMocksControl;
 import org.junit.Test;
 
+import static givenwhenthen.GivenWhenThen.givenSut;
 import static givenwhenthen.GivenWhenThen.givenSutClass;
 import static givenwhenthen.fixture.GivenWhenThenDefinition.orderedSteps;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.easymock.EasyMock.createStrictControl;
 import static org.easymock.EasyMock.verify;
 
 public class GivenInputTest {
 
     private GivenWhenThenDefinition givenWhenThenDefinitionMock;
-
-    @After
-    public void verifyMocks() {
-        // THEN
-        verify(givenWhenThenDefinitionMock);
-    }
 
     @Test
     public void should_receive_an_input_argument_given_a_void_method() {
@@ -34,6 +30,9 @@ public class GivenInputTest {
                 })
                 .when(SystemUnderTest::voidMethodWithArgument)
                 .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult());
+
+        // THEN
+        verify(givenWhenThenDefinitionMock);
     }
 
     @Test
@@ -55,6 +54,9 @@ public class GivenInputTest {
                     givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                     assertThat(result).isEqualTo("expected result");
                 });
+
+        // THEN
+        verify(givenWhenThenDefinitionMock);
     }
 
     @Test
@@ -75,6 +77,9 @@ public class GivenInputTest {
                 })
                 .when(SystemUnderTest::voidMethodWithTwoArguments)
                 .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult());
+
+        // THEN
+        verify(givenWhenThenDefinitionMock);
     }
 
     @Test
@@ -98,6 +103,9 @@ public class GivenInputTest {
                     givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                     assertThat(result).isEqualTo("expected result");
                 });
+
+        // THEN
+        verify(givenWhenThenDefinitionMock);
     }
 
     @Test
@@ -122,6 +130,9 @@ public class GivenInputTest {
                 })
                 .when(SystemUnderTest::voidMethodWithThreeArguments)
                 .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult());
+
+        // THEN
+        verify(givenWhenThenDefinitionMock);
     }
 
     @Test
@@ -149,21 +160,28 @@ public class GivenInputTest {
                     givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                     assertThat(result).isEqualTo("expected result");
                 });
+
+        // THEN
+        verify(givenWhenThenDefinitionMock);
     }
 
     @Test
     public void should_receive_an_argument_value_given_a_void_method() {
         //GIVEN
-        givenWhenThenDefinitionMock = orderedSteps();
+        IMocksControl mocksControl = createStrictControl();
+        givenWhenThenDefinitionMock = mocksControl.createMock(GivenWhenThenDefinition.class);
+        SystemUnderTest systemUnderTestMock = mocksControl.createMock(SystemUnderTest.class);
+        systemUnderTestMock.voidMethodWithArgument("given input");
+        givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+        mocksControl.replay();
 
         // WHEN
-        givenSutClass(SystemUnderTest.class)
-                .given(sut -> {
-                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-                    sut.setGivenWhenThenDefinition(givenWhenThenDefinitionMock);
-                })
+        givenSut(systemUnderTestMock)
                 .givenInput("given input")
                 .when(SystemUnderTest::voidMethodWithArgument)
                 .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult());
+
+        // THEN
+        mocksControl.verify();
     }
 }
