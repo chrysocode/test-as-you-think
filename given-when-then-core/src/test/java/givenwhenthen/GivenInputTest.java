@@ -9,8 +9,7 @@ import static givenwhenthen.GivenWhenThen.givenSut;
 import static givenwhenthen.GivenWhenThen.givenSutClass;
 import static givenwhenthen.fixture.GivenWhenThenDefinition.orderedSteps;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.easymock.EasyMock.createStrictControl;
-import static org.easymock.EasyMock.verify;
+import static org.easymock.EasyMock.*;
 
 public class GivenInputTest {
 
@@ -51,8 +50,8 @@ public class GivenInputTest {
                 })
                 .when(SystemUnderTest::nonVoidMethodWithArgument)
                 .then(result -> {
-                    givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                     assertThat(result).isEqualTo("expected result");
+                    givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                 });
 
         // THEN
@@ -100,8 +99,8 @@ public class GivenInputTest {
                 })
                 .when(SystemUnderTest::nonVoidMethodWithTwoArguments)
                 .then(result -> {
-                    givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                     assertThat(result).isEqualTo("expected result");
+                    givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                 });
 
         // THEN
@@ -157,8 +156,8 @@ public class GivenInputTest {
                 })
                 .when(SystemUnderTest::nonVoidMethodWithThreeArguments)
                 .then(result -> {
-                    givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                     assertThat(result).isEqualTo("expected result");
+                    givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                 });
 
         // THEN
@@ -202,6 +201,29 @@ public class GivenInputTest {
                 .givenInput("given input")
                 .when(SystemUnderTest::voidMethodWithArgument)
                 .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult());
+
+        // THEN
+        mocksControl.verify();
+    }
+
+    @Test
+    public void should_receive_an_argument_value_given_a_non_void_method() {
+        //GIVEN
+        IMocksControl mocksControl = createStrictControl();
+        givenWhenThenDefinitionMock = mocksControl.createMock(GivenWhenThenDefinition.class);
+        SystemUnderTest systemUnderTestMock = mocksControl.createMock(SystemUnderTest.class);
+        expect(systemUnderTestMock.nonVoidMethodWithArgument("given input")).andReturn("expected result");
+        givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+        mocksControl.replay();
+
+        // WHEN
+        givenSut(systemUnderTestMock)
+                .givenInput("given input")
+                .when(SystemUnderTest::nonVoidMethodWithArgument)
+                .then(result -> {
+                    assertThat(result).isEqualTo("expected result");
+                    givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                });
 
         // THEN
         mocksControl.verify();
