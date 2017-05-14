@@ -24,6 +24,12 @@ public class GivenInputWhenSteps<$SystemUnderTest, $Input> implements AndGivenIn
     }
 
     @Override
+    public <$Input2> AndGivenTwoInputs<$SystemUnderTest, $Input, $Input2> andInput($Input2 input) {
+        preparation.recordGivenStep(() -> input);
+        return new GivenTwoInputsWhenSteps<>(preparation);
+    }
+
+    @Override
     public ThenWithoutResult<$SystemUnderTest> when(BiConsumer<$SystemUnderTest, $Input> whenStep) {
         return thenStepFactory.createThenStep(preparation,
                 functions.toCheckedConsumer(whenStep, preparation.getInputSuppliers()));

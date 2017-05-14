@@ -228,4 +228,25 @@ public class GivenInputTest {
         // THEN
         mocksControl.verify();
     }
+
+    @Test
+    public void should_receive_two_argument_values_given_a_void_method() {
+        //GIVEN
+        IMocksControl mocksControl = createStrictControl();
+        givenWhenThenDefinitionMock = mocksControl.createMock(GivenWhenThenDefinition.class);
+        SystemUnderTest systemUnderTestMock = mocksControl.createMock(SystemUnderTest.class);
+        systemUnderTestMock.voidMethodWithTwoArguments("given input", 20170513);
+        givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+        mocksControl.replay();
+
+        // WHEN
+        givenSut(systemUnderTestMock)
+                .givenInput("given input")
+                .andInput(20170513)
+                .when(SystemUnderTest::voidMethodWithTwoArguments)
+                .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult());
+
+        // THEN
+        mocksControl.verify();
+    }
 }

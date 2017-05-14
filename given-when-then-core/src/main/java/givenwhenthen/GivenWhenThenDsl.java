@@ -40,6 +40,8 @@ public interface GivenWhenThenDsl {
     interface AndGivenInput<$SystemUnderTest, $Input> extends WhenApplyingOneInput<$SystemUnderTest, $Input> {
 
         <$Input2> AndGivenTwoInputs<$SystemUnderTest, $Input, $Input2> andInput(Supplier<$Input2> givenStep);
+
+        <$Input2> AndGivenTwoInputs<$SystemUnderTest, $Input, $Input2> andInput($Input2 input);
     }
 
     interface WhenApplyingOneInput<$SystemUnderTest, $Input> {
