@@ -38,6 +38,10 @@ enum Functions {
         };
     }
 
+    <$Value> Supplier<$Value> toSupplier($Value value) {
+        return () -> value;
+    }
+
     <$Target, $Argument, $Result> CheckedFunction<$Target, $Result> toCheckedFunction(
             BiFunction<$Target, $Argument, $Result> biFunction, Queue<Supplier> arguments) {
         return target -> biFunction.apply(target, ($Argument) arguments

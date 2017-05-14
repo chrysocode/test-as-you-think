@@ -1,7 +1,7 @@
 package givenwhenthen;
 
 import givenwhenthen.GivenWhenThenDsl.AndGiven;
-import givenwhenthen.GivenWhenThenDsl.AndGivenInput;
+import givenwhenthen.GivenWhenThenDsl.AndGivenArgument;
 import givenwhenthen.GivenWhenThenDsl.Given;
 import givenwhenthen.GivenWhenThenDsl.Then;
 import givenwhenthen.GivenWhenThenDsl.ThenFailure;
@@ -54,15 +54,15 @@ public class GivenWhenSteps<$SystemUnderTest> implements Given<$SystemUnderTest>
     }
 
     @Override
-    public <$Input> AndGivenInput<$SystemUnderTest, $Input> givenInput(Supplier<$Input> givenStep) {
+    public <$Argument> AndGivenArgument<$SystemUnderTest, $Argument> givenArgument(Supplier<$Argument> givenStep) {
         preparation.recordGivenStep(givenStep);
-        return new GivenInputWhenSteps<>(preparation);
+        return new GivenArgumentWhenSteps<>(preparation);
     }
 
     @Override
-    public <$Input> AndGivenInput<$SystemUnderTest, $Input> givenInput($Input input) {
-        preparation.recordGivenStep(() -> input);
-        return new GivenInputWhenSteps<>(preparation);
+    public <$Argument> AndGivenArgument<$SystemUnderTest, $Argument> givenArgument($Argument argument) {
+        preparation.recordGivenStep(functions.toSupplier(argument));
+        return new GivenArgumentWhenSteps<>(preparation);
     }
 
     @Override

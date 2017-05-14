@@ -12,12 +12,12 @@ class Preparation<$SystemUnderTest> {
     private final Functions functions = Functions.INSTANCE;
     private final $SystemUnderTest systemUnderTest;
     private final List<Consumer<$SystemUnderTest>> givenSteps;
-    private final Queue<Supplier> inputSuppliers;
+    private final Queue<Supplier> argumentSuppliers;
 
     Preparation($SystemUnderTest systemUnderTest) {
         this.systemUnderTest = systemUnderTest;
         givenSteps = new ArrayList<>();
-        inputSuppliers = new LinkedList<>();
+        argumentSuppliers = new LinkedList<>();
     }
 
     void recordGivenStep(Runnable givenStep) {
@@ -28,18 +28,16 @@ class Preparation<$SystemUnderTest> {
         givenSteps.add(givenStep);
     }
 
-    <$Input> void recordGivenStep(Supplier<$Input> givenStep) {
-        inputSuppliers.add(givenStep);
+    <$Argument> void recordGivenStep(Supplier<$Argument> givenStep) {
+        argumentSuppliers.add(givenStep);
     }
 
-    Queue<Supplier> getInputSuppliers() {
-        return inputSuppliers;
+    Queue<Supplier> getArgumentSuppliers() {
+        return argumentSuppliers;
     }
 
     void prepareFixtures() {
-        givenSteps
-                .stream()
-                .forEach(step -> step.accept(systemUnderTest));
+        givenSteps.forEach(step -> step.accept(systemUnderTest));
     }
 
     $SystemUnderTest getSystemUnderTest() {
