@@ -3,26 +3,36 @@ package givenwhenthen;
 import givenwhenthen.fixture.GivenWhenThenDefinition;
 import givenwhenthen.fixture.SystemUnderTest;
 import org.easymock.IMocksControl;
+import org.junit.Before;
 import org.junit.Test;
 
 import static givenwhenthen.GivenWhenThen.givenSut;
-import static givenwhenthen.GivenWhenThen.givenSutClass;
-import static givenwhenthen.fixture.GivenWhenThenDefinition.orderedSteps;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.easymock.EasyMock.*;
 
 public class GivenArgumentsTest {
 
+    private IMocksControl mocksControl;
+    private SystemUnderTest systemUnderTestMock;
     private GivenWhenThenDefinition givenWhenThenDefinitionMock;
+
+    @Before
+    public void prepareFixtures() {
+        mocksControl = createStrictControl();
+        systemUnderTestMock = mocksControl.createMock(SystemUnderTest.class);
+        givenWhenThenDefinitionMock = mocksControl.createMock(GivenWhenThenDefinition.class);
+    }
 
     @Test
     public void should_receive_an_argument_given_a_void_method() {
         // GIVEN
-        givenWhenThenDefinitionMock = orderedSteps();
+        givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+        systemUnderTestMock.voidMethodWithArgument("given argument");
+        givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+        mocksControl.replay();
 
         // WHEN
-        givenSutClass(SystemUnderTest.class)
-                .given(sut -> sut.setGivenWhenThenDefinition(givenWhenThenDefinitionMock))
+        givenSut(systemUnderTestMock)
                 .givenArgument(() -> {
                     givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
                     return "given argument";
@@ -31,17 +41,21 @@ public class GivenArgumentsTest {
                 .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult());
 
         // THEN
-        verify(givenWhenThenDefinitionMock);
+        mocksControl.verify();
     }
 
     @Test
     public void should_receive_an_argument_given_a_non_void_method() {
         // GIVEN
-        givenWhenThenDefinitionMock = orderedSteps(2);
+        givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+        expectLastCall().times(3);
+        expect(systemUnderTestMock.nonVoidMethodWithArgument("given argument")).andReturn("expected result");
+        givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+        mocksControl.replay();
 
         // WHEN
-        givenSutClass(SystemUnderTest.class)
-                .given(sut -> sut.setGivenWhenThenDefinition(givenWhenThenDefinitionMock))
+        givenSut(systemUnderTestMock)
+                .given(() -> givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem())
                 .and("specified fixture",
                         () -> givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem())
                 .givenArgument(() -> {
@@ -55,17 +69,20 @@ public class GivenArgumentsTest {
                 });
 
         // THEN
-        verify(givenWhenThenDefinitionMock);
+        mocksControl.verify();
     }
 
     @Test
     public void should_receive_two_arguments_given_a_void_method() {
         // GIVEN
-        givenWhenThenDefinitionMock = orderedSteps(2);
+        givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+        expectLastCall().times(2);
+        systemUnderTestMock.voidMethodWithTwoArguments("given argument", 20170502);
+        givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+        mocksControl.replay();
 
         // WHEN
-        givenSutClass(SystemUnderTest.class)
-                .given(sut -> sut.setGivenWhenThenDefinition(givenWhenThenDefinitionMock))
+        givenSut(systemUnderTestMock)
                 .givenArgument(() -> {
                     givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
                     return "given argument";
@@ -78,17 +95,21 @@ public class GivenArgumentsTest {
                 .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult());
 
         // THEN
-        verify(givenWhenThenDefinitionMock);
+        mocksControl.verify();
     }
 
     @Test
     public void should_receive_two_arguments_given_a_non_void_method() {
         // GIVEN
-        givenWhenThenDefinitionMock = orderedSteps(2);
+        givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+        expectLastCall().times(2);
+        expect(systemUnderTestMock.nonVoidMethodWithTwoArguments("given argument", 20170502)).andReturn(
+                "expected result");
+        givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+        mocksControl.replay();
 
         // WHEN
-        givenSutClass(SystemUnderTest.class)
-                .given(sut -> sut.setGivenWhenThenDefinition(givenWhenThenDefinitionMock))
+        givenSut(systemUnderTestMock)
                 .givenArgument(() -> {
                     givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
                     return "given argument";
@@ -104,17 +125,20 @@ public class GivenArgumentsTest {
                 });
 
         // THEN
-        verify(givenWhenThenDefinitionMock);
+        mocksControl.verify();
     }
 
     @Test
     public void should_receive_three_arguments_given_a_void_method() {
         //GIVEN
-        givenWhenThenDefinitionMock = orderedSteps(3);
+        givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+        expectLastCall().times(3);
+        systemUnderTestMock.voidMethodWithThreeArguments("given argument", 20170502, true);
+        givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+        mocksControl.replay();
 
         // WHEN
-        givenSutClass(SystemUnderTest.class)
-                .given(sut -> sut.setGivenWhenThenDefinition(givenWhenThenDefinitionMock))
+        givenSut(systemUnderTestMock)
                 .givenArgument(() -> {
                     givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
                     return "given argument";
@@ -131,17 +155,21 @@ public class GivenArgumentsTest {
                 .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult());
 
         // THEN
-        verify(givenWhenThenDefinitionMock);
+        mocksControl.verify();
     }
 
     @Test
     public void should_receive_three_arguments_given_a_non_void_method() {
         //GIVEN
-        givenWhenThenDefinitionMock = orderedSteps(3);
+        givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+        expectLastCall().times(3);
+        expect(systemUnderTestMock.nonVoidMethodWithThreeArguments("given argument", 20170502, true)).andReturn(
+                "expected result");
+        givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+        mocksControl.replay();
 
         // WHEN
-        givenSutClass(SystemUnderTest.class)
-                .given(sut -> sut.setGivenWhenThenDefinition(givenWhenThenDefinitionMock))
+        givenSut(systemUnderTestMock)
                 .givenArgument(() -> {
                     givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
                     return "given argument";
@@ -161,15 +189,12 @@ public class GivenArgumentsTest {
                 });
 
         // THEN
-        verify(givenWhenThenDefinitionMock);
+        mocksControl.verify();
     }
 
     @Test
     public void should_receive_an_argument_value_given_a_void_method() {
         //GIVEN
-        IMocksControl mocksControl = createStrictControl();
-        givenWhenThenDefinitionMock = mocksControl.createMock(GivenWhenThenDefinition.class);
-        SystemUnderTest systemUnderTestMock = mocksControl.createMock(SystemUnderTest.class);
         systemUnderTestMock.voidMethodWithArgument("given argument");
         givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
         mocksControl.replay();
@@ -187,10 +212,7 @@ public class GivenArgumentsTest {
     @Test
     public void should_receive_an_argument_value_given_a_void_method_and_two_preparation_steps() {
         //GIVEN
-        IMocksControl mocksControl = createStrictControl();
-        givenWhenThenDefinitionMock = mocksControl.createMock(GivenWhenThenDefinition.class);
         givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-        SystemUnderTest systemUnderTestMock = mocksControl.createMock(SystemUnderTest.class);
         systemUnderTestMock.voidMethodWithArgument("given argument");
         givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
         mocksControl.replay();
@@ -209,9 +231,6 @@ public class GivenArgumentsTest {
     @Test
     public void should_receive_an_argument_value_given_a_non_void_method() {
         //GIVEN
-        IMocksControl mocksControl = createStrictControl();
-        givenWhenThenDefinitionMock = mocksControl.createMock(GivenWhenThenDefinition.class);
-        SystemUnderTest systemUnderTestMock = mocksControl.createMock(SystemUnderTest.class);
         expect(systemUnderTestMock.nonVoidMethodWithArgument("given argument")).andReturn("expected result");
         givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
         mocksControl.replay();
@@ -232,9 +251,6 @@ public class GivenArgumentsTest {
     @Test
     public void should_receive_two_argument_values_given_a_void_method() {
         //GIVEN
-        IMocksControl mocksControl = createStrictControl();
-        givenWhenThenDefinitionMock = mocksControl.createMock(GivenWhenThenDefinition.class);
-        SystemUnderTest systemUnderTestMock = mocksControl.createMock(SystemUnderTest.class);
         systemUnderTestMock.voidMethodWithTwoArguments("given argument", 20170513);
         givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
         mocksControl.replay();
@@ -253,9 +269,6 @@ public class GivenArgumentsTest {
     @Test
     public void should_receive_three_argument_values_given_a_non_void_method() {
         //GIVEN
-        IMocksControl mocksControl = createStrictControl();
-        givenWhenThenDefinitionMock = mocksControl.createMock(GivenWhenThenDefinition.class);
-        SystemUnderTest systemUnderTestMock = mocksControl.createMock(SystemUnderTest.class);
         expect(systemUnderTestMock.nonVoidMethodWithThreeArguments("given argument", 20170514, false)).andReturn(
                 "expected result");
         givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
