@@ -56,6 +56,8 @@ public interface GivenWhenThenDsl {
 
         <$Input3> WhenApplyingThreeInputs<$SystemUnderTest, $Input1, $Input2, $Input3> andInput(
                 Supplier<$Input3> givenStep);
+
+        <$Input3> WhenApplyingThreeInputs<$SystemUnderTest, $Input1, $Input2, $Input3> andInput($Input3 input);
     }
 
     interface WhenApplyingTwoInputs<$SystemUnderTest, $Input1, $Input2> {

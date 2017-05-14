@@ -26,6 +26,12 @@ public class GivenTwoInputsWhenSteps<$SystemUnderTest, $Input1, $Input2> impleme
     }
 
     @Override
+    public <$Input3> WhenApplyingThreeInputs<$SystemUnderTest, $Input1, $Input2, $Input3> andInput($Input3 input) {
+        preparation.recordGivenStep(() -> input);
+        return new GivenThreeInputsWhenSteps<>(preparation);
+    }
+
+    @Override
     public ThenWithoutResult<$SystemUnderTest> when(TriConsumer<$SystemUnderTest, $Input1, $Input2> whenStep) {
         return thenStepFactory.createThenStep(preparation,
                 functions.toCheckedConsumer(whenStep, preparation.getInputSuppliers()));

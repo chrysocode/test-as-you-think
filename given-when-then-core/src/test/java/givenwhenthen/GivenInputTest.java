@@ -249,4 +249,30 @@ public class GivenInputTest {
         // THEN
         mocksControl.verify();
     }
+
+    @Test
+    public void should_receive_three_argument_values_given_a_non_void_method() {
+        //GIVEN
+        IMocksControl mocksControl = createStrictControl();
+        givenWhenThenDefinitionMock = mocksControl.createMock(GivenWhenThenDefinition.class);
+        SystemUnderTest systemUnderTestMock = mocksControl.createMock(SystemUnderTest.class);
+        expect(systemUnderTestMock.nonVoidMethodWithThreeArguments("given input", 20170514, false)).andReturn(
+                "expected result");
+        givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+        mocksControl.replay();
+
+        // WHEN
+        givenSut(systemUnderTestMock)
+                .givenInput("given input")
+                .andInput(20170514)
+                .andInput(false)
+                .when(SystemUnderTest::nonVoidMethodWithThreeArguments)
+                .then(result -> {
+                    assertThat(result).isEqualTo("expected result");
+                    givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                });
+
+        // THEN
+        mocksControl.verify();
+    }
 }
