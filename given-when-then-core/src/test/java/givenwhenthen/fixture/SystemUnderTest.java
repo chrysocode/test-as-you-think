@@ -59,6 +59,8 @@ public class SystemUnderTest {
 
     public void failWithParameter(String argument) throws Throwable {}
 
+    public void failWithTwoParameters(String argument1, Integer argument2) throws Throwable {}
+
     public String nonVoidFail() throws Throwable {
         whenAnEventHappens();
         throw new Exception("It fails!");

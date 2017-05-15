@@ -38,7 +38,7 @@ public class GivenArgumentsThenFailuresTest {
         givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
         try {
             systemUnderTestMock.failWithParameter("given argument");
-            expectLastCall().andThrow(new Exception("It fails!"));
+            expectLastCall().andThrow(new Exception());
         } catch (Throwable throwable) {
             fail("Unexpected failure!");
         }
@@ -51,6 +51,33 @@ public class GivenArgumentsThenFailuresTest {
                     return "given argument";
                 })
                 .when(SystemUnderTest::failWithParameter)
+                .then(result -> {});
+    }
+
+    @Test(expected = AssertionError.class)
+    public void should_fail_given_a_void_method_with_two_parameters() {
+        // GIVEN
+        givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+        expectLastCall().times(2);
+        try {
+            systemUnderTestMock.failWithTwoParameters("given argument", 201705);
+            expectLastCall().andThrow(new Exception());
+        } catch (Throwable throwable) {
+            fail("Unexpected failure!");
+        }
+        mocksControl.replay();
+
+        // WHEN
+        givenSut(systemUnderTestMock)
+                .givenArgument(() -> {
+                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                    return "given argument";
+                })
+                .andArgument(() -> {
+                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                    return 201705;
+                })
+                .when(SystemUnderTest::failWithTwoParameters)
                 .then(result -> {});
     }
 }

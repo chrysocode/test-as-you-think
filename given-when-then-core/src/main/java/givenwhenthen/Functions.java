@@ -67,7 +67,7 @@ enum Functions {
     }
 
     <$Target, $Argument1, $Argument2> CheckedConsumer<$Target> toCheckedConsumer(
-            TriConsumer<$Target, $Argument1, $Argument2> triConsumer, Queue<Supplier> arguments) {
+            CheckedTriConsumer<$Target, $Argument1, $Argument2> triConsumer, Queue<Supplier> arguments) {
         return toCheckedConsumer(toBiConsumer(triConsumer, arguments), arguments);
     }
 
@@ -79,13 +79,14 @@ enum Functions {
     static class ConsumerUnitTransformation {
 
         static <$Target, $Argument1, $Argument2> CheckedBiConsumer<$Target, $Argument1> toBiConsumer(
-                TriConsumer<$Target, $Argument1, $Argument2> triConsumer, Queue<Supplier> arguments) {
+                CheckedTriConsumer<$Target, $Argument1, $Argument2> triConsumer, Queue<Supplier> arguments) {
             return (target, argument1) -> triConsumer.accept(target, argument1, ($Argument2) arguments
                     .remove()
                     .get());
         }
 
-        static <$Target, $Argument1, $Argument2, $Argument3> TriConsumer<$Target, $Argument1, $Argument2> toTriConsumer(
+        static <$Target, $Argument1, $Argument2, $Argument3> CheckedTriConsumer<$Target, $Argument1, $Argument2>
+        toTriConsumer(
                 QuadriConsumer<$Target, $Argument1, $Argument2, $Argument3> quadriConsumer, Queue<Supplier> arguments) {
             return (target, argument1, argument2) -> quadriConsumer.accept(target, argument1, argument2,
                     ($Argument3) arguments
