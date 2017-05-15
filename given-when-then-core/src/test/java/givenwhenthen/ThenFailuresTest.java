@@ -13,6 +13,7 @@ import static org.easymock.EasyMock.verify;
 
 public class ThenFailuresTest {
 
+    private static final String EXPECTED_MESSAGE = "expected message";
     private GivenWhenThenDefinition givenWhenThenDefinitionMock;
 
     @Before
@@ -59,8 +60,8 @@ public class ThenFailuresTest {
                     givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
                     sut.setGivenWhenThenDefinition(givenWhenThenDefinitionMock);
                 })
-                .whenSutRunsOutsideOperatingConditions(sut -> sut.fail(IllegalStateException.class, "expected message"))
-                .thenItFails(IllegalStateException.class, "expected message");
+                .whenSutRunsOutsideOperatingConditions(sut -> sut.fail(IllegalStateException.class, EXPECTED_MESSAGE))
+                .thenItFails(IllegalStateException.class, EXPECTED_MESSAGE);
     }
 
     @Test(expected = AssertionError.class)

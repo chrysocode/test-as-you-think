@@ -28,27 +28,27 @@ public class SystemUnderTest {
         changeState();
     }
 
-    public void voidMethodWithArgument(String input) {
+    public void voidMethodWithArgument(String argument) {
         voidMethod();
     }
 
-    public String nonVoidMethodWithArgument(String input) {
+    public String nonVoidMethodWithArgument(String argument) {
         return nonVoidMethod();
     }
 
-    public void voidMethodWithTwoArguments(String input1, Integer input2) {
+    public void voidMethodWithTwoArguments(String argument1, Integer argument2) {
         voidMethod();
     }
 
-    public String nonVoidMethodWithTwoArguments(String input1, Integer input2) {
+    public String nonVoidMethodWithTwoArguments(String argument1, Integer argument2) {
         return nonVoidMethod();
     }
 
-    public void voidMethodWithThreeArguments(String input1, Integer input2, Boolean input3) {
+    public void voidMethodWithThreeArguments(String argument1, Integer argument2, Boolean argument3) {
         voidMethod();
     }
 
-    public String nonVoidMethodWithThreeArguments(String input1, Integer input2, Boolean input3) {
+    public String nonVoidMethodWithThreeArguments(String argument1, Integer argument2, Boolean argument3) {
         return nonVoidMethod();
     }
 

@@ -13,6 +13,7 @@ import static org.easymock.EasyMock.verify;
 
 public class WhenThenTest {
 
+    private static final String EXPECTED_RESULT = "expected result";
     private GivenWhenThenDefinition givenWhenThenDefinitionMock;
 
     @Before
@@ -34,7 +35,7 @@ public class WhenThenTest {
                 .when(SystemUnderTest::nonVoidMethod)
                 .then(result -> {
                     givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                    assertThat(result).isEqualTo("expected result");
+                    assertThat(result).isEqualTo(EXPECTED_RESULT);
                 });
     }
 
@@ -57,7 +58,7 @@ public class WhenThenTest {
                 })
                 .then(result -> {
                     givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                    assertThat(result).isEqualTo("expected result");
+                    assertThat(result).isEqualTo(EXPECTED_RESULT);
                 });
     }
 }

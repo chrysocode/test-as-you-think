@@ -21,7 +21,9 @@ public interface GivenWhenThenDsl {
 
         AndGiven<$SystemUnderTest> given(String fixtureSpecification, Consumer<$SystemUnderTest> givenStep);
 
-        <$Input> AndGivenInput<$SystemUnderTest, $Input> givenInput(Supplier<$Input> givenStep);
+        <$Argument> AndGivenArgument<$SystemUnderTest, $Argument> givenArgument(Supplier<$Argument> givenStep);
+
+        <$Argument> AndGivenArgument<$SystemUnderTest, $Argument> givenArgument($Argument argument);
     }
 
     interface AndGiven<$SystemUnderTest> extends When<$SystemUnderTest> {
@@ -30,42 +32,52 @@ public interface GivenWhenThenDsl {
 
         AndGiven<$SystemUnderTest> and(String fixtureSpecification, Consumer<$SystemUnderTest> givenStep);
 
-        <$Input> AndGivenInput<$SystemUnderTest, $Input> givenInput(Supplier<$Input> givenStep);
+        <$Argument> AndGivenArgument<$SystemUnderTest, $Argument> givenArgument(Supplier<$Argument> givenStep);
+
+        <$Argument> AndGivenArgument<$SystemUnderTest, $Argument> givenArgument($Argument argument);
     }
 
-    interface AndGivenInput<$SystemUnderTest, $Input> extends WhenApplyingOneInput<$SystemUnderTest, $Input> {
+    interface AndGivenArgument<$SystemUnderTest, $Argument> extends WhenApplyingOneArgument<$SystemUnderTest,
+            $Argument> {
 
-        <$Input2> AndGivenTwoInputs<$SystemUnderTest, $Input, $Input2> andInput(Supplier<$Input2> givenStep);
+        <$Argument2> AndGivenTwoArguments<$SystemUnderTest, $Argument, $Argument2> andArgument(
+                Supplier<$Argument2> givenStep);
+
+        <$Argument2> AndGivenTwoArguments<$SystemUnderTest, $Argument, $Argument2> andArgument($Argument2 argument);
     }
 
-    interface WhenApplyingOneInput<$SystemUnderTest, $Input> {
+    interface WhenApplyingOneArgument<$SystemUnderTest, $Argument> {
 
-        ThenWithoutResult<$SystemUnderTest> when(BiConsumer<$SystemUnderTest, $Input> whenStep);
+        ThenWithoutResult<$SystemUnderTest> when(BiConsumer<$SystemUnderTest, $Argument> whenStep);
 
-        <$Result> Then<$SystemUnderTest, $Result> when(BiFunction<$SystemUnderTest, $Input, $Result> whenStep);
+        <$Result> Then<$SystemUnderTest, $Result> when(BiFunction<$SystemUnderTest, $Argument, $Result> whenStep);
     }
 
-    interface AndGivenTwoInputs<$SystemUnderTest, $Input1, $Input2> extends WhenApplyingTwoInputs<$SystemUnderTest,
-            $Input1, $Input2> {
+    interface AndGivenTwoArguments<$SystemUnderTest, $Argument1, $Argument2> extends
+            WhenApplyingTwoArguments<$SystemUnderTest, $Argument1, $Argument2> {
 
-        <$Input3> WhenApplyingThreeInputs<$SystemUnderTest, $Input1, $Input2, $Input3> andInput(
-                Supplier<$Input3> givenStep);
+        <$Argument3> WhenApplyingThreeArguments<$SystemUnderTest, $Argument1, $Argument2, $Argument3> andArgument(
+                Supplier<$Argument3> givenStep);
+
+        <$Argument3> WhenApplyingThreeArguments<$SystemUnderTest, $Argument1, $Argument2, $Argument3> andArgument(
+                $Argument3 argument);
     }
 
-    interface WhenApplyingTwoInputs<$SystemUnderTest, $Input1, $Input2> {
+    interface WhenApplyingTwoArguments<$SystemUnderTest, $Argument1, $Argument2> {
 
-        ThenWithoutResult<$SystemUnderTest> when(TriConsumer<$SystemUnderTest, $Input1, $Input2> whenStep);
+        ThenWithoutResult<$SystemUnderTest> when(TriConsumer<$SystemUnderTest, $Argument1, $Argument2> whenStep);
 
         <$Result> Then<$SystemUnderTest, $Result> when(
-                TriFunction<$SystemUnderTest, $Input1, $Input2, $Result> whenStep);
+                TriFunction<$SystemUnderTest, $Argument1, $Argument2, $Result> whenStep);
     }
 
-    interface WhenApplyingThreeInputs<$SystemUnderTest, $Input1, $Input2, $Input3> {
+    interface WhenApplyingThreeArguments<$SystemUnderTest, $Argument1, $Argument2, $Argument3> {
 
-        ThenWithoutResult<$SystemUnderTest> when(QuadriConsumer<$SystemUnderTest, $Input1, $Input2, $Input3> whenStep);
+        ThenWithoutResult<$SystemUnderTest> when(
+                QuadriConsumer<$SystemUnderTest, $Argument1, $Argument2, $Argument3> whenStep);
 
         <$Result> Then<$SystemUnderTest, $Result> when(
-                QuadriFunction<$SystemUnderTest, $Input1, $Input2, $Input3, $Result> whenStep);
+                QuadriFunction<$SystemUnderTest, $Argument1, $Argument2, $Argument3, $Result> whenStep);
     }
 
     interface When<$SystemUnderTest> {
