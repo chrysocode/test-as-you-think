@@ -74,7 +74,7 @@ public interface GivenWhenThenDsl {
     interface WhenApplyingThreeArguments<$SystemUnderTest, $Argument1, $Argument2, $Argument3> {
 
         ThenWithoutResult<$SystemUnderTest> when(
-                QuadriConsumer<$SystemUnderTest, $Argument1, $Argument2, $Argument3> whenStep);
+                CheckedQuadriConsumer<$SystemUnderTest, $Argument1, $Argument2, $Argument3> whenStep);
 
         <$Result> Then<$SystemUnderTest, $Result> when(
                 QuadriFunction<$SystemUnderTest, $Argument1, $Argument2, $Argument3, $Result> whenStep);

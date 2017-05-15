@@ -80,4 +80,35 @@ public class GivenArgumentsThenFailuresTest {
                 .when(SystemUnderTest::failWithTwoParameters)
                 .then(result -> {});
     }
+
+    @Test(expected = AssertionError.class)
+    public void should_fail_given_a_void_method_with_three_parameters() {
+        // GIVEN
+        givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+        expectLastCall().times(3);
+        try {
+            systemUnderTestMock.failWithThreeParameters("given argument", 201705, false);
+            expectLastCall().andThrow(new Exception());
+        } catch (Throwable throwable) {
+            fail("Unexpected failure!");
+        }
+        mocksControl.replay();
+
+        // WHEN
+        givenSut(systemUnderTestMock)
+                .givenArgument(() -> {
+                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                    return "given argument";
+                })
+                .andArgument(() -> {
+                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                    return 201705;
+                })
+                .andArgument(() -> {
+                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                    return false;
+                })
+                .when(SystemUnderTest::failWithThreeParameters)
+                .then(result -> {});
+    }
 }

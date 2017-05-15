@@ -72,7 +72,8 @@ enum Functions {
     }
 
     <$Target, $Argument1, $Argument2, $Argument3> CheckedConsumer<$Target> toCheckedConsumer(
-            QuadriConsumer<$Target, $Argument1, $Argument2, $Argument3> quadriConsumer, Queue<Supplier> arguments) {
+            CheckedQuadriConsumer<$Target, $Argument1, $Argument2, $Argument3> quadriConsumer,
+            Queue<Supplier> arguments) {
         return toCheckedConsumer(toBiConsumer(toTriConsumer(quadriConsumer, arguments), arguments), arguments);
     }
 
@@ -87,7 +88,8 @@ enum Functions {
 
         static <$Target, $Argument1, $Argument2, $Argument3> CheckedTriConsumer<$Target, $Argument1, $Argument2>
         toTriConsumer(
-                QuadriConsumer<$Target, $Argument1, $Argument2, $Argument3> quadriConsumer, Queue<Supplier> arguments) {
+                CheckedQuadriConsumer<$Target, $Argument1, $Argument2, $Argument3> quadriConsumer,
+                Queue<Supplier> arguments) {
             return (target, argument1, argument2) -> quadriConsumer.accept(target, argument1, argument2,
                     ($Argument3) arguments
                             .remove()

@@ -17,7 +17,7 @@ public class GivenThreeArgumentsWhenSteps<$SystemUnderTest, $Argument1, $Argumen
 
     @Override
     public ThenWithoutResult<$SystemUnderTest> when(
-            QuadriConsumer<$SystemUnderTest, $Argument1, $Argument2, $Argument3> whenStep) {
+            CheckedQuadriConsumer<$SystemUnderTest, $Argument1, $Argument2, $Argument3> whenStep) {
         return thenStepFactory.createThenStep(preparation,
                 functions.toCheckedConsumer(whenStep, preparation.getArgumentSuppliers()));
     }
