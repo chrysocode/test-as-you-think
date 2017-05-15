@@ -12,6 +12,7 @@ import static org.easymock.EasyMock.verify;
 
 public class GivenSpecifiedFixturesTest {
 
+    private static final String EXPECTED_RESULT = "expected result";
     private GivenWhenThenDefinition givenWhenThenDefinitionMock;
 
     @After
@@ -35,7 +36,7 @@ public class GivenSpecifiedFixturesTest {
                 })
                 .then(result -> {
                     givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                    assertThat(result).isEqualTo("expected result");
+                    assertThat(result).isEqualTo(EXPECTED_RESULT);
                 });
     }
 
@@ -53,7 +54,7 @@ public class GivenSpecifiedFixturesTest {
                 .when(SystemUnderTest::nonVoidMethod)
                 .then(result -> {
                     givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                    assertThat(result).isEqualTo("expected result");
+                    assertThat(result).isEqualTo(EXPECTED_RESULT);
                 });
     }
 
@@ -64,9 +65,9 @@ public class GivenSpecifiedFixturesTest {
 
         // WHEN
         givenSutClass(SystemUnderTest.class)
-                .given("what it makes the first fixture specific to the current use " + "case",
+                .given("what it makes the first fixture specific to the current use case",
                         () -> givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem())
-                .and("what it makes the second fixture specific to the current use " + "case",
+                .and("what it makes the second fixture specific to the current use case",
                         () -> givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem())
                 .and("what it makes the third fixture specific to the current use case", sut -> {
                     givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
@@ -75,7 +76,7 @@ public class GivenSpecifiedFixturesTest {
                 .when(SystemUnderTest::nonVoidMethod)
                 .then(result -> {
                     givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                    assertThat(result).isEqualTo("expected result");
+                    assertThat(result).isEqualTo(EXPECTED_RESULT);
                 });
     }
 }
