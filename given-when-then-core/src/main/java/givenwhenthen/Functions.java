@@ -1,7 +1,6 @@
 package givenwhenthen;
 
 import java.util.Queue;
-import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -60,7 +59,7 @@ enum Functions {
         return toCheckedFunction(toBiFunction(toTriFunction(quadriFunction, arguments), arguments), arguments);
     }
 
-    <$Target, $Argument> CheckedConsumer<$Target> toCheckedConsumer(BiConsumer<$Target, $Argument> biConsumer,
+    <$Target, $Argument> CheckedConsumer<$Target> toCheckedConsumer(CheckedBiConsumer<$Target, $Argument> biConsumer,
             Queue<Supplier> arguments) {
         return target -> biConsumer.accept(target, ($Argument) arguments
                 .remove()
@@ -79,7 +78,7 @@ enum Functions {
 
     static class ConsumerUnitTransformation {
 
-        static <$Target, $Argument1, $Argument2> BiConsumer<$Target, $Argument1> toBiConsumer(
+        static <$Target, $Argument1, $Argument2> CheckedBiConsumer<$Target, $Argument1> toBiConsumer(
                 TriConsumer<$Target, $Argument1, $Argument2> triConsumer, Queue<Supplier> arguments) {
             return (target, argument1) -> triConsumer.accept(target, argument1, ($Argument2) arguments
                     .remove()

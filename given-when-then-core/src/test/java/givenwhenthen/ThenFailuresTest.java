@@ -8,7 +8,6 @@ import org.junit.Test;
 
 import static givenwhenthen.GivenWhenThen.givenSutClass;
 import static givenwhenthen.fixture.GivenWhenThenDefinition.orderedSteps;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.easymock.EasyMock.verify;
 
 public class ThenFailuresTest {
@@ -65,7 +64,7 @@ public class ThenFailuresTest {
     }
 
     @Test(expected = AssertionError.class)
-    public void should_fail_because_of_an_unexpected_failure_given_a_non_void_method() {
+    public void should_fail_given_a_non_void_method() {
         // WHEN
         givenSutClass(SystemUnderTest.class)
                 .given(sut -> {
@@ -74,12 +73,12 @@ public class ThenFailuresTest {
                 })
                 .when(SystemUnderTest::nonVoidFail)
                 .then(result -> {
-                    assertThat(result).isEqualTo("Unexpected failure must happen before this assertions.");
+                    givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                 });
     }
 
     @Test(expected = AssertionError.class)
-    public void should_fail_because_of_an_unexpected_failure_given_a_void_method() {
+    public void should_fail_given_a_void_method() {
         // WHEN
         givenSutClass(SystemUnderTest.class)
                 .given(sut -> {
@@ -87,6 +86,6 @@ public class ThenFailuresTest {
                     sut.setGivenWhenThenDefinition(givenWhenThenDefinitionMock);
                 })
                 .when((CheckedConsumer<SystemUnderTest>) SystemUnderTest::fail)
-                .then(result -> assertThat(result).isEqualTo("Unexpected failure must happen before this assertions."));
+                .then(result -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult());
     }
 }

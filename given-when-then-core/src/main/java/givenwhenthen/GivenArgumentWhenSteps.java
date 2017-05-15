@@ -5,7 +5,6 @@ import givenwhenthen.GivenWhenThenDsl.AndGivenTwoArguments;
 import givenwhenthen.GivenWhenThenDsl.Then;
 import givenwhenthen.GivenWhenThenDsl.ThenWithoutResult;
 
-import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
@@ -32,7 +31,7 @@ public class GivenArgumentWhenSteps<$SystemUnderTest, $Argument> implements AndG
     }
 
     @Override
-    public ThenWithoutResult<$SystemUnderTest> when(BiConsumer<$SystemUnderTest, $Argument> whenStep) {
+    public ThenWithoutResult<$SystemUnderTest> when(CheckedBiConsumer<$SystemUnderTest, $Argument> whenStep) {
         return thenStepFactory.createThenStep(preparation,
                 functions.toCheckedConsumer(whenStep, preparation.getArgumentSuppliers()));
     }

@@ -48,7 +48,7 @@ public interface GivenWhenThenDsl {
 
     interface WhenApplyingOneArgument<$SystemUnderTest, $Argument> {
 
-        ThenWithoutResult<$SystemUnderTest> when(BiConsumer<$SystemUnderTest, $Argument> whenStep);
+        ThenWithoutResult<$SystemUnderTest> when(CheckedBiConsumer<$SystemUnderTest, $Argument> whenStep);
 
         <$Result> Then<$SystemUnderTest, $Result> when(BiFunction<$SystemUnderTest, $Argument, $Result> whenStep);
     }
