@@ -72,8 +72,8 @@ public class ThenFailuresTest {
                     sut.setGivenWhenThenDefinition(givenWhenThenDefinitionMock);
                 })
                 .when(SystemUnderTest::nonVoidFail)
-                .then(result -> {
-                    givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                .then(() -> {
+                    throw new RuntimeException("An expected exception must have been risen before!");
                 });
     }
 
@@ -86,6 +86,8 @@ public class ThenFailuresTest {
                     sut.setGivenWhenThenDefinition(givenWhenThenDefinitionMock);
                 })
                 .when((CheckedConsumer<SystemUnderTest>) SystemUnderTest::fail)
-                .then(result -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult());
+                .then((Runnable) () -> {
+                    throw new RuntimeException("An expected exception must have been risen before!");
+                });
     }
 }
