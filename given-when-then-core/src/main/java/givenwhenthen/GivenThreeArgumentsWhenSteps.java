@@ -1,8 +1,8 @@
 package givenwhenthen;
 
-import givenwhenthen.GivenWhenThenDsl.Then;
-import givenwhenthen.GivenWhenThenDsl.ThenWithoutResult;
-import givenwhenthen.GivenWhenThenDsl.WhenApplyingThreeArguments;
+import givenwhenthen.GivenWhenThenDsl.ExecutionStage.WhenApplyingThreeArguments;
+import givenwhenthen.GivenWhenThenDsl.VerificationStage.Then;
+import givenwhenthen.GivenWhenThenDsl.VerificationStage.ThenWithoutResult;
 import givenwhenthen.function.CheckedQuadriConsumer;
 import givenwhenthen.function.CheckedQuadriFunction;
 import givenwhenthen.function.Functions;

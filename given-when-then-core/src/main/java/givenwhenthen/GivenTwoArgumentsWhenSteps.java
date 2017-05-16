@@ -1,9 +1,9 @@
 package givenwhenthen;
 
-import givenwhenthen.GivenWhenThenDsl.AndGivenTwoArguments;
-import givenwhenthen.GivenWhenThenDsl.Then;
-import givenwhenthen.GivenWhenThenDsl.ThenWithoutResult;
-import givenwhenthen.GivenWhenThenDsl.WhenApplyingThreeArguments;
+import givenwhenthen.GivenWhenThenDsl.ExecutionStage.WhenApplyingThreeArguments;
+import givenwhenthen.GivenWhenThenDsl.PreparationStage.AndGivenTwoArguments;
+import givenwhenthen.GivenWhenThenDsl.VerificationStage.Then;
+import givenwhenthen.GivenWhenThenDsl.VerificationStage.ThenWithoutResult;
 import givenwhenthen.function.CheckedTriConsumer;
 import givenwhenthen.function.CheckedTriFunction;
 import givenwhenthen.function.Functions;

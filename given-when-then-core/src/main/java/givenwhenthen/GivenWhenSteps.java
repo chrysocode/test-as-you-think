@@ -1,11 +1,11 @@
 package givenwhenthen;
 
-import givenwhenthen.GivenWhenThenDsl.AndGiven;
-import givenwhenthen.GivenWhenThenDsl.AndGivenArgument;
-import givenwhenthen.GivenWhenThenDsl.Given;
-import givenwhenthen.GivenWhenThenDsl.Then;
-import givenwhenthen.GivenWhenThenDsl.ThenFailure;
-import givenwhenthen.GivenWhenThenDsl.ThenWithoutResult;
+import givenwhenthen.GivenWhenThenDsl.PreparationStage.AndGiven;
+import givenwhenthen.GivenWhenThenDsl.PreparationStage.AndGivenArgument;
+import givenwhenthen.GivenWhenThenDsl.PreparationStage.Given;
+import givenwhenthen.GivenWhenThenDsl.VerificationStage.Then;
+import givenwhenthen.GivenWhenThenDsl.VerificationStage.ThenFailure;
+import givenwhenthen.GivenWhenThenDsl.VerificationStage.ThenWithoutResult;
 import givenwhenthen.function.CheckedConsumer;
 import givenwhenthen.function.CheckedFunction;
 import givenwhenthen.function.Functions;

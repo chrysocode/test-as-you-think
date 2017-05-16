@@ -1,9 +1,9 @@
 package givenwhenthen;
 
-import givenwhenthen.GivenWhenThenDsl.AndGivenArgument;
-import givenwhenthen.GivenWhenThenDsl.AndGivenTwoArguments;
-import givenwhenthen.GivenWhenThenDsl.Then;
-import givenwhenthen.GivenWhenThenDsl.ThenWithoutResult;
+import givenwhenthen.GivenWhenThenDsl.PreparationStage.AndGivenArgument;
+import givenwhenthen.GivenWhenThenDsl.PreparationStage.AndGivenTwoArguments;
+import givenwhenthen.GivenWhenThenDsl.VerificationStage.Then;
+import givenwhenthen.GivenWhenThenDsl.VerificationStage.ThenWithoutResult;
 import givenwhenthen.function.CheckedBiConsumer;
 import givenwhenthen.function.CheckedBiFunction;
 import givenwhenthen.function.Functions;
