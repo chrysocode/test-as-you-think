@@ -68,6 +68,10 @@ public class SystemUnderTest {
         throw new Exception("It fails!");
     }
 
+    public String nonVoidFailWithParameter(String argument) throws Throwable {
+        return null;
+    }
+
     public void fail(Class<? extends Throwable> throwableClass) throws Throwable {
         whenAnEventHappens();
         throw throwableClass.newInstance();

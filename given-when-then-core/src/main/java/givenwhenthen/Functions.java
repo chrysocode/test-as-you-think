@@ -1,7 +1,6 @@
 package givenwhenthen;
 
 import java.util.Queue;
-import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -42,7 +41,7 @@ enum Functions {
     }
 
     <$Target, $Argument, $Result> CheckedFunction<$Target, $Result> toCheckedFunction(
-            BiFunction<$Target, $Argument, $Result> biFunction, Queue<Supplier> arguments) {
+            CheckedBiFunction<$Target, $Argument, $Result> biFunction, Queue<Supplier> arguments) {
         return target -> biFunction.apply(target, ($Argument) arguments
                 .remove()
                 .get());
@@ -99,7 +98,7 @@ enum Functions {
 
     static class FunctionUnitTransformation {
 
-        static <$Target, $Argument1, $Argument2, $Result> BiFunction<$Target, $Argument1, $Result> toBiFunction(
+        static <$Target, $Argument1, $Argument2, $Result> CheckedBiFunction<$Target, $Argument1, $Result> toBiFunction(
                 TriFunction<$Target, $Argument1, $Argument2, $Result> triFunction, Queue<Supplier> arguments) {
             return (target, argument1) -> triFunction.apply(target, argument1, ($Argument2) arguments
                     .remove()

@@ -5,7 +5,6 @@ import givenwhenthen.GivenWhenThenDsl.AndGivenTwoArguments;
 import givenwhenthen.GivenWhenThenDsl.Then;
 import givenwhenthen.GivenWhenThenDsl.ThenWithoutResult;
 
-import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
 public class GivenArgumentWhenSteps<$SystemUnderTest, $Argument> implements AndGivenArgument<$SystemUnderTest,
@@ -37,7 +36,8 @@ public class GivenArgumentWhenSteps<$SystemUnderTest, $Argument> implements AndG
     }
 
     @Override
-    public <$Result> Then<$SystemUnderTest, $Result> when(BiFunction<$SystemUnderTest, $Argument, $Result> whenStep) {
+    public <$Result> Then<$SystemUnderTest, $Result> when(
+            CheckedBiFunction<$SystemUnderTest, $Argument, $Result> whenStep) {
         return thenStepFactory.createThenStep(preparation,
                 functions.toCheckedFunction(whenStep, preparation.getArgumentSuppliers()));
     }
