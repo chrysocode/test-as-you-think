@@ -41,7 +41,7 @@ public class GivenTwoArgumentsWhenSteps<$SystemUnderTest, $Argument1, $Argument2
 
     @Override
     public <$Result> Then<$SystemUnderTest, $Result> when(
-            TriFunction<$SystemUnderTest, $Argument1, $Argument2, $Result> whenStep) {
+            CheckedTriFunction<$SystemUnderTest, $Argument1, $Argument2, $Result> whenStep) {
         return thenStepFactory.createThenStep(preparation,
                 functions.toCheckedFunction(whenStep, preparation.getArgumentSuppliers()));
     }

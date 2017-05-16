@@ -48,7 +48,7 @@ enum Functions {
     }
 
     <$Target, $Argument1, $Argument2, $Result> CheckedFunction<$Target, $Result> toCheckedFunction(
-            TriFunction<$Target, $Argument1, $Argument2, $Result> triFunction, Queue<Supplier> arguments) {
+            CheckedTriFunction<$Target, $Argument1, $Argument2, $Result> triFunction, Queue<Supplier> arguments) {
         return toCheckedFunction(toBiFunction(triFunction, arguments), arguments);
     }
 
@@ -99,14 +99,14 @@ enum Functions {
     static class FunctionUnitTransformation {
 
         static <$Target, $Argument1, $Argument2, $Result> CheckedBiFunction<$Target, $Argument1, $Result> toBiFunction(
-                TriFunction<$Target, $Argument1, $Argument2, $Result> triFunction, Queue<Supplier> arguments) {
+                CheckedTriFunction<$Target, $Argument1, $Argument2, $Result> triFunction, Queue<Supplier> arguments) {
             return (target, argument1) -> triFunction.apply(target, argument1, ($Argument2) arguments
                     .remove()
                     .get());
         }
 
-        static <$Target, $Argument1, $Argument2, $Argument3, $Result> TriFunction<$Target, $Argument1, $Argument2,
-                $Result> toTriFunction(
+        static <$Target, $Argument1, $Argument2, $Argument3, $Result> CheckedTriFunction<$Target, $Argument1,
+                $Argument2, $Result> toTriFunction(
                 QuadriFunction<$Target, $Argument1, $Argument2, $Argument3, $Result> quadriFunction,
                 Queue<Supplier> arguments) {
             return (target, argument1, argument2) -> quadriFunction.apply(target, argument1, argument2,

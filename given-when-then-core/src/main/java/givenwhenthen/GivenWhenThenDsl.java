@@ -68,7 +68,7 @@ public interface GivenWhenThenDsl {
         ThenWithoutResult<$SystemUnderTest> when(CheckedTriConsumer<$SystemUnderTest, $Argument1, $Argument2> whenStep);
 
         <$Result> Then<$SystemUnderTest, $Result> when(
-                TriFunction<$SystemUnderTest, $Argument1, $Argument2, $Result> whenStep);
+                CheckedTriFunction<$SystemUnderTest, $Argument1, $Argument2, $Result> whenStep);
     }
 
     interface WhenApplyingThreeArguments<$SystemUnderTest, $Argument1, $Argument2, $Argument3> {

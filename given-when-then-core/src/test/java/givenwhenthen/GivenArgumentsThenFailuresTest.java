@@ -104,6 +104,33 @@ public class GivenArgumentsThenFailuresTest {
     }
 
     @Test(expected = AssertionError.class)
+    public void should_fail_given_a_non_void_method_with_two_parameters() {
+        // GIVEN
+        givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+        expectLastCall().times(2);
+        try {
+            systemUnderTestMock.nonVoidFailWithTwoParameters("given argument", 201705);
+            expectLastCall().andThrow(new Exception());
+        } catch (Throwable throwable) {
+            fail("Unexpected failure!");
+        }
+        mocksControl.replay();
+
+        // WHEN
+        givenSut(systemUnderTestMock)
+                .givenArgument(() -> {
+                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                    return "given argument";
+                })
+                .andArgument(() -> {
+                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                    return 201705;
+                })
+                .when(SystemUnderTest::nonVoidFailWithTwoParameters)
+                .then(result -> {});
+    }
+
+    @Test(expected = AssertionError.class)
     public void should_fail_given_a_void_method_with_three_parameters() {
         // GIVEN
         givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();

@@ -72,6 +72,10 @@ public class SystemUnderTest {
         return null;
     }
 
+    public String nonVoidFailWithTwoParameters(String argument1, Integer argument2) throws Throwable {
+        return null;
+    }
+
     public void fail(Class<? extends Throwable> throwableClass) throws Throwable {
         whenAnEventHappens();
         throw throwableClass.newInstance();
