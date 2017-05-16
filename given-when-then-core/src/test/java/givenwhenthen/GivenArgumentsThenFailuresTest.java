@@ -12,6 +12,12 @@ import static org.easymock.EasyMock.*;
 
 public class GivenArgumentsThenFailuresTest {
 
+    private static final String GIVEN_STRING = "given argument";
+    private static final int GIVEN_INTEGER = 201705;
+    private static final boolean GIVEN_BOOLEAN = false;
+    private static final String AN_EXPECTED_EXCEPTION_MUST_HAVE_BEEN_RISEN_BEFORE = "An expected exception must have " +
+            "been risen before!";
+
     private IMocksControl mocksControl;
     private SystemUnderTest systemUnderTestMock;
     private GivenWhenThenDefinition givenWhenThenDefinitionMock;
@@ -34,7 +40,7 @@ public class GivenArgumentsThenFailuresTest {
     public void should_fail_given_a_void_method_with_one_parameter() throws Throwable {
         // GIVEN
         givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-        systemUnderTestMock.failWithParameter("given argument");
+        systemUnderTestMock.failWithParameter(GIVEN_STRING);
         expectLastCall().andThrow(new Exception());
         mocksControl.replay();
 
@@ -42,11 +48,11 @@ public class GivenArgumentsThenFailuresTest {
         givenSut(systemUnderTestMock)
                 .givenArgument(() -> {
                     givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-                    return "given argument";
+                    return GIVEN_STRING;
                 })
                 .when(SystemUnderTest::failWithParameter)
                 .then((Runnable) () -> {
-                    throw new RuntimeException("An expected exception must have been risen before!");
+                    throw new RuntimeException(AN_EXPECTED_EXCEPTION_MUST_HAVE_BEEN_RISEN_BEFORE);
                 });
     }
 
@@ -54,18 +60,18 @@ public class GivenArgumentsThenFailuresTest {
     public void should_fail_given_a_non_void_method_with_one_parameter() throws Throwable {
         // GIVEN
         givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-        expect(systemUnderTestMock.nonVoidFailWithParameter("given argument")).andThrow(new Exception());
+        expect(systemUnderTestMock.nonVoidFailWithParameter(GIVEN_STRING)).andThrow(new Exception());
         mocksControl.replay();
 
         // WHEN
         givenSut(systemUnderTestMock)
                 .givenArgument(() -> {
                     givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-                    return "given argument";
+                    return GIVEN_STRING;
                 })
                 .when(SystemUnderTest::nonVoidFailWithParameter)
                 .then(() -> {
-                    throw new RuntimeException("An expected exception must have been risen before!");
+                    throw new RuntimeException(AN_EXPECTED_EXCEPTION_MUST_HAVE_BEEN_RISEN_BEFORE);
                 });
     }
 
@@ -74,7 +80,7 @@ public class GivenArgumentsThenFailuresTest {
         // GIVEN
         givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
         expectLastCall().times(2);
-        systemUnderTestMock.failWithTwoParameters("given argument", 201705);
+        systemUnderTestMock.failWithTwoParameters(GIVEN_STRING, GIVEN_INTEGER);
         expectLastCall().andThrow(new Exception());
         mocksControl.replay();
 
@@ -82,15 +88,15 @@ public class GivenArgumentsThenFailuresTest {
         givenSut(systemUnderTestMock)
                 .givenArgument(() -> {
                     givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-                    return "given argument";
+                    return GIVEN_STRING;
                 })
                 .andArgument(() -> {
                     givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-                    return 201705;
+                    return GIVEN_INTEGER;
                 })
                 .when(SystemUnderTest::failWithTwoParameters)
                 .then((Runnable) () -> {
-                    throw new RuntimeException("An expected exception must have been risen before!");
+                    throw new RuntimeException(AN_EXPECTED_EXCEPTION_MUST_HAVE_BEEN_RISEN_BEFORE);
                 });
     }
 
@@ -99,22 +105,22 @@ public class GivenArgumentsThenFailuresTest {
         // GIVEN
         givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
         expectLastCall().times(2);
-        expect(systemUnderTestMock.nonVoidFailWithTwoParameters("given argument", 201705)).andThrow(new Exception());
+        expect(systemUnderTestMock.nonVoidFailWithTwoParameters(GIVEN_STRING, GIVEN_INTEGER)).andThrow(new Exception());
         mocksControl.replay();
 
         // WHEN
         givenSut(systemUnderTestMock)
                 .givenArgument(() -> {
                     givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-                    return "given argument";
+                    return GIVEN_STRING;
                 })
                 .andArgument(() -> {
                     givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-                    return 201705;
+                    return GIVEN_INTEGER;
                 })
                 .when(SystemUnderTest::nonVoidFailWithTwoParameters)
                 .then(() -> {
-                    throw new RuntimeException("An expected exception must have been risen before!");
+                    throw new RuntimeException(AN_EXPECTED_EXCEPTION_MUST_HAVE_BEEN_RISEN_BEFORE);
                 });
     }
 
@@ -123,7 +129,7 @@ public class GivenArgumentsThenFailuresTest {
         // GIVEN
         givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
         expectLastCall().times(3);
-        systemUnderTestMock.failWithThreeParameters("given argument", 201705, false);
+        systemUnderTestMock.failWithThreeParameters(GIVEN_STRING, GIVEN_INTEGER, GIVEN_BOOLEAN);
         expectLastCall().andThrow(new Exception());
         mocksControl.replay();
 
@@ -131,19 +137,19 @@ public class GivenArgumentsThenFailuresTest {
         givenSut(systemUnderTestMock)
                 .givenArgument(() -> {
                     givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-                    return "given argument";
+                    return GIVEN_STRING;
                 })
                 .andArgument(() -> {
                     givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-                    return 201705;
+                    return GIVEN_INTEGER;
                 })
                 .andArgument(() -> {
                     givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-                    return false;
+                    return GIVEN_BOOLEAN;
                 })
                 .when(SystemUnderTest::failWithThreeParameters)
                 .then(sut -> {
-                    throw new RuntimeException("An expected exception must have been risen before!");
+                    throw new RuntimeException(AN_EXPECTED_EXCEPTION_MUST_HAVE_BEEN_RISEN_BEFORE);
                 });
     }
 
@@ -152,7 +158,7 @@ public class GivenArgumentsThenFailuresTest {
         // GIVEN
         givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
         expectLastCall().times(3);
-        expect(systemUnderTestMock.nonVoidFailWithThreeParameters("given argument", 201705, false)).andThrow(
+        expect(systemUnderTestMock.nonVoidFailWithThreeParameters(GIVEN_STRING, GIVEN_INTEGER, GIVEN_BOOLEAN)).andThrow(
                 new Exception());
         mocksControl.replay();
 
@@ -160,19 +166,19 @@ public class GivenArgumentsThenFailuresTest {
         givenSut(systemUnderTestMock)
                 .givenArgument(() -> {
                     givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-                    return "given argument";
+                    return GIVEN_STRING;
                 })
                 .andArgument(() -> {
                     givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-                    return 201705;
+                    return GIVEN_INTEGER;
                 })
                 .andArgument(() -> {
                     givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-                    return false;
+                    return GIVEN_BOOLEAN;
                 })
                 .when(SystemUnderTest::nonVoidFailWithThreeParameters)
                 .then(() -> {
-                    throw new RuntimeException("An expected exception must have been risen before!");
+                    throw new RuntimeException(AN_EXPECTED_EXCEPTION_MUST_HAVE_BEEN_RISEN_BEFORE);
                 });
     }
 }
