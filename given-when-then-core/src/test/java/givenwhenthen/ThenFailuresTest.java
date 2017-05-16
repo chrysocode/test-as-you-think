@@ -2,6 +2,7 @@ package givenwhenthen;
 
 import givenwhenthen.fixture.GivenWhenThenDefinition;
 import givenwhenthen.fixture.SystemUnderTest;
+import givenwhenthen.function.CheckedConsumer;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

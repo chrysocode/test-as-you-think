@@ -4,6 +4,9 @@ import givenwhenthen.GivenWhenThenDsl.AndGivenTwoArguments;
 import givenwhenthen.GivenWhenThenDsl.Then;
 import givenwhenthen.GivenWhenThenDsl.ThenWithoutResult;
 import givenwhenthen.GivenWhenThenDsl.WhenApplyingThreeArguments;
+import givenwhenthen.function.CheckedTriConsumer;
+import givenwhenthen.function.CheckedTriFunction;
+import givenwhenthen.function.Functions;
 
 import java.util.function.Supplier;
 

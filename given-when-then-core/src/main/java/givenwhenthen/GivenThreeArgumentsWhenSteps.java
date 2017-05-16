@@ -3,6 +3,9 @@ package givenwhenthen;
 import givenwhenthen.GivenWhenThenDsl.Then;
 import givenwhenthen.GivenWhenThenDsl.ThenWithoutResult;
 import givenwhenthen.GivenWhenThenDsl.WhenApplyingThreeArguments;
+import givenwhenthen.function.CheckedQuadriConsumer;
+import givenwhenthen.function.CheckedQuadriFunction;
+import givenwhenthen.function.Functions;
 
 public class GivenThreeArgumentsWhenSteps<$SystemUnderTest, $Argument1, $Argument2, $Argument3> implements
         WhenApplyingThreeArguments<$SystemUnderTest, $Argument1, $Argument2, $Argument3> {

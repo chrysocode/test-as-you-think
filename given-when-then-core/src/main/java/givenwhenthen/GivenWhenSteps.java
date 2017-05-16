@@ -6,6 +6,9 @@ import givenwhenthen.GivenWhenThenDsl.Given;
 import givenwhenthen.GivenWhenThenDsl.Then;
 import givenwhenthen.GivenWhenThenDsl.ThenFailure;
 import givenwhenthen.GivenWhenThenDsl.ThenWithoutResult;
+import givenwhenthen.function.CheckedConsumer;
+import givenwhenthen.function.CheckedFunction;
+import givenwhenthen.function.Functions;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;

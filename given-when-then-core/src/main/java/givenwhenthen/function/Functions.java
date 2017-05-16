@@ -1,30 +1,30 @@
-package givenwhenthen;
+package givenwhenthen.function;
 
 import java.util.Queue;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import static givenwhenthen.Functions.ConsumerUnitTransformation.toBiConsumer;
-import static givenwhenthen.Functions.ConsumerUnitTransformation.toTriConsumer;
-import static givenwhenthen.Functions.FunctionUnitTransformation.toBiFunction;
-import static givenwhenthen.Functions.FunctionUnitTransformation.toTriFunction;
+import static givenwhenthen.function.Functions.ConsumerUnitTransformation.toBiConsumer;
+import static givenwhenthen.function.Functions.ConsumerUnitTransformation.toTriConsumer;
+import static givenwhenthen.function.Functions.FunctionUnitTransformation.toBiFunction;
+import static givenwhenthen.function.Functions.FunctionUnitTransformation.toTriFunction;
 
-enum Functions {
+public enum Functions {
 
     INSTANCE;
 
-    <T> Consumer<T> toConsumer(Runnable runnable) {
+    public <T> Consumer<T> toConsumer(Runnable runnable) {
         return toBeConsumed -> runnable.run();
     }
 
-    <T, R> CheckedFunction<T, R> toFunction(CheckedConsumer<T> checkedConsumer) {
+    public <T, R> CheckedFunction<T, R> toFunction(CheckedConsumer<T> checkedConsumer) {
         return toBeConsumed -> {
             checkedConsumer.accept(toBeConsumed);
             return null;
         };
     }
 
-    <T> CheckedFunction<T, Throwable> toFunctionWithThrowableAsResult(CheckedConsumer<T> checkedConsumer) {
+    public <T> CheckedFunction<T, Throwable> toFunctionWithThrowableAsResult(CheckedConsumer<T> checkedConsumer) {
         return toBeConsumed -> {
             Throwable result = null;
             try {
@@ -36,41 +36,41 @@ enum Functions {
         };
     }
 
-    <$Value> Supplier<$Value> toSupplier($Value value) {
+    public <$Value> Supplier<$Value> toSupplier($Value value) {
         return () -> value;
     }
 
-    <$Target, $Argument, $Result> CheckedFunction<$Target, $Result> toFunction(
+    public <$Target, $Argument, $Result> CheckedFunction<$Target, $Result> toFunction(
             CheckedBiFunction<$Target, $Argument, $Result> biFunction, Queue<Supplier> arguments) {
         return target -> biFunction.apply(target, ($Argument) arguments
                 .remove()
                 .get());
     }
 
-    <$Target, $Argument1, $Argument2, $Result> CheckedFunction<$Target, $Result> toFunction(
+    public <$Target, $Argument1, $Argument2, $Result> CheckedFunction<$Target, $Result> toFunction(
             CheckedTriFunction<$Target, $Argument1, $Argument2, $Result> triFunction, Queue<Supplier> arguments) {
         return toFunction(toBiFunction(triFunction, arguments), arguments);
     }
 
-    <$Target, $Argument1, $Argument2, $Argument3, $Result> CheckedFunction<$Target, $Result> toFunction(
+    public <$Target, $Argument1, $Argument2, $Argument3, $Result> CheckedFunction<$Target, $Result> toFunction(
             CheckedQuadriFunction<$Target, $Argument1, $Argument2, $Argument3, $Result> quadriFunction,
             Queue<Supplier> arguments) {
         return toFunction(toBiFunction(toTriFunction(quadriFunction, arguments), arguments), arguments);
     }
 
-    <$Target, $Argument> CheckedConsumer<$Target> toConsumer(CheckedBiConsumer<$Target, $Argument> biConsumer,
+    public <$Target, $Argument> CheckedConsumer<$Target> toConsumer(CheckedBiConsumer<$Target, $Argument> biConsumer,
             Queue<Supplier> arguments) {
         return target -> biConsumer.accept(target, ($Argument) arguments
                 .remove()
                 .get());
     }
 
-    <$Target, $Argument1, $Argument2> CheckedConsumer<$Target> toConsumer(
+    public <$Target, $Argument1, $Argument2> CheckedConsumer<$Target> toConsumer(
             CheckedTriConsumer<$Target, $Argument1, $Argument2> triConsumer, Queue<Supplier> arguments) {
         return toConsumer(toBiConsumer(triConsumer, arguments), arguments);
     }
 
-    <$Target, $Argument1, $Argument2, $Argument3> CheckedConsumer<$Target> toConsumer(
+    public <$Target, $Argument1, $Argument2, $Argument3> CheckedConsumer<$Target> toConsumer(
             CheckedQuadriConsumer<$Target, $Argument1, $Argument2, $Argument3> quadriConsumer,
             Queue<Supplier> arguments) {
         return toConsumer(toBiConsumer(toTriConsumer(quadriConsumer, arguments), arguments), arguments);

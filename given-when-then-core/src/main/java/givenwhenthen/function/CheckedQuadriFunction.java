@@ -1,4 +1,4 @@
-package givenwhenthen;
+package givenwhenthen.function;
 
 public interface CheckedQuadriFunction<T, U, V, X, R> {
 

@@ -1,5 +1,14 @@
 package givenwhenthen;
 
+import givenwhenthen.function.CheckedBiConsumer;
+import givenwhenthen.function.CheckedBiFunction;
+import givenwhenthen.function.CheckedConsumer;
+import givenwhenthen.function.CheckedFunction;
+import givenwhenthen.function.CheckedQuadriConsumer;
+import givenwhenthen.function.CheckedQuadriFunction;
+import givenwhenthen.function.CheckedTriConsumer;
+import givenwhenthen.function.CheckedTriFunction;
+
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;

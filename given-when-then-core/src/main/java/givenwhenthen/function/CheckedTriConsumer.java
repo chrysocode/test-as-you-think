@@ -1,4 +1,4 @@
-package givenwhenthen;
+package givenwhenthen.function;
 
 public interface CheckedTriConsumer<T, U, V> {
 

@@ -1,4 +1,4 @@
-package givenwhenthen;
+package givenwhenthen.function;
 
 public interface CheckedTriFunction<T, U, V, R> {
 
