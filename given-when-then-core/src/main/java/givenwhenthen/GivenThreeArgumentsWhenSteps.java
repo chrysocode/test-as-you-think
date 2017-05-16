@@ -19,13 +19,13 @@ public class GivenThreeArgumentsWhenSteps<$SystemUnderTest, $Argument1, $Argumen
     public ThenWithoutResult<$SystemUnderTest> when(
             CheckedQuadriConsumer<$SystemUnderTest, $Argument1, $Argument2, $Argument3> whenStep) {
         return thenStepFactory.createThenStep(preparation,
-                functions.toCheckedConsumer(whenStep, preparation.getArgumentSuppliers()));
+                functions.toConsumer(whenStep, preparation.getArgumentSuppliers()));
     }
 
     @Override
     public <$Result> Then<$SystemUnderTest, $Result> when(
             CheckedQuadriFunction<$SystemUnderTest, $Argument1, $Argument2, $Argument3, $Result> whenStep) {
         return thenStepFactory.createThenStep(preparation,
-                functions.toCheckedFunction(whenStep, preparation.getArgumentSuppliers()));
+                functions.toFunction(whenStep, preparation.getArgumentSuppliers()));
     }
 }

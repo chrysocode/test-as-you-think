@@ -15,7 +15,7 @@ class Event<$SystemUnderTest, $Result> {
 
     Event($SystemUnderTest systemUnderTest, CheckedConsumer<$SystemUnderTest> whenStep) {
         this.systemUnderTest = systemUnderTest;
-        this.whenStep = functions.toCheckedFunction(whenStep);
+        this.whenStep = functions.toFunction(whenStep);
     }
 
     $Result happen() {

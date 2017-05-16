@@ -36,13 +36,13 @@ public class GivenTwoArgumentsWhenSteps<$SystemUnderTest, $Argument1, $Argument2
     public ThenWithoutResult<$SystemUnderTest> when(
             CheckedTriConsumer<$SystemUnderTest, $Argument1, $Argument2> whenStep) {
         return thenStepFactory.createThenStep(preparation,
-                functions.toCheckedConsumer(whenStep, preparation.getArgumentSuppliers()));
+                functions.toConsumer(whenStep, preparation.getArgumentSuppliers()));
     }
 
     @Override
     public <$Result> Then<$SystemUnderTest, $Result> when(
             CheckedTriFunction<$SystemUnderTest, $Argument1, $Argument2, $Result> whenStep) {
         return thenStepFactory.createThenStep(preparation,
-                functions.toCheckedFunction(whenStep, preparation.getArgumentSuppliers()));
+                functions.toFunction(whenStep, preparation.getArgumentSuppliers()));
     }
 }
