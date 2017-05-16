@@ -53,7 +53,7 @@ enum Functions {
     }
 
     <$Target, $Argument1, $Argument2, $Argument3, $Result> CheckedFunction<$Target, $Result> toCheckedFunction(
-            QuadriFunction<$Target, $Argument1, $Argument2, $Argument3, $Result> quadriFunction,
+            CheckedQuadriFunction<$Target, $Argument1, $Argument2, $Argument3, $Result> quadriFunction,
             Queue<Supplier> arguments) {
         return toCheckedFunction(toBiFunction(toTriFunction(quadriFunction, arguments), arguments), arguments);
     }
@@ -107,7 +107,7 @@ enum Functions {
 
         static <$Target, $Argument1, $Argument2, $Argument3, $Result> CheckedTriFunction<$Target, $Argument1,
                 $Argument2, $Result> toTriFunction(
-                QuadriFunction<$Target, $Argument1, $Argument2, $Argument3, $Result> quadriFunction,
+                CheckedQuadriFunction<$Target, $Argument1, $Argument2, $Argument3, $Result> quadriFunction,
                 Queue<Supplier> arguments) {
             return (target, argument1, argument2) -> quadriFunction.apply(target, argument1, argument2,
                     ($Argument3) arguments
