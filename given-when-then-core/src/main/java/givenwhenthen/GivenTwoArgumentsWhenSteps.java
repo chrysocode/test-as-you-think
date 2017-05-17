@@ -3,6 +3,7 @@ package givenwhenthen;
 import givenwhenthen.GivenWhenThenDsl.ExecutionStage.WhenApplyingThreeArguments;
 import givenwhenthen.GivenWhenThenDsl.PreparationStage.AndGivenTwoArguments;
 import givenwhenthen.GivenWhenThenDsl.VerificationStage.Then;
+import givenwhenthen.GivenWhenThenDsl.VerificationStage.ThenFailure;
 import givenwhenthen.GivenWhenThenDsl.VerificationStage.ThenWithoutResult;
 import givenwhenthen.function.CheckedTriConsumer;
 import givenwhenthen.function.CheckedTriFunction;
@@ -47,5 +48,12 @@ public class GivenTwoArgumentsWhenSteps<$SystemUnderTest, $Argument1, $Argument2
             CheckedTriFunction<$SystemUnderTest, $Argument1, $Argument2, $Result> whenStep) {
         return thenStepFactory.createThenStep(preparation,
                 functions.toFunction(whenStep, preparation.getArgumentSuppliers()));
+    }
+
+    @Override
+    public ThenFailure whenSutRunsOutsideOperatingConditions(
+            CheckedTriConsumer<$SystemUnderTest, $Argument1, $Argument2> whenStep) {
+        return thenStepFactory.createThenStep(preparation, functions.toFunctionWithThrowableAsResult(
+                functions.toConsumer(whenStep, preparation.getArgumentSuppliers())));
     }
 }
