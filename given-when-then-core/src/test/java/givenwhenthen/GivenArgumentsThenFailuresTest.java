@@ -181,4 +181,22 @@ public class GivenArgumentsThenFailuresTest {
                     throw new RuntimeException(AN_EXPECTED_EXCEPTION_MUST_HAVE_BEEN_RISEN_BEFORE);
                 });
     }
+
+    @Test
+    public void should_verify_the_sut_fails_given_one_method_parameter() throws Throwable {
+        // GIVEN
+        givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+        systemUnderTestMock.failWithParameter(GIVEN_STRING);
+        expectLastCall().andThrow(new Exception());
+        mocksControl.replay();
+
+        // WHEN
+        givenSut(systemUnderTestMock)
+                .givenArgument(() -> {
+                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                    return GIVEN_STRING;
+                })
+                .whenSutRunsOutsideOperatingConditions(SystemUnderTest::failWithParameter)
+                .thenItFails();
+    }
 }

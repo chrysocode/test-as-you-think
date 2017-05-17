@@ -3,6 +3,7 @@ package givenwhenthen;
 import givenwhenthen.GivenWhenThenDsl.PreparationStage.AndGivenArgument;
 import givenwhenthen.GivenWhenThenDsl.PreparationStage.AndGivenTwoArguments;
 import givenwhenthen.GivenWhenThenDsl.VerificationStage.Then;
+import givenwhenthen.GivenWhenThenDsl.VerificationStage.ThenFailure;
 import givenwhenthen.GivenWhenThenDsl.VerificationStage.ThenWithoutResult;
 import givenwhenthen.function.CheckedBiConsumer;
 import givenwhenthen.function.CheckedBiFunction;
@@ -43,5 +44,11 @@ public class GivenArgumentWhenSteps<$SystemUnderTest, $Argument> implements AndG
             CheckedBiFunction<$SystemUnderTest, $Argument, $Result> whenStep) {
         return thenStepFactory.createThenStep(preparation,
                 functions.toFunction(whenStep, preparation.getArgumentSuppliers()));
+    }
+
+    @Override
+    public ThenFailure whenSutRunsOutsideOperatingConditions(CheckedBiConsumer<$SystemUnderTest, $Argument> whenStep) {
+        return thenStepFactory.createThenStep(preparation, functions.toFunctionWithThrowableAsResult(
+                functions.toConsumer(whenStep, preparation.getArgumentSuppliers())));
     }
 }

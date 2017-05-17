@@ -91,6 +91,8 @@ public interface GivenWhenThenDsl {
 
             <$Result> Then<$SystemUnderTest, $Result> when(
                     CheckedBiFunction<$SystemUnderTest, $Argument, $Result> whenStep);
+
+            ThenFailure whenSutRunsOutsideOperatingConditions(CheckedBiConsumer<$SystemUnderTest, $Argument> whenStep);
         }
 
         interface WhenApplyingTwoArguments<$SystemUnderTest, $Argument1, $Argument2> {
