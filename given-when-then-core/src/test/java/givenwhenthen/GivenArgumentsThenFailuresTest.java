@@ -222,4 +222,31 @@ public class GivenArgumentsThenFailuresTest {
                 .whenSutRunsOutsideOperatingConditions(SystemUnderTest::failWithTwoParameters)
                 .thenItFails();
     }
+
+    @Test
+    public void should_verify_the_sut_fails_given_three_method_parameters() throws Throwable {
+        // GIVEN
+        givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+        expectLastCall().times(3);
+        systemUnderTestMock.failWithThreeParameters(GIVEN_STRING, GIVEN_INTEGER, GIVEN_BOOLEAN);
+        expectLastCall().andThrow(new Exception());
+        mocksControl.replay();
+
+        // WHEN
+        givenSut(systemUnderTestMock)
+                .givenArgument(() -> {
+                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                    return GIVEN_STRING;
+                })
+                .andArgument(() -> {
+                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                    return GIVEN_INTEGER;
+                })
+                .andArgument(() -> {
+                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                    return GIVEN_BOOLEAN;
+                })
+                .whenSutRunsOutsideOperatingConditions(SystemUnderTest::failWithThreeParameters)
+                .thenItFails();
+    }
 }

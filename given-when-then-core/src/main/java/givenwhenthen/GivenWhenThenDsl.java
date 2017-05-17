@@ -114,6 +114,9 @@ public interface GivenWhenThenDsl {
 
             <$Result> Then<$SystemUnderTest, $Result> when(
                     CheckedQuadriFunction<$SystemUnderTest, $Argument1, $Argument2, $Argument3, $Result> whenStep);
+
+            ThenFailure whenSutRunsOutsideOperatingConditions(
+                    CheckedQuadriConsumer<$SystemUnderTest, $Argument1, $Argument2, $Argument3> whenStep);
         }
     }
 
