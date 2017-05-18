@@ -14,6 +14,7 @@ import static org.easymock.EasyMock.verify;
 public class ThenFailuresTest {
 
     private static final String EXPECTED_MESSAGE = "expected message";
+    private static final String AN_EXPECTED_EXCEPTION_MUST_HAVE_BEEN_RAISED_BEFORE = "An expected exception must have been raised before!";
     private GivenWhenThenDefinition givenWhenThenDefinitionMock;
 
     @Before
@@ -74,7 +75,7 @@ public class ThenFailuresTest {
                 })
                 .when(SystemUnderTest::nonVoidFail)
                 .then(() -> {
-                    throw new RuntimeException("An expected exception must have been risen before!");
+                    throw new RuntimeException(AN_EXPECTED_EXCEPTION_MUST_HAVE_BEEN_RAISED_BEFORE);
                 });
     }
 
@@ -88,7 +89,7 @@ public class ThenFailuresTest {
                 })
                 .when((CheckedConsumer<SystemUnderTest>) SystemUnderTest::fail)
                 .then((Runnable) () -> {
-                    throw new RuntimeException("An expected exception must have been risen before!");
+                    throw new RuntimeException(AN_EXPECTED_EXCEPTION_MUST_HAVE_BEEN_RAISED_BEFORE);
                 });
     }
 }

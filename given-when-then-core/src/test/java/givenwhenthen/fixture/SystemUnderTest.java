@@ -28,27 +28,27 @@ public class SystemUnderTest {
         changeState();
     }
 
-    public void voidMethodWithArgument(String argument) {
+    public void voidMethodWithParameter(String parameter) {
         voidMethod();
     }
 
-    public String nonVoidMethodWithArgument(String argument) {
+    public String nonVoidMethodWithParameter(String parameter) {
         return nonVoidMethod();
     }
 
-    public void voidMethodWithTwoArguments(String argument1, Integer argument2) {
+    public void voidMethodWithTwoParameters(String parameter1, Integer parameter2) {
         voidMethod();
     }
 
-    public String nonVoidMethodWithTwoArguments(String argument1, Integer argument2) {
+    public String nonVoidMethodWithTwoParameters(String parameter1, Integer parameter2) {
         return nonVoidMethod();
     }
 
-    public void voidMethodWithThreeArguments(String argument1, Integer argument2, Boolean argument3) {
+    public void voidMethodWithThreeParameters(String parameter1, Integer parameter2, Boolean parameter3) {
         voidMethod();
     }
 
-    public String nonVoidMethodWithThreeArguments(String argument1, Integer argument2, Boolean argument3) {
+    public String nonVoidMethodWithThreeParameters(String parameter1, Integer parameter2, Boolean parameter3) {
         return nonVoidMethod();
     }
 
@@ -57,27 +57,27 @@ public class SystemUnderTest {
         throw new Exception("It fails!");
     }
 
-    public void failWithParameter(String argument) throws Throwable {}
+    public void failWithParameter(String parameter) throws Throwable {}
 
-    public void failWithTwoParameters(String argument1, Integer argument2) throws Throwable {}
+    public void failWithTwoParameters(String parameter1, Integer parameter2) throws Throwable {}
 
-    public void failWithThreeParameters(String argument1, Integer argument2, Boolean argument3) throws Throwable {}
+    public void failWithThreeParameters(String parameter1, Integer parameter2, Boolean parameter3) throws Throwable {}
 
     public String nonVoidFail() throws Throwable {
         whenAnEventHappens();
         throw new Exception("It fails!");
     }
 
-    public String nonVoidFailWithParameter(String argument) throws Throwable {
+    public String nonVoidFailWithParameter(String parameter) throws Throwable {
         return null;
     }
 
-    public String nonVoidFailWithTwoParameters(String argument1, Integer argument2) throws Throwable {
+    public String nonVoidFailWithTwoParameters(String parameter1, Integer parameter2) throws Throwable {
         return null;
     }
 
-    public String nonVoidFailWithThreeParameters(String argument1, Integer argument2,
-            Boolean argument3) throws Throwable {
+    public String nonVoidFailWithThreeParameters(String parameter1, Integer parameter2,
+            Boolean parameter3) throws Throwable {
         return null;
     }
 
