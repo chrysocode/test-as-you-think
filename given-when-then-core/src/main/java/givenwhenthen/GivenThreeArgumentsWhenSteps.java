@@ -1,8 +1,12 @@
 package givenwhenthen;
 
-import givenwhenthen.GivenWhenThenDsl.Then;
-import givenwhenthen.GivenWhenThenDsl.ThenWithoutResult;
-import givenwhenthen.GivenWhenThenDsl.WhenApplyingThreeArguments;
+import givenwhenthen.GivenWhenThenDsl.ExecutionStage.WhenApplyingThreeArguments;
+import givenwhenthen.GivenWhenThenDsl.VerificationStage.Then;
+import givenwhenthen.GivenWhenThenDsl.VerificationStage.ThenFailure;
+import givenwhenthen.GivenWhenThenDsl.VerificationStage.ThenWithoutResult;
+import givenwhenthen.function.CheckedQuadriConsumer;
+import givenwhenthen.function.CheckedQuadriFunction;
+import givenwhenthen.function.Functions;
 
 public class GivenThreeArgumentsWhenSteps<$SystemUnderTest, $Argument1, $Argument2, $Argument3> implements
         WhenApplyingThreeArguments<$SystemUnderTest, $Argument1, $Argument2, $Argument3> {
@@ -17,15 +21,22 @@ public class GivenThreeArgumentsWhenSteps<$SystemUnderTest, $Argument1, $Argumen
 
     @Override
     public ThenWithoutResult<$SystemUnderTest> when(
-            QuadriConsumer<$SystemUnderTest, $Argument1, $Argument2, $Argument3> whenStep) {
+            CheckedQuadriConsumer<$SystemUnderTest, $Argument1, $Argument2, $Argument3> whenStep) {
         return thenStepFactory.createThenStep(preparation,
-                functions.toCheckedConsumer(whenStep, preparation.getArgumentSuppliers()));
+                functions.toConsumer(whenStep, preparation.getArgumentSuppliers()));
     }
 
     @Override
     public <$Result> Then<$SystemUnderTest, $Result> when(
-            QuadriFunction<$SystemUnderTest, $Argument1, $Argument2, $Argument3, $Result> whenStep) {
+            CheckedQuadriFunction<$SystemUnderTest, $Argument1, $Argument2, $Argument3, $Result> whenStep) {
         return thenStepFactory.createThenStep(preparation,
-                functions.toCheckedFunction(whenStep, preparation.getArgumentSuppliers()));
+                functions.toFunction(whenStep, preparation.getArgumentSuppliers()));
+    }
+
+    @Override
+    public ThenFailure whenSutRunsOutsideOperatingConditions(
+            CheckedQuadriConsumer<$SystemUnderTest, $Argument1, $Argument2, $Argument3> whenStep) {
+        return thenStepFactory.createThenStep(preparation, functions.toFunctionWithThrowableAsResult(
+                functions.toConsumer(whenStep, preparation.getArgumentSuppliers())));
     }
 }

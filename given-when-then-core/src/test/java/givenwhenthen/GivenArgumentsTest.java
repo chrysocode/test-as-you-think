@@ -28,10 +28,10 @@ public class GivenArgumentsTest {
     }
 
     @Test
-    public void should_receive_an_argument_given_a_void_method() {
+    public void should_receive_one_argument_given_a_void_method() {
         // GIVEN
         givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-        systemUnderTestMock.voidMethodWithArgument(GIVEN_STRING);
+        systemUnderTestMock.voidMethodWithParameter(GIVEN_STRING);
         givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
         mocksControl.replay();
 
@@ -41,7 +41,7 @@ public class GivenArgumentsTest {
                     givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
                     return GIVEN_STRING;
                 })
-                .when(SystemUnderTest::voidMethodWithArgument)
+                .when(SystemUnderTest::voidMethodWithParameter)
                 .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult());
 
         // THEN
@@ -49,11 +49,11 @@ public class GivenArgumentsTest {
     }
 
     @Test
-    public void should_receive_an_argument_given_a_non_void_method() {
+    public void should_receive_one_argument_given_a_non_void_method() {
         // GIVEN
         givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
         expectLastCall().times(3);
-        expect(systemUnderTestMock.nonVoidMethodWithArgument(GIVEN_STRING)).andReturn(EXPECTED_RESULT);
+        expect(systemUnderTestMock.nonVoidMethodWithParameter(GIVEN_STRING)).andReturn(EXPECTED_RESULT);
         givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
         mocksControl.replay();
 
@@ -66,7 +66,7 @@ public class GivenArgumentsTest {
                     givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
                     return GIVEN_STRING;
                 })
-                .when(SystemUnderTest::nonVoidMethodWithArgument)
+                .when(SystemUnderTest::nonVoidMethodWithParameter)
                 .then(result -> {
                     assertThat(result).isEqualTo(EXPECTED_RESULT);
                     givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
@@ -81,7 +81,7 @@ public class GivenArgumentsTest {
         // GIVEN
         givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
         expectLastCall().times(2);
-        systemUnderTestMock.voidMethodWithTwoArguments(GIVEN_STRING, GIVEN_INTEGER);
+        systemUnderTestMock.voidMethodWithTwoParameters(GIVEN_STRING, GIVEN_INTEGER);
         givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
         mocksControl.replay();
 
@@ -95,7 +95,7 @@ public class GivenArgumentsTest {
                     givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
                     return GIVEN_INTEGER;
                 })
-                .when(SystemUnderTest::voidMethodWithTwoArguments)
+                .when(SystemUnderTest::voidMethodWithTwoParameters)
                 .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult());
 
         // THEN
@@ -107,7 +107,7 @@ public class GivenArgumentsTest {
         // GIVEN
         givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
         expectLastCall().times(2);
-        expect(systemUnderTestMock.nonVoidMethodWithTwoArguments(GIVEN_STRING, GIVEN_INTEGER)).andReturn(
+        expect(systemUnderTestMock.nonVoidMethodWithTwoParameters(GIVEN_STRING, GIVEN_INTEGER)).andReturn(
                 EXPECTED_RESULT);
         givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
         mocksControl.replay();
@@ -122,7 +122,7 @@ public class GivenArgumentsTest {
                     givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
                     return GIVEN_INTEGER;
                 })
-                .when(SystemUnderTest::nonVoidMethodWithTwoArguments)
+                .when(SystemUnderTest::nonVoidMethodWithTwoParameters)
                 .then(result -> {
                     assertThat(result).isEqualTo(EXPECTED_RESULT);
                     givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
@@ -137,7 +137,7 @@ public class GivenArgumentsTest {
         //GIVEN
         givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
         expectLastCall().times(3);
-        systemUnderTestMock.voidMethodWithThreeArguments(GIVEN_STRING, GIVEN_INTEGER, GIVEN_BOOLEAN);
+        systemUnderTestMock.voidMethodWithThreeParameters(GIVEN_STRING, GIVEN_INTEGER, GIVEN_BOOLEAN);
         givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
         mocksControl.replay();
 
@@ -155,7 +155,7 @@ public class GivenArgumentsTest {
                     givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
                     return GIVEN_BOOLEAN;
                 })
-                .when(SystemUnderTest::voidMethodWithThreeArguments)
+                .when(SystemUnderTest::voidMethodWithThreeParameters)
                 .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult());
 
         // THEN
@@ -167,7 +167,7 @@ public class GivenArgumentsTest {
         //GIVEN
         givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
         expectLastCall().times(3);
-        expect(systemUnderTestMock.nonVoidMethodWithThreeArguments(GIVEN_STRING, GIVEN_INTEGER,
+        expect(systemUnderTestMock.nonVoidMethodWithThreeParameters(GIVEN_STRING, GIVEN_INTEGER,
                 GIVEN_BOOLEAN)).andReturn(EXPECTED_RESULT);
         givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
         mocksControl.replay();
@@ -186,7 +186,7 @@ public class GivenArgumentsTest {
                     givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
                     return GIVEN_BOOLEAN;
                 })
-                .when(SystemUnderTest::nonVoidMethodWithThreeArguments)
+                .when(SystemUnderTest::nonVoidMethodWithThreeParameters)
                 .then(result -> {
                     assertThat(result).isEqualTo(EXPECTED_RESULT);
                     givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
@@ -197,16 +197,16 @@ public class GivenArgumentsTest {
     }
 
     @Test
-    public void should_receive_an_argument_value_given_a_void_method() {
+    public void should_receive_one_argument_value_given_a_void_method() {
         //GIVEN
-        systemUnderTestMock.voidMethodWithArgument(GIVEN_STRING);
+        systemUnderTestMock.voidMethodWithParameter(GIVEN_STRING);
         givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
         mocksControl.replay();
 
         // WHEN
         givenSut(systemUnderTestMock)
                 .givenArgument(GIVEN_STRING)
-                .when(SystemUnderTest::voidMethodWithArgument)
+                .when(SystemUnderTest::voidMethodWithParameter)
                 .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult());
 
         // THEN
@@ -214,10 +214,10 @@ public class GivenArgumentsTest {
     }
 
     @Test
-    public void should_receive_an_argument_value_given_a_void_method_and_two_preparation_steps() {
+    public void should_receive_one_argument_value_given_a_void_method_and_two_preparation_steps() {
         //GIVEN
         givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-        systemUnderTestMock.voidMethodWithArgument(GIVEN_STRING);
+        systemUnderTestMock.voidMethodWithParameter(GIVEN_STRING);
         givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
         mocksControl.replay();
 
@@ -225,7 +225,7 @@ public class GivenArgumentsTest {
         givenSut(systemUnderTestMock)
                 .given(() -> givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem())
                 .givenArgument(GIVEN_STRING)
-                .when(SystemUnderTest::voidMethodWithArgument)
+                .when(SystemUnderTest::voidMethodWithParameter)
                 .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult());
 
         // THEN
@@ -233,16 +233,16 @@ public class GivenArgumentsTest {
     }
 
     @Test
-    public void should_receive_an_argument_value_given_a_non_void_method() {
+    public void should_receive_one_argument_value_given_a_non_void_method() {
         //GIVEN
-        expect(systemUnderTestMock.nonVoidMethodWithArgument(GIVEN_STRING)).andReturn(EXPECTED_RESULT);
+        expect(systemUnderTestMock.nonVoidMethodWithParameter(GIVEN_STRING)).andReturn(EXPECTED_RESULT);
         givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
         mocksControl.replay();
 
         // WHEN
         givenSut(systemUnderTestMock)
                 .givenArgument(GIVEN_STRING)
-                .when(SystemUnderTest::nonVoidMethodWithArgument)
+                .when(SystemUnderTest::nonVoidMethodWithParameter)
                 .then(result -> {
                     assertThat(result).isEqualTo(EXPECTED_RESULT);
                     givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
@@ -255,7 +255,7 @@ public class GivenArgumentsTest {
     @Test
     public void should_receive_two_argument_values_given_a_void_method() {
         //GIVEN
-        systemUnderTestMock.voidMethodWithTwoArguments(GIVEN_STRING, GIVEN_INTEGER);
+        systemUnderTestMock.voidMethodWithTwoParameters(GIVEN_STRING, GIVEN_INTEGER);
         givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
         mocksControl.replay();
 
@@ -263,7 +263,7 @@ public class GivenArgumentsTest {
         givenSut(systemUnderTestMock)
                 .givenArgument(GIVEN_STRING)
                 .andArgument(GIVEN_INTEGER)
-                .when(SystemUnderTest::voidMethodWithTwoArguments)
+                .when(SystemUnderTest::voidMethodWithTwoParameters)
                 .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult());
 
         // THEN
@@ -273,7 +273,7 @@ public class GivenArgumentsTest {
     @Test
     public void should_receive_three_argument_values_given_a_non_void_method() {
         //GIVEN
-        expect(systemUnderTestMock.nonVoidMethodWithThreeArguments(GIVEN_STRING, GIVEN_INTEGER,
+        expect(systemUnderTestMock.nonVoidMethodWithThreeParameters(GIVEN_STRING, GIVEN_INTEGER,
                 GIVEN_BOOLEAN)).andReturn(EXPECTED_RESULT);
         givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
         mocksControl.replay();
@@ -283,7 +283,7 @@ public class GivenArgumentsTest {
                 .givenArgument(GIVEN_STRING)
                 .andArgument(GIVEN_INTEGER)
                 .andArgument(GIVEN_BOOLEAN)
-                .when(SystemUnderTest::nonVoidMethodWithThreeArguments)
+                .when(SystemUnderTest::nonVoidMethodWithThreeParameters)
                 .then(result -> {
                     assertThat(result).isEqualTo(EXPECTED_RESULT);
                     givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();

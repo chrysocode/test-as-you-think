@@ -1,7 +1,7 @@
 package givenwhenthen;
 
-import givenwhenthen.GivenWhenThenDsl.AndThenWithoutResult;
-import givenwhenthen.GivenWhenThenDsl.ThenWithoutResult;
+import givenwhenthen.GivenWhenThenDsl.VerificationStage.AndThenWithoutResult;
+import givenwhenthen.GivenWhenThenDsl.VerificationStage.ThenWithoutResult;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;

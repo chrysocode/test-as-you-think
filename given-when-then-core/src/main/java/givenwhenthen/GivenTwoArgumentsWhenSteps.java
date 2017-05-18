@@ -1,9 +1,13 @@
 package givenwhenthen;
 
-import givenwhenthen.GivenWhenThenDsl.AndGivenTwoArguments;
-import givenwhenthen.GivenWhenThenDsl.Then;
-import givenwhenthen.GivenWhenThenDsl.ThenWithoutResult;
-import givenwhenthen.GivenWhenThenDsl.WhenApplyingThreeArguments;
+import givenwhenthen.GivenWhenThenDsl.ExecutionStage.WhenApplyingThreeArguments;
+import givenwhenthen.GivenWhenThenDsl.PreparationStage.AndGivenTwoArguments;
+import givenwhenthen.GivenWhenThenDsl.VerificationStage.Then;
+import givenwhenthen.GivenWhenThenDsl.VerificationStage.ThenFailure;
+import givenwhenthen.GivenWhenThenDsl.VerificationStage.ThenWithoutResult;
+import givenwhenthen.function.CheckedTriConsumer;
+import givenwhenthen.function.CheckedTriFunction;
+import givenwhenthen.function.Functions;
 
 import java.util.function.Supplier;
 
@@ -33,15 +37,23 @@ public class GivenTwoArgumentsWhenSteps<$SystemUnderTest, $Argument1, $Argument2
     }
 
     @Override
-    public ThenWithoutResult<$SystemUnderTest> when(TriConsumer<$SystemUnderTest, $Argument1, $Argument2> whenStep) {
+    public ThenWithoutResult<$SystemUnderTest> when(
+            CheckedTriConsumer<$SystemUnderTest, $Argument1, $Argument2> whenStep) {
         return thenStepFactory.createThenStep(preparation,
-                functions.toCheckedConsumer(whenStep, preparation.getArgumentSuppliers()));
+                functions.toConsumer(whenStep, preparation.getArgumentSuppliers()));
     }
 
     @Override
     public <$Result> Then<$SystemUnderTest, $Result> when(
-            TriFunction<$SystemUnderTest, $Argument1, $Argument2, $Result> whenStep) {
+            CheckedTriFunction<$SystemUnderTest, $Argument1, $Argument2, $Result> whenStep) {
         return thenStepFactory.createThenStep(preparation,
-                functions.toCheckedFunction(whenStep, preparation.getArgumentSuppliers()));
+                functions.toFunction(whenStep, preparation.getArgumentSuppliers()));
+    }
+
+    @Override
+    public ThenFailure whenSutRunsOutsideOperatingConditions(
+            CheckedTriConsumer<$SystemUnderTest, $Argument1, $Argument2> whenStep) {
+        return thenStepFactory.createThenStep(preparation, functions.toFunctionWithThrowableAsResult(
+                functions.toConsumer(whenStep, preparation.getArgumentSuppliers())));
     }
 }

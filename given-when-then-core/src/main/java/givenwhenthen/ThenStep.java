@@ -1,8 +1,8 @@
 package givenwhenthen;
 
-import givenwhenthen.GivenWhenThenDsl.AndThen;
-import givenwhenthen.GivenWhenThenDsl.Then;
-import givenwhenthen.GivenWhenThenDsl.ThenFailure;
+import givenwhenthen.GivenWhenThenDsl.VerificationStage.AndThen;
+import givenwhenthen.GivenWhenThenDsl.VerificationStage.Then;
+import givenwhenthen.GivenWhenThenDsl.VerificationStage.ThenFailure;
 
 import java.util.List;
 import java.util.function.BiConsumer;

@@ -2,18 +2,19 @@ package givenwhenthen;
 
 import givenwhenthen.fixture.GivenWhenThenDefinition;
 import givenwhenthen.fixture.SystemUnderTest;
+import givenwhenthen.function.CheckedConsumer;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import static givenwhenthen.GivenWhenThen.givenSutClass;
 import static givenwhenthen.fixture.GivenWhenThenDefinition.orderedSteps;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.easymock.EasyMock.verify;
 
 public class ThenFailuresTest {
 
     private static final String EXPECTED_MESSAGE = "expected message";
+    private static final String AN_EXPECTED_EXCEPTION_MUST_HAVE_BEEN_RAISED_BEFORE = "An expected exception must have been raised before!";
     private GivenWhenThenDefinition givenWhenThenDefinitionMock;
 
     @Before
@@ -65,7 +66,7 @@ public class ThenFailuresTest {
     }
 
     @Test(expected = AssertionError.class)
-    public void should_fail_because_of_an_unexpected_failure_given_a_non_void_method() {
+    public void should_fail_given_a_non_void_method() {
         // WHEN
         givenSutClass(SystemUnderTest.class)
                 .given(sut -> {
@@ -73,13 +74,13 @@ public class ThenFailuresTest {
                     sut.setGivenWhenThenDefinition(givenWhenThenDefinitionMock);
                 })
                 .when(SystemUnderTest::nonVoidFail)
-                .then(result -> {
-                    assertThat(result).isEqualTo("Unexpected failure must happen before this assertions.");
+                .then(() -> {
+                    throw new RuntimeException(AN_EXPECTED_EXCEPTION_MUST_HAVE_BEEN_RAISED_BEFORE);
                 });
     }
 
     @Test(expected = AssertionError.class)
-    public void should_fail_because_of_an_unexpected_failure_given_a_void_method() {
+    public void should_fail_given_a_void_method() {
         // WHEN
         givenSutClass(SystemUnderTest.class)
                 .given(sut -> {
@@ -87,6 +88,8 @@ public class ThenFailuresTest {
                     sut.setGivenWhenThenDefinition(givenWhenThenDefinitionMock);
                 })
                 .when((CheckedConsumer<SystemUnderTest>) SystemUnderTest::fail)
-                .then(result -> assertThat(result).isEqualTo("Unexpected failure must happen before this assertions."));
+                .then((Runnable) () -> {
+                    throw new RuntimeException(AN_EXPECTED_EXCEPTION_MUST_HAVE_BEEN_RAISED_BEFORE);
+                });
     }
 }

@@ -1,12 +1,14 @@
 package givenwhenthen;
 
-import givenwhenthen.GivenWhenThenDsl.AndGivenArgument;
-import givenwhenthen.GivenWhenThenDsl.AndGivenTwoArguments;
-import givenwhenthen.GivenWhenThenDsl.Then;
-import givenwhenthen.GivenWhenThenDsl.ThenWithoutResult;
+import givenwhenthen.GivenWhenThenDsl.PreparationStage.AndGivenArgument;
+import givenwhenthen.GivenWhenThenDsl.PreparationStage.AndGivenTwoArguments;
+import givenwhenthen.GivenWhenThenDsl.VerificationStage.Then;
+import givenwhenthen.GivenWhenThenDsl.VerificationStage.ThenFailure;
+import givenwhenthen.GivenWhenThenDsl.VerificationStage.ThenWithoutResult;
+import givenwhenthen.function.CheckedBiConsumer;
+import givenwhenthen.function.CheckedBiFunction;
+import givenwhenthen.function.Functions;
 
-import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
 public class GivenArgumentWhenSteps<$SystemUnderTest, $Argument> implements AndGivenArgument<$SystemUnderTest,
@@ -32,14 +34,21 @@ public class GivenArgumentWhenSteps<$SystemUnderTest, $Argument> implements AndG
     }
 
     @Override
-    public ThenWithoutResult<$SystemUnderTest> when(BiConsumer<$SystemUnderTest, $Argument> whenStep) {
+    public ThenWithoutResult<$SystemUnderTest> when(CheckedBiConsumer<$SystemUnderTest, $Argument> whenStep) {
         return thenStepFactory.createThenStep(preparation,
-                functions.toCheckedConsumer(whenStep, preparation.getArgumentSuppliers()));
+                functions.toConsumer(whenStep, preparation.getArgumentSuppliers()));
     }
 
     @Override
-    public <$Result> Then<$SystemUnderTest, $Result> when(BiFunction<$SystemUnderTest, $Argument, $Result> whenStep) {
+    public <$Result> Then<$SystemUnderTest, $Result> when(
+            CheckedBiFunction<$SystemUnderTest, $Argument, $Result> whenStep) {
         return thenStepFactory.createThenStep(preparation,
-                functions.toCheckedFunction(whenStep, preparation.getArgumentSuppliers()));
+                functions.toFunction(whenStep, preparation.getArgumentSuppliers()));
+    }
+
+    @Override
+    public ThenFailure whenSutRunsOutsideOperatingConditions(CheckedBiConsumer<$SystemUnderTest, $Argument> whenStep) {
+        return thenStepFactory.createThenStep(preparation, functions.toFunctionWithThrowableAsResult(
+                functions.toConsumer(whenStep, preparation.getArgumentSuppliers())));
     }
 }

@@ -1,5 +1,8 @@
 package givenwhenthen;
 
+import givenwhenthen.function.CheckedConsumer;
+import givenwhenthen.function.CheckedFunction;
+
 enum ThenStepFactory {
 
     INSTANCE;

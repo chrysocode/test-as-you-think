@@ -1,6 +1,6 @@
 package givenwhenthen;
 
-import givenwhenthen.GivenWhenThenDsl.Given;
+import givenwhenthen.GivenWhenThenDsl.PreparationStage.Given;
 
 public class GivenWhenThen {
 

@@ -1,5 +1,9 @@
 package givenwhenthen;
 
+import givenwhenthen.function.CheckedConsumer;
+import givenwhenthen.function.CheckedFunction;
+import givenwhenthen.function.Functions;
+
 import static org.assertj.core.api.Assertions.fail;
 
 class Event<$SystemUnderTest, $Result> {
@@ -15,7 +19,7 @@ class Event<$SystemUnderTest, $Result> {
 
     Event($SystemUnderTest systemUnderTest, CheckedConsumer<$SystemUnderTest> whenStep) {
         this.systemUnderTest = systemUnderTest;
-        this.whenStep = functions.toCheckedFunction(whenStep);
+        this.whenStep = functions.toFunction(whenStep);
     }
 
     $Result happen() {
