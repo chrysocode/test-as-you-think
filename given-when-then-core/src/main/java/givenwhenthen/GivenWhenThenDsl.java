@@ -79,6 +79,9 @@ public interface GivenWhenThenDsl {
                     Supplier<$Argument3> givenStep);
 
             <$Argument3> WhenApplyingThreeArguments<$SystemUnderTest, $Argument1, $Argument2, $Argument3> andArgument(
+                    String description, Supplier<$Argument3> givenStep);
+
+            <$Argument3> WhenApplyingThreeArguments<$SystemUnderTest, $Argument1, $Argument2, $Argument3> andArgument(
                     String description, $Argument3 argument);
         }
     }
