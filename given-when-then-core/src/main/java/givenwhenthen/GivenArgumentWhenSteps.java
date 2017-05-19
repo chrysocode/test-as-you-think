@@ -28,7 +28,14 @@ public class GivenArgumentWhenSteps<$SystemUnderTest, $Argument> implements AndG
     }
 
     @Override
-    public <$Argument2> AndGivenTwoArguments<$SystemUnderTest, $Argument, $Argument2> andArgument($Argument2 argument) {
+    public <$Argument2> AndGivenTwoArguments<$SystemUnderTest, $Argument, $Argument2> andArgument(String description,
+            Supplier<$Argument2> givenStep) {
+        return andArgument(givenStep);
+    }
+
+    @Override
+    public <$Argument2> AndGivenTwoArguments<$SystemUnderTest, $Argument, $Argument2> andArgument(String description,
+            $Argument2 argument) {
         preparation.recordGivenStep(functions.toSupplier(argument));
         return new GivenTwoArgumentsWhenSteps<>(preparation);
     }
