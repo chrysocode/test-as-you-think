@@ -53,7 +53,7 @@ public class GivenArgumentsTest {
     }
 
     @Test
-    public void should_receive_one_argument_with_its_description_given_a_void_method() {
+    public void should_receive_one_argument_with_its_description() {
         // GIVEN
         givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
         systemUnderTestMock.voidMethodWithParameter(GIVEN_STRING);
@@ -111,6 +111,29 @@ public class GivenArgumentsTest {
                     return GIVEN_STRING;
                 })
                 .andArgument(() -> {
+                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                    return GIVEN_INTEGER;
+                })
+                .when(SystemUnderTest::voidMethodWithTwoParameters)
+                .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult());
+    }
+
+    @Test
+    public void should_receive_two_arguments_with_their_descriptions() {
+        // GIVEN
+        givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+        expectLastCall().times(2);
+        systemUnderTestMock.voidMethodWithTwoParameters(GIVEN_STRING, GIVEN_INTEGER);
+        givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+        mocksControl.replay();
+
+        // WHEN
+        givenSut(systemUnderTestMock)
+                .givenArgument("Argument 1 description", () -> {
+                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                    return GIVEN_STRING;
+                })
+                .andArgument("Argument 2 description", () -> {
                     givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
                     return GIVEN_INTEGER;
                 })

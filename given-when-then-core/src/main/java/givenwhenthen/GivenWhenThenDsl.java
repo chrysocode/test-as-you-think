@@ -66,6 +66,9 @@ public interface GivenWhenThenDsl {
                     Supplier<$Argument2> givenStep);
 
             <$Argument2> AndGivenTwoArguments<$SystemUnderTest, $Argument, $Argument2> andArgument(String description,
+                    Supplier<$Argument2> givenStep);
+
+            <$Argument2> AndGivenTwoArguments<$SystemUnderTest, $Argument, $Argument2> andArgument(String description,
                     $Argument2 argument);
         }
 
