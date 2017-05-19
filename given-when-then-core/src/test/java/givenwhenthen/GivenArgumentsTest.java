@@ -3,6 +3,7 @@ package givenwhenthen;
 import givenwhenthen.fixture.GivenWhenThenDefinition;
 import givenwhenthen.fixture.SystemUnderTest;
 import org.easymock.IMocksControl;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -27,6 +28,12 @@ public class GivenArgumentsTest {
         givenWhenThenDefinitionMock = mocksControl.createMock(GivenWhenThenDefinition.class);
     }
 
+    @After
+    public void verifyMocks() {
+        // THEN
+        mocksControl.verify();
+    }
+
     @Test
     public void should_receive_one_argument_given_a_void_method() {
         // GIVEN
@@ -43,9 +50,6 @@ public class GivenArgumentsTest {
                 })
                 .when(SystemUnderTest::voidMethodWithParameter)
                 .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult());
-
-        // THEN
-        mocksControl.verify();
     }
 
     @Test
@@ -71,9 +75,6 @@ public class GivenArgumentsTest {
                     assertThat(result).isEqualTo(EXPECTED_RESULT);
                     givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                 });
-
-        // THEN
-        mocksControl.verify();
     }
 
     @Test
@@ -97,9 +98,6 @@ public class GivenArgumentsTest {
                 })
                 .when(SystemUnderTest::voidMethodWithTwoParameters)
                 .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult());
-
-        // THEN
-        mocksControl.verify();
     }
 
     @Test
@@ -127,9 +125,6 @@ public class GivenArgumentsTest {
                     assertThat(result).isEqualTo(EXPECTED_RESULT);
                     givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                 });
-
-        // THEN
-        mocksControl.verify();
     }
 
     @Test
@@ -157,9 +152,6 @@ public class GivenArgumentsTest {
                 })
                 .when(SystemUnderTest::voidMethodWithThreeParameters)
                 .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult());
-
-        // THEN
-        mocksControl.verify();
     }
 
     @Test
@@ -191,9 +183,6 @@ public class GivenArgumentsTest {
                     assertThat(result).isEqualTo(EXPECTED_RESULT);
                     givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                 });
-
-        // THEN
-        mocksControl.verify();
     }
 
     @Test
@@ -208,9 +197,6 @@ public class GivenArgumentsTest {
                 .givenArgument("Argument description", GIVEN_STRING)
                 .when(SystemUnderTest::voidMethodWithParameter)
                 .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult());
-
-        // THEN
-        mocksControl.verify();
     }
 
     @Test
@@ -227,9 +213,6 @@ public class GivenArgumentsTest {
                 .givenArgument("Argument description", GIVEN_STRING)
                 .when(SystemUnderTest::voidMethodWithParameter)
                 .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult());
-
-        // THEN
-        mocksControl.verify();
     }
 
     @Test
@@ -247,9 +230,6 @@ public class GivenArgumentsTest {
                     assertThat(result).isEqualTo(EXPECTED_RESULT);
                     givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                 });
-
-        // THEN
-        mocksControl.verify();
     }
 
     @Test
@@ -265,9 +245,6 @@ public class GivenArgumentsTest {
                 .andArgument("Argument 2 description", GIVEN_INTEGER)
                 .when(SystemUnderTest::voidMethodWithTwoParameters)
                 .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult());
-
-        // THEN
-        mocksControl.verify();
     }
 
     @Test
@@ -288,8 +265,5 @@ public class GivenArgumentsTest {
                     assertThat(result).isEqualTo(EXPECTED_RESULT);
                     givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                 });
-
-        // THEN
-        mocksControl.verify();
     }
 }
