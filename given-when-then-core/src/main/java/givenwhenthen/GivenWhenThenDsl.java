@@ -40,7 +40,8 @@ public interface GivenWhenThenDsl {
 
             <$Argument> AndGivenArgument<$SystemUnderTest, $Argument> givenArgument(Supplier<$Argument> givenStep);
 
-            <$Argument> AndGivenArgument<$SystemUnderTest, $Argument> givenArgument($Argument argument);
+            <$Argument> AndGivenArgument<$SystemUnderTest, $Argument> givenArgument(String description,
+                    $Argument argument);
         }
 
         interface AndGiven<$SystemUnderTest> extends When<$SystemUnderTest> {
@@ -51,7 +52,8 @@ public interface GivenWhenThenDsl {
 
             <$Argument> AndGivenArgument<$SystemUnderTest, $Argument> givenArgument(Supplier<$Argument> givenStep);
 
-            <$Argument> AndGivenArgument<$SystemUnderTest, $Argument> givenArgument($Argument argument);
+            <$Argument> AndGivenArgument<$SystemUnderTest, $Argument> givenArgument(String description,
+                    $Argument argument);
         }
 
         interface AndGivenArgument<$SystemUnderTest, $Argument> extends WhenApplyingOneArgument<$SystemUnderTest,
@@ -60,7 +62,8 @@ public interface GivenWhenThenDsl {
             <$Argument2> AndGivenTwoArguments<$SystemUnderTest, $Argument, $Argument2> andArgument(
                     Supplier<$Argument2> givenStep);
 
-            <$Argument2> AndGivenTwoArguments<$SystemUnderTest, $Argument, $Argument2> andArgument($Argument2 argument);
+            <$Argument2> AndGivenTwoArguments<$SystemUnderTest, $Argument, $Argument2> andArgument(String description,
+                    $Argument2 argument);
         }
 
         interface AndGivenTwoArguments<$SystemUnderTest, $Argument1, $Argument2> extends
@@ -70,7 +73,7 @@ public interface GivenWhenThenDsl {
                     Supplier<$Argument3> givenStep);
 
             <$Argument3> WhenApplyingThreeArguments<$SystemUnderTest, $Argument1, $Argument2, $Argument3> andArgument(
-                    $Argument3 argument);
+                    String description, $Argument3 argument);
         }
     }
 

@@ -31,7 +31,7 @@ public class GivenTwoArgumentsWhenSteps<$SystemUnderTest, $Argument1, $Argument2
 
     @Override
     public <$Argument3> WhenApplyingThreeArguments<$SystemUnderTest, $Argument1, $Argument2, $Argument3> andArgument(
-            $Argument3 argument) {
+            String description, $Argument3 argument) {
         preparation.recordGivenStep(functions.toSupplier(argument));
         return new GivenThreeArgumentsWhenSteps<>(preparation);
     }

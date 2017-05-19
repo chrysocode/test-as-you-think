@@ -64,7 +64,8 @@ public class GivenWhenSteps<$SystemUnderTest> implements Given<$SystemUnderTest>
     }
 
     @Override
-    public <$Argument> AndGivenArgument<$SystemUnderTest, $Argument> givenArgument($Argument argument) {
+    public <$Argument> AndGivenArgument<$SystemUnderTest, $Argument> givenArgument(String description,
+            $Argument argument) {
         preparation.recordGivenStep(functions.toSupplier(argument));
         return new GivenArgumentWhenSteps<>(preparation);
     }

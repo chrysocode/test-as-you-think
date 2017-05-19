@@ -205,7 +205,7 @@ public class GivenArgumentsTest {
 
         // WHEN
         givenSut(systemUnderTestMock)
-                .givenArgument(GIVEN_STRING)
+                .givenArgument("Argument description", GIVEN_STRING)
                 .when(SystemUnderTest::voidMethodWithParameter)
                 .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult());
 
@@ -224,7 +224,7 @@ public class GivenArgumentsTest {
         // WHEN
         givenSut(systemUnderTestMock)
                 .given(() -> givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem())
-                .givenArgument(GIVEN_STRING)
+                .givenArgument("Argument description", GIVEN_STRING)
                 .when(SystemUnderTest::voidMethodWithParameter)
                 .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult());
 
@@ -241,7 +241,7 @@ public class GivenArgumentsTest {
 
         // WHEN
         givenSut(systemUnderTestMock)
-                .givenArgument(GIVEN_STRING)
+                .givenArgument("Argument description", GIVEN_STRING)
                 .when(SystemUnderTest::nonVoidMethodWithParameter)
                 .then(result -> {
                     assertThat(result).isEqualTo(EXPECTED_RESULT);
@@ -261,8 +261,8 @@ public class GivenArgumentsTest {
 
         // WHEN
         givenSut(systemUnderTestMock)
-                .givenArgument(GIVEN_STRING)
-                .andArgument(GIVEN_INTEGER)
+                .givenArgument("Argument 1 description", GIVEN_STRING)
+                .andArgument("Argument 2 description", GIVEN_INTEGER)
                 .when(SystemUnderTest::voidMethodWithTwoParameters)
                 .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult());
 
@@ -280,9 +280,9 @@ public class GivenArgumentsTest {
 
         // WHEN
         givenSut(systemUnderTestMock)
-                .givenArgument(GIVEN_STRING)
-                .andArgument(GIVEN_INTEGER)
-                .andArgument(GIVEN_BOOLEAN)
+                .givenArgument("Argument 1 description", GIVEN_STRING)
+                .andArgument("Argument 2 description", GIVEN_INTEGER)
+                .andArgument("Argument 3 description", GIVEN_BOOLEAN)
                 .when(SystemUnderTest::nonVoidMethodWithThreeParameters)
                 .then(result -> {
                     assertThat(result).isEqualTo(EXPECTED_RESULT);
