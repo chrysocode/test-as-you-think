@@ -52,7 +52,7 @@ public class ThenFailuresTest {
                 })
                 .whenSutRunsOutsideOperatingConditions(sut -> sut.fail(IllegalStateException.class))
                 .thenItFails()
-                .byThrowing(IllegalStateException.class);
+                .becauseOf(IllegalStateException.class);
     }
 
     @Test
@@ -65,7 +65,7 @@ public class ThenFailuresTest {
                 })
                 .whenSutRunsOutsideOperatingConditions(sut -> sut.fail(IllegalStateException.class, EXPECTED_MESSAGE))
                 .thenItFails()
-                .byThrowing(IllegalStateException.class)
+                .becauseOf(IllegalStateException.class)
                 .withMessage(EXPECTED_MESSAGE);
     }
 

@@ -203,7 +203,7 @@ public interface GivenWhenThenDsl {
 
         interface ThenFailureWithExpectedException {
 
-            ThenFailureWithExpectedMessage byThrowing(Class<? extends Throwable> expectedThrowableClass);
+            ThenFailureWithExpectedMessage becauseOf(Class<? extends Throwable> expectedThrowableClass);
         }
 
         interface ThenFailureWithExpectedMessage {

@@ -119,7 +119,7 @@ public class ThenStep<$SystemUnderTest, $Result> implements Then<$SystemUnderTes
     }
 
     @Override
-    public ThenFailureWithExpectedMessage byThrowing(Class<? extends Throwable> expectedThrowableClass) {
+    public ThenFailureWithExpectedMessage becauseOf(Class<? extends Throwable> expectedThrowableClass) {
         assertThat(context.returnResultOrVoid()).isInstanceOf(expectedThrowableClass);
         return this;
     }
