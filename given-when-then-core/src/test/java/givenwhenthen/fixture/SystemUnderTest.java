@@ -52,21 +52,11 @@ public class SystemUnderTest {
         return nonVoidMethod();
     }
 
-    public void fail() throws Throwable {
-        whenAnEventHappens();
-        throw new Exception("It fails!");
-    }
-
     public void failWithParameter(String parameter) throws Throwable {}
 
     public void failWithTwoParameters(String parameter1, Integer parameter2) throws Throwable {}
 
     public void failWithThreeParameters(String parameter1, Integer parameter2, Boolean parameter3) throws Throwable {}
-
-    public String nonVoidFail() throws Throwable {
-        whenAnEventHappens();
-        throw new Exception("It fails!");
-    }
 
     public String nonVoidFailWithParameter(String parameter) throws Throwable {
         return null;
@@ -81,17 +71,14 @@ public class SystemUnderTest {
         return null;
     }
 
-    public void fail(Class<? extends Throwable> throwableClass) throws Throwable {
-        whenAnEventHappens();
-        throw throwableClass.newInstance();
+    public void voidMethodWithThrowsClause() throws Throwable {}
+
+    public String nonVoidMethodWithThrowsClause() throws Throwable {
+        return null;
     }
 
-    public void fail(Class<? extends Throwable> throwableClass, String message) throws Throwable {
-        whenAnEventHappens();
-        throw (Throwable) Class
-                .forName(throwableClass.getName())
-                .getConstructor(String.class)
-                .newInstance(message);
+    public String methodWithThrowsClause() throws Throwable {
+        return null;
     }
 
     private void changeState() {
