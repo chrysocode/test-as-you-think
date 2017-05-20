@@ -6,7 +6,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import static testasyouthink.GivenWhenThen.givenSut;
+import static testasyouthink.TestAsYouThink.givenSut;
+import static testasyouthink.TestAsYouThink.givenSutClass;
 import static testasyouthink.fixture.GivenWhenThenDefinition.orderedSteps;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.easymock.EasyMock.verify;
@@ -50,8 +51,7 @@ public class WhenThenTest {
     @Test
     public void should_follow_the_when_then_partial_sequence_given_a_sut_class_to_be_instantiated() {
         // WHEN
-        GivenWhenThen
-                .givenSutClass(SystemUnderTest.class)
+        givenSutClass(SystemUnderTest.class)
                 .when(sut -> {
                     givenWhenThenDefinitionMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
                     return sut.nonVoidMethod();

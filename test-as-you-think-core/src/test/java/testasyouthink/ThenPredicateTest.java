@@ -6,7 +6,7 @@ import org.junit.After;
 import org.junit.ComparisonFailure;
 import org.junit.Test;
 
-import static testasyouthink.GivenWhenThen.givenSutClass;
+import static testasyouthink.TestAsYouThink.givenSutClass;
 import static testasyouthink.fixture.GivenWhenThenDefinition.orderedSteps;
 import static java.util.Arrays.asList;
 import static org.easymock.EasyMock.verify;

@@ -6,8 +6,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import static testasyouthink.GivenWhenThen.givenSut;
-import static testasyouthink.GivenWhenThen.givenSutClass;
+import static testasyouthink.TestAsYouThink.givenSut;
+import static testasyouthink.TestAsYouThink.givenSutClass;
 import static testasyouthink.fixture.GivenWhenThenDefinition.orderedSteps;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.easymock.EasyMock.verify;
