@@ -98,6 +98,28 @@ public class ThenFailuresTest {
                 .withMessage(EXPECTED_MESSAGE);
     }
 
+    @Test
+    public void should_fail_given_an_unexpected_message() throws Throwable {
+        // GIVEN
+        reset(givenWhenThenDefinitionMock);
+        replay(givenWhenThenDefinitionMock);
+
+        SystemUnderTest systemUnderTestMock = strictMock(SystemUnderTest.class);
+        expect(systemUnderTestMock.methodWithThrowsClause()).andThrow(new ExpectedException("unexpected message"));
+        replay(systemUnderTestMock);
+
+        // WHEN
+        Throwable thrown = catchThrowable(() -> givenSut(systemUnderTestMock)
+                .whenSutRunsOutsideOperatingConditions(SystemUnderTest::methodWithThrowsClause)
+                .thenItFails()
+                .becauseOf(ExpectedException.class)
+                .withMessage("expected message"));
+
+        // THEN
+        assertThat(thrown).isInstanceOf(AssertionError.class);
+        verify(systemUnderTestMock);
+    }
+
     @Test(expected = AssertionError.class)
     public void should_fail_given_a_non_void_method() {
         // WHEN
