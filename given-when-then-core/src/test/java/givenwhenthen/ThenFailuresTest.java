@@ -1,21 +1,29 @@
 package givenwhenthen;
 
+import givenwhenthen.fixture.ExpectedException;
 import givenwhenthen.fixture.GivenWhenThenDefinition;
 import givenwhenthen.fixture.SystemUnderTest;
+import givenwhenthen.fixture.UnexpectedException;
 import givenwhenthen.function.CheckedConsumer;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import static givenwhenthen.GivenWhenThen.givenSut;
 import static givenwhenthen.GivenWhenThen.givenSutClass;
 import static givenwhenthen.fixture.GivenWhenThenDefinition.orderedSteps;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.reset;
+import static org.easymock.EasyMock.strictMock;
 import static org.easymock.EasyMock.verify;
 
 public class ThenFailuresTest {
 
     private static final String EXPECTED_MESSAGE = "expected message";
-    private static final String AN_EXPECTED_EXCEPTION_MUST_HAVE_BEEN_RAISED_BEFORE = "An expected exception must " +
-            "have" + " been raised before!";
+    private static final String MISSING_EXCEPTION = "An expected exception must have been raised before!";
     private GivenWhenThenDefinition givenWhenThenDefinitionMock;
 
     @Before
@@ -56,6 +64,27 @@ public class ThenFailuresTest {
     }
 
     @Test
+    public void should_fail_given_an_unexpected_exception() throws Throwable {
+        // GIVEN
+        reset(givenWhenThenDefinitionMock);
+        replay(givenWhenThenDefinitionMock);
+
+        SystemUnderTest systemUnderTestMock = strictMock(SystemUnderTest.class);
+        expect(systemUnderTestMock.methodWithThrowsClause()).andThrow(new UnexpectedException());
+        replay(systemUnderTestMock);
+
+        // WHEN
+        Throwable thrown = catchThrowable(() -> givenSut(systemUnderTestMock)
+                .whenSutRunsOutsideOperatingConditions(SystemUnderTest::methodWithThrowsClause)
+                .thenItFails()
+                .becauseOf(ExpectedException.class));
+
+        // THEN
+        assertThat(thrown).isInstanceOf(AssertionError.class);
+        verify(systemUnderTestMock);
+    }
+
+    @Test
     public void should_verify_the_sut_fails_by_raising_an_expected_exception_with_an_expected_message() {
         // WHEN
         givenSutClass(SystemUnderTest.class)
@@ -79,7 +108,7 @@ public class ThenFailuresTest {
                 })
                 .when(SystemUnderTest::nonVoidFail)
                 .then(() -> {
-                    throw new RuntimeException(AN_EXPECTED_EXCEPTION_MUST_HAVE_BEEN_RAISED_BEFORE);
+                    throw new RuntimeException(MISSING_EXCEPTION);
                 });
     }
 
@@ -93,7 +122,7 @@ public class ThenFailuresTest {
                 })
                 .when((CheckedConsumer<SystemUnderTest>) SystemUnderTest::fail)
                 .then((Runnable) () -> {
-                    throw new RuntimeException(AN_EXPECTED_EXCEPTION_MUST_HAVE_BEEN_RAISED_BEFORE);
+                    throw new RuntimeException(MISSING_EXCEPTION);
                 });
     }
 }

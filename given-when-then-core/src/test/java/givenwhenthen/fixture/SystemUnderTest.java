@@ -94,6 +94,10 @@ public class SystemUnderTest {
                 .newInstance(message);
     }
 
+    public String methodWithThrowsClause() throws Throwable {
+        return null;
+    }
+
     private void changeState() {
         state = "state updated";
     }

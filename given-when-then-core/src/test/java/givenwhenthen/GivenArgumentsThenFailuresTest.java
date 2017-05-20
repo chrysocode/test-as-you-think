@@ -15,8 +15,7 @@ public class GivenArgumentsThenFailuresTest {
     private static final String GIVEN_STRING = "given argument";
     private static final int GIVEN_INTEGER = 201705;
     private static final boolean GIVEN_BOOLEAN = false;
-    private static final String AN_EXPECTED_EXCEPTION_MUST_HAVE_BEEN_RAISED_BEFORE = "An expected exception must have"
-            + " " + "been raised before!";
+    private static final String MISSING_EXCEPTION = "An expected exception must have been raised before!";
 
     private IMocksControl mocksControl;
     private SystemUnderTest systemUnderTestMock;
@@ -52,7 +51,7 @@ public class GivenArgumentsThenFailuresTest {
                 })
                 .when(SystemUnderTest::failWithParameter)
                 .then((Runnable) () -> {
-                    throw new RuntimeException(AN_EXPECTED_EXCEPTION_MUST_HAVE_BEEN_RAISED_BEFORE);
+                    throw new RuntimeException(MISSING_EXCEPTION);
                 });
     }
 
@@ -71,7 +70,7 @@ public class GivenArgumentsThenFailuresTest {
                 })
                 .when(SystemUnderTest::nonVoidFailWithParameter)
                 .then(() -> {
-                    throw new RuntimeException(AN_EXPECTED_EXCEPTION_MUST_HAVE_BEEN_RAISED_BEFORE);
+                    throw new RuntimeException(MISSING_EXCEPTION);
                 });
     }
 
@@ -96,7 +95,7 @@ public class GivenArgumentsThenFailuresTest {
                 })
                 .when(SystemUnderTest::failWithTwoParameters)
                 .then((Runnable) () -> {
-                    throw new RuntimeException(AN_EXPECTED_EXCEPTION_MUST_HAVE_BEEN_RAISED_BEFORE);
+                    throw new RuntimeException(MISSING_EXCEPTION);
                 });
     }
 
@@ -120,7 +119,7 @@ public class GivenArgumentsThenFailuresTest {
                 })
                 .when(SystemUnderTest::nonVoidFailWithTwoParameters)
                 .then(() -> {
-                    throw new RuntimeException(AN_EXPECTED_EXCEPTION_MUST_HAVE_BEEN_RAISED_BEFORE);
+                    throw new RuntimeException(MISSING_EXCEPTION);
                 });
     }
 
@@ -149,7 +148,7 @@ public class GivenArgumentsThenFailuresTest {
                 })
                 .when(SystemUnderTest::failWithThreeParameters)
                 .then(sut -> {
-                    throw new RuntimeException(AN_EXPECTED_EXCEPTION_MUST_HAVE_BEEN_RAISED_BEFORE);
+                    throw new RuntimeException(MISSING_EXCEPTION);
                 });
     }
 
@@ -178,7 +177,7 @@ public class GivenArgumentsThenFailuresTest {
                 })
                 .when(SystemUnderTest::nonVoidFailWithThreeParameters)
                 .then(() -> {
-                    throw new RuntimeException(AN_EXPECTED_EXCEPTION_MUST_HAVE_BEEN_RAISED_BEFORE);
+                    throw new RuntimeException(MISSING_EXCEPTION);
                 });
     }
 
