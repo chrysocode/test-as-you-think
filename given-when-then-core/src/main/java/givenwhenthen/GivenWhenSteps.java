@@ -1,47 +1,50 @@
 package givenwhenthen;
 
-import java.util.ArrayList;
-import java.util.List;
+import givenwhenthen.GivenWhenThenDsl.PreparationStage.AndGiven;
+import givenwhenthen.GivenWhenThenDsl.PreparationStage.AndGivenArgument;
+import givenwhenthen.GivenWhenThenDsl.PreparationStage.Given;
+import givenwhenthen.GivenWhenThenDsl.VerificationStage.Then;
+import givenwhenthen.GivenWhenThenDsl.VerificationStage.ThenFailure;
+import givenwhenthen.GivenWhenThenDsl.VerificationStage.ThenWithoutResult;
+import givenwhenthen.function.CheckedConsumer;
+import givenwhenthen.function.CheckedFunction;
+import givenwhenthen.function.Functions;
+
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
-import givenwhenthen.GivenWhenThenDsl.AndGiven;
-import givenwhenthen.GivenWhenThenDsl.Given;
-import givenwhenthen.GivenWhenThenDsl.Then;
-import givenwhenthen.GivenWhenThenDsl.ThenFailure;
-import givenwhenthen.GivenWhenThenDsl.ThenWithoutResult;
+public class GivenWhenSteps<$SystemUnderTest> implements Given<$SystemUnderTest>, AndGiven<$SystemUnderTest> {
 
-public class GivenWhenSteps<$SystemUnderTest> implements Given<$SystemUnderTest> {
-
-    private final $SystemUnderTest systemUnderTest;
-    private final List<Consumer<$SystemUnderTest>> givenSteps;
+    private final Functions functions = Functions.INSTANCE;
+    private final Preparation<$SystemUnderTest> preparation;
+    private final ThenStepFactory thenStepFactory = ThenStepFactory.INSTANCE;
 
     GivenWhenSteps($SystemUnderTest systemUnderTest) {
-        this.systemUnderTest = systemUnderTest;
-        this.givenSteps = new ArrayList<>();
+        preparation = new Preparation<>(systemUnderTest);
     }
 
     @Override
-    public Given<$SystemUnderTest> given(Runnable givenStep) {
-        this.givenSteps.add(sut -> {
-            givenStep.run();
-        });
+    public AndGiven<$SystemUnderTest> given(Runnable givenStep) {
+        preparation.recordGivenStep(givenStep);
         return this;
     }
 
     @Override
-    public Given<$SystemUnderTest> given(Consumer<$SystemUnderTest> givenStep) {
-        this.givenSteps.add(givenStep);
+    public AndGiven<$SystemUnderTest> given(Consumer<$SystemUnderTest> givenStep) {
+        preparation.recordGivenStep(givenStep);
         return this;
     }
 
     @Override
-    public Given<$SystemUnderTest> given(String fixtureSpecification, Runnable givenStep) {
-        return given(givenStep);
+    public AndGiven<$SystemUnderTest> given(String fixtureSpecification, Runnable givenStep) {
+        preparation.recordGivenStep(givenStep);
+        return this;
     }
 
     @Override
-    public Given<$SystemUnderTest> given(String fixtureSpecification, Consumer<$SystemUnderTest> givenStep) {
-        return given(givenStep);
+    public AndGiven<$SystemUnderTest> given(String fixtureSpecification, Consumer<$SystemUnderTest> givenStep) {
+        preparation.recordGivenStep(givenStep);
+        return this;
     }
 
     @Override
@@ -55,45 +58,36 @@ public class GivenWhenSteps<$SystemUnderTest> implements Given<$SystemUnderTest>
     }
 
     @Override
-    public <$Result> Then<$SystemUnderTest, $Result> when(CheckedFunction<$SystemUnderTest, $Result> whenStep) {
-        return toThenStep(whenStep);
+    public <$Argument> AndGivenArgument<$SystemUnderTest, $Argument> givenArgument(Supplier<$Argument> givenStep) {
+        preparation.recordGivenStep(givenStep);
+        return new GivenArgumentWhenSteps<>(preparation);
     }
 
-    private <$Result> Then<$SystemUnderTest, $Result> toThenStep(CheckedFunction<$SystemUnderTest, $Result> whenStep) {
-        GivenWhenContext<$SystemUnderTest, $Result> context = new GivenWhenContext<>(systemUnderTest);
-        context.setGivenSteps(givenSteps);
-        context.setWhenStep(whenStep);
-        return new ThenStep<>(context);
+    @Override
+    public <$Argument> AndGivenArgument<$SystemUnderTest, $Argument> givenArgument(String description,
+            Supplier<$Argument> givenStep) {
+        return givenArgument(givenStep);
+    }
+
+    @Override
+    public <$Argument> AndGivenArgument<$SystemUnderTest, $Argument> givenArgument(String description,
+            $Argument argument) {
+        preparation.recordGivenStep(functions.toSupplier(argument));
+        return new GivenArgumentWhenSteps<>(preparation);
+    }
+
+    @Override
+    public <$Result> Then<$SystemUnderTest, $Result> when(CheckedFunction<$SystemUnderTest, $Result> whenStep) {
+        return thenStepFactory.createThenStep(preparation, whenStep);
     }
 
     @Override
     public ThenWithoutResult<$SystemUnderTest> when(CheckedConsumer<$SystemUnderTest> whenStep) {
-        return toThenStep(whenStep);
-    }
-
-    private ThenWithoutResult<$SystemUnderTest> toThenStep(CheckedConsumer<$SystemUnderTest> whenStep) {
-        GivenWhenContext<$SystemUnderTest, Void> context = new GivenWhenContext<>(systemUnderTest);
-        context.setGivenSteps(givenSteps);
-        context.setWhenStep(sut -> {
-            whenStep.accept(sut);
-            return null;
-        });
-        return new ThenWithoutResultStep<>(context);
+        return thenStepFactory.createThenStep(preparation, whenStep);
     }
 
     @Override
     public ThenFailure whenSutRunsOutsideOperatingConditions(CheckedConsumer<$SystemUnderTest> whenStep) {
-        GivenWhenContext<$SystemUnderTest, Throwable> context = new GivenWhenContext<>(systemUnderTest);
-        context.setGivenSteps(givenSteps);
-        context.setWhenStep(sut -> {
-            Throwable result = null;
-            try {
-                whenStep.accept(sut);
-            } catch (Throwable throwable) {
-                result = throwable;
-            }
-            return result;
-        });
-        return new ThenStep<>(context);
+        return thenStepFactory.createThenStep(preparation, functions.toFunctionWithThrowableAsResult(whenStep));
     }
 }

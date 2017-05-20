@@ -1,6 +1,6 @@
 package givenwhenthen;
 
-import givenwhenthen.GivenWhenThenDsl.Given;
+import givenwhenthen.GivenWhenThenDsl.PreparationStage.Given;
 
 public class GivenWhenThen {
 
@@ -10,7 +10,7 @@ public class GivenWhenThen {
 
     public static <$SystemUnderTest> Given<$SystemUnderTest> givenSutClass(Class<$SystemUnderTest> sutClass) {
         try {
-            return new GivenWhenSteps<$SystemUnderTest>(sutClass.newInstance());
+            return new GivenWhenSteps<>(sutClass.newInstance());
         } catch (Exception exception) {
             throw new RuntimeException(exception.getMessage());
         }

@@ -1,4 +1,4 @@
-package givenwhenthen;
+package givenwhenthen.function;
 
 @FunctionalInterface
 public interface CheckedFunction<T, R> {

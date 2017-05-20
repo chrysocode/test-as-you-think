@@ -1,17 +1,17 @@
 package givenwhenthen;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import givenwhenthen.GivenWhenThenDsl.VerificationStage.AndThenWithoutResult;
+import givenwhenthen.GivenWhenThenDsl.VerificationStage.ThenWithoutResult;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 
-import givenwhenthen.GivenWhenThenDsl.AndThenWithoutResult;
-import givenwhenthen.GivenWhenThenDsl.ThenWithoutResult;
+import static org.assertj.core.api.Assertions.assertThat;
 
-public class ThenWithoutResultStep<$SystemUnderTest>
-        implements ThenWithoutResult<$SystemUnderTest>, AndThenWithoutResult<$SystemUnderTest> {
+public class ThenWithoutResultStep<$SystemUnderTest> implements ThenWithoutResult<$SystemUnderTest>,
+        AndThenWithoutResult<$SystemUnderTest> {
 
-    private GivenWhenContext<$SystemUnderTest, Void> context;
+    private final GivenWhenContext<$SystemUnderTest, Void> context;
 
     public ThenWithoutResultStep(GivenWhenContext<$SystemUnderTest, Void> context) {
         this.context = context;

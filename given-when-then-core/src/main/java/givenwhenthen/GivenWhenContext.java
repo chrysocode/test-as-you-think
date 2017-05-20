@@ -1,44 +1,25 @@
 package givenwhenthen;
 
-import static org.assertj.core.api.Assertions.fail;
-
-import java.util.List;
-import java.util.function.Consumer;
-
 class GivenWhenContext<$SystemUnderTest, $Result> {
 
-    private $SystemUnderTest systemUnderTest;
-    private List<Consumer<$SystemUnderTest>> givenSteps;
-    private CheckedFunction<$SystemUnderTest, $Result> whenStep;
+    private final Preparation<$SystemUnderTest> preparation;
+    private final Event<$SystemUnderTest, $Result> event;
+    private $Result result;
 
-    GivenWhenContext($SystemUnderTest systemUnderTest) {
-        this.systemUnderTest = systemUnderTest;
+    GivenWhenContext(Preparation<$SystemUnderTest> preparation, Event<$SystemUnderTest, $Result> event) {
+        this.preparation = preparation;
+        this.event = event;
     }
 
     $Result returnResultOrVoid() {
-        if (givenSteps != null && !givenSteps.isEmpty()) {
-            givenSteps.stream().forEach(step -> step.accept(systemUnderTest));
+        if (result == null) {
+            preparation.prepareFixtures();
+            result = event.happen();
         }
-
-        $Result result = null;
-        try {
-            result = whenStep.apply(systemUnderTest);
-        } catch (Throwable throwable) {
-            fail("Unexpected exception happened!", throwable);
-        }
-
         return result;
     }
 
     $SystemUnderTest getSystemUnderTest() {
-        return systemUnderTest;
-    }
-
-    void setGivenSteps(List<Consumer<$SystemUnderTest>> givenSteps) {
-        this.givenSteps = givenSteps;
-    }
-
-    void setWhenStep(CheckedFunction<$SystemUnderTest, $Result> whenStep) {
-        this.whenStep = whenStep;
+        return preparation.getSystemUnderTest();
     }
 }

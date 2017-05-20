@@ -2,11 +2,11 @@
 # Compiled source #
 ###################
 *.class
-bin
-build
-dist
-out
-target
+bin/
+build/
+dist/
+out/
+target/
 
 ######################
 # OS generated files #
@@ -19,7 +19,9 @@ thumbs.db
 #######################
 .project
 .classpath
-.settings
+.settings/
+.idea/
+*.iml
 
 #######
 # SCM #

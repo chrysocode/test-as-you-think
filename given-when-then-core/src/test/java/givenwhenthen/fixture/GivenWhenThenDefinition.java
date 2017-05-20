@@ -1,21 +1,21 @@
-package givenwhenthen;
+package givenwhenthen.fixture;
 
-import static org.easymock.EasyMock.expectLastCall;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.strictMock;
+import static org.easymock.EasyMock.*;
 
 public class GivenWhenThenDefinition {
 
+    private static final int DEFAULT_NUMBER_OF_STEPS = 1;
+
     public static GivenWhenThenDefinition orderedSteps() {
-        return orderedSteps(1, 1, 1);
+        return orderedSteps(DEFAULT_NUMBER_OF_STEPS, DEFAULT_NUMBER_OF_STEPS, DEFAULT_NUMBER_OF_STEPS);
     }
 
     public static GivenWhenThenDefinition orderedSteps(int numberOfGivenSteps) {
-        return orderedSteps(numberOfGivenSteps, 1, 1);
+        return orderedSteps(numberOfGivenSteps, DEFAULT_NUMBER_OF_STEPS, DEFAULT_NUMBER_OF_STEPS);
     }
 
     public static GivenWhenThenDefinition orderedSteps(int numberOfGivenSteps, int numberOfThenSteps) {
-        return orderedSteps(numberOfGivenSteps, 1, numberOfThenSteps);
+        return orderedSteps(numberOfGivenSteps, DEFAULT_NUMBER_OF_STEPS, numberOfThenSteps);
     }
 
     public static GivenWhenThenDefinition orderedSteps(int numberOfGivenSteps, int numberOfWhenSteps,

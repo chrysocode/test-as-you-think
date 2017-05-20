@@ -1,6 +1,10 @@
 package givenwhenthen;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import givenwhenthen.GivenWhenThenDsl.VerificationStage.AndThen;
+import givenwhenthen.GivenWhenThenDsl.VerificationStage.Then;
+import givenwhenthen.GivenWhenThenDsl.VerificationStage.ThenFailure;
+import givenwhenthen.GivenWhenThenDsl.VerificationStage.ThenFailureWithExpectedException;
+import givenwhenthen.GivenWhenThenDsl.VerificationStage.ThenFailureWithExpectedMessage;
 
 import java.util.List;
 import java.util.function.BiConsumer;
@@ -8,12 +12,11 @@ import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-import givenwhenthen.GivenWhenThenDsl.AndThen;
-import givenwhenthen.GivenWhenThenDsl.Then;
-import givenwhenthen.GivenWhenThenDsl.ThenFailure;
+import static org.assertj.core.api.Assertions.assertThat;
 
-public class ThenStep<$SystemUnderTest, $Result>
-        implements Then<$SystemUnderTest, $Result>, ThenFailure, AndThen<$SystemUnderTest, $Result> {
+public class ThenStep<$SystemUnderTest, $Result> implements Then<$SystemUnderTest, $Result>,
+        AndThen<$SystemUnderTest, $Result>, ThenFailure, ThenFailureWithExpectedException,
+        ThenFailureWithExpectedMessage {
 
     private final GivenWhenContext<$SystemUnderTest, $Result> context;
     private $Result result;
@@ -64,7 +67,10 @@ public class ThenStep<$SystemUnderTest, $Result>
 
     @Override
     public void then(List<Predicate<$Result>> thenSteps) {
-        assertThat(thenSteps.stream().reduce((predicate, another) -> predicate.and(another)).get()
+        assertThat(thenSteps
+                .stream()
+                .reduce((predicate, another) -> predicate.and(another))
+                .get()
                 .test(context.returnResultOrVoid())).isTrue();
     }
 
@@ -77,23 +83,6 @@ public class ThenStep<$SystemUnderTest, $Result>
     public void then(Predicate<$Result> thenStepAboutResult, Predicate<$SystemUnderTest> thenStepAboutSystemUnderTest) {
         then(thenStepAboutResult);
         assertThat(thenStepAboutSystemUnderTest.test(context.getSystemUnderTest())).isTrue();
-    }
-
-    @Override
-    public void thenItFails() {
-        assertThat(context.returnResultOrVoid()).isInstanceOf(Throwable.class);
-    }
-
-    @Override
-    public void thenItFails(Class<? extends Throwable> expectedThrowableClass) {
-        assertThat(context.returnResultOrVoid()).isInstanceOf(expectedThrowableClass);
-    }
-
-    @Override
-    public void thenItFails(Class<? extends Throwable> expectedThrowableClass, String expectedMessage) {
-        $Result result = context.returnResultOrVoid();
-        assertThat(result).isInstanceOf(expectedThrowableClass);
-        assertThat(((Throwable) result).getMessage()).isEqualTo(expectedMessage);
     }
 
     @Override
@@ -121,5 +110,22 @@ public class ThenStep<$SystemUnderTest, $Result>
     @Override
     public AndThen<$SystemUnderTest, $Result> and(String expectationSpecification, Runnable thenStep) {
         return then(expectationSpecification, thenStep);
+    }
+
+    @Override
+    public ThenFailureWithExpectedException thenItFails() {
+        assertThat(context.returnResultOrVoid()).isInstanceOf(Throwable.class);
+        return this;
+    }
+
+    @Override
+    public ThenFailureWithExpectedMessage becauseOf(Class<? extends Throwable> expectedThrowableClass) {
+        assertThat(context.returnResultOrVoid()).isInstanceOf(expectedThrowableClass);
+        return this;
+    }
+
+    @Override
+    public void withMessage(String expectedMessage) {
+        assertThat(((Throwable) context.returnResultOrVoid()).getMessage()).isEqualTo(expectedMessage);
     }
 }
