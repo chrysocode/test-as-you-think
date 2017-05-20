@@ -13,7 +13,7 @@ Why to name this API *GivenWhenThen*? Given-When-Then originally comes from [Ghe
 
 ## Basics
 
-Here is an example of what you can do.
+Here is a very simple example of what you can do.
 ```java
 import static givenwhenthen.GivenWhenThen.givenSutClass;
 ...
@@ -35,10 +35,9 @@ givenSutClass(SystemUnderTest.class)
 Notice that:
 - you manipule the same SUT type from the beginning to the end, because the `sut` type is determined during the *Given* step, until the end;
 - there is no need to instantiate the `sut` object, even if it is allowed by the `givenSut(sutInstance)` alternate end point;
-- the call to the `given()` method is optional;
+- the call to any `given()` method is optional;
 - you manipule the same `result` type until the end, because the `result` type is determined during the *When* step;
-- you cannot inadvertently make a fake test that would verify nothing, because the `then()` method is always the sequence termination;
-- at the *When* step, the lambda expression must use curly braces to make the compiler do the difference between a void method and a non-void one.
+- you cannot inadvertently make a fake test that would verify nothing, because any `then()` method is always a sequence termination.
 
 Of course, it is also possible to test any void method, instead of a non-void one, like this. 
 ```java
@@ -47,7 +46,7 @@ givenSut(systemUnderTest)
     // Preparation of fixtures
 }).when(sut -> {
     // Event or action
-    sut.voidMethod();
+    sut.voidMethod(...);
 }).then(() -> {
     // Verification of expectations
 });
@@ -79,6 +78,18 @@ givenSutClass(SystemUnderTest.class)
 .then(result -> { ... });
 ```
 
+If some fixtures are the arguments of the method to be tested, you may prefer the following alternate syntaxes.
+```java
+givenSutClass(SystemUnderTest.class)
+.givenArgument("simple argument", anyValue)
+.andArgument("argument to be built", () -> {
+    // Where this argument is built.
+}).andArgument("argument already ready to be used", DataProvider::choosenDataSet)
+.when(SystemUnderTest::nonVoidMethodWithArguments)
+.then(result -> { ... });
+```
+The arguments will be injected as argument values when the method to be tested is called. As you can guess, `Data::choosenDataSet` is a method reference.
+
 ### Specifying fixtures
 
 You are encouraged to explain your intentions to share and remember them by specifying your test fixtures. What makes both the known state of the SUT and your data set specific to the current test case?
@@ -91,8 +102,6 @@ givenSutClass(SystemUnderTest.class)
 }).when(sut -> { ... })
 .then(result -> { ... });
 ```
-
-If you try to write an empty specification, the test will fail!
 
 ## Expectations
 
@@ -141,28 +150,16 @@ You are encouraged to explain the system under test behavior by specifying your 
 givenSutClass(SystemUnderTest.class)
 .given(() -> { ... })
 .when(sut -> { ... })
-.then("specified expectation", result -> {
-    // Expectation as specified
-});
-```
-
-Have you more than one expectation? Look at what is waiting for you below.
-```java
-givenSutClass(SystemUnderTest.class)
-.given(() -> { ... })
-.when(sut -> { ... })
 .then("first specified expectation", result -> {
-    // an expectation
+    // Expectation as specified
 }).and("second specified expectation", result -> {
-    // another expectation
+    // Another expectation as specified
 });
 ```
-
-If you try to write an empty specification, the test will fail!
 
 ### Failures
 
-If a method signature contains a `throws` clause with a checked, compile-time expection, it is not necessary to modify the testing method signature anymore by adding the same clause to it. This clause and its spreading are considered as a technical constaint without value in a executable specification approach. As a consequence, it becomes imperceptible for the test code, and above all for the software developer who can stay focused on his tests.
+If a method signature contains a `throws` clause with a checked, compile-time expectation, it is not necessary to modify the testing method signature anymore by adding the same clause to it. This clause and its spreading are considered as a technical constaint without value in a executable specification approach. As a consequence, it becomes imperceptible for the test code, and above all for the software developer who can stay focused on his tests. Tests will continue to fail if any unexpected exception is raised.
 
 #### Expected failures
 
@@ -172,16 +169,24 @@ givenSut(SystemUnderTest.class)
 .given(() -> { ... })
 .whenSutRunsOutsideOperatingConditions(sut -> {
     // where an event causes a failure
-}).thenItFails(ExpectedFailure.class, "expected message");
+}).thenItFails().becauseOf(ExpectedFailure.class).withMessage("expected message");
 ```
-
-Play with the code completion to discover alternate methode signatures of `thenItFails()`.
 
 #### Unexpected failures
 
 When an unexpected failure occurs - because of a regression for example -, the test fails by raising an `AssertionError`, because the defaut behavior consists of asserting no failure should happen, unless the software developer wants.
 
 # Release Notes
+
+## Version 0.2
+
+- Include a data as a method argument during the preparation phase.
+- Include two data as method arguments during the preparation phase.
+- Include three data as method arguments during the preparation phase.
+- Receive method arguments directly as values.
+- Specify method arguments.
+- Verify failures while invoking methods with arguments.
+- Verify the expected exception and the expected message separately.
 
 ## Version 0.1
 
@@ -193,4 +198,5 @@ When an unexpected failure occurs - because of a regression for example -, the t
 - Verify the expectations on the system under test, in addition to the result.
 - Provide expectations as predicates.
 - Verify failures.
+- Separate preparations.
 - Separate expectations.
