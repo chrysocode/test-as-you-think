@@ -3,12 +3,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>givenwhenthen</groupId>
-        <artifactId>given-when-then-project</artifactId>
+        <groupId>testasyouthink</groupId>
+        <artifactId>test-as-you-think-project</artifactId>
         <version>0.3-SNAPSHOT</version>
     </parent>
 
-    <artifactId>given-when-then-core</artifactId>
+    <artifactId>test-as-you-think-core</artifactId>
     <name>${project.groupId}:${project.artifactId}:${project.packaging}</name>
 
     <dependencies>
