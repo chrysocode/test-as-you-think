@@ -1,13 +1,15 @@
 # Fluent testing writing in Java
 
-*GivenWhenThen* is a Java **fluent API** for testing purposes that will change the way development teams write their unit and integration tests. It aims to take control over the coding practices as **executable guidelines**, from beginners to experts, to get high-quality tests. Why should you adopt *GivenWhenThen*?
+*TestAsYouThink* is a Java **fluent API** for testing purposes that will change the way development teams write their unit and integration tests. It aims to take control over the coding practices as **executable guidelines**, from beginners to experts, to get high-quality tests. Why should you adopt *TestAsYouThink*?
 - It promotes good coding practices for testing on writing tests rather than before it with training or after it with code reviewing.
 - It enables to give a better structure based on compilable code rather than textual comments to the test code.
 - It improves test code readability and may bring more conciseness.
 - It is designed to be easy to use thanks to code completion.
 - It builds new original features to test execution.
 
-Why to name this API *GivenWhenThen*? Given-When-Then originally comes from [Gherkin](https://sites.google.com/site/unclebobconsultingllc/the-truth-about-bdd) that is a grammatical protocol used in the [Behavior-Driven Development](https://en.wikipedia.org/wiki/Behavior-driven_development) method to write test scenarii in a business human-readable way by specifying a software behavior basing on concrete examples. Given-When-Then serves as a canvas to divide any test into three eponym steps. This canvas is implemented by the *GivenWhenThen* project to deliver a [DSL](https://en.wikipedia.org/wiki/Domain-specific_language) style fluent API.
+Why to name this API *TestAsYouThink*? The goal of *TestAsYouThink* is to map out the road from a new software functionality idea to its contractualized achievement as an executable test, while preserving product developers against known pitfalls. According to this perspective, any pitfall is likely to extend the developer's journey and to put him off his target. By anticipating such pitfalls, *TestAsYouThink* will be the best way to reduce the distance to proper, durable testing.
+
+Moreover *TestAsYouThink* uses the Given-When-Then canvas as a formal guide to compose tests. This canvas originally comes from [Gherkin](https://sites.google.com/site/unclebobconsultingllc/the-truth-about-bdd) that is a grammatical protocol used in the [Behavior-Driven Development](https://en.wikipedia.org/wiki/Behavior-driven_development) method to write test scenarii in a business human-readable way by specifying a software behavior basing on concrete examples. Given-When-Then serves to divide any test into the three eponym steps. This canvas is implemented by the *TestAsYouThink* project to deliver a [DSL](https://en.wikipedia.org/wiki/Domain-specific_language) style fluent API.
 
 # Usage
 
@@ -15,7 +17,7 @@ Why to name this API *GivenWhenThen*? Given-When-Then originally comes from [Ghe
 
 Here is a very simple example of what you can do.
 ```java
-import static givenwhenthen.GivenWhenThen.givenSutClass;
+import static testasyouthink.TestAsYouThink.givenSutClass;
 ...
 
 givenSutClass(SystemUnderTest.class)
@@ -41,6 +43,9 @@ Notice that:
 
 Of course, it is also possible to test any void method, instead of a non-void one, like this. 
 ```java
+import static testasyouthink.TestAsYouThink.givenSut;
+...
+
 givenSut(systemUnderTest)
 .given(() -> {
     // Preparation of fixtures
