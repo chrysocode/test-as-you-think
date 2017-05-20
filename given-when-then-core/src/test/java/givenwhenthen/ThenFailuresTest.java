@@ -64,7 +64,9 @@ public class ThenFailuresTest {
                     sut.setGivenWhenThenDefinition(givenWhenThenDefinitionMock);
                 })
                 .whenSutRunsOutsideOperatingConditions(sut -> sut.fail(IllegalStateException.class, EXPECTED_MESSAGE))
-                .thenItFails(IllegalStateException.class, EXPECTED_MESSAGE);
+                .thenItFails()
+                .byThrowing(IllegalStateException.class)
+                .withMessage(EXPECTED_MESSAGE);
     }
 
     @Test(expected = AssertionError.class)
