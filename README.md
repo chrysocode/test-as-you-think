@@ -15,7 +15,7 @@ Why to name this API *GivenWhenThen*? Given-When-Then originally comes from [Ghe
 
 Here is a very simple example of what you can do.
 ```java
-import static givenwhenthen.GivenWhenThen.givenSutClass;
+import static testasyouthink.GivenWhenThen.givenSutClass;
 ...
 
 givenSutClass(SystemUnderTest.class)
