@@ -4,6 +4,7 @@ class GivenWhenContext<$SystemUnderTest, $Result> {
 
     private final Preparation<$SystemUnderTest> preparation;
     private final Event<$SystemUnderTest, $Result> event;
+    private $Result result;
 
     GivenWhenContext(Preparation<$SystemUnderTest> preparation, Event<$SystemUnderTest, $Result> event) {
         this.preparation = preparation;
@@ -11,8 +12,11 @@ class GivenWhenContext<$SystemUnderTest, $Result> {
     }
 
     $Result returnResultOrVoid() {
-        preparation.prepareFixtures();
-        return event.happen();
+        if (result == null) {
+            preparation.prepareFixtures();
+            result = event.happen();
+        }
+        return result;
     }
 
     $SystemUnderTest getSystemUnderTest() {

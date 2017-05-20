@@ -198,9 +198,9 @@ public interface GivenWhenThenDsl {
 
         interface ThenFailure {
 
-            void thenItFails();
+            ThenFailure thenItFails();
 
-            void thenItFails(Class<? extends Throwable> expectedThrowableClass);
+            void byThrowing(Class<? extends Throwable> expectedThrowableClass);
 
             void thenItFails(Class<? extends Throwable> expectedThrowableClass, String expectedMessage);
         }

@@ -14,7 +14,8 @@ import static org.easymock.EasyMock.verify;
 public class ThenFailuresTest {
 
     private static final String EXPECTED_MESSAGE = "expected message";
-    private static final String AN_EXPECTED_EXCEPTION_MUST_HAVE_BEEN_RAISED_BEFORE = "An expected exception must have been raised before!";
+    private static final String AN_EXPECTED_EXCEPTION_MUST_HAVE_BEEN_RAISED_BEFORE = "An expected exception must " +
+            "have" + " been raised before!";
     private GivenWhenThenDefinition givenWhenThenDefinitionMock;
 
     @Before
@@ -50,7 +51,8 @@ public class ThenFailuresTest {
                     sut.setGivenWhenThenDefinition(givenWhenThenDefinitionMock);
                 })
                 .whenSutRunsOutsideOperatingConditions(sut -> sut.fail(IllegalStateException.class))
-                .thenItFails(IllegalStateException.class);
+                .thenItFails()
+                .byThrowing(IllegalStateException.class);
     }
 
     @Test

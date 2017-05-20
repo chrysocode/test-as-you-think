@@ -83,12 +83,13 @@ public class ThenStep<$SystemUnderTest, $Result> implements Then<$SystemUnderTes
     }
 
     @Override
-    public void thenItFails() {
+    public ThenFailure thenItFails() {
         assertThat(context.returnResultOrVoid()).isInstanceOf(Throwable.class);
+        return this;
     }
 
     @Override
-    public void thenItFails(Class<? extends Throwable> expectedThrowableClass) {
+    public void byThrowing(Class<? extends Throwable> expectedThrowableClass) {
         assertThat(context.returnResultOrVoid()).isInstanceOf(expectedThrowableClass);
     }
 
