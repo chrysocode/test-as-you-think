@@ -205,3 +205,7 @@ When an unexpected failure occurs - because of a regression for example -, the t
 - Verify failures.
 - Separate preparations.
 - Separate expectations.
+
+# License
+
+*Test As You Think* is distributed under the GNU LGPLv3 license. See the LICENSE.txt file for details.
