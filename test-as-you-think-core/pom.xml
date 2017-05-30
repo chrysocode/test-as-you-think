@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>testasyouthink</groupId>
+        <groupId>com.github.xapn</groupId>
         <artifactId>test-as-you-think-project</artifactId>
         <version>0.3-SNAPSHOT</version>
     </parent>
