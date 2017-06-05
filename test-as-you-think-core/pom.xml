@@ -9,7 +9,10 @@
     </parent>
 
     <artifactId>test-as-you-think-core</artifactId>
-    <name>${project.groupId}:${project.artifactId}:${project.packaging}</name>
+    <name>${project.groupId}:${project.artifactId}:${project.version}:${project.packaging}</name>
+    <description>The TestAsYouThink Core is a DSL style fluent API in Java to promote good coding practices in tests.
+    </description>
+    <url>https://xapn.github.io/test-as-you-think</url>
 
     <dependencies>
         <dependency>
