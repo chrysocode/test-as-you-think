@@ -28,6 +28,18 @@
         <module>test-as-you-think-core</module>
     </modules>
 
+    <developers>
+        <developer>
+            <name>Xavier Pigeon</name>
+            <id>xapn</id>
+            <email>xpn.projects@gmail.com</email>
+            <roles>
+                <role>Owner</role>
+                <role>Developer</role>
+            </roles>
+            <organizationUrl>https://github.com/xapn</organizationUrl>
+        </developer>
+    </developers>
 
     <distributionManagement>
         <snapshotRepository>
