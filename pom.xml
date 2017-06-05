@@ -9,7 +9,7 @@
     <name>${project.groupId}:${project.artifactId}:${project.packaging}</name>
     <inceptionYear>2017</inceptionYear>
     <organization>
-        <name>Xavier Pigeon</name>
+        <name>Xavier Pigeon and TestAsYouThink contributors</name>
         <url>https://github.com/xapn</url>
     </organization>
 
@@ -59,17 +59,32 @@
                     <configuration>
                         <projectName>Test As You Think</projectName>
                         <licenseName>lgpl_v3</licenseName>
-                        <failOnMissingHeader>true</failOnMissingHeader>
-                        <failOnNotUptodateHeader>true</failOnNotUptodateHeader>
                         <ignoreNoFileToScan>true</ignoreNoFileToScan>
-                        <emptyLineAfterHeader>true</emptyLineAfterHeader>
                     </configuration>
                     <executions>
                         <execution>
-                            <phase>validate</phase>
+                            <id>generate_or_update_license_headers</id>
+                            <phase>process-sources</phase>
+                            <goals>
+                                <goal>update-file-header</goal>
+                            </goals>
+                            <configuration>
+                                <canUpdateDescription>false</canUpdateDescription>
+                                <canUpdateCopyright>true</canUpdateCopyright>
+                                <addJavaLicenseAfterPackage>false</addJavaLicenseAfterPackage>
+                                <emptyLineAfterHeader>true</emptyLineAfterHeader>
+                            </configuration>
+                        </execution>
+                        <execution>
+                            <id>validate_license_headers</id>
+                            <phase>process-sources</phase>
                             <goals>
                                 <goal>check-file-header</goal>
                             </goals>
+                            <configuration>
+                                <failOnMissingHeader>true</failOnMissingHeader>
+                                <failOnNotUptodateHeader>true</failOnNotUptodateHeader>
+                            </configuration>
                         </execution>
                     </executions>
                 </plugin>
