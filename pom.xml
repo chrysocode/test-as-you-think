@@ -199,6 +199,13 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-enforcer-plugin</artifactId>
                     <version>1.4.1</version>
+                    <configuration>
+                        <rules>
+                            <requireMavenVersion>
+                                <version>${maven.minimalVersion}</version>
+                            </requireMavenVersion>
+                        </rules>
+                    </configuration>
                     <executions>
                         <execution>
                             <id>enforce_default_lifecycle</id>
@@ -206,13 +213,20 @@
                             <goals>
                                 <goal>enforce</goal>
                             </goals>
-                            <configuration>
-                                <rules>
-                                    <requireMavenVersion>
-                                        <version>${maven.minimalVersion}</version>
-                                    </requireMavenVersion>
-                                </rules>
-                            </configuration>
+                        </execution>
+                        <execution>
+                            <id>enforce_clean_lifecycle</id>
+                            <phase>pre-clean</phase>
+                            <goals>
+                                <goal>enforce</goal>
+                            </goals>
+                        </execution>
+                        <execution>
+                            <id>enforce_site_lifecycle</id>
+                            <phase>pre-site</phase>
+                            <goals>
+                                <goal>enforce</goal>
+                            </goals>
                         </execution>
                     </executions>
                 </plugin>
