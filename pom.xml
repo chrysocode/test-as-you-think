@@ -48,6 +48,12 @@
         </license>
     </licenses>
 
+    <scm>
+        <connection>scm:git:git://github.com/xapn/test-as-you-think.git</connection>
+        <developerConnection>scm:git:ssh://github.com:xapn/test-as-you-think.git</developerConnection>
+        <url>http://github.com/xapn/test-as-you-think/tree/master</url>
+    </scm>
+
     <distributionManagement>
         <snapshotRepository>
             <id>ossrh</id>
