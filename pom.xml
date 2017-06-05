@@ -1,5 +1,5 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>testasyouthink</groupId>
@@ -7,6 +7,11 @@
     <version>0.3-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>${project.groupId}:${project.artifactId}:${project.packaging}</name>
+    <inceptionYear>2017</inceptionYear>
+    <organization>
+        <name>Xavier Pigeon</name>
+        <url>https://github.com/xapn</url>
+    </organization>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -20,6 +25,12 @@
     </modules>
 
     <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
         <pluginManagement>
             <plugins>
                 <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-compiler-plugin -->
@@ -39,6 +50,28 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>2.19.1</version>
+                </plugin>
+                <!-- https://mvnrepository.com/artifact/org.codehaus.mojo/license-maven-plugin -->
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>license-maven-plugin</artifactId>
+                    <version>1.12</version>
+                    <configuration>
+                        <projectName>Test As You Think</projectName>
+                        <licenseName>lgpl_v3</licenseName>
+                        <failOnMissingHeader>true</failOnMissingHeader>
+                        <failOnNotUptodateHeader>true</failOnNotUptodateHeader>
+                        <ignoreNoFileToScan>true</ignoreNoFileToScan>
+                        <emptyLineAfterHeader>true</emptyLineAfterHeader>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <phase>validate</phase>
+                            <goals>
+                                <goal>check-file-header</goal>
+                            </goals>
+                        </execution>
+                    </executions>
                 </plugin>
             </plugins>
         </pluginManagement>
