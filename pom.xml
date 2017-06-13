@@ -2,11 +2,15 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>testasyouthink</groupId>
+    <groupId>com.github.xapn</groupId>
     <artifactId>test-as-you-think-project</artifactId>
     <version>0.3-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>${project.groupId}:${project.artifactId}:${project.packaging}</name>
+    <name>${project.groupId}:${project.artifactId}:${project.version}:${project.packaging}</name>
+    <description>The TestAsYouThink project aims to provide tooling to improve test code quality and to make testing
+        a first-class citizen.
+    </description>
+    <url>https://xapn.github.io/test-as-you-think</url>
     <inceptionYear>2017</inceptionYear>
     <organization>
         <name>Xavier Pigeon and TestAsYouThink contributors</name>
@@ -23,6 +27,43 @@
     <modules>
         <module>test-as-you-think-core</module>
     </modules>
+
+    <developers>
+        <developer>
+            <name>Xavier Pigeon</name>
+            <id>xapn</id>
+            <email>xpn.projects@gmail.com</email>
+            <roles>
+                <role>Owner</role>
+                <role>Developer</role>
+            </roles>
+            <organizationUrl>https://github.com/xapn</organizationUrl>
+        </developer>
+    </developers>
+
+    <licenses>
+        <license>
+            <name>The GNU Lesser General Public License, Version 3.0</name>
+            <url>https://www.gnu.org/licenses/lgpl-3.0.txt</url>
+        </license>
+    </licenses>
+
+    <scm>
+        <connection>scm:git:git://github.com/xapn/test-as-you-think.git</connection>
+        <developerConnection>scm:git:ssh://github.com:xapn/test-as-you-think.git</developerConnection>
+        <url>http://github.com/xapn/test-as-you-think/tree/master</url>
+    </scm>
+
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
 
     <build>
         <plugins>
@@ -75,22 +116,120 @@
                                 <emptyLineAfterHeader>true</emptyLineAfterHeader>
                             </configuration>
                         </execution>
+                    </executions>
+                </plugin>
+                <!-- https://mvnrepository.com/artifact/org.sonatype.plugins/nexus-staging-maven-plugin -->
+                <plugin>
+                    <groupId>org.sonatype.plugins</groupId>
+                    <artifactId>nexus-staging-maven-plugin</artifactId>
+                    <version>1.6.8</version>
+                    <extensions>true</extensions>
+                    <configuration>
+                        <serverId>ossrh</serverId>
+                        <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                        <autoReleaseAfterClose>false</autoReleaseAfterClose>
+                    </configuration>
+                </plugin>
+                <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-source-plugin -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-source-plugin</artifactId>
+                    <version>3.0.1</version>
+                    <executions>
                         <execution>
-                            <id>validate_license_headers</id>
-                            <phase>process-sources</phase>
+                            <id>attach-sources</id>
                             <goals>
-                                <goal>check-file-header</goal>
+                                <goal>jar-no-fork</goal>
                             </goals>
-                            <configuration>
-                                <failOnMissingHeader>true</failOnMissingHeader>
-                                <failOnNotUptodateHeader>true</failOnNotUptodateHeader>
-                            </configuration>
                         </execution>
                     </executions>
+                </plugin>
+                <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-javadoc-plugin -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <version>2.10.4</version>
+                    <executions>
+                        <execution>
+                            <id>attach-javadocs</id>
+                            <goals>
+                                <goal>jar</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-gpg-plugin -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-gpg-plugin</artifactId>
+                    <version>1.6</version>
+                    <executions>
+                        <execution>
+                            <id>sign-artifacts</id>
+                            <phase>verify</phase>
+                            <goals>
+                                <goal>sign</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+                <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-release-plugin -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <version>2.5.3</version>
+                    <configuration>
+                        <autoVersionSubmodules>true</autoVersionSubmodules>
+                        <useReleaseProfile>false</useReleaseProfile>
+                        <releaseProfiles>release</releaseProfiles>
+                        <goals>deploy nexus-staging:release</goals>
+                    </configuration>
                 </plugin>
             </plugins>
         </pluginManagement>
     </build>
+
+    <profiles>
+        <profile>
+            <id>release</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>license-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>validate_license_headers</id>
+                                <phase>validate</phase>
+                                <goals>
+                                    <goal>check-file-header</goal>
+                                </goals>
+                                <configuration>
+                                    <failOnMissingHeader>true</failOnMissingHeader>
+                                    <failOnNotUptodateHeader>true</failOnNotUptodateHeader>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 
     <dependencyManagement>
         <dependencies>
