@@ -1,7 +1,9 @@
-# Fluent testing writing in Java
+What you think is what you test... Not yet another testing api!
 
-*TestAsYouThink* is a Java **fluent API** for testing purposes that will change the way development teams write their unit and integration tests. It aims to take control over the coding practices as **executable guidelines**, from beginners to experts, to get high-quality tests. Why should you adopt *TestAsYouThink*?
-- It promotes good coding practices for testing on writing tests rather than before it with training or after it with code reviewing.
+# Fluent testing and added value
+
+*TestAsYouThink* is an open source software library in Java for testing purposes. It is designed as a **fluent API** that will change the way development teams write their unit and integration tests. It aims to take control over the coding practices as **executable guidelines**, from beginners to experts, to get **high-quality tests**. Why should you adopt *TestAsYouThink*?
+- It promotes good coding practices for testing on writing tests rather than before it with training or after it with code reviews.
 - It enables to give a better structure based on compilable code rather than textual comments to the test code.
 - It improves test code readability and may bring more conciseness.
 - It is designed to be easy to use thanks to code completion.
@@ -11,7 +13,18 @@ Why to name this API *TestAsYouThink*? The goal of *TestAsYouThink* is to map ou
 
 Moreover *TestAsYouThink* uses the Given-When-Then canvas as a formal guide to compose tests. This canvas originally comes from [Gherkin](https://sites.google.com/site/unclebobconsultingllc/the-truth-about-bdd) that is a grammatical protocol used in the [Behavior-Driven Development](https://en.wikipedia.org/wiki/Behavior-driven_development) method to write test scenarii in a business human-readable way by specifying a software behavior basing on concrete examples. Given-When-Then serves to divide any test into the three eponym steps. This canvas is implemented by the *TestAsYouThink* project to deliver a [DSL](https://en.wikipedia.org/wiki/Domain-specific_language) style fluent API.
 
-# Usage
+# Getting Started
+
+## Installation
+
+Add it to your project with Maven, or download it from Maven Central.
+```xml
+<dependency>
+    <groupId>com.github.xapn</groupId>
+    <artifactId>test-as-you-think-core</artifactId>
+    <version>0.3</version>
+</dependency>
+```
 
 ## Basics
 
@@ -35,6 +48,7 @@ givenSutClass(SystemUnderTest.class)
 ```
 
 Notice that:
+- any Given-When-Then step can be implemented by a lambda expression or a method reference;
 - you manipule the same SUT type from the beginning to the end, because the `sut` type is determined during the *Given* step, until the end;
 - there is no need to instantiate the `sut` object, even if it is allowed by the `givenSut(sutInstance)` alternate end point;
 - the call to any `given()` method is optional;
@@ -56,7 +70,7 @@ givenSut(systemUnderTest)
     // Verification of expectations
 });
 ```
-## Fixtures
+## Test Fixtures
 
 ### Separation of concerns with multiple Given steps
 
