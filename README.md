@@ -197,6 +197,13 @@ When an unexpected failure occurs - because of a regression for example -, the t
 
 # Release Notes
 
+## Version 0.3
+
+- Rename the API to **TestAsYouThink**.
+- Choose an open source license.
+- Publish artifacts to Maven Central.
+- Check version updates.
+
 ## Version 0.2
 
 - Include a data as a method argument during the preparation phase.
