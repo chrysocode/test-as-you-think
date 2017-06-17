@@ -1,4 +1,4 @@
-What you think is what you test... Not yet another testing api!
+What you think is what you test... Not yet another testing API or framework!
 
 # Fluent testing and added value
 
@@ -17,7 +17,7 @@ Moreover *TestAsYouThink* uses the Given-When-Then canvas as a formal guide to c
 
 ## Installation
 
-Add it to your project with Maven, or download it from Maven Central.
+Add *TestAsYouThink* as a dependency to your project with Maven, or download it from [Maven Central](https://search.maven.org/#search%7Cga%7C1%7Ctest%20as%20you%20think).
 ```xml
 <dependency>
     <groupId>com.github.xapn</groupId>
@@ -28,7 +28,14 @@ Add it to your project with Maven, or download it from Maven Central.
 
 ## Basics
 
-Here is a very simple example of what you can do.
+Here is the minimal syntax to implement your test methods for a `SystemUnderTest` class.
+```java
+givenSutClass(SystemUnderTest.class)
+.when(sut -> {})
+.then(() -> {});
+```
+
+Let us complete the previous scenario with a very simple example of what you can do, while testing a non-void method of your system under test.
 ```java
 import static testasyouthink.TestAsYouThink.givenSutClass;
 ...
@@ -50,7 +57,7 @@ givenSutClass(SystemUnderTest.class)
 Notice that:
 - any Given-When-Then step can be implemented by a lambda expression or a method reference;
 - you manipule the same SUT type from the beginning to the end, because the `sut` type is determined during the *Given* step, until the end;
-- there is no need to instantiate the `sut` object, even if it is allowed by the `givenSut(sutInstance)` alternate end point;
+- there is no need to instantiate the `sut` object, even if it is allowed by the `givenSut(sutInstance)` alternate end point, as below;
 - the call to any `given()` method is optional;
 - you manipule the same `result` type until the end, because the `result` type is determined during the *When* step;
 - you cannot inadvertently make a fake test that would verify nothing, because any `then()` method is always a sequence termination.
@@ -70,6 +77,7 @@ givenSut(systemUnderTest)
     // Verification of expectations
 });
 ```
+
 ## Test Fixtures
 
 ### Separation of concerns with multiple Given steps
@@ -178,13 +186,13 @@ givenSutClass(SystemUnderTest.class)
 
 ### Failures
 
-If a method signature contains a `throws` clause with a checked, compile-time expectation, it is not necessary to modify the testing method signature anymore by adding the same clause to it. This clause and its spreading are considered as a technical constaint without value in a executable specification approach. As a consequence, it becomes imperceptible for the test code, and above all for the software developer who can stay focused on his tests. Tests will continue to fail if any unexpected exception is raised.
+If a method signature contains a `throws` clause with a checked, compile-time exception, it is not necessary to modify the testing method signature anymore by adding the same clause to it. This clause and its spreading are considered as a technical constaint without value in a executable specification approach. As a consequence, it becomes imperceptible for the test code, and above all for the software developer who can stay focused on his tests. Tests will continue to fail if any unexpected exception is raised.
 
 #### Expected failures
 
 Because the failure testing is an important part of your use cases, you can verify the behavior of the system under test when it is used ouside operating conditions.
 ```java
-givenSut(SystemUnderTest.class)
+givenSutClass(SystemUnderTest.class)
 .given(() -> { ... })
 .whenSutRunsOutsideOperatingConditions(sut -> {
     // where an event causes a failure
@@ -229,4 +237,4 @@ When an unexpected failure occurs - because of a regression for example -, the t
 
 # License
 
-*Test As You Think* is distributed under the GNU LGPLv3 license. See the LICENSE.txt file for details.
+*Test As You Think* is distributed under the GNU LGPLv3 license. The LGPLv3 license is included in the LICENSE.txt file. More information about this license is available at http://www.gnu.org.
