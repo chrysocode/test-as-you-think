@@ -1,0 +1,32 @@
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.github.xapn</groupId>
+        <artifactId>test-as-you-think-project</artifactId>
+        <version>0.3</version>
+    </parent>
+
+    <artifactId>test-as-you-think-core</artifactId>
+    <name>${project.groupId}:${project.artifactId}:${project.version}:${project.packaging}</name>
+    <description>The TestAsYouThink Core is a DSL style fluent API in Java to promote good coding practices in tests.
+    </description>
+    <url>https://xapn.github.io/test-as-you-think</url>
+
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.easymock</groupId>
+            <artifactId>easymock</artifactId>
+        </dependency>
+    </dependencies>
+</project>
