@@ -91,7 +91,7 @@ public class ThenStep<$SystemUnderTest, $Result> implements Then<$SystemUnderTes
     public void then(List<Predicate<$Result>> thenSteps) {
         assertThat(thenSteps
                 .stream()
-                .reduce((predicate, another) -> predicate.and(another))
+                .reduce(Predicate::and)
                 .get()
                 .test(context.returnResultOrVoid())).isTrue();
     }
