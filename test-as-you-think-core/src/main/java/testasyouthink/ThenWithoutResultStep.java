@@ -26,6 +26,7 @@ import testasyouthink.GivenWhenThenDsl.VerificationStage.AndThenWithoutResult;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.ThenWithoutResult;
 import testasyouthink.verification.Assertions;
 
+import java.time.Duration;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 
@@ -110,6 +111,14 @@ public class ThenWithoutResultStep<$SystemUnderTest> implements ThenWithoutResul
         Assertions
                 .assertThat(context::returnResultOrVoid)
                 .spendsAtMost(timeLimit);
+        return this;
+    }
+
+    @Override
+    public AndThenWithoutResult<$SystemUnderTest> thenSutRepliesWithin(Duration duration) {
+        Assertions
+                .assertThat(context::returnResultOrVoid)
+                .spendsAtMost(duration);
         return this;
     }
 }

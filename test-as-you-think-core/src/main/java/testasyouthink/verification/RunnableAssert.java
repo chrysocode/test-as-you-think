@@ -24,6 +24,7 @@ package testasyouthink.verification;
 
 import org.assertj.core.api.AbstractAssert;
 
+import java.time.Duration;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -41,7 +42,7 @@ public class RunnableAssert extends AbstractAssert<RunnableAssert, Runnable> {
         return new RunnableAssert(actual);
     }
 
-    public void spendsAtMost(long timeLimit) {
+    public RunnableAssert spendsAtMost(long timeLimit) {
         FutureTask<Void> futureTask = new FutureTask<>(() -> {
             actual.run();
             return null;
@@ -59,5 +60,11 @@ public class RunnableAssert extends AbstractAssert<RunnableAssert, Runnable> {
         } finally {
             executorService.shutdownNow();
         }
+        return this;
+    }
+
+    public RunnableAssert spendsAtMost(Duration duration) {
+        spendsAtMost(duration.toMillis());
+        return this;
     }
 }
