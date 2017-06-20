@@ -38,6 +38,7 @@ import testasyouthink.function.CheckedQuadriFunction;
 import testasyouthink.function.CheckedTriConsumer;
 import testasyouthink.function.CheckedTriFunction;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
@@ -168,6 +169,10 @@ public interface GivenWhenThenDsl {
 
             AndThen<$SystemUnderTest, $Result> then(Predicate<$Result> thenStep);
 
+            AndThen<$SystemUnderTest, $Result> thenSutRepliesWithin(long timeLimit);
+
+            AndThen<$SystemUnderTest, $Result> thenSutRepliesWithin(Duration duration);
+
             void then(List<Predicate<$Result>> thenSteps);
 
             void then(BiConsumer<$SystemUnderTest, $Result> thenStep);
@@ -202,6 +207,10 @@ public interface GivenWhenThenDsl {
                     Consumer<$SystemUnderTest> thenStep);
 
             AndThenWithoutResult<$SystemUnderTest> then(BooleanSupplier thenStep);
+
+            AndThenWithoutResult<$SystemUnderTest> thenSutRepliesWithin(long timeLimit);
+
+            AndThenWithoutResult<$SystemUnderTest> thenSutRepliesWithin(Duration duration);
         }
 
         interface AndThenWithoutResult<$SystemUnderTest> {
