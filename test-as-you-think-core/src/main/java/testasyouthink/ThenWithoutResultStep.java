@@ -118,7 +118,7 @@ public class ThenWithoutResultStep<$SystemUnderTest> implements ThenWithoutResul
         try {
             futureTask.get(timeLimit, TimeUnit.MILLISECONDS);
         } catch (InterruptedException exception) {
-            throw new RuntimeException("Not yet implemented!");
+            throw new AssertionError("the current thread was interrupted while waiting", exception);
         } catch (ExecutionException exception) {
             throw new RuntimeException("Not yet implemented!");
         } catch (TimeoutException exception) {
