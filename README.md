@@ -203,6 +203,26 @@ givenSutClass(SystemUnderTest.class)
 
 When an unexpected failure occurs - because of a regression for example -, the test fails by raising an `AssertionError`, because the defaut behavior consists of asserting no failure should happen, unless the software developer wants.
 
+### Time limit
+
+Sometimes you need to limit the allowed execution time of the tested event.
+```java
+givenSutClass(SystemUnderTest.class)
+.when(SystemUnderTest::spendSomeTime)
+.thenSutRepliesWithin(100);
+```
+By default, the time limit is given in milliseconds. If you want to use another time unit:
+```java
+import java.time.Duration;
+...
+
+givenSutClass(SystemUnderTest.class)
+.when(SystemUnderTest::spendSomeTime)
+.thenSutRepliesWithin(Duration.ofMinutes(3);
+```
+
+The advantage of TestAsYouThink is that the time limit is only applied to the tested event, while [JUnit](https://github.com/junit-team/junit4/wiki/timeout-for-tests) applies its `timeout` to the whole test method with its `@Test` annotation. [JUnit 5](http://junit.org/junit5/docs/snapshot/user-guide/) will propose an `assertTimeout(duration, lambda)` method that returns the lamba expression result, but such a syntax amalgamates irremediably the expectations and the event.
+
 # Release Notes
 
 ## Version 0.3
