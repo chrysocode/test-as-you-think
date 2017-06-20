@@ -74,4 +74,17 @@ public class ThenSutRepliesWithinTimeLimitTest {
                 .hasMessage("the computation threw an exception")
                 .hasCauseInstanceOf(ExecutionException.class);
     }
+
+    @Test
+    public void should_fail_given_a_too_slow_non_void_method() {
+        assertThatThrownBy(() -> givenSutClass(SystemUnderTest.class)
+                .when(sut -> {
+                    sleep(1000);
+                    return null;
+                })
+                .thenSutRepliesWithin(1))
+                .isInstanceOf(AssertionError.class)
+                .hasMessage("test timed out after 1 milliseconds")
+                .hasCauseInstanceOf(TimeoutException.class);
+    }
 }

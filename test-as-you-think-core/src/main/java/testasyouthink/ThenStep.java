@@ -150,4 +150,12 @@ public class ThenStep<$SystemUnderTest, $Result> implements Then<$SystemUnderTes
     public void withMessage(String expectedMessage) {
         assertThat(((Throwable) context.returnResultOrVoid()).getMessage()).isEqualTo(expectedMessage);
     }
+
+    @Override
+    public AndThen<$SystemUnderTest, $Result> thenSutRepliesWithin(long timeLimit) {
+        new Assertion()
+                .assertThat(context::returnResultOrVoid)
+                .spendAtMost(timeLimit);
+        return this;
+    }
 }

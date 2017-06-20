@@ -168,6 +168,8 @@ public interface GivenWhenThenDsl {
 
             AndThen<$SystemUnderTest, $Result> then(Predicate<$Result> thenStep);
 
+            AndThen<$SystemUnderTest, $Result> thenSutRepliesWithin(long timeLimit);
+
             void then(List<Predicate<$Result>> thenSteps);
 
             void then(BiConsumer<$SystemUnderTest, $Result> thenStep);
