@@ -25,6 +25,12 @@ package testasyouthink;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.AndThenWithoutResult;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.ThenWithoutResult;
 
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.FutureTask;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 
@@ -101,6 +107,26 @@ public class ThenWithoutResultStep<$SystemUnderTest> implements ThenWithoutResul
     public AndThenWithoutResult<$SystemUnderTest> and(String expectationSpecification,
             Consumer<$SystemUnderTest> thenStep) {
         thenStep.accept(context.getSystemUnderTest());
+        return this;
+    }
+
+    @Override
+    public AndThenWithoutResult<$SystemUnderTest> thenSutRepliesWithin(long timeLimit) {
+        FutureTask<Void> futureTask = new FutureTask<>(() -> context.returnResultOrVoid());
+        ExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+        executorService.execute(futureTask);
+        try {
+            futureTask.get(timeLimit, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException exception) {
+            throw new RuntimeException("Not yet implemented!");
+        } catch (ExecutionException exception) {
+            throw new RuntimeException("Not yet implemented!");
+        } catch (TimeoutException exception) {
+            throw new AssertionError("test timed out after " + timeLimit + " milliseconds", exception);
+        } finally {
+            executorService.shutdownNow();
+        }
+        assertThat(executorService.isShutdown()).isTrue();
         return this;
     }
 }

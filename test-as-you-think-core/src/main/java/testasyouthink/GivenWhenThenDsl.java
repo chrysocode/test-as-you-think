@@ -202,6 +202,8 @@ public interface GivenWhenThenDsl {
                     Consumer<$SystemUnderTest> thenStep);
 
             AndThenWithoutResult<$SystemUnderTest> then(BooleanSupplier thenStep);
+
+            AndThenWithoutResult<$SystemUnderTest> thenSutRepliesWithin(long timeLimit);
         }
 
         interface AndThenWithoutResult<$SystemUnderTest> {
