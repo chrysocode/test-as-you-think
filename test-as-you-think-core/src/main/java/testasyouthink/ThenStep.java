@@ -29,6 +29,7 @@ import testasyouthink.GivenWhenThenDsl.VerificationStage.ThenFailureWithExpected
 import testasyouthink.GivenWhenThenDsl.VerificationStage.ThenFailureWithExpectedMessage;
 import testasyouthink.verification.Assertions;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
@@ -152,6 +153,14 @@ public class ThenStep<$SystemUnderTest, $Result> implements Then<$SystemUnderTes
         Assertions
                 .assertThat(context::returnResultOrVoid)
                 .spendsAtMost(timeLimit);
+        return this;
+    }
+
+    @Override
+    public AndThen<$SystemUnderTest, $Result> thenSutRepliesWithin(Duration duration) {
+        Assertions
+                .assertThat(context::returnResultOrVoid)
+                .spendsAtMost(duration);
         return this;
     }
 }
