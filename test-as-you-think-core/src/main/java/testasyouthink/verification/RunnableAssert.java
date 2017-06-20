@@ -20,7 +20,9 @@
  * #L%
  */
 
-package testasyouthink;
+package testasyouthink.verification;
+
+import org.assertj.core.api.AbstractAssert;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -29,18 +31,19 @@ import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-class Assertion {
+public class RunnableAssert extends AbstractAssert<RunnableAssert, Runnable> {
 
-    private Runnable runnable;
-
-    Assertion assertThat(Runnable runnable) {
-        this.runnable = runnable;
-        return this;
+    RunnableAssert(Runnable actual) {
+        super(actual, RunnableAssert.class);
     }
 
-    void spendAtMost(long timeLimit) {
+    public static RunnableAssert assertThat(Runnable actual) {
+        return new RunnableAssert(actual);
+    }
+
+    public void spendsAtMost(long timeLimit) {
         FutureTask<Void> futureTask = new FutureTask<>(() -> {
-            runnable.run();
+            actual.run();
             return null;
         });
         ExecutorService executorService = Executors.newSingleThreadScheduledExecutor();

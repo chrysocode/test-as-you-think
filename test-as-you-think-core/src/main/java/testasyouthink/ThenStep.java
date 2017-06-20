@@ -27,6 +27,7 @@ import testasyouthink.GivenWhenThenDsl.VerificationStage.Then;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.ThenFailure;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.ThenFailureWithExpectedException;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.ThenFailureWithExpectedMessage;
+import testasyouthink.verification.Assertions;
 
 import java.util.List;
 import java.util.function.BiConsumer;
@@ -41,19 +42,14 @@ public class ThenStep<$SystemUnderTest, $Result> implements Then<$SystemUnderTes
         ThenFailureWithExpectedMessage {
 
     private final GivenWhenContext<$SystemUnderTest, $Result> context;
-    private $Result result;
 
     ThenStep(GivenWhenContext<$SystemUnderTest, $Result> context) {
         this.context = context;
     }
 
-    private $Result result() {
-        return result == null ? result = context.returnResultOrVoid() : result;
-    }
-
     @Override
     public AndThen<$SystemUnderTest, $Result> then(Consumer<$Result> thenStep) {
-        thenStep.accept(result());
+        thenStep.accept(context.returnResultOrVoid());
         return this;
     }
 
@@ -64,7 +60,7 @@ public class ThenStep<$SystemUnderTest, $Result> implements Then<$SystemUnderTes
 
     @Override
     public AndThen<$SystemUnderTest, $Result> then(Runnable thenStep) {
-        result();
+        context.returnResultOrVoid();
         thenStep.run();
         return this;
     }
@@ -83,7 +79,7 @@ public class ThenStep<$SystemUnderTest, $Result> implements Then<$SystemUnderTes
 
     @Override
     public AndThen<$SystemUnderTest, $Result> then(Predicate<$Result> thenStep) {
-        assertThat(thenStep.test(result())).isTrue();
+        assertThat(thenStep.test(context.returnResultOrVoid())).isTrue();
         return this;
     }
 
@@ -109,7 +105,7 @@ public class ThenStep<$SystemUnderTest, $Result> implements Then<$SystemUnderTes
 
     @Override
     public AndThen<$SystemUnderTest, $Result> and(Consumer<$Result> thenStep) {
-        thenStep.accept(result());
+        thenStep.accept(context.returnResultOrVoid());
         return this;
     }
 
@@ -153,9 +149,9 @@ public class ThenStep<$SystemUnderTest, $Result> implements Then<$SystemUnderTes
 
     @Override
     public AndThen<$SystemUnderTest, $Result> thenSutRepliesWithin(long timeLimit) {
-        new Assertion()
+        Assertions
                 .assertThat(context::returnResultOrVoid)
-                .spendAtMost(timeLimit);
+                .spendsAtMost(timeLimit);
         return this;
     }
 }
