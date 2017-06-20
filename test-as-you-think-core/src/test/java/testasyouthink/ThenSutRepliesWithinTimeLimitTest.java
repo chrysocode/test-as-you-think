@@ -24,7 +24,9 @@ package testasyouthink;
 
 import org.junit.Test;
 import testasyouthink.fixture.SystemUnderTest;
+import testasyouthink.function.CheckedConsumer;
 
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
 import static java.lang.Thread.currentThread;
@@ -59,5 +61,17 @@ public class ThenSutRepliesWithinTimeLimitTest {
                 .isInstanceOf(AssertionError.class)
                 .hasMessage("the current thread was interrupted while waiting")
                 .hasCauseInstanceOf(InterruptedException.class);
+    }
+
+    @Test
+    public void should_fail_when_the_computation_throws_an_exception_given_a_void_method() {
+        assertThatThrownBy(() -> givenSutClass(SystemUnderTest.class)
+                .when((CheckedConsumer<SystemUnderTest>) sut -> {
+                    throw new Exception("unexpected exception");
+                })
+                .thenSutRepliesWithin(1000))
+                .isInstanceOf(AssertionError.class)
+                .hasMessage("the computation threw an exception")
+                .hasCauseInstanceOf(ExecutionException.class);
     }
 }

@@ -120,7 +120,7 @@ public class ThenWithoutResultStep<$SystemUnderTest> implements ThenWithoutResul
         } catch (InterruptedException exception) {
             throw new AssertionError("the current thread was interrupted while waiting", exception);
         } catch (ExecutionException exception) {
-            throw new RuntimeException("Not yet implemented!");
+            throw new AssertionError("the computation threw an exception", exception);
         } catch (TimeoutException exception) {
             throw new AssertionError("test timed out after " + timeLimit + " milliseconds", exception);
         } finally {
