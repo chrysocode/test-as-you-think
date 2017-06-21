@@ -22,32 +22,51 @@
 
 package testasyouthink;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import testasyouthink.fixture.GivenWhenThenDefinition;
 import testasyouthink.fixture.SystemUnderTest;
 
+import java.util.function.Consumer;
+
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static testasyouthink.TestAsYouThink.asFunction;
 import static testasyouthink.TestAsYouThink.givenSutClass;
+import static testasyouthink.TestAsYouThink.withReturn;
 
 public class WhenStepAsExpressionLambdaTest {
 
-    @Test
-    public void should_accept_a_function_as_a_lambda_without_ambiguity_by_using_an_intermediary_method() {
-        // GIVEN
-        GivenWhenThenDefinition givenWhenThenDefinitionMock = Mockito.mock(GivenWhenThenDefinition.class);
+    private GivenWhenThenDefinition givenWhenThenDefinitionMock;
 
-        // WHEN
-        givenSutClass(SystemUnderTest.class)
-                .when(asFunction(sut -> sut.nonVoidMethod()))
-                .then(result -> {
-                    givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                });
+    @Before
+    public void prepareFixtures() {
+        givenWhenThenDefinitionMock = Mockito.mock(GivenWhenThenDefinition.class);
+    }
 
+    @After
+    public void verifyMocks() {
         // THEN
         verify(givenWhenThenDefinitionMock).thenTheActualResultIsInKeepingWithTheExpectedResult();
         verifyNoMoreInteractions(givenWhenThenDefinitionMock);
+    }
+
+    @Test
+    public void should_accept_a_function_as_a_lambda_without_ambiguity_by_using_an_intermediary_method() {
+        // WHEN
+        givenSutClass(SystemUnderTest.class)
+                .when(withReturn(sut -> sut.nonVoidMethod()))
+                .then((Consumer<String>) result -> givenWhenThenDefinitionMock
+                        .thenTheActualResultIsInKeepingWithTheExpectedResult());
+    }
+
+    @Test
+    public void should_accept_a_function_as_a_lambda_without_ambiguity_by_using_an_alternate_when_method() {
+        // WHEN
+        givenSutClass(SystemUnderTest.class)
+                .whenSutReturns(sut -> sut.nonVoidMethod())
+                .then((Consumer<String>) result -> givenWhenThenDefinitionMock
+                        .thenTheActualResultIsInKeepingWithTheExpectedResult());
     }
 }

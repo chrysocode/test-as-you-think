@@ -115,6 +115,9 @@ public interface GivenWhenThenDsl {
 
             <$Result> Then<$SystemUnderTest, $Result> when(CheckedFunction<$SystemUnderTest, $Result> whenStep);
 
+            <$Result> Then<$SystemUnderTest, $Result> whenSutReturns(
+                    CheckedFunction<$SystemUnderTest, $Result> whenStep);
+
             ThenWithoutResult<$SystemUnderTest> when(CheckedConsumer<$SystemUnderTest> whenStep);
 
             ThenFailure whenSutRunsOutsideOperatingConditions(CheckedConsumer<$SystemUnderTest> whenStep);

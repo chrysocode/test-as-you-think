@@ -39,7 +39,7 @@ public class TestAsYouThink {
         }
     }
 
-    public static <$SystemUnderTest, $Result> CheckedFunction<$SystemUnderTest, $Result> asFunction(
+    public static <$SystemUnderTest, $Result> CheckedFunction<$SystemUnderTest, $Result> withReturn(
             CheckedFunction<$SystemUnderTest, $Result> whenStep) {
         return whenStep;
     }

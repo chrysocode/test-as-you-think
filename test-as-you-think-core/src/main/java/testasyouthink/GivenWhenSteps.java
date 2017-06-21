@@ -104,6 +104,12 @@ public class GivenWhenSteps<$SystemUnderTest> implements Given<$SystemUnderTest>
     }
 
     @Override
+    public <$Result> Then<$SystemUnderTest, $Result> whenSutReturns(
+            CheckedFunction<$SystemUnderTest, $Result> whenStep) {
+        return when(whenStep);
+    }
+
+    @Override
     public ThenWithoutResult<$SystemUnderTest> when(CheckedConsumer<$SystemUnderTest> whenStep) {
         return thenStepFactory.createThenStep(preparation, whenStep);
     }
