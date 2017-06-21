@@ -69,4 +69,12 @@ public class WhenStepAsExpressionLambdaTest {
                 .then((Consumer<String>) result -> givenWhenThenDefinitionMock
                         .thenTheActualResultIsInKeepingWithTheExpectedResult());
     }
+
+    @Test
+    public void should_accept_a_consumer_as_a_lambda_without_ambiguity_by_using_an_alternate_when_method() {
+        // WHEN
+        givenSutClass(SystemUnderTest.class)
+                .whenSutRuns(sut -> sut.voidMethod())
+                .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult());
+    }
 }

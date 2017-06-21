@@ -115,6 +115,11 @@ public class GivenWhenSteps<$SystemUnderTest> implements Given<$SystemUnderTest>
     }
 
     @Override
+    public ThenWithoutResult<$SystemUnderTest> whenSutRuns(CheckedConsumer<$SystemUnderTest> whenStep) {
+        return when(whenStep);
+    }
+
+    @Override
     public ThenFailure whenSutRunsOutsideOperatingConditions(CheckedConsumer<$SystemUnderTest> whenStep) {
         return thenStepFactory.createThenStep(preparation, functions.toFunctionWithThrowableAsResult(whenStep));
     }
