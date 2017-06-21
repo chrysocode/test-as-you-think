@@ -23,6 +23,7 @@
 package testasyouthink;
 
 import testasyouthink.GivenWhenThenDsl.PreparationStage.Given;
+import testasyouthink.function.CheckedFunction;
 
 public class TestAsYouThink {
 
@@ -36,5 +37,10 @@ public class TestAsYouThink {
         } catch (Exception exception) {
             throw new RuntimeException(exception.getMessage());
         }
+    }
+
+    public static <$SystemUnderTest, $Result> CheckedFunction<$SystemUnderTest, $Result> asFunction(
+            CheckedFunction<$SystemUnderTest, $Result> whenStep) {
+        return whenStep;
     }
 }
