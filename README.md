@@ -1,7 +1,7 @@
 What you think is what you test... Not yet another testing API or framework!
 
 Software:
-[![Maven Central](https://img.shields.io/maven-central/v/org.apache.maven/apache-maven.svg)](https://search.maven.org/#artifactdetails%7Ccom.github.xapn%7Ctest-as-you-think-core%7C0.3%7C)
+[![Maven Central](https://img.shields.io/maven-central/v/org.apache.maven/apache-maven.svg)](https://search.maven.org/#artifactdetails%7Ccom.github.xapn%7Ctest-as-you-think-core%7C0.4%7C)
 [![Javadocs](http://javadoc.io/badge/com.github.xapn/test-as-you-think-core.svg?color=orange)](http://javadoc.io/doc/com.github.xapn/test-as-you-think-core)
 [![License: GNU LGPL v3](https://img.shields.io/badge/License-LGPL%20v3-blue.svg)](http://www.gnu.org/licenses/lgpl-3.0)
 
@@ -41,7 +41,7 @@ Add *TestAsYouThink* as a dependency to your project with Maven, or download it 
 <dependency>
     <groupId>com.github.xapn</groupId>
     <artifactId>test-as-you-think-core</artifactId>
-    <version>0.3</version>
+    <version>0.4</version>
 </dependency>
 ```
 
@@ -289,14 +289,20 @@ The advantage of TestAsYouThink is that the time limit is only applied to the te
 
 # Release Notes
 
-## Version 0.3
+## Version 0.4: Time limit as an expectation
+
+- Expect that the system under test replies within a time limit.
+- Resolve ambiguous method calls in relation to using expression lambdas.
+- Start to write a test with the when step.
+
+## Version 0.3: TestAsYouThink as a Maven distributed OSS library
 
 - Rename the API to **TestAsYouThink**.
 - Choose an open source license.
 - Publish artifacts to Maven Central.
 - Check version updates.
 
-## Version 0.2
+## Version 0.2: Test fixtures as method arguments
 
 - Include a data as a method argument during the preparation phase.
 - Include two data as method arguments during the preparation phase.
@@ -306,7 +312,7 @@ The advantage of TestAsYouThink is that the time limit is only applied to the te
 - Verify failures while invoking methods with arguments.
 - Verify the expected exception and the expected message separately.
 
-## Version 0.1
+## Version 0.1: Given-When-Then as a canvas
 
 - Write an unit or integration test by using the Given-When-Then canvas and full sequence.
 - Delegate the system under test instantiation to the API.
