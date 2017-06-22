@@ -160,6 +160,17 @@ All of them are useful: the more proper one depends on the use case.
 
 You can favor the simplest `when()` method, or choose a more explicit, alternate method: `whenSutReturns()` if a result is expected; otherwise `whenSutRuns()`.
 
+### Starting with the event
+
+To write very simple tests, you might want to directly attack the system under test. In such a use case, the API syntax becomes very minimalist.
+```java
+import static testasyouthink.TestAsYouThink.when;
+...
+
+when(() -> sut.targetMethod(oneOrMoreArguments)).then(...); // or...
+when(SystemUnderTest::targetMethod).then(...); // without arguments to be passed to the target method
+```
+
 ### Avoid ambiguous method calls
 
 To define the event, you may want to pass an expression lambda to the `when()` method like this.
