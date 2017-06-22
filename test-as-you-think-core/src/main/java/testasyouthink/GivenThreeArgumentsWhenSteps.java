@@ -56,6 +56,12 @@ public class GivenThreeArgumentsWhenSteps<$SystemUnderTest, $Argument1, $Argumen
     }
 
     @Override
+    public <$Result> Then<$SystemUnderTest, $Result> whenSutReturns(
+            CheckedQuadriFunction<$SystemUnderTest, $Argument1, $Argument2, $Argument3, $Result> whenStep) {
+        return when(whenStep);
+    }
+
+    @Override
     public ThenFailure whenSutRunsOutsideOperatingConditions(
             CheckedQuadriConsumer<$SystemUnderTest, $Argument1, $Argument2, $Argument3> whenStep) {
         return thenStepFactory.createThenStep(preparation, functions.toFunctionWithThrowableAsResult(
