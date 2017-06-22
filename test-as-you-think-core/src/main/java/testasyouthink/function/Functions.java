@@ -39,11 +39,19 @@ public enum Functions {
         return toBeConsumed -> runnable.run();
     }
 
+    public CheckedConsumer<Void> toCheckedConsumer(Runnable runnable) {
+        return toBeConsumed -> runnable.run();
+    }
+
     public <T, R> CheckedFunction<T, R> toFunction(CheckedConsumer<T> checkedConsumer) {
         return toBeConsumed -> {
             checkedConsumer.accept(toBeConsumed);
             return null;
         };
+    }
+
+    public <R> CheckedFunction<Void, R> toCheckedFunction(Supplier<R> supplier) {
+        return Void -> supplier.get();
     }
 
     public <T> CheckedFunction<T, Throwable> toFunctionWithThrowableAsResult(CheckedConsumer<T> checkedConsumer) {
