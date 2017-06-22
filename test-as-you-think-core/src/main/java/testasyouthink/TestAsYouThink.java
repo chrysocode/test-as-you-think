@@ -24,13 +24,14 @@ package testasyouthink;
 
 import testasyouthink.GivenWhenThenDsl.PreparationStage.Given;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.Then;
-import testasyouthink.function.CheckedConsumer;
 import testasyouthink.function.CheckedFunction;
+import testasyouthink.function.Functions;
 
 import java.util.function.Supplier;
 
 public class TestAsYouThink {
 
+    private static Functions functions = Functions.INSTANCE;
     private static ThenStepFactory thenStepFactory = ThenStepFactory.INSTANCE;
 
     public static <$SystemUnderTest> Given<$SystemUnderTest> givenSut($SystemUnderTest systemUnderTest) {
@@ -46,13 +47,11 @@ public class TestAsYouThink {
     }
 
     public static ThenWithoutResultStep<Void> when(Runnable whenStep) {
-        CheckedConsumer<Void> whenStepAsVoidConsumer = Void -> whenStep.run();
-        return thenStepFactory.createThenStep(whenStepAsVoidConsumer);
+        return thenStepFactory.createThenStep(functions.toCheckedConsumer(whenStep));
     }
 
     public static <$Result> Then<Void, $Result> when(Supplier<$Result> whenStep) {
-        CheckedFunction<Void, $Result> whenStepAsFunction = Void -> whenStep.get();
-        return thenStepFactory.createThenStep(whenStepAsFunction);
+        return thenStepFactory.createThenStep(functions.toCheckedFunction(whenStep));
     }
 
     public static <$SystemUnderTest, $Result> CheckedFunction<$SystemUnderTest, $Result> withReturn(
