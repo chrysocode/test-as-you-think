@@ -23,6 +23,7 @@
 package testasyouthink;
 
 import testasyouthink.GivenWhenThenDsl.PreparationStage.Given;
+import testasyouthink.function.CheckedConsumer;
 import testasyouthink.function.CheckedFunction;
 
 public class TestAsYouThink {
@@ -37,6 +38,14 @@ public class TestAsYouThink {
         } catch (Exception exception) {
             throw new RuntimeException(exception.getMessage());
         }
+    }
+
+    public static ThenWithoutResultStep<Void> when(Runnable whenStep) {
+        Preparation<Void> nothingToPrepare = new Preparation<>(null);
+        CheckedConsumer<Void> whenStepAsVoidConsumer = Void -> whenStep.run();
+        Event<Void, Void> event = new Event<>(null, whenStepAsVoidConsumer);
+        GivenWhenContext<Void, Void> context = new GivenWhenContext<>(nothingToPrepare, event);
+        return new ThenWithoutResultStep<>(context);
     }
 
     public static <$SystemUnderTest, $Result> CheckedFunction<$SystemUnderTest, $Result> withReturn(
