@@ -23,8 +23,11 @@
 package testasyouthink;
 
 import testasyouthink.GivenWhenThenDsl.PreparationStage.Given;
+import testasyouthink.GivenWhenThenDsl.VerificationStage.Then;
 import testasyouthink.function.CheckedConsumer;
 import testasyouthink.function.CheckedFunction;
+
+import java.util.function.Supplier;
 
 public class TestAsYouThink {
 
@@ -46,6 +49,14 @@ public class TestAsYouThink {
         Event<Void, Void> event = new Event<>(null, whenStepAsVoidConsumer);
         GivenWhenContext<Void, Void> context = new GivenWhenContext<>(nothingToPrepare, event);
         return new ThenWithoutResultStep<>(context);
+    }
+
+    public static <$Result> Then<Void, $Result> when(Supplier<$Result> whenStep) {
+        Preparation<Void> nothingToPrepare = new Preparation<>(null);
+        CheckedFunction<Void, $Result> whenStepAsFunction = Void -> whenStep.get();
+        Event<Void, $Result> event = new Event<>(null, whenStepAsFunction);
+        GivenWhenContext<Void, $Result> context = new GivenWhenContext<>(nothingToPrepare, event);
+        return new ThenStep<>(context);
     }
 
     public static <$SystemUnderTest, $Result> CheckedFunction<$SystemUnderTest, $Result> withReturn(

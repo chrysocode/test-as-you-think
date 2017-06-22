@@ -28,7 +28,9 @@ import org.mockito.Mockito;
 import testasyouthink.fixture.GivenWhenThenDefinition;
 import testasyouthink.fixture.SystemUnderTest;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static testasyouthink.TestAsYouThink.when;
 
 public class StartingWithWhenTest {
@@ -47,6 +49,30 @@ public class StartingWithWhenTest {
         inOrder
                 .verify(sut)
                 .voidMethod();
+        inOrder
+                .verify(gwtMock)
+                .thenTheActualResultIsInKeepingWithTheExpectedResult();
+        inOrder.verifyNoMoreInteractions();
+    }
+
+    @Test
+    public void should_start_with_when_given_a_non_void_method() {
+        // GIVEN
+        SystemUnderTest sut = mock(SystemUnderTest.class);
+        when(sut.nonVoidMethod()).thenReturn("expected result");
+        GivenWhenThenDefinition gwtMock = mock(GivenWhenThenDefinition.class);
+
+        // WHEN
+        when(sut::nonVoidMethod).then(result -> {
+            assertThat(result).isEqualTo("expected result");
+            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+        });
+
+        // THEN
+        InOrder inOrder = Mockito.inOrder(sut, gwtMock);
+        inOrder
+                .verify(sut)
+                .nonVoidMethod();
         inOrder
                 .verify(gwtMock)
                 .thenTheActualResultIsInKeepingWithTheExpectedResult();
