@@ -76,9 +76,19 @@ public class WhenStepAsExpressionLambdaTest {
         givenSutClass(SystemUnderTest.class)
                 .givenArgument("one argument", "argument")
                 .whenSutReturns((sut, argument) -> sut.nonVoidMethodWithParameter(argument))
-                .then(result -> {
-                    givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                });
+                .then((Consumer<String>) result -> givenWhenThenDefinitionMock
+                        .thenTheActualResultIsInKeepingWithTheExpectedResult());
+    }
+
+    @Test
+    public void should_accept_a_trifunction_as_a_lambda_without_ambiguity_by_using_an_alternate_when_method() {
+        // WHEN
+        givenSutClass(SystemUnderTest.class)
+                .givenArgument("one argument", "argument")
+                .andArgument("second argument", 20170622)
+                .whenSutReturns((sut, argument1, argument2) -> sut.nonVoidMethodWithTwoParameters(argument1, argument2))
+                .then((Consumer<String>) result -> givenWhenThenDefinitionMock
+                        .thenTheActualResultIsInKeepingWithTheExpectedResult());
     }
 
     @Test

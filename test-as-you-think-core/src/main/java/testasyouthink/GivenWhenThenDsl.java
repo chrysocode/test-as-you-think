@@ -146,6 +146,9 @@ public interface GivenWhenThenDsl {
             <$Result> Then<$SystemUnderTest, $Result> when(
                     CheckedTriFunction<$SystemUnderTest, $Argument1, $Argument2, $Result> whenStep);
 
+            <$Result> Then<$SystemUnderTest, $Result> whenSutReturns(
+                    CheckedTriFunction<$SystemUnderTest, $Argument1, $Argument2, $Result> whenStep);
+
             ThenFailure whenSutRunsOutsideOperatingConditions(
                     CheckedTriConsumer<$SystemUnderTest, $Argument1, $Argument2> whenStep);
         }
