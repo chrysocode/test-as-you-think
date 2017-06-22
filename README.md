@@ -12,6 +12,13 @@ Counters:
 [![Comments](https://tokei.rs/b1/github/xapn/test-as-you-think?category=comments)](https://github.com/xapn/test-as-you-think)
 [![Blank lines](https://tokei.rs/b1/github/xapn/test-as-you-think?category=blanks)](https://github.com/xapn/test-as-you-think)
 
+Social:
+[![Twitter URL](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/search?q=%23TestAsYouThink)
+[![Twitter Follow](https://img.shields.io/twitter/follow/espadrine.svg?style=social&label=Follow)](https://twitter.com/XEngineer)
+[![GitHub stars](https://img.shields.io/github/stars/badges/shields.svg?style=social&label=Star)](https://github.com/xapn/test-as-you-think/stargazers)
+[![GitHub watchers](https://img.shields.io/github/watchers/badges/shields.svg?style=social&label=Watch)](https://github.com/xapn/test-as-you-think/watchers)
+[![GitHub forks](https://img.shields.io/github/forks/badges/shields.svg?style=social&label=Fork)](https://github.com/xapn/test-as-you-think)
+
 # Fluent testing and added value
 
 *TestAsYouThink* is an open source software library in Java for testing purposes. It is designed as a **fluent API** that will change the way development teams write their unit and integration tests. It aims to take control over the coding practices as **executable guidelines**, from beginners to experts, to get **high-quality tests**. Why should you adopt *TestAsYouThink*?
