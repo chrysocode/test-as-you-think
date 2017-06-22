@@ -163,6 +163,9 @@ public interface GivenWhenThenDsl {
             ThenWithoutResult<$SystemUnderTest> when(
                     CheckedQuadriConsumer<$SystemUnderTest, $Argument1, $Argument2, $Argument3> whenStep);
 
+            ThenWithoutResult<$SystemUnderTest> whenSutRuns(
+                    CheckedQuadriConsumer<$SystemUnderTest, $Argument1, $Argument2, $Argument3> whenStep);
+
             <$Result> Then<$SystemUnderTest, $Result> when(
                     CheckedQuadriFunction<$SystemUnderTest, $Argument1, $Argument2, $Argument3, $Result> whenStep);
 

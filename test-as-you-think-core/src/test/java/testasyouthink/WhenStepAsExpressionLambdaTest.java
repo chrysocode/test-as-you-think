@@ -131,4 +131,16 @@ public class WhenStepAsExpressionLambdaTest {
                 .whenSutRuns((sut, argument1, argument2) -> sut.voidMethodWithTwoParameters(argument1, argument2))
                 .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult());
     }
+
+    @Test
+    public void should_accept_a_quadriconsumer_as_a_lambda_without_ambiguity_by_using_an_alternate_when_method() {
+        // WHEN
+        givenSutClass(SystemUnderTest.class)
+                .givenArgument("first argument", "argument")
+                .andArgument("second argument", 20170622)
+                .andArgument("third argument", true)
+                .whenSutRuns((sut, argument1, argument2, argument3) -> sut.voidMethodWithThreeParameters(argument1,
+                        argument2, argument3))
+                .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult());
+    }
 }
