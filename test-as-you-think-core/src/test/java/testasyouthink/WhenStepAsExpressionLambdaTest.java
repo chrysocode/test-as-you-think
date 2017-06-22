@@ -84,7 +84,7 @@ public class WhenStepAsExpressionLambdaTest {
     public void should_accept_a_trifunction_as_a_lambda_without_ambiguity_by_using_an_alternate_when_method() {
         // WHEN
         givenSutClass(SystemUnderTest.class)
-                .givenArgument("one argument", "argument")
+                .givenArgument("first argument", "argument")
                 .andArgument("second argument", 20170622)
                 .whenSutReturns((sut, argument1, argument2) -> sut.nonVoidMethodWithTwoParameters(argument1, argument2))
                 .then((Consumer<String>) result -> givenWhenThenDefinitionMock
@@ -95,7 +95,7 @@ public class WhenStepAsExpressionLambdaTest {
     public void should_accept_a_quadrifunction_as_a_lambda_without_ambiguity_by_using_an_alternate_when_method() {
         // WHEN
         givenSutClass(SystemUnderTest.class)
-                .givenArgument("one argument", "argument")
+                .givenArgument("first argument", "argument")
                 .andArgument("second argument", 20170622)
                 .andArgument("third argument", true)
                 .whenSutReturns(
@@ -110,6 +110,15 @@ public class WhenStepAsExpressionLambdaTest {
         // WHEN
         givenSutClass(SystemUnderTest.class)
                 .whenSutRuns(sut -> sut.voidMethod())
+                .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult());
+    }
+
+    @Test
+    public void should_accept_a_biconsumer_as_a_lambda_without_ambiguity_by_using_an_alternate_when_method() {
+        // WHEN
+        givenSutClass(SystemUnderTest.class)
+                .givenArgument("first argument", "argument")
+                .whenSutRuns((sut, argument) -> sut.voidMethodWithParameter(argument))
                 .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult());
     }
 }

@@ -129,6 +129,8 @@ public interface GivenWhenThenDsl {
 
             ThenWithoutResult<$SystemUnderTest> when(CheckedBiConsumer<$SystemUnderTest, $Argument> whenStep);
 
+            ThenWithoutResult<$SystemUnderTest> whenSutRuns(CheckedBiConsumer<$SystemUnderTest, $Argument> whenStep);
+
             <$Result> Then<$SystemUnderTest, $Result> when(
                     CheckedBiFunction<$SystemUnderTest, $Argument, $Result> whenStep);
 
