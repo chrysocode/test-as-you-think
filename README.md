@@ -142,6 +142,40 @@ givenSutClass(SystemUnderTest.class)
 .then(result -> { ... });
 ```
 
+## Event
+
+You can use different syntaxes to pass the event to the `when()` method:
+- a method reference (`SystemUnderTest::targetMethod`),
+- a statement lambda (`sut -> { return sut.targetMethod(); }`),
+- an expression lambda (`sut -> sut.targetMethod()`).
+
+All of them are useful: the more proper one depends on the use case.
+
+You can favor the simplest `when()` method, or choose a more explicit, alternate method: `whenSutReturns()` if a result is expected; otherwise `whenSutRuns()`.
+
+### Avoid ambiguous method calls
+
+To define the event, you may want to pass an expression lambda to the `when()` method like this.
+```java
+givenSutClass(SystemUnderTest.class)
+.when(sut -> sut.testedMethod()) // compilation error
+.then(...);
+```
+In such a case, the compiler meets an error because of an ambiguous method call: it does not know which `when()` method must be called. One receives a lambda that returns a value, while another one receives a lambda that returns nothing. Instead of casting the expression lambda to a function or a consumer, you can avoid this compilation problem by using the following alternate methods.
+
+Without return:
+```java
+givenSutClass(SystemUnderTest.class)
+.whenSutRuns(sut -> sut.voidMethod(...))
+.then(...);
+```
+With a return:
+```java
+givenSutClass(SystemUnderTest.class)
+.whenSutReturns(sut -> sut.nonVoidMethod(...))
+.then(...);
+```
+
 ## Expectations
 
 ### Separation of concerns with multiple Then steps
