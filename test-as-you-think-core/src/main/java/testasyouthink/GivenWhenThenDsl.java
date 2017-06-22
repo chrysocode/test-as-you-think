@@ -115,7 +115,12 @@ public interface GivenWhenThenDsl {
 
             <$Result> Then<$SystemUnderTest, $Result> when(CheckedFunction<$SystemUnderTest, $Result> whenStep);
 
+            <$Result> Then<$SystemUnderTest, $Result> whenSutReturns(
+                    CheckedFunction<$SystemUnderTest, $Result> whenStep);
+
             ThenWithoutResult<$SystemUnderTest> when(CheckedConsumer<$SystemUnderTest> whenStep);
+
+            ThenWithoutResult<$SystemUnderTest> whenSutRuns(CheckedConsumer<$SystemUnderTest> whenStep);
 
             ThenFailure whenSutRunsOutsideOperatingConditions(CheckedConsumer<$SystemUnderTest> whenStep);
         }
@@ -124,7 +129,12 @@ public interface GivenWhenThenDsl {
 
             ThenWithoutResult<$SystemUnderTest> when(CheckedBiConsumer<$SystemUnderTest, $Argument> whenStep);
 
+            ThenWithoutResult<$SystemUnderTest> whenSutRuns(CheckedBiConsumer<$SystemUnderTest, $Argument> whenStep);
+
             <$Result> Then<$SystemUnderTest, $Result> when(
+                    CheckedBiFunction<$SystemUnderTest, $Argument, $Result> whenStep);
+
+            <$Result> Then<$SystemUnderTest, $Result> whenSutReturns(
                     CheckedBiFunction<$SystemUnderTest, $Argument, $Result> whenStep);
 
             ThenFailure whenSutRunsOutsideOperatingConditions(CheckedBiConsumer<$SystemUnderTest, $Argument> whenStep);
@@ -135,7 +145,13 @@ public interface GivenWhenThenDsl {
             ThenWithoutResult<$SystemUnderTest> when(
                     CheckedTriConsumer<$SystemUnderTest, $Argument1, $Argument2> whenStep);
 
+            ThenWithoutResult<$SystemUnderTest> whenSutRuns(
+                    CheckedTriConsumer<$SystemUnderTest, $Argument1, $Argument2> whenStep);
+
             <$Result> Then<$SystemUnderTest, $Result> when(
+                    CheckedTriFunction<$SystemUnderTest, $Argument1, $Argument2, $Result> whenStep);
+
+            <$Result> Then<$SystemUnderTest, $Result> whenSutReturns(
                     CheckedTriFunction<$SystemUnderTest, $Argument1, $Argument2, $Result> whenStep);
 
             ThenFailure whenSutRunsOutsideOperatingConditions(
@@ -147,7 +163,13 @@ public interface GivenWhenThenDsl {
             ThenWithoutResult<$SystemUnderTest> when(
                     CheckedQuadriConsumer<$SystemUnderTest, $Argument1, $Argument2, $Argument3> whenStep);
 
+            ThenWithoutResult<$SystemUnderTest> whenSutRuns(
+                    CheckedQuadriConsumer<$SystemUnderTest, $Argument1, $Argument2, $Argument3> whenStep);
+
             <$Result> Then<$SystemUnderTest, $Result> when(
+                    CheckedQuadriFunction<$SystemUnderTest, $Argument1, $Argument2, $Argument3, $Result> whenStep);
+
+            <$Result> Then<$SystemUnderTest, $Result> whenSutReturns(
                     CheckedQuadriFunction<$SystemUnderTest, $Argument1, $Argument2, $Argument3, $Result> whenStep);
 
             ThenFailure whenSutRunsOutsideOperatingConditions(
