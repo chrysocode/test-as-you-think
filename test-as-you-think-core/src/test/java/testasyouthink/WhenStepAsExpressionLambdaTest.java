@@ -117,8 +117,18 @@ public class WhenStepAsExpressionLambdaTest {
     public void should_accept_a_biconsumer_as_a_lambda_without_ambiguity_by_using_an_alternate_when_method() {
         // WHEN
         givenSutClass(SystemUnderTest.class)
-                .givenArgument("first argument", "argument")
+                .givenArgument("one argument", "argument")
                 .whenSutRuns((sut, argument) -> sut.voidMethodWithParameter(argument))
+                .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult());
+    }
+
+    @Test
+    public void should_accept_a_triconsumer_as_a_lambda_without_ambiguity_by_using_an_alternate_when_method() {
+        // WHEN
+        givenSutClass(SystemUnderTest.class)
+                .givenArgument("first argument", "argument")
+                .andArgument("second argument", 20170622)
+                .whenSutRuns((sut, argument1, argument2) -> sut.voidMethodWithTwoParameters(argument1, argument2))
                 .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult());
     }
 }
