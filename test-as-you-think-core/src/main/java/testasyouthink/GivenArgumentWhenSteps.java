@@ -69,10 +69,21 @@ public class GivenArgumentWhenSteps<$SystemUnderTest, $Argument> implements AndG
     }
 
     @Override
+    public ThenWithoutResult<$SystemUnderTest> whenSutRuns(CheckedBiConsumer<$SystemUnderTest, $Argument> whenStep) {
+        return when(whenStep);
+    }
+
+    @Override
     public <$Result> Then<$SystemUnderTest, $Result> when(
             CheckedBiFunction<$SystemUnderTest, $Argument, $Result> whenStep) {
         return thenStepFactory.createThenStep(preparation,
                 functions.toFunction(whenStep, preparation.getArgumentSuppliers()));
+    }
+
+    @Override
+    public <$Result> Then<$SystemUnderTest, $Result> whenSutReturns(
+            CheckedBiFunction<$SystemUnderTest, $Argument, $Result> whenStep) {
+        return when(whenStep);
     }
 
     @Override

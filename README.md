@@ -1,4 +1,52 @@
-What you think is what you test... Not yet another testing api!
+What you think is what you test... Not yet another testing API or framework!
+
+Software:
+[![Maven Central](https://img.shields.io/maven-central/v/org.apache.maven/apache-maven.svg)](https://search.maven.org/#artifactdetails%7Ccom.github.xapn%7Ctest-as-you-think-core%7C0.4%7C)
+[![Javadocs](http://javadoc.io/badge/com.github.xapn/test-as-you-think-core.svg?color=orange)](http://javadoc.io/doc/com.github.xapn/test-as-you-think-core)
+[![License: GNU LGPL v3](https://img.shields.io/badge/License-LGPL%20v3-blue.svg)](http://www.gnu.org/licenses/lgpl-3.0)
+
+Counters:
+[![LoC](https://tokei.rs/b1/github/xapn/test-as-you-think?category=code)](https://github.com/xapn/test-as-you-think)
+[![Files](https://tokei.rs/b1/github/xapn/test-as-you-think?category=files)](https://github.com/xapn/test-as-you-think)
+[![Total lines](https://tokei.rs/b1/github/xapn/test-as-you-think?category=lines)](https://github.com/xapn/test-as-you-think)
+[![Comments](https://tokei.rs/b1/github/xapn/test-as-you-think?category=comments)](https://github.com/xapn/test-as-you-think)
+[![Blank lines](https://tokei.rs/b1/github/xapn/test-as-you-think?category=blanks)](https://github.com/xapn/test-as-you-think)
+
+Social:
+[![Twitter URL](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/search?q=%23TestAsYouThink)
+[![Twitter Follow](https://img.shields.io/twitter/follow/espadrine.svg?style=social&label=Follow)](https://twitter.com/XEngineer)
+[![GitHub stars](https://img.shields.io/github/stars/badges/shields.svg?style=social&label=Star)](https://github.com/xapn/test-as-you-think/stargazers)
+[![GitHub watchers](https://img.shields.io/github/watchers/badges/shields.svg?style=social&label=Watch)](https://github.com/xapn/test-as-you-think/watchers)
+[![GitHub forks](https://img.shields.io/github/forks/badges/shields.svg?style=social&label=Fork)](https://github.com/xapn/test-as-you-think)
+
+<!-- toc -->
+
+- [Fluent testing and added value](#fluent-testing-and-added-value)
+- [Getting Started](#getting-started)
+  * [Installation](#installation)
+  * [Basics](#basics)
+  * [Test Fixtures](#test-fixtures)
+    + [Separation of concerns with multiple Given steps](#separation-of-concerns-with-multiple-given-steps)
+    + [Specifying fixtures](#specifying-fixtures)
+  * [Event](#event)
+    + [Starting with the event](#starting-with-the-event)
+    + [Avoid ambiguous method calls](#avoid-ambiguous-method-calls)
+  * [Expectations](#expectations)
+    + [Separation of concerns with multiple Then steps](#separation-of-concerns-with-multiple-then-steps)
+    + [Expectations as predicates](#expectations-as-predicates)
+    + [Specifying expectations](#specifying-expectations)
+    + [Failures](#failures)
+      - [Expected failures](#expected-failures)
+      - [Unexpected failures](#unexpected-failures)
+    + [Time limit](#time-limit)
+- [Release Notes](#release-notes)
+  * [Version 0.4: Time limit as an expectation](#version-04-time-limit-as-an-expectation)
+  * [Version 0.3: TestAsYouThink as a Maven distributed OSS library](#version-03-testasyouthink-as-a-maven-distributed-oss-library)
+  * [Version 0.2: Test fixtures as method arguments](#version-02-test-fixtures-as-method-arguments)
+  * [Version 0.1: Given-When-Then as a canvas](#version-01-given-when-then-as-a-canvas)
+- [License](#license)
+
+<!-- tocstop -->
 
 # Fluent testing and added value
 
@@ -17,18 +65,25 @@ Moreover *TestAsYouThink* uses the Given-When-Then canvas as a formal guide to c
 
 ## Installation
 
-Add it to your project with Maven, or download it from Maven Central.
+Add *TestAsYouThink* as a dependency to your project with Maven, or download it from [Maven Central](https://search.maven.org/#search%7Cga%7C1%7Ctest%20as%20you%20think).
 ```xml
 <dependency>
     <groupId>com.github.xapn</groupId>
     <artifactId>test-as-you-think-core</artifactId>
-    <version>0.3</version>
+    <version>0.4</version>
 </dependency>
 ```
 
 ## Basics
 
-Here is a very simple example of what you can do.
+Here is the minimal syntax to implement your test methods for a `SystemUnderTest` class.
+```java
+givenSutClass(SystemUnderTest.class)
+.when(sut -> {})
+.then(() -> {});
+```
+
+Let us complete the previous scenario with a very simple example of what you can do, while testing a non-void method of your system under test.
 ```java
 import static testasyouthink.TestAsYouThink.givenSutClass;
 ...
@@ -50,7 +105,7 @@ givenSutClass(SystemUnderTest.class)
 Notice that:
 - any Given-When-Then step can be implemented by a lambda expression or a method reference;
 - you manipule the same SUT type from the beginning to the end, because the `sut` type is determined during the *Given* step, until the end;
-- there is no need to instantiate the `sut` object, even if it is allowed by the `givenSut(sutInstance)` alternate end point;
+- there is no need to instantiate the `sut` object, even if it is allowed by the `givenSut(sutInstance)` alternate end point, as below;
 - the call to any `given()` method is optional;
 - you manipule the same `result` type until the end, because the `result` type is determined during the *When* step;
 - you cannot inadvertently make a fake test that would verify nothing, because any `then()` method is always a sequence termination.
@@ -70,6 +125,7 @@ givenSut(systemUnderTest)
     // Verification of expectations
 });
 ```
+
 ## Test Fixtures
 
 ### Separation of concerns with multiple Given steps
@@ -120,6 +176,51 @@ givenSutClass(SystemUnderTest.class)
     // Prepare other fixtures.
 }).when(sut -> { ... })
 .then(result -> { ... });
+```
+
+## Event
+
+You can use different syntaxes to pass the event to the `when()` method:
+- a method reference (`SystemUnderTest::targetMethod`),
+- a statement lambda (`sut -> { return sut.targetMethod(); }`),
+- an expression lambda (`sut -> sut.targetMethod()`).
+
+All of them are useful: the more proper one depends on the use case.
+
+You can favor the simplest `when()` method, or choose a more explicit, alternate method: `whenSutReturns()` if a result is expected; otherwise `whenSutRuns()`.
+
+### Starting with the event
+
+To write very simple tests, you might want to directly attack the system under test. In such a use case, the API syntax becomes very minimalist.
+```java
+import static testasyouthink.TestAsYouThink.when;
+...
+
+when(() -> sut.targetMethod(oneOrMoreArguments)).then(...); // or...
+when(SystemUnderTest::targetMethod).then(...); // without arguments to be passed to the target method
+```
+
+### Avoid ambiguous method calls
+
+To define the event, you may want to pass an expression lambda to the `when()` method like this.
+```java
+givenSutClass(SystemUnderTest.class)
+.when(sut -> sut.testedMethod()) // compilation error
+.then(...);
+```
+In such a case, the compiler meets an error because of an ambiguous method call: it does not know which `when()` method must be called. One receives a lambda that returns a value, while another one receives a lambda that returns nothing. Instead of casting the expression lambda to a function or a consumer, you can avoid this compilation problem by using the following alternate methods.
+
+Without return:
+```java
+givenSutClass(SystemUnderTest.class)
+.whenSutRuns(sut -> sut.voidMethod(...))
+.then(...);
+```
+With a return:
+```java
+givenSutClass(SystemUnderTest.class)
+.whenSutReturns(sut -> sut.nonVoidMethod(...))
+.then(...);
 ```
 
 ## Expectations
@@ -178,13 +279,13 @@ givenSutClass(SystemUnderTest.class)
 
 ### Failures
 
-If a method signature contains a `throws` clause with a checked, compile-time expectation, it is not necessary to modify the testing method signature anymore by adding the same clause to it. This clause and its spreading are considered as a technical constaint without value in a executable specification approach. As a consequence, it becomes imperceptible for the test code, and above all for the software developer who can stay focused on his tests. Tests will continue to fail if any unexpected exception is raised.
+If a method signature contains a `throws` clause with a checked, compile-time exception, it is not necessary to modify the testing method signature anymore by adding the same clause to it. This clause and its spreading are considered as a technical constaint without value in a executable specification approach. As a consequence, it becomes imperceptible for the test code, and above all for the software developer who can stay focused on his tests. Tests will continue to fail if any unexpected exception is raised.
 
 #### Expected failures
 
 Because the failure testing is an important part of your use cases, you can verify the behavior of the system under test when it is used ouside operating conditions.
 ```java
-givenSut(SystemUnderTest.class)
+givenSutClass(SystemUnderTest.class)
 .given(() -> { ... })
 .whenSutRunsOutsideOperatingConditions(sut -> {
     // where an event causes a failure
@@ -195,16 +296,42 @@ givenSut(SystemUnderTest.class)
 
 When an unexpected failure occurs - because of a regression for example -, the test fails by raising an `AssertionError`, because the defaut behavior consists of asserting no failure should happen, unless the software developer wants.
 
+### Time limit
+
+Sometimes you need to limit the allowed execution time of the tested event.
+```java
+givenSutClass(SystemUnderTest.class)
+.when(SystemUnderTest::spendSomeTime)
+.thenSutRepliesWithin(100);
+```
+By default, the time limit is given in milliseconds. If you want to use another time unit:
+```java
+import java.time.Duration;
+...
+
+givenSutClass(SystemUnderTest.class)
+.when(SystemUnderTest::spendSomeTime)
+.thenSutRepliesWithin(Duration.ofMinutes(3);
+```
+
+The advantage of TestAsYouThink is that the time limit is only applied to the tested event, while [JUnit](https://github.com/junit-team/junit4/wiki/timeout-for-tests) applies its `timeout` to the whole test method with its `@Test` annotation. [JUnit 5](http://junit.org/junit5/docs/snapshot/user-guide/) will propose an `assertTimeout(duration, lambda)` method that returns the lamba expression result, but such a syntax amalgamates irremediably the expectations and the event.
+
 # Release Notes
 
-## Version 0.3
+## Version 0.4: Time limit as an expectation
+
+- Expect that the system under test replies within a time limit.
+- Resolve ambiguous method calls in relation to using expression lambdas.
+- Start to write a test with the when step.
+
+## Version 0.3: TestAsYouThink as a Maven distributed OSS library
 
 - Rename the API to **TestAsYouThink**.
 - Choose an open source license.
 - Publish artifacts to Maven Central.
 - Check version updates.
 
-## Version 0.2
+## Version 0.2: Test fixtures as method arguments
 
 - Include a data as a method argument during the preparation phase.
 - Include two data as method arguments during the preparation phase.
@@ -214,7 +341,7 @@ When an unexpected failure occurs - because of a regression for example -, the t
 - Verify failures while invoking methods with arguments.
 - Verify the expected exception and the expected message separately.
 
-## Version 0.1
+## Version 0.1: Given-When-Then as a canvas
 
 - Write an unit or integration test by using the Given-When-Then canvas and full sequence.
 - Delegate the system under test instantiation to the API.
@@ -229,4 +356,4 @@ When an unexpected failure occurs - because of a regression for example -, the t
 
 # License
 
-*Test As You Think* is distributed under the GNU LGPLv3 license. See the LICENSE.txt file for details.
+*Test As You Think* is distributed under the GNU LGPLv3 license. The LGPLv3 license is included in the LICENSE.txt file. More information about this license is available at http://www.gnu.org.

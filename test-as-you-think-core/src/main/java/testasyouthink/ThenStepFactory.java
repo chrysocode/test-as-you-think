@@ -42,4 +42,14 @@ enum ThenStepFactory {
         GivenWhenContext<$SystemUnderTest, Void> context = new GivenWhenContext<>(preparation, event);
         return new ThenWithoutResultStep<>(context);
     }
+
+    <$Result> ThenStep<Void, $Result> createThenStep(CheckedFunction<Void, $Result> whenStep) {
+        Preparation<Void> nothingToPrepare = new Preparation<>(null);
+        return createThenStep(nothingToPrepare, whenStep);
+    }
+
+    ThenWithoutResultStep<Void> createThenStep(CheckedConsumer<Void> whenStep) {
+        Preparation<Void> nothingToPrepare = new Preparation<>(null);
+        return createThenStep(nothingToPrepare, whenStep);
+    }
 }
