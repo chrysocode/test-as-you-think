@@ -19,6 +19,35 @@ Social:
 [![GitHub watchers](https://img.shields.io/github/watchers/badges/shields.svg?style=social&label=Watch)](https://github.com/xapn/test-as-you-think/watchers)
 [![GitHub forks](https://img.shields.io/github/forks/badges/shields.svg?style=social&label=Fork)](https://github.com/xapn/test-as-you-think)
 
+<!-- toc -->
+
+- [Fluent testing and added value](#fluent-testing-and-added-value)
+- [Getting Started](#getting-started)
+  * [Installation](#installation)
+  * [Basics](#basics)
+  * [Test Fixtures](#test-fixtures)
+    + [Separation of concerns with multiple Given steps](#separation-of-concerns-with-multiple-given-steps)
+    + [Specifying fixtures](#specifying-fixtures)
+  * [Event](#event)
+    + [Starting with the event](#starting-with-the-event)
+    + [Avoid ambiguous method calls](#avoid-ambiguous-method-calls)
+  * [Expectations](#expectations)
+    + [Separation of concerns with multiple Then steps](#separation-of-concerns-with-multiple-then-steps)
+    + [Expectations as predicates](#expectations-as-predicates)
+    + [Specifying expectations](#specifying-expectations)
+    + [Failures](#failures)
+      - [Expected failures](#expected-failures)
+      - [Unexpected failures](#unexpected-failures)
+    + [Time limit](#time-limit)
+- [Release Notes](#release-notes)
+  * [Version 0.4: Time limit as an expectation](#version-04-time-limit-as-an-expectation)
+  * [Version 0.3: TestAsYouThink as a Maven distributed OSS library](#version-03-testasyouthink-as-a-maven-distributed-oss-library)
+  * [Version 0.2: Test fixtures as method arguments](#version-02-test-fixtures-as-method-arguments)
+  * [Version 0.1: Given-When-Then as a canvas](#version-01-given-when-then-as-a-canvas)
+- [License](#license)
+
+<!-- tocstop -->
+
 # Fluent testing and added value
 
 *TestAsYouThink* is an open source software library in Java for testing purposes. It is designed as a **fluent API** that will change the way development teams write their unit and integration tests. It aims to take control over the coding practices as **executable guidelines**, from beginners to experts, to get **high-quality tests**. Why should you adopt *TestAsYouThink*?
