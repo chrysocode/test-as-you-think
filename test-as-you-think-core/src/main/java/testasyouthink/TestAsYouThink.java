@@ -31,6 +31,8 @@ import java.util.function.Supplier;
 
 public class TestAsYouThink {
 
+    private static ThenStepFactory thenStepFactory = ThenStepFactory.INSTANCE;
+
     public static <$SystemUnderTest> Given<$SystemUnderTest> givenSut($SystemUnderTest systemUnderTest) {
         return new GivenWhenSteps<>(systemUnderTest);
     }
@@ -44,19 +46,13 @@ public class TestAsYouThink {
     }
 
     public static ThenWithoutResultStep<Void> when(Runnable whenStep) {
-        Preparation<Void> nothingToPrepare = new Preparation<>(null);
         CheckedConsumer<Void> whenStepAsVoidConsumer = Void -> whenStep.run();
-        Event<Void, Void> event = new Event<>(null, whenStepAsVoidConsumer);
-        GivenWhenContext<Void, Void> context = new GivenWhenContext<>(nothingToPrepare, event);
-        return new ThenWithoutResultStep<>(context);
+        return thenStepFactory.createThenStep(whenStepAsVoidConsumer);
     }
 
     public static <$Result> Then<Void, $Result> when(Supplier<$Result> whenStep) {
-        Preparation<Void> nothingToPrepare = new Preparation<>(null);
         CheckedFunction<Void, $Result> whenStepAsFunction = Void -> whenStep.get();
-        Event<Void, $Result> event = new Event<>(null, whenStepAsFunction);
-        GivenWhenContext<Void, $Result> context = new GivenWhenContext<>(nothingToPrepare, event);
-        return new ThenStep<>(context);
+        return thenStepFactory.createThenStep(whenStepAsFunction);
     }
 
     public static <$SystemUnderTest, $Result> CheckedFunction<$SystemUnderTest, $Result> withReturn(
