@@ -3,12 +3,14 @@ cache:
   directories:
     - ${HOME}/.m2
     - ${TRAVIS_BUILD_DIR}/dependencies
-sudo: required
+addons:
+  apt:
+    packages:
+      - tree
 before_install:
   - echo ${TRAVIS_BUILD_DIR}
   - echo ${PWD}
   - echo "====== DEPENDENCIES - Start ======"
-  - sudo apt-get install tree
   - export DEP_DIR=${TRAVIS_BUILD_DIR}/dependencies
   - tree ${DEP_DIR}
   - echo "====== MAVEN - Start ======"
