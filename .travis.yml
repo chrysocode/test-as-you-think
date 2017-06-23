@@ -4,3 +4,5 @@ before_install:
   - unzip -qq apache-maven-3.5.0-bin.zip
   - export M2_HOME=${PWD}/apache-maven-3.5.0
   - export PATH=${M2_HOME}/bin:${PATH}
+jdk:
+  - oraclejdk8
