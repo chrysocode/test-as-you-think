@@ -305,6 +305,10 @@ The advantage of TestAsYouThink is that the time limit is only applied to the te
 
 # Release Notes
 
+## Version 0.4.1: Travis CI as a continuous integration platform
+
+- Build the project with [Travis CI](https://travis-ci.org).
+
 ## Version 0.4: Time limit as an expectation
 
 - Expect that the system under test replies within a time limit.
