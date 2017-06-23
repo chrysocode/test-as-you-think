@@ -22,7 +22,7 @@
         <java.version>1.8</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
-        <maven.minimalVersion>3.3.9</maven.minimalVersion>
+        <maven.minimalVersion>3.5.0</maven.minimalVersion>
     </properties>
 
     <modules>
