@@ -307,6 +307,19 @@
                                     <commandlineArgs>-i README.md</commandlineArgs>
                                 </configuration>
                             </execution>
+                            <execution>
+                                <id>commit_toc</id>
+                                <phase>initialize</phase>
+                                <goals>
+                                    <goal>exec</goal>
+                                </goals>
+                                <configuration>
+                                    <executable>git</executable>
+                                    <commandlineArgs>
+                                        commit README.md -m 'Update the table of content of the documentation.'
+                                    </commandlineArgs>
+                                </configuration>
+                            </execution>
                         </executions>
                     </plugin>
                 </plugins>
