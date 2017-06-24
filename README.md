@@ -1,23 +1,10 @@
 What you think is what you test... Not yet another testing API or framework!
 
-Software:
-[![Maven Central](https://img.shields.io/maven-central/v/org.apache.maven/apache-maven.svg)](https://search.maven.org/#artifactdetails%7Ccom.github.xapn%7Ctest-as-you-think-core%7C0.4%7C)
-[![Javadocs](http://javadoc.io/badge/com.github.xapn/test-as-you-think-core.svg?color=orange)](http://javadoc.io/doc/com.github.xapn/test-as-you-think-core)
-[![License: GNU LGPL v3](https://img.shields.io/badge/License-LGPL%20v3-blue.svg)](http://www.gnu.org/licenses/lgpl-3.0)
-
-Counters:
-[![LoC](https://tokei.rs/b1/github/xapn/test-as-you-think?category=code)](https://github.com/xapn/test-as-you-think)
-[![Files](https://tokei.rs/b1/github/xapn/test-as-you-think?category=files)](https://github.com/xapn/test-as-you-think)
-[![Total lines](https://tokei.rs/b1/github/xapn/test-as-you-think?category=lines)](https://github.com/xapn/test-as-you-think)
-[![Comments](https://tokei.rs/b1/github/xapn/test-as-you-think?category=comments)](https://github.com/xapn/test-as-you-think)
-[![Blank lines](https://tokei.rs/b1/github/xapn/test-as-you-think?category=blanks)](https://github.com/xapn/test-as-you-think)
-
-Social:
-[![Twitter URL](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/search?q=%23TestAsYouThink)
-[![Twitter Follow](https://img.shields.io/twitter/follow/espadrine.svg?style=social&label=Follow)](https://twitter.com/XEngineer)
-[![GitHub stars](https://img.shields.io/github/stars/badges/shields.svg?style=social&label=Star)](https://github.com/xapn/test-as-you-think/stargazers)
-[![GitHub watchers](https://img.shields.io/github/watchers/badges/shields.svg?style=social&label=Watch)](https://github.com/xapn/test-as-you-think/watchers)
-[![GitHub forks](https://img.shields.io/github/forks/badges/shields.svg?style=social&label=Fork)](https://github.com/xapn/test-as-you-think)
+Matter | Badges
+------ | ------
+Software factory    | [![Maven Central](https://img.shields.io/maven-central/v/org.apache.maven/apache-maven.svg)](https://search.maven.org/#artifactdetails%7Ccom.github.xapn%7Ctest-as-you-think-core%7C0.4%7C) [![Build Status for master](https://travis-ci.org/xapn/test-as-you-think.svg?branch=master)](https://travis-ci.org/xapn/test-as-you-think) [![Build Status for develop](https://travis-ci.org/xapn/test-as-you-think.svg?branch=develop)](https://travis-ci.org/xapn/test-as-you-think) [![Javadocs](http://javadoc.io/badge/com.github.xapn/test-as-you-think-core.svg?color=orange)](http://javadoc.io/doc/com.github.xapn/test-as-you-think-core) [![License: GNU LGPL v3](https://img.shields.io/badge/License-LGPL%20v3-blue.svg)](http://www.gnu.org/licenses/lgpl-3.0)
+Source code         | [![LoC](https://tokei.rs/b1/github/xapn/test-as-you-think?category=code)](https://github.com/xapn/test-as-you-think) [![Files](https://tokei.rs/b1/github/xapn/test-as-you-think?category=files)](https://github.com/xapn/test-as-you-think) [![Total lines](https://tokei.rs/b1/github/xapn/test-as-you-think?category=lines)](https://github.com/xapn/test-as-you-think) [![Comments](https://tokei.rs/b1/github/xapn/test-as-you-think?category=comments)](https://github.com/xapn/test-as-you-think) [![Blank lines](https://tokei.rs/b1/github/xapn/test-as-you-think?category=blanks)](https://github.com/xapn/test-as-you-think)
+Social              | [![Twitter URL](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/search?q=%23TestAsYouThink) [![Twitter Follow](https://img.shields.io/twitter/follow/espadrine.svg?style=social&label=Follow)](https://twitter.com/XEngineer) [![GitHub stars](https://img.shields.io/github/stars/badges/shields.svg?style=social&label=Star)](https://github.com/xapn/test-as-you-think/stargazers) [![GitHub watchers](https://img.shields.io/github/watchers/badges/shields.svg?style=social&label=Watch)](https://github.com/xapn/test-as-you-think/watchers) [![GitHub forks](https://img.shields.io/github/forks/badges/shields.svg?style=social&label=Fork)](https://github.com/xapn/test-as-you-think)
 
 <!-- toc -->
 
@@ -103,7 +90,7 @@ givenSutClass(SystemUnderTest.class)
 ```
 
 Notice that:
-- any Given-When-Then step can be implemented by a lambda expression or a method reference;
+- any Given-When-Then step can be implemented by a lambda or a method reference;
 - you manipule the same SUT type from the beginning to the end, because the `sut` type is determined during the *Given* step, until the end;
 - there is no need to instantiate the `sut` object, even if it is allowed by the `givenSut(sutInstance)` alternate end point, as below;
 - the call to any `given()` method is optional;
@@ -138,8 +125,8 @@ givenSutClass(SystemUnderTest.class)
 }).and(() -> { 
     // another Given step
 }) // to be repeated as many times as you need
-.when(sut -> { ... })
-.then(result -> { ... });
+.when(sut -> {})
+.then(result -> {});
 ```
 
 For example, you can separate the preparation between the SUT and the other fixtures.
@@ -149,8 +136,8 @@ givenSutClass(SystemUnderTest.class)
     // SUT preparation in a Given step
 }).and(() -> {
     // Other fixtures preparation in another Given step
-}).when(sut -> { ... })
-.then(result -> { ... });
+}).when(sut -> {})
+.then(result -> {});
 ```
 
 If some fixtures are the arguments of the method to be tested, you may prefer the following alternate syntaxes.
@@ -161,7 +148,7 @@ givenSutClass(SystemUnderTest.class)
     // Where this argument is built.
 }).andArgument("argument already ready to be used", DataProvider::choosenDataSet)
 .when(SystemUnderTest::nonVoidMethodWithArguments)
-.then(result -> { ... });
+.then(result -> {});
 ```
 The arguments will be injected as argument values when the method to be tested is called. As you can guess, `Data::choosenDataSet` is a method reference.
 
@@ -174,8 +161,8 @@ givenSutClass(SystemUnderTest.class)
     // Put the SUT in a known state.
 }).and("a specific data set", () -> {
     // Prepare other fixtures.
-}).when(sut -> { ... })
-.then(result -> { ... });
+}).when(sut -> {})
+.then(result -> {});
 ```
 
 ## Event
@@ -196,8 +183,8 @@ To write very simple tests, you might want to directly attack the system under t
 import static testasyouthink.TestAsYouThink.when;
 ...
 
-when(() -> sut.targetMethod(oneOrMoreArguments)).then(...); // or...
-when(SystemUnderTest::targetMethod).then(...); // without arguments to be passed to the target method
+when(() -> systemUnderTest.targetMethod(oneOrMoreArguments)).then(...); // or...
+when(systemUnderTest::targetMethod).then(...); // without arguments to be passed to the target method
 ```
 
 ### Avoid ambiguous method calls
@@ -241,7 +228,6 @@ givenSutClass(SystemUnderTest.class)
 You can also separate the result expectations in detached blocks.
 ```java
 givenSutClass(SystemUnderTest.class)
-.given(() -> { ... })
 .when(sut -> { return sut.nonVoidMethod(); })
 .then(result -> {
     // an expectation
@@ -268,7 +254,6 @@ givenSutClass(SystemUnderTest.class)
 You are encouraged to explain the system under test behavior by specifying your expectations. What is the expected behavior in the current situtation?
 ```java
 givenSutClass(SystemUnderTest.class)
-.given(() -> { ... })
 .when(sut -> { ... })
 .then("first specified expectation", result -> {
     // Expectation as specified
@@ -286,7 +271,6 @@ If a method signature contains a `throws` clause with a checked, compile-time ex
 Because the failure testing is an important part of your use cases, you can verify the behavior of the system under test when it is used ouside operating conditions.
 ```java
 givenSutClass(SystemUnderTest.class)
-.given(() -> { ... })
 .whenSutRunsOutsideOperatingConditions(sut -> {
     // where an event causes a failure
 }).thenItFails().becauseOf(ExpectedFailure.class).withMessage("expected message");
@@ -314,9 +298,13 @@ givenSutClass(SystemUnderTest.class)
 .thenSutRepliesWithin(Duration.ofMinutes(3);
 ```
 
-The advantage of TestAsYouThink is that the time limit is only applied to the tested event, while [JUnit](https://github.com/junit-team/junit4/wiki/timeout-for-tests) applies its `timeout` to the whole test method with its `@Test` annotation. [JUnit 5](http://junit.org/junit5/docs/snapshot/user-guide/) will propose an `assertTimeout(duration, lambda)` method that returns the lamba expression result, but such a syntax amalgamates irremediably the expectations and the event.
+The advantage of TestAsYouThink is that the time limit is only applied to the tested event, while [JUnit](https://github.com/junit-team/junit4/wiki/timeout-for-tests) applies its `timeout` to the whole test method with its `@Test` annotation. [JUnit 5](http://junit.org/junit5/docs/snapshot/user-guide/) will propose an `assertTimeout(duration, lambda)` method that returns the lamba result, but such a syntax amalgamates irremediably the expectations and the event.
 
 # Release Notes
+
+## Version 0.4.1: Travis CI as a continuous integration platform
+
+- Build the project with [Travis CI](https://travis-ci.org).
 
 ## Version 0.4: Time limit as an expectation
 
