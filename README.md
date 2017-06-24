@@ -4,7 +4,7 @@ Matter | Badges
 ------ | ------
 Software factory    | [![Maven Central](https://img.shields.io/maven-central/v/org.apache.maven/apache-maven.svg)](https://search.maven.org/#artifactdetails%7Ccom.github.xapn%7Ctest-as-you-think-core%7C0.4%7C) [![Build Status for master](https://travis-ci.org/xapn/test-as-you-think.svg?branch=master)](https://travis-ci.org/xapn/test-as-you-think) [![Build Status for develop](https://travis-ci.org/xapn/test-as-you-think.svg?branch=develop)](https://travis-ci.org/xapn/test-as-you-think) [![Javadocs](http://javadoc.io/badge/com.github.xapn/test-as-you-think-core.svg?color=orange)](http://javadoc.io/doc/com.github.xapn/test-as-you-think-core) [![License: GNU LGPL v3](https://img.shields.io/badge/License-LGPL%20v3-blue.svg)](http://www.gnu.org/licenses/lgpl-3.0)
 Source code         | [![LoC](https://tokei.rs/b1/github/xapn/test-as-you-think?category=code)](https://github.com/xapn/test-as-you-think) [![Files](https://tokei.rs/b1/github/xapn/test-as-you-think?category=files)](https://github.com/xapn/test-as-you-think) [![Total lines](https://tokei.rs/b1/github/xapn/test-as-you-think?category=lines)](https://github.com/xapn/test-as-you-think) [![Comments](https://tokei.rs/b1/github/xapn/test-as-you-think?category=comments)](https://github.com/xapn/test-as-you-think) [![Blank lines](https://tokei.rs/b1/github/xapn/test-as-you-think?category=blanks)](https://github.com/xapn/test-as-you-think)
-Social              | [![Twitter URL](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/search?q=%23TestAsYouThink) [![Twitter Follow](https://img.shields.io/twitter/follow/espadrine.svg?style=social&label=Follow)](https://twitter.com/XEngineer) [![GitHub stars](https://img.shields.io/github/stars/badges/shields.svg?style=social&label=Star)](https://github.com/xapn/test-as-you-think/stargazers) [![GitHub watchers](https://img.shields.io/github/watchers/badges/shields.svg?style=social&label=Watch)](https://github.com/xapn/test-as-you-think/watchers) [![GitHub forks](https://img.shields.io/github/forks/badges/shields.svg?style=social&label=Fork)](https://github.com/xapn/test-as-you-think)
+Social coding       | [![Twitter URL](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/search?q=%23TestAsYouThink) [![Twitter Follow](https://img.shields.io/twitter/follow/espadrine.svg?style=social&label=Follow)](https://twitter.com/XEngineer) [![GitHub stars](https://img.shields.io/github/stars/badges/shields.svg?style=social&label=Star)](https://github.com/xapn/test-as-you-think/stargazers) [![GitHub watchers](https://img.shields.io/github/watchers/badges/shields.svg?style=social&label=Watch)](https://github.com/xapn/test-as-you-think/watchers) [![GitHub forks](https://img.shields.io/github/forks/badges/shields.svg?style=social&label=Fork)](https://github.com/xapn/test-as-you-think)
 
 <!-- toc -->
 
@@ -46,7 +46,7 @@ Social              | [![Twitter URL](https://img.shields.io/twitter/url/http/sh
 
 Why to name this API *TestAsYouThink*? The goal of *TestAsYouThink* is to map out the road from a new software functionality idea to its contractualized achievement as an executable test, while preserving product developers against known pitfalls. According to this perspective, any pitfall is likely to extend the developer's journey and to put him off his target. By anticipating such pitfalls, *TestAsYouThink* will be the best way to reduce the distance to proper, durable testing.
 
-Moreover *TestAsYouThink* uses the Given-When-Then canvas as a formal guide to compose tests. This canvas originally comes from [Gherkin](https://sites.google.com/site/unclebobconsultingllc/the-truth-about-bdd) that is a grammatical protocol used in the [Behavior-Driven Development](https://en.wikipedia.org/wiki/Behavior-driven_development) method to write test scenarii in a business human-readable way by specifying a software behavior basing on concrete examples. Given-When-Then serves to divide any test into the three eponym steps. This canvas is implemented by the *TestAsYouThink* project to deliver a [DSL](https://en.wikipedia.org/wiki/Domain-specific_language) style fluent API.
+Moreover *TestAsYouThink* uses the [Given-When-Then](https://www.agilealliance.org/glossary/gwt/) canvas as a formal guide to compose tests. This canvas originally comes from [Gherkin](https://sites.google.com/site/unclebobconsultingllc/the-truth-about-bdd) that is a grammatical protocol used in the [Behavior-Driven Development](https://en.wikipedia.org/wiki/Behavior-driven_development) method to write test scenarii in a business human-readable way by specifying a software behavior basing on concrete examples. [Given-When-Then](https://www.agilealliance.org/glossary/gwt/) serves to divide any test into the three eponym steps. This canvas is implemented by the *TestAsYouThink* project to deliver a [DSL](https://en.wikipedia.org/wiki/Domain-specific_language) style fluent API.
 
 # Getting Started
 
@@ -70,14 +70,14 @@ givenSutClass(SystemUnderTest.class)
 .then(() -> {});
 ```
 
-Let us complete the previous scenario with a very simple example of what you can do, while testing a non-void method of your system under test.
+Let us complete the previous scenario with a very simple example of what you can do, while testing a non-void method of your system under test (abbreviated as SUT later).
 ```java
 import static testasyouthink.TestAsYouThink.givenSutClass;
 ...
 
 givenSutClass(SystemUnderTest.class)
 .given(sut -> {
-    // Where you prepare the context that defines the initial state of the system under test (SUT).
+    // Where you prepare the context that defines the initial state of the SUT.
     DataSet dataSet = new DataSet(...);
     sut.setAnyAttribute(...);
 }).when(sut -> {
@@ -90,9 +90,10 @@ givenSutClass(SystemUnderTest.class)
 ```
 
 Notice that:
-- any Given-When-Then step can be implemented by a lambda or a method reference;
+- the `TestAsYouThink` class is the only one end point of the API;
+- any *Given-When-Then* step can be implemented by a lambda or a method reference;
 - you manipule the same SUT type from the beginning to the end, because the `sut` type is determined during the *Given* step, until the end;
-- there is no need to instantiate the `sut` object, even if it is allowed by the `givenSut(sutInstance)` alternate end point, as below;
+- there is no need to instantiate the `sut` object, even if it is allowed by the `givenSut(sutInstance)` alternate end point method, as below;
 - the call to any `given()` method is optional;
 - you manipule the same `result` type until the end, because the `result` type is determined during the *When* step;
 - you cannot inadvertently make a fake test that would verify nothing, because any `then()` method is always a sequence termination.
@@ -355,4 +356,4 @@ To understand how version numbers change, please read the [Semantic Versioning](
 
 # License
 
-*Test As You Think* is distributed under the GNU LGPLv3 license. The LGPLv3 license is included in the LICENSE.txt file. More information about this license is available at http://www.gnu.org.
+*TestAsYouThink* is distributed under the GNU LGPLv3 license. The LGPLv3 license is included in the LICENSE.txt file. More information about this license is available at http://www.gnu.org.
