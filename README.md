@@ -300,26 +300,37 @@ givenSutClass(SystemUnderTest.class)
 
 The advantage of TestAsYouThink is that the time limit is only applied to the tested event, while [JUnit](https://github.com/junit-team/junit4/wiki/timeout-for-tests) applies its `timeout` to the whole test method with its `@Test` annotation. [JUnit 5](http://junit.org/junit5/docs/snapshot/user-guide/) will propose an `assertTimeout(duration, lambda)` method that returns the lamba result, but such a syntax amalgamates irremediably the expectations and the event.
 
-# Release Notes
+# Releases
 
-## Version 0.4.1: Travis CI as a continuous integration platform
+## Versioning
+
+To understand how version numbers change, please read the [Semantic Versioning](http://semver.org/).
+
+## Release Notes
+
+### 0.4.2 version: Cobertura as a code coverage analyzer
+
+- Generate the documentation TOC updating with [markdown-toc](https://github.com/jonschlinkert/markdown-toc) and commit the documentation change while building with Maven.
+- Check code coverage with [Cobertura](http://cobertura.github.io/cobertura/) and publish reports to [Codecov](https://codecov.io/) while building with [Travis CI](https://travis-ci.org).
+
+### 0.4.1 version: Travis CI as a continuous integration platform
 
 - Build the project with [Travis CI](https://travis-ci.org).
 
-## Version 0.4: Time limit as an expectation
+### 0.4 version: Time limit as an expectation
 
 - Expect that the system under test replies within a time limit.
 - Resolve ambiguous method calls in relation to using expression lambdas.
 - Start to write a test with the when step.
 
-## Version 0.3: TestAsYouThink as a Maven distributed OSS library
+### 0.3 version: TestAsYouThink as a Maven distributed OSS library
 
-- Rename the API to **TestAsYouThink**.
+- Rename the API to *TestAsYouThink*.
 - Choose an open source license.
 - Publish artifacts to Maven Central.
 - Check version updates.
 
-## Version 0.2: Test fixtures as method arguments
+### 0.2 version: Method arguments as test fixtures
 
 - Include a data as a method argument during the preparation phase.
 - Include two data as method arguments during the preparation phase.
@@ -329,7 +340,7 @@ The advantage of TestAsYouThink is that the time limit is only applied to the te
 - Verify failures while invoking methods with arguments.
 - Verify the expected exception and the expected message separately.
 
-## Version 0.1: Given-When-Then as a canvas
+### 0.1 version: Given-When-Then as a canvas
 
 - Write an unit or integration test by using the Given-When-Then canvas and full sequence.
 - Delegate the system under test instantiation to the API.
