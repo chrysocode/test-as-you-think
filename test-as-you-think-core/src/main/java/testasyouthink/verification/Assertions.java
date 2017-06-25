@@ -24,7 +24,9 @@ package testasyouthink.verification;
 
 public class Assertions {
 
+    private Assertions() {}
+
     public static RunnableAssert assertThat(Runnable runnable) {
-        return new RunnableAssert(runnable);
+        return RunnableAssert.assertThat(runnable);
     }
 }

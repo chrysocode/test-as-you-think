@@ -34,7 +34,7 @@ import java.util.concurrent.TimeoutException;
 
 public class RunnableAssert extends AbstractAssert<RunnableAssert, Runnable> {
 
-    RunnableAssert(Runnable actual) {
+    private RunnableAssert(Runnable actual) {
         super(actual, RunnableAssert.class);
     }
 
