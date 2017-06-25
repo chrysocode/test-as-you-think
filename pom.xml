@@ -278,6 +278,33 @@
                     <artifactId>exec-maven-plugin</artifactId>
                     <version>1.6.0</version>
                 </plugin>
+                <!-- https://mvnrepository.com/artifact/org.codehaus.mojo/cobertura-maven-plugin -->
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>cobertura-maven-plugin</artifactId>
+                    <version>2.7</version>
+                    <configuration>
+                        <check>
+                            <branchRate>85</branchRate>
+                            <lineRate>85</lineRate>
+                            <haltOnFailure>true</haltOnFailure>
+                            <totalBranchRate>85</totalBranchRate>
+                            <totalLineRate>85</totalLineRate>
+                            <packageLineRate>85</packageLineRate>
+                            <packageBranchRate>85</packageBranchRate>
+                        </check>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <!-- For bytecode instrumentation -->
+                                <goal>clean</goal>
+                                <!-- For checking the post-testing coverage percentages to ensure a valid level of test coverage -->
+                                <goal>check</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
             </plugins>
         </pluginManagement>
     </build>
