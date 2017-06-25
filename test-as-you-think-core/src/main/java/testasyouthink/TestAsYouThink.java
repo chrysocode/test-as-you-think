@@ -42,7 +42,7 @@ public class TestAsYouThink {
         try {
             return new GivenWhenSteps<>(sutClass.newInstance());
         } catch (Exception exception) {
-            throw new RuntimeException(exception.getMessage());
+            throw new RuntimeException(exception.getMessage(), exception);
         }
     }
 

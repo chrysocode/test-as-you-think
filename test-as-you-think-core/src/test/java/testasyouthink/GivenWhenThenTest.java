@@ -22,17 +22,20 @@
 
 package testasyouthink;
 
-import testasyouthink.fixture.GivenWhenThenDefinition;
-import testasyouthink.fixture.SystemUnderTest;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import testasyouthink.fixture.GivenWhenThenDefinition;
+import testasyouthink.fixture.SystemUnderTest;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.reset;
+import static org.easymock.EasyMock.verify;
 import static testasyouthink.TestAsYouThink.givenSut;
 import static testasyouthink.TestAsYouThink.givenSutClass;
 import static testasyouthink.fixture.GivenWhenThenDefinition.orderedSteps;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.easymock.EasyMock.verify;
 
 public class GivenWhenThenTest {
 
@@ -118,5 +121,32 @@ public class GivenWhenThenTest {
                     givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                     assertThat(sut.getState()).isNotNull();
                 });
+    }
+
+    @Test
+    public void should_fail_creating_sut_instance() {
+        // GIVEN
+        reset(givenWhenThenDefinitionMock);
+        replay(givenWhenThenDefinitionMock);
+
+        // WHEN
+        Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTestFailingToBeInstantiated.class)
+                .when(SystemUnderTestFailingToBeInstantiated::voidMethod)
+                .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
+
+        // THEN
+        assertThat(thrown)
+                .isInstanceOf(RuntimeException.class)
+                .hasMessage("Impossible to instantiate it!")
+                .hasCauseInstanceOf(Exception.class);
+    }
+
+    static class SystemUnderTestFailingToBeInstantiated {
+
+        SystemUnderTestFailingToBeInstantiated() throws Exception {
+            throw new Exception("Impossible to instantiate it!");
+        }
+
+        void voidMethod() {}
     }
 }
