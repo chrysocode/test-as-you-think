@@ -293,6 +293,11 @@
                             <packageLineRate>85</packageLineRate>
                             <packageBranchRate>85</packageBranchRate>
                         </check>
+                        <formats>
+                            <format>html</format>
+                            <format>xml</format>
+                        </formats>
+                        <check/>
                     </configuration>
                     <executions>
                         <execution>
