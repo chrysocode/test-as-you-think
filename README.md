@@ -304,6 +304,12 @@ givenSutClass(SystemUnderTest.class)
 
 The advantage of TestAsYouThink is that the time limit is only applied to the tested event, while [JUnit](https://github.com/junit-team/junit4/wiki/timeout-for-tests) applies its `timeout` to the whole test method with its `@Test` annotation. [JUnit 5](http://junit.org/junit5/docs/snapshot/user-guide/) will propose an `assertTimeout(duration, lambda)` method that returns the lamba result, but such a syntax amalgamates irremediably the expectations and the event.
 
+# Code Examples
+
+You can find concrete examples of use in the following repositories.
+- [TestAsYouThink examples](https://github.com/xapn/test-as-you-think-examples), with didactic, funny examples of use: do not hesitate to add your own examples being creative.
+- [Fizz-Buzz](https://xapn.github.io/fizz-buzz), a coding dojo with many JUnit tests.
+
 # Releases
 
 ## Versioning
