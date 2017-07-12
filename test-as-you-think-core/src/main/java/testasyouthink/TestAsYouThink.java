@@ -40,6 +40,10 @@ public class TestAsYouThink {
         return new GivenWhenSteps<>(systemUnderTest);
     }
 
+    public static <$SystemUnderTest> Given<$SystemUnderTest> givenSut(Supplier<$SystemUnderTest> givenStep) {
+        return new GivenWhenSteps<>(givenStep.get());
+    }
+
     public static <$SystemUnderTest> Given<$SystemUnderTest> givenSutClass(Class<$SystemUnderTest> sutClass) {
         try {
             return new GivenWhenSteps<>(sutClass.newInstance());

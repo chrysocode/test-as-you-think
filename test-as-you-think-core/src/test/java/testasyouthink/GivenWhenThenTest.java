@@ -70,9 +70,7 @@ public class GivenWhenThenTest {
     public void should_follow_the_given_when_then_full_sequence_given_a_void_method() {
         // WHEN
         givenSut(new SystemUnderTest(givenWhenThenDefinitionMock))
-                .given(() -> {
-                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-                })
+                .given(() -> givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem())
                 .when(SystemUnderTest::voidMethod)
                 .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult());
     }
@@ -121,6 +119,18 @@ public class GivenWhenThenTest {
                     givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                     assertThat(sut.getState()).isNotNull();
                 });
+    }
+
+    @Test
+    public void should_prepare_the_sut_with_a_given_step() {
+        // WHEN
+        givenSut(() -> {
+            SystemUnderTest systemUnderTest = new SystemUnderTest(givenWhenThenDefinitionMock);
+            givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+            return systemUnderTest;
+        })
+                .when(SystemUnderTest::voidMethod)
+                .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult());
     }
 
     @Test
