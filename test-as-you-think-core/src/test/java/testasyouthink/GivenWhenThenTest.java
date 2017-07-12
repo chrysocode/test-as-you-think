@@ -134,6 +134,17 @@ public class GivenWhenThenTest {
     }
 
     @Test
+    public void should_prepare_the_sut_with_a_given_step_given_a_sut_class_to_be_instantiated() {
+        // WHEN
+        givenSut(SystemUnderTest.class, sut -> {
+            sut.setGivenWhenThenDefinition(givenWhenThenDefinitionMock);
+            givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+        })
+                .when(SystemUnderTest::voidMethod)
+                .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult());
+    }
+
+    @Test
     public void should_fail_creating_sut_instance() {
         // GIVEN
         reset(givenWhenThenDefinitionMock);
