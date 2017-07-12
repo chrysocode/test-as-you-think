@@ -26,30 +26,32 @@ import testasyouthink.function.CheckedConsumer;
 import testasyouthink.function.CheckedFunction;
 import testasyouthink.function.Functions;
 
+import java.util.function.Supplier;
+
 import static org.assertj.core.api.Assertions.fail;
 
 class Event<$SystemUnderTest, $Result> {
 
     private final Functions functions = Functions.INSTANCE;
-    private final $SystemUnderTest systemUnderTest;
+    private final Supplier<$SystemUnderTest> givenSutStep;
     private final CheckedFunction<$SystemUnderTest, $Result> whenStep;
 
-    Event($SystemUnderTest systemUnderTest, CheckedFunction<$SystemUnderTest, $Result> whenStep) {
-        this.systemUnderTest = systemUnderTest;
+    Event(Supplier<$SystemUnderTest> givenSutStep, CheckedFunction<$SystemUnderTest, $Result> whenStep) {
+        this.givenSutStep = givenSutStep;
         this.whenStep = whenStep;
     }
 
-    Event($SystemUnderTest systemUnderTest, CheckedConsumer<$SystemUnderTest> whenStep) {
-        this.systemUnderTest = systemUnderTest;
+    Event(Supplier<$SystemUnderTest> givenSutStep, CheckedConsumer<$SystemUnderTest> whenStep) {
+        this.givenSutStep = givenSutStep;
         this.whenStep = functions.toFunction(whenStep);
     }
 
     $Result happen() {
         $Result result = null;
         try {
-            result = whenStep.apply(systemUnderTest);
+            result = whenStep.apply(givenSutStep.get());
         } catch (Throwable throwable) {
-            fail("Unexpected exception happened!", throwable);
+            fail(throwable.getMessage(), throwable);
         }
 
         return result;

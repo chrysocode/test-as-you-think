@@ -72,7 +72,7 @@ class Preparation<$SystemUnderTest> {
         return systemUnderTest;
     }
 
-    $SystemUnderTest getSystemUnderTest() {
-        return systemUnderTest();
+    Supplier<$SystemUnderTest> supplySut() {
+        return () -> systemUnderTest();
     }
 }

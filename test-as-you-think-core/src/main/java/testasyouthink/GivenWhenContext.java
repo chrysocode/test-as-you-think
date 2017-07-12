@@ -42,6 +42,8 @@ class GivenWhenContext<$SystemUnderTest, $Result> {
     }
 
     $SystemUnderTest getSystemUnderTest() {
-        return preparation.getSystemUnderTest();
+        return preparation
+                .supplySut()
+                .get();
     }
 }

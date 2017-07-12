@@ -48,11 +48,13 @@ public class TestAsYouThink {
 
     public static <$SystemUnderTest> Given<$SystemUnderTest> givenSutClass(Class<$SystemUnderTest> sutClass) {
         return new GivenWhenSteps<>(() -> {
+            $SystemUnderTest sut;
             try {
-                return sutClass.newInstance();
+                sut = sutClass.newInstance();
             } catch (Exception exception) {
-                throw new RuntimeException(exception.getMessage(), exception);
+                throw new RuntimeException("Impossible to instantiate the system under test!", exception);
             }
+            return sut;
         });
     }
 
