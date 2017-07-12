@@ -2,9 +2,13 @@ What you think is what you test... Not yet another testing API or framework!
 
 Matter | Badges
 ------ | ------
-Software factory    | [![Maven Central](https://img.shields.io/maven-central/v/org.apache.maven/apache-maven.svg)](https://search.maven.org/#artifactdetails%7Ccom.github.xapn%7Ctest-as-you-think-core%7C0.4%7C) [![Build Status for master](https://travis-ci.org/xapn/test-as-you-think.svg?branch=master)](https://travis-ci.org/xapn/test-as-you-think) [![Build Status for develop](https://travis-ci.org/xapn/test-as-you-think.svg?branch=develop)](https://travis-ci.org/xapn/test-as-you-think) [![Javadocs](http://javadoc.io/badge/com.github.xapn/test-as-you-think-core.svg?color=orange)](http://javadoc.io/doc/com.github.xapn/test-as-you-think-core) [![License: GNU LGPL v3](https://img.shields.io/badge/License-LGPL%20v3-blue.svg)](http://www.gnu.org/licenses/lgpl-3.0)
+Software factory    | [![Maven Central](https://img.shields.io/maven-central/v/com.github.xapn/test-as-you-think-project.svg)](http://search.maven.org/#search%7Cga%7C1%7Ctest-as-you-think) master: { [![Build Status for master](https://travis-ci.org/xapn/test-as-you-think.svg?branch=master)](https://travis-ci.org/xapn/test-as-you-think), [![codecov](https://codecov.io/gh/xapn/test-as-you-think/branch/master/graph/badge.svg)](https://codecov.io/gh/xapn/test-as-you-think) } develop: { [![Build Status for develop](https://travis-ci.org/xapn/test-as-you-think.svg?branch=develop)](https://travis-ci.org/xapn/test-as-you-think), [![codecov](https://codecov.io/gh/xapn/test-as-you-think/branch/develop/graph/badge.svg)](https://codecov.io/gh/xapn/test-as-you-think/branch/develop) } [![Javadocs](http://javadoc.io/badge/com.github.xapn/test-as-you-think-core.svg?color=orange)](http://javadoc.io/doc/com.github.xapn/test-as-you-think-core)
 Source code         | [![LoC](https://tokei.rs/b1/github/xapn/test-as-you-think?category=code)](https://github.com/xapn/test-as-you-think) [![Files](https://tokei.rs/b1/github/xapn/test-as-you-think?category=files)](https://github.com/xapn/test-as-you-think) [![Total lines](https://tokei.rs/b1/github/xapn/test-as-you-think?category=lines)](https://github.com/xapn/test-as-you-think) [![Comments](https://tokei.rs/b1/github/xapn/test-as-you-think?category=comments)](https://github.com/xapn/test-as-you-think) [![Blank lines](https://tokei.rs/b1/github/xapn/test-as-you-think?category=blanks)](https://github.com/xapn/test-as-you-think)
-Social              | [![Twitter URL](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/search?q=%23TestAsYouThink) [![Twitter Follow](https://img.shields.io/twitter/follow/espadrine.svg?style=social&label=Follow)](https://twitter.com/XEngineer) [![GitHub stars](https://img.shields.io/github/stars/badges/shields.svg?style=social&label=Star)](https://github.com/xapn/test-as-you-think/stargazers) [![GitHub watchers](https://img.shields.io/github/watchers/badges/shields.svg?style=social&label=Watch)](https://github.com/xapn/test-as-you-think/watchers) [![GitHub forks](https://img.shields.io/github/forks/badges/shields.svg?style=social&label=Fork)](https://github.com/xapn/test-as-you-think)
+Licensing           | [![License: GNU LGPL v3](https://img.shields.io/badge/License-LGPL%20v3-blue.svg)](http://www.gnu.org/licenses/lgpl-3.0) [![GitHub contributors](https://img.shields.io/github/contributors/xapn/test-as-you-think.svg)](https://github.com/xapn/test-as-you-think/graphs/contributors)
+Social coding       | [![Twitter URL](https://img.shields.io/twitter/url/https/github.com/xapn/test-as-you-think.svg?style=social)](https://twitter.com/intent/tweet?text=Wow:&url=https%3A%2F%2Fgoo.gl%2FXqS4Zf) [![Twitter Follow](https://img.shields.io/twitter/follow/xengineer.svg?style=social&label=Follow)](https://twitter.com/intent/follow?screen_name=xengineer) [![GitHub stars](https://img.shields.io/github/stars/xapn/test-as-you-think.svg?style=social&label=Star)](https://github.com/xapn/test-as-you-think/stargazers) [![GitHub watchers](https://img.shields.io/github/watchers/xapn/test-as-you-think.svg?style=social&label=Watch)](https://github.com/xapn/test-as-you-think/watchers) [![GitHub forks](https://img.shields.io/github/forks/xapn/test-as-you-think.svg?style=social&label=Fork)](https://github.com/xapn/test-as-you-think/network)
+
+Please use this [permalink](https://goo.gl/XqS4Zf) to share this web page and to get [analytics data](https://goo.gl/#analytics/goo.gl/XqS4Zf/all_time). You can also use this [QR code](https://chart.googleapis.com/chart?cht=qr&chs=150x150&choe=UTF-8&chld=H&chl=https://goo.gl/XqS4Zf).
+![QR code](https://chart.googleapis.com/chart?cht=qr&chs=150x150&choe=UTF-8&chld=H&chl=https://goo.gl/XqS4Zf)
 
 <!-- toc -->
 
@@ -26,11 +30,16 @@ Social              | [![Twitter URL](https://img.shields.io/twitter/url/http/sh
       - [Expected failures](#expected-failures)
       - [Unexpected failures](#unexpected-failures)
     + [Time limit](#time-limit)
-- [Release Notes](#release-notes)
-  * [Version 0.4: Time limit as an expectation](#version-04-time-limit-as-an-expectation)
-  * [Version 0.3: TestAsYouThink as a Maven distributed OSS library](#version-03-testasyouthink-as-a-maven-distributed-oss-library)
-  * [Version 0.2: Test fixtures as method arguments](#version-02-test-fixtures-as-method-arguments)
-  * [Version 0.1: Given-When-Then as a canvas](#version-01-given-when-then-as-a-canvas)
+- [Code Examples](#code-examples)
+- [Releases](#releases)
+  * [Versioning](#versioning)
+  * [Release Notes](#release-notes)
+    + [0.4.2 version: Cobertura as a code coverage analyzer](#042-version-cobertura-as-a-code-coverage-analyzer)
+    + [0.4.1 version: Travis CI as a continuous integration platform](#041-version-travis-ci-as-a-continuous-integration-platform)
+    + [0.4 version: Time limit as an expectation](#04-version-time-limit-as-an-expectation)
+    + [0.3 version: TestAsYouThink as a Maven distributed OSS library](#03-version-testasyouthink-as-a-maven-distributed-oss-library)
+    + [0.2 version: Method arguments as test fixtures](#02-version-method-arguments-as-test-fixtures)
+    + [0.1 version: Given-When-Then as a canvas](#01-version-given-when-then-as-a-canvas)
 - [License](#license)
 
 <!-- tocstop -->
@@ -46,7 +55,7 @@ Social              | [![Twitter URL](https://img.shields.io/twitter/url/http/sh
 
 Why to name this API *TestAsYouThink*? The goal of *TestAsYouThink* is to map out the road from a new software functionality idea to its contractualized achievement as an executable test, while preserving product developers against known pitfalls. According to this perspective, any pitfall is likely to extend the developer's journey and to put him off his target. By anticipating such pitfalls, *TestAsYouThink* will be the best way to reduce the distance to proper, durable testing.
 
-Moreover *TestAsYouThink* uses the Given-When-Then canvas as a formal guide to compose tests. This canvas originally comes from [Gherkin](https://sites.google.com/site/unclebobconsultingllc/the-truth-about-bdd) that is a grammatical protocol used in the [Behavior-Driven Development](https://en.wikipedia.org/wiki/Behavior-driven_development) method to write test scenarii in a business human-readable way by specifying a software behavior basing on concrete examples. Given-When-Then serves to divide any test into the three eponym steps. This canvas is implemented by the *TestAsYouThink* project to deliver a [DSL](https://en.wikipedia.org/wiki/Domain-specific_language) style fluent API.
+Moreover *TestAsYouThink* uses the [Given-When-Then](https://www.agilealliance.org/glossary/gwt/) canvas as a formal guide to compose tests. This canvas originally comes from [Gherkin](https://sites.google.com/site/unclebobconsultingllc/the-truth-about-bdd) that is a grammatical protocol used in the [Behavior-Driven Development](https://en.wikipedia.org/wiki/Behavior-driven_development) method to write test scenarii in a business human-readable way by specifying a software behavior basing on concrete examples. [Given-When-Then](https://www.agilealliance.org/glossary/gwt/) serves to divide any test into the three eponym steps. This canvas is implemented by the *TestAsYouThink* project to deliver a [DSL](https://en.wikipedia.org/wiki/Domain-specific_language) style fluent API.
 
 # Getting Started
 
@@ -70,14 +79,14 @@ givenSutClass(SystemUnderTest.class)
 .then(() -> {});
 ```
 
-Let us complete the previous scenario with a very simple example of what you can do, while testing a non-void method of your system under test.
+Let us complete the previous scenario with a very simple example of what you can do, while testing a non-void method of your system under test (abbreviated as SUT later).
 ```java
 import static testasyouthink.TestAsYouThink.givenSutClass;
 ...
 
 givenSutClass(SystemUnderTest.class)
 .given(sut -> {
-    // Where you prepare the context that defines the initial state of the system under test (SUT).
+    // Where you prepare the context that defines the initial state of the SUT.
     DataSet dataSet = new DataSet(...);
     sut.setAnyAttribute(...);
 }).when(sut -> {
@@ -90,9 +99,10 @@ givenSutClass(SystemUnderTest.class)
 ```
 
 Notice that:
-- any Given-When-Then step can be implemented by a lambda or a method reference;
+- the `TestAsYouThink` class is the only one end point of the API;
+- any *Given-When-Then* step can be implemented by a lambda or a method reference;
 - you manipule the same SUT type from the beginning to the end, because the `sut` type is determined during the *Given* step, until the end;
-- there is no need to instantiate the `sut` object, even if it is allowed by the `givenSut(sutInstance)` alternate end point, as below;
+- there is no need to instantiate the `sut` object, even if it is allowed by the `givenSut(sutInstance)` alternate end point method, as below;
 - the call to any `given()` method is optional;
 - you manipule the same `result` type until the end, because the `result` type is determined during the *When* step;
 - you cannot inadvertently make a fake test that would verify nothing, because any `then()` method is always a sequence termination.
@@ -300,26 +310,43 @@ givenSutClass(SystemUnderTest.class)
 
 The advantage of TestAsYouThink is that the time limit is only applied to the tested event, while [JUnit](https://github.com/junit-team/junit4/wiki/timeout-for-tests) applies its `timeout` to the whole test method with its `@Test` annotation. [JUnit 5](http://junit.org/junit5/docs/snapshot/user-guide/) will propose an `assertTimeout(duration, lambda)` method that returns the lamba result, but such a syntax amalgamates irremediably the expectations and the event.
 
-# Release Notes
+# Code Examples
 
-## Version 0.4.1: Travis CI as a continuous integration platform
+You can find concrete examples of use in the following repositories.
+- [TestAsYouThink examples](https://github.com/xapn/test-as-you-think-examples), with didactic, funny examples of use: do not hesitate to add your own examples being creative.
+- [Fizz-Buzz](https://xapn.github.io/fizz-buzz), a coding dojo with many JUnit tests.
+
+# Releases
+
+## Versioning
+
+To understand how version numbers change, please read the [Semantic Versioning](http://semver.org/).
+
+## Release Notes
+
+### 0.4.2 version: Cobertura as a code coverage analyzer
+
+- Generate the documentation TOC updating with [markdown-toc](https://github.com/jonschlinkert/markdown-toc) and commit the documentation change while building with Maven.
+- Check code coverage with [Cobertura](http://cobertura.github.io/cobertura/) and publish reports to [Codecov](https://codecov.io/) while building with [Travis CI](https://travis-ci.org).
+
+### 0.4.1 version: Travis CI as a continuous integration platform
 
 - Build the project with [Travis CI](https://travis-ci.org).
 
-## Version 0.4: Time limit as an expectation
+### 0.4 version: Time limit as an expectation
 
 - Expect that the system under test replies within a time limit.
 - Resolve ambiguous method calls in relation to using expression lambdas.
 - Start to write a test with the when step.
 
-## Version 0.3: TestAsYouThink as a Maven distributed OSS library
+### 0.3 version: TestAsYouThink as a Maven distributed OSS library
 
-- Rename the API to **TestAsYouThink**.
+- Rename the API to *TestAsYouThink*.
 - Choose an open source license.
 - Publish artifacts to Maven Central.
 - Check version updates.
 
-## Version 0.2: Test fixtures as method arguments
+### 0.2 version: Method arguments as test fixtures
 
 - Include a data as a method argument during the preparation phase.
 - Include two data as method arguments during the preparation phase.
@@ -329,7 +356,7 @@ The advantage of TestAsYouThink is that the time limit is only applied to the te
 - Verify failures while invoking methods with arguments.
 - Verify the expected exception and the expected message separately.
 
-## Version 0.1: Given-When-Then as a canvas
+### 0.1 version: Given-When-Then as a canvas
 
 - Write an unit or integration test by using the Given-When-Then canvas and full sequence.
 - Delegate the system under test instantiation to the API.
@@ -344,4 +371,4 @@ The advantage of TestAsYouThink is that the time limit is only applied to the te
 
 # License
 
-*Test As You Think* is distributed under the GNU LGPLv3 license. The LGPLv3 license is included in the LICENSE.txt file. More information about this license is available at http://www.gnu.org.
+*TestAsYouThink* is distributed under the GNU LGPLv3 license. The LGPLv3 license is included in the LICENSE.txt file. More information about this license is available at http://www.gnu.org.

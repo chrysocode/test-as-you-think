@@ -34,6 +34,8 @@ public class TestAsYouThink {
     private static Functions functions = Functions.INSTANCE;
     private static ThenStepFactory thenStepFactory = ThenStepFactory.INSTANCE;
 
+    private TestAsYouThink() {}
+
     public static <$SystemUnderTest> Given<$SystemUnderTest> givenSut($SystemUnderTest systemUnderTest) {
         return new GivenWhenSteps<>(systemUnderTest);
     }
@@ -42,7 +44,7 @@ public class TestAsYouThink {
         try {
             return new GivenWhenSteps<>(sutClass.newInstance());
         } catch (Exception exception) {
-            throw new RuntimeException(exception.getMessage());
+            throw new RuntimeException(exception.getMessage(), exception);
         }
     }
 

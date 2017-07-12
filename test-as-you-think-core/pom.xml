@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.github.xapn</groupId>
         <artifactId>test-as-you-think-project</artifactId>
-        <version>0.4.1</version>
+        <version>0.4.2</version>
     </parent>
 
     <artifactId>test-as-you-think-core</artifactId>
@@ -13,6 +13,24 @@
     <description>The TestAsYouThink Core is a DSL style fluent API in Java to promote good coding practices in tests.
     </description>
     <url>https://xapn.github.io/test-as-you-think</url>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>cobertura-maven-plugin</artifactId>
+                    <configuration>
+                        <instrumentation>
+                            <excludes>
+                                <exclude>testasyouthink/verification/Assertions.class</exclude>
+                            </excludes>
+                        </instrumentation>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
 
     <dependencies>
         <dependency>
