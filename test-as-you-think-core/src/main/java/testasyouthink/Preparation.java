@@ -34,12 +34,13 @@ import java.util.function.Supplier;
 class Preparation<$SystemUnderTest> {
 
     private final Functions functions = Functions.INSTANCE;
-    private final $SystemUnderTest systemUnderTest;
+    private final Supplier<$SystemUnderTest> givenSutStep;
     private final List<Consumer<$SystemUnderTest>> givenSteps;
     private final Queue<Supplier> argumentSuppliers;
+    private $SystemUnderTest systemUnderTest;
 
-    Preparation($SystemUnderTest systemUnderTest) {
-        this.systemUnderTest = systemUnderTest;
+    Preparation(Supplier<$SystemUnderTest> givenSutStep) {
+        this.givenSutStep = givenSutStep;
         givenSteps = new ArrayList<>();
         argumentSuppliers = new LinkedList<>();
     }
@@ -61,10 +62,17 @@ class Preparation<$SystemUnderTest> {
     }
 
     void prepareFixtures() {
-        givenSteps.forEach(step -> step.accept(systemUnderTest));
+        givenSteps.forEach(step -> step.accept(systemUnderTest()));
+    }
+
+    private $SystemUnderTest systemUnderTest() {
+        if (systemUnderTest == null && givenSutStep != null) {
+            systemUnderTest = givenSutStep.get();
+        }
+        return systemUnderTest;
     }
 
     $SystemUnderTest getSystemUnderTest() {
-        return systemUnderTest;
+        return systemUnderTest();
     }
 }

@@ -39,19 +39,21 @@ public class TestAsYouThink {
     private TestAsYouThink() {}
 
     public static <$SystemUnderTest> Given<$SystemUnderTest> givenSut($SystemUnderTest systemUnderTest) {
-        return new GivenWhenSteps<>(systemUnderTest);
+        return new GivenWhenSteps<>(() -> systemUnderTest);
     }
 
     public static <$SystemUnderTest> Given<$SystemUnderTest> givenSut(Supplier<$SystemUnderTest> givenStep) {
-        return new GivenWhenSteps<>(givenStep.get());
+        return new GivenWhenSteps<>(givenStep);
     }
 
     public static <$SystemUnderTest> Given<$SystemUnderTest> givenSutClass(Class<$SystemUnderTest> sutClass) {
-        try {
-            return new GivenWhenSteps<>(sutClass.newInstance());
-        } catch (Exception exception) {
-            throw new RuntimeException(exception.getMessage(), exception);
-        }
+        return new GivenWhenSteps<>(() -> {
+            try {
+                return sutClass.newInstance();
+            } catch (Exception exception) {
+                throw new RuntimeException(exception.getMessage(), exception);
+            }
+        });
     }
 
     public static <$SystemUnderTest> AndGiven<$SystemUnderTest> givenSut(Class<$SystemUnderTest> sutClass,
