@@ -4,7 +4,7 @@
 
     <groupId>com.github.xapn</groupId>
     <artifactId>test-as-you-think-project</artifactId>
-    <version>0.4.2-SNAPSHOT</version>
+    <version>0.4.2</version>
     <packaging>pom</packaging>
     <name>${project.groupId}:${project.artifactId}:${project.version}:${project.packaging}</name>
     <description>The TestAsYouThink project aims to provide tooling to improve test code quality and to make testing
