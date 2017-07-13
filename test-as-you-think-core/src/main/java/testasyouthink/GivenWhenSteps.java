@@ -33,10 +33,15 @@ import testasyouthink.function.CheckedConsumer;
 import testasyouthink.function.CheckedFunction;
 import testasyouthink.function.Functions;
 
+import java.io.File;
 import java.lang.reflect.Constructor;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+
+import static java.util.Arrays.asList;
 
 public class GivenWhenSteps<$SystemUnderTest> implements Given<$SystemUnderTest>, AndGiven<$SystemUnderTest> {
 
@@ -94,8 +99,7 @@ public class GivenWhenSteps<$SystemUnderTest> implements Given<$SystemUnderTest>
         preparation.recordGivenStep(() -> {
             $Argument argument = null;
             try {
-                if (immutableArgumentClass.isAnnotationPresent(
-                        Immutable.class) || immutableArgumentClass == String.class) {
+                if (isImmutable(immutableArgumentClass)) {
                     Constructor<$Argument> argumentConstructor = immutableArgumentClass.getConstructor(
                             immutableArgumentClass);
                     argument = argumentConstructor.newInstance(givenStep.apply(argument));
@@ -109,6 +113,14 @@ public class GivenWhenSteps<$SystemUnderTest> implements Given<$SystemUnderTest>
             return argument;
         });
         return new GivenArgumentWhenSteps<>(preparation);
+    }
+
+    private <$Argument> boolean isImmutable(Class<$Argument> immutableArgumentClass) {
+        return immutableArgumentClass.isAnnotationPresent(Immutable.class) || asList(BigDecimal.class,
+                BigInteger.class, Boolean.class, Byte.class, Character.class, Double.class, File.class,
+                Float.class, Integer.class, Long.class, Short.class, String.class)
+                .stream()
+                .anyMatch(immutableArgumentClass::equals);
     }
 
     @Override
