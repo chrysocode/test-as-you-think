@@ -23,13 +23,16 @@
 package testasyouthink;
 
 import org.easymock.IMocksControl;
+import org.hibernate.annotations.Immutable;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import testasyouthink.fixture.GivenWhenThenDefinition;
+import testasyouthink.fixture.ParameterizedSystemUnderTest;
 import testasyouthink.fixture.SystemUnderTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.easymock.EasyMock.anyObject;
 import static org.easymock.EasyMock.createStrictControl;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
@@ -77,7 +80,7 @@ public class GivenArgumentsTest {
     }
 
     @Test
-    public void should_receive_one_argument_with_its_type() {
+    public void should_receive_one_argument_with_its_string_type() {
         // GIVEN
         givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
         systemUnderTestMock.voidMethodWithParameter(GIVEN_STRING);
@@ -91,6 +94,28 @@ public class GivenArgumentsTest {
                     return GIVEN_STRING;
                 })
                 .when(SystemUnderTest::voidMethodWithParameter)
+                .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult());
+    }
+
+    @Test
+    public void should_receive_one_argument_with_its_immutable_type() {
+        // GIVEN
+        givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+        class SystemUnderTestWithImmutableParameter extends ParameterizedSystemUnderTest<ImmutableParameter, Void,
+                Void> {}
+        SystemUnderTestWithImmutableParameter sutWithImmutableParameterMock = mocksControl.createMock(
+                SystemUnderTestWithImmutableParameter.class);
+        sutWithImmutableParameterMock.voidMethodWithParameter(anyObject(ImmutableParameter.class));
+        givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+        mocksControl.replay();
+
+        // WHEN
+        givenSut(sutWithImmutableParameterMock)
+                .givenArgument(ImmutableParameter.class, immutableArgument -> {
+                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                    return new ImmutableParameter();
+                })
+                .whenSutRuns(ParameterizedSystemUnderTest::voidMethodWithParameter)
                 .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult());
     }
 
@@ -375,5 +400,13 @@ public class GivenArgumentsTest {
                     assertThat(result).isEqualTo(EXPECTED_RESULT);
                     givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                 });
+    }
+
+    @Immutable
+    public static class ImmutableParameter {
+
+        public ImmutableParameter() {}
+
+        public ImmutableParameter(ImmutableParameter value) {}
     }
 }

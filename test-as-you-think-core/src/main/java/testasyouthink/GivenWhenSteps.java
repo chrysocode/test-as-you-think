@@ -22,6 +22,7 @@
 
 package testasyouthink;
 
+import org.hibernate.annotations.Immutable;
 import testasyouthink.GivenWhenThenDsl.PreparationStage.AndGiven;
 import testasyouthink.GivenWhenThenDsl.PreparationStage.AndGivenArgument;
 import testasyouthink.GivenWhenThenDsl.PreparationStage.Given;
@@ -93,13 +94,14 @@ public class GivenWhenSteps<$SystemUnderTest> implements Given<$SystemUnderTest>
         preparation.recordGivenStep(() -> {
             $Argument argument = null;
             try {
-                if (argumentClass == String.class) {
+                if (argumentClass.isAnnotationPresent(Immutable.class) || argumentClass == String.class) {
                     Constructor<$Argument> argumentConstructor = argumentClass.getConstructor(argumentClass);
                     argument = argumentConstructor.newInstance(givenStep.apply(argument));
                 } else {
                     throw new RuntimeException("Not yet implemented!");
                 }
             } catch (Exception exception) {
+                exception.printStackTrace();
                 throw new RuntimeException("Not yet implemented!");
             }
             return argument;
