@@ -32,7 +32,9 @@ import testasyouthink.function.CheckedConsumer;
 import testasyouthink.function.CheckedFunction;
 import testasyouthink.function.Functions;
 
+import java.lang.reflect.Constructor;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class GivenWhenSteps<$SystemUnderTest> implements Given<$SystemUnderTest>, AndGiven<$SystemUnderTest> {
@@ -82,6 +84,26 @@ public class GivenWhenSteps<$SystemUnderTest> implements Given<$SystemUnderTest>
     @Override
     public <$Argument> AndGivenArgument<$SystemUnderTest, $Argument> givenArgument(Supplier<$Argument> givenStep) {
         preparation.recordGivenStep(givenStep);
+        return new GivenArgumentWhenSteps<>(preparation);
+    }
+
+    @Override
+    public <$Argument> AndGivenArgument<$SystemUnderTest, $Argument> givenArgument(Class<$Argument> argumentClass,
+            Function<$Argument, $Argument> givenStep) {
+        preparation.recordGivenStep(() -> {
+            $Argument argument = null;
+            try {
+                if (argumentClass == String.class) {
+                    Constructor<$Argument> argumentConstructor = argumentClass.getConstructor(argumentClass);
+                    argument = argumentConstructor.newInstance(givenStep.apply(argument));
+                } else {
+                    throw new RuntimeException("Not yet implemented!");
+                }
+            } catch (Exception exception) {
+                throw new RuntimeException("Not yet implemented!");
+            }
+            return argument;
+        });
         return new GivenArgumentWhenSteps<>(preparation);
     }
 

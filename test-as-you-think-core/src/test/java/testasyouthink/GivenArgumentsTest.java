@@ -22,16 +22,18 @@
 
 package testasyouthink;
 
-import testasyouthink.fixture.GivenWhenThenDefinition;
-import testasyouthink.fixture.SystemUnderTest;
 import org.easymock.IMocksControl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import testasyouthink.fixture.GivenWhenThenDefinition;
+import testasyouthink.fixture.SystemUnderTest;
 
-import static testasyouthink.TestAsYouThink.givenSut;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.easymock.EasyMock.*;
+import static org.easymock.EasyMock.createStrictControl;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
+import static testasyouthink.TestAsYouThink.givenSut;
 
 public class GivenArgumentsTest {
 
@@ -67,6 +69,24 @@ public class GivenArgumentsTest {
         // WHEN
         givenSut(systemUnderTestMock)
                 .givenArgument(() -> {
+                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                    return GIVEN_STRING;
+                })
+                .when(SystemUnderTest::voidMethodWithParameter)
+                .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult());
+    }
+
+    @Test
+    public void should_receive_one_argument_with_its_type() {
+        // GIVEN
+        givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+        systemUnderTestMock.voidMethodWithParameter(GIVEN_STRING);
+        givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+        mocksControl.replay();
+
+        // WHEN
+        givenSut(systemUnderTestMock)
+                .givenArgument(String.class, oneArgument -> {
                     givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
                     return GIVEN_STRING;
                 })

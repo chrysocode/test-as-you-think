@@ -44,6 +44,7 @@ import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -62,6 +63,9 @@ public interface GivenWhenThenDsl {
             AndGiven<$SystemUnderTest> given(String fixtureSpecification, Consumer<$SystemUnderTest> givenStep);
 
             <$Argument> AndGivenArgument<$SystemUnderTest, $Argument> givenArgument(Supplier<$Argument> givenStep);
+
+            <$Argument> AndGivenArgument<$SystemUnderTest, $Argument> givenArgument(Class<$Argument> argumentClass,
+                    Function<$Argument, $Argument> givenStep);
 
             <$Argument> AndGivenArgument<$SystemUnderTest, $Argument> givenArgument(String description,
                     Supplier<$Argument> givenStep);
