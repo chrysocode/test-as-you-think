@@ -87,16 +87,20 @@ public class GivenWhenSteps<$SystemUnderTest> implements Given<$SystemUnderTest>
         return given(fixtureSpecification, givenStep);
     }
 
-    @Override
-    public <$Argument> AndGivenArgument<$SystemUnderTest, $Argument> givenArgument(Supplier<$Argument> givenStep) {
+    private <$Argument> AndGivenArgument<$SystemUnderTest, $Argument> prepareArgument(Supplier<$Argument> givenStep) {
         preparation.recordGivenStep(givenStep);
         return new GivenArgumentWhenSteps<>(preparation);
     }
 
     @Override
+    public <$Argument> AndGivenArgument<$SystemUnderTest, $Argument> givenArgument(Supplier<$Argument> givenStep) {
+        return prepareArgument(givenStep);
+    }
+
+    @Override
     public <$Argument> AndGivenArgument<$SystemUnderTest, $Argument> givenArgument(
             Class<$Argument> immutableArgumentClass, Function<$Argument, $Argument> givenStep) {
-        preparation.recordGivenStep(() -> {
+        return prepareArgument(() -> {
             $Argument argument = null;
             try {
                 if (isImmutable(immutableArgumentClass)) {
@@ -112,13 +116,12 @@ public class GivenWhenSteps<$SystemUnderTest> implements Given<$SystemUnderTest>
             }
             return argument;
         });
-        return new GivenArgumentWhenSteps<>(preparation);
     }
 
     private <$Argument> boolean isImmutable(Class<$Argument> immutableArgumentClass) {
-        return immutableArgumentClass.isAnnotationPresent(Immutable.class) || asList(BigDecimal.class,
-                BigInteger.class, Boolean.class, Byte.class, Character.class, Double.class, File.class,
-                Float.class, Integer.class, Long.class, Short.class, String.class)
+        return immutableArgumentClass.isAnnotationPresent(Immutable.class) || asList(BigDecimal.class, BigInteger.class,
+                Boolean.class, Byte.class, Character.class, Double.class, File.class, Float.class, Integer.class,
+                Long.class, Short.class, String.class)
                 .stream()
                 .anyMatch(immutableArgumentClass::equals);
     }
@@ -126,7 +129,7 @@ public class GivenWhenSteps<$SystemUnderTest> implements Given<$SystemUnderTest>
     @Override
     public <$Argument> AndGivenArgument<$SystemUnderTest, $Argument> givenArgument(
             Class<$Argument> mutableArgumentClass, Consumer<$Argument> givenStep) {
-        preparation.recordGivenStep(() -> {
+        return prepareArgument(() -> {
             $Argument argument;
             try {
                 argument = mutableArgumentClass.newInstance();
@@ -137,7 +140,6 @@ public class GivenWhenSteps<$SystemUnderTest> implements Given<$SystemUnderTest>
             givenStep.accept(argument);
             return argument;
         });
-        return new GivenArgumentWhenSteps<>(preparation);
     }
 
     @Override
@@ -149,8 +151,7 @@ public class GivenWhenSteps<$SystemUnderTest> implements Given<$SystemUnderTest>
     @Override
     public <$Argument> AndGivenArgument<$SystemUnderTest, $Argument> givenArgument(String description,
             $Argument argument) {
-        preparation.recordGivenStep(functions.toSupplier(argument));
-        return new GivenArgumentWhenSteps<>(preparation);
+        return prepareArgument(functions.toSupplier(argument));
     }
 
     @Override
