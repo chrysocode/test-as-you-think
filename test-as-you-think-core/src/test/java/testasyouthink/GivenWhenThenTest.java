@@ -70,9 +70,7 @@ public class GivenWhenThenTest {
     public void should_follow_the_given_when_then_full_sequence_given_a_void_method() {
         // WHEN
         givenSut(new SystemUnderTest(givenWhenThenDefinitionMock))
-                .given(() -> {
-                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-                })
+                .given(() -> givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem())
                 .when(SystemUnderTest::voidMethod)
                 .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult());
     }
@@ -124,7 +122,30 @@ public class GivenWhenThenTest {
     }
 
     @Test
-    public void should_fail_creating_sut_instance() {
+    public void should_prepare_the_sut_with_a_given_step() {
+        // WHEN
+        givenSut(() -> {
+            SystemUnderTest systemUnderTest = new SystemUnderTest(givenWhenThenDefinitionMock);
+            givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+            return systemUnderTest;
+        })
+                .when(SystemUnderTest::voidMethod)
+                .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult());
+    }
+
+    @Test
+    public void should_prepare_the_sut_with_a_given_step_given_a_sut_class_to_be_instantiated() {
+        // WHEN
+        givenSut(SystemUnderTest.class, sut -> {
+            sut.setGivenWhenThenDefinition(givenWhenThenDefinitionMock);
+            givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+        })
+                .when(SystemUnderTest::voidMethod)
+                .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult());
+    }
+
+    @Test
+    public void should_fail_creating_sut_instance() throws Throwable {
         // GIVEN
         reset(givenWhenThenDefinitionMock);
         replay(givenWhenThenDefinitionMock);
@@ -136,9 +157,9 @@ public class GivenWhenThenTest {
 
         // THEN
         assertThat(thrown)
-                .isInstanceOf(RuntimeException.class)
-                .hasMessage("Impossible to instantiate it!")
-                .hasCauseInstanceOf(Exception.class);
+                .isInstanceOf(AssertionError.class)
+                .hasMessage("Impossible to instantiate the system under test!")
+                .hasCauseInstanceOf(RuntimeException.class);
     }
 
     static class SystemUnderTestFailingToBeInstantiated {

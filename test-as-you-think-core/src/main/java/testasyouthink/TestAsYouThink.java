@@ -22,11 +22,13 @@
 
 package testasyouthink;
 
+import testasyouthink.GivenWhenThenDsl.PreparationStage.AndGiven;
 import testasyouthink.GivenWhenThenDsl.PreparationStage.Given;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.Then;
 import testasyouthink.function.CheckedFunction;
 import testasyouthink.function.Functions;
 
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class TestAsYouThink {
@@ -37,15 +39,28 @@ public class TestAsYouThink {
     private TestAsYouThink() {}
 
     public static <$SystemUnderTest> Given<$SystemUnderTest> givenSut($SystemUnderTest systemUnderTest) {
-        return new GivenWhenSteps<>(systemUnderTest);
+        return new GivenWhenSteps<>(() -> systemUnderTest);
+    }
+
+    public static <$SystemUnderTest> Given<$SystemUnderTest> givenSut(Supplier<$SystemUnderTest> givenStep) {
+        return new GivenWhenSteps<>(givenStep);
     }
 
     public static <$SystemUnderTest> Given<$SystemUnderTest> givenSutClass(Class<$SystemUnderTest> sutClass) {
-        try {
-            return new GivenWhenSteps<>(sutClass.newInstance());
-        } catch (Exception exception) {
-            throw new RuntimeException(exception.getMessage(), exception);
-        }
+        return new GivenWhenSteps<>(() -> {
+            $SystemUnderTest sut;
+            try {
+                sut = sutClass.newInstance();
+            } catch (Exception exception) {
+                throw new RuntimeException("Impossible to instantiate the system under test!", exception);
+            }
+            return sut;
+        });
+    }
+
+    public static <$SystemUnderTest> AndGiven<$SystemUnderTest> givenSut(Class<$SystemUnderTest> sutClass,
+            Consumer<$SystemUnderTest> givenStep) {
+        return givenSutClass(sutClass).given(givenStep);
     }
 
     public static ThenWithoutResultStep<Void> when(Runnable whenStep) {
