@@ -120,6 +120,27 @@ public class GivenArgumentsTest {
     }
 
     @Test
+    public void should_receive_one_argument_with_its_mutable_type() {
+        // GIVEN
+        givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+        class SystemUnderTestWithMutableParameter extends ParameterizedSystemUnderTest<MutableParameter, Void, Void> {}
+        SystemUnderTestWithMutableParameter sutWithMutableParameterMock = mocksControl.createMock(
+                SystemUnderTestWithMutableParameter.class);
+        sutWithMutableParameterMock.voidMethodWithParameter(anyObject(MutableParameter.class));
+        givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+        mocksControl.replay();
+
+        // WHEN
+        givenSut(sutWithMutableParameterMock)
+                .givenArgument(MutableParameter.class, mutableArgument -> {
+                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                    mutableArgument.setMutableForDemonstration(123);
+                })
+                .whenSutRuns(ParameterizedSystemUnderTest::voidMethodWithParameter)
+                .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult());
+    }
+
+    @Test
     public void should_receive_one_argument_with_its_description() {
         // GIVEN
         givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
@@ -408,5 +429,14 @@ public class GivenArgumentsTest {
         public ImmutableParameter() {}
 
         public ImmutableParameter(ImmutableParameter value) {}
+    }
+
+    public static class MutableParameter {
+
+        private int mutableForDemonstration;
+
+        public void setMutableForDemonstration(int mutableForDemonstration) {
+            this.mutableForDemonstration = mutableForDemonstration;
+        }
     }
 }

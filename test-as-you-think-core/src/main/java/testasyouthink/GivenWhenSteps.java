@@ -89,13 +89,15 @@ public class GivenWhenSteps<$SystemUnderTest> implements Given<$SystemUnderTest>
     }
 
     @Override
-    public <$Argument> AndGivenArgument<$SystemUnderTest, $Argument> givenArgument(Class<$Argument> argumentClass,
-            Function<$Argument, $Argument> givenStep) {
+    public <$Argument> AndGivenArgument<$SystemUnderTest, $Argument> givenArgument(
+            Class<$Argument> immutableArgumentClass, Function<$Argument, $Argument> givenStep) {
         preparation.recordGivenStep(() -> {
             $Argument argument = null;
             try {
-                if (argumentClass.isAnnotationPresent(Immutable.class) || argumentClass == String.class) {
-                    Constructor<$Argument> argumentConstructor = argumentClass.getConstructor(argumentClass);
+                if (immutableArgumentClass.isAnnotationPresent(
+                        Immutable.class) || immutableArgumentClass == String.class) {
+                    Constructor<$Argument> argumentConstructor = immutableArgumentClass.getConstructor(
+                            immutableArgumentClass);
                     argument = argumentConstructor.newInstance(givenStep.apply(argument));
                 } else {
                     throw new RuntimeException("Not yet implemented!");
@@ -104,6 +106,23 @@ public class GivenWhenSteps<$SystemUnderTest> implements Given<$SystemUnderTest>
                 exception.printStackTrace();
                 throw new RuntimeException("Not yet implemented!");
             }
+            return argument;
+        });
+        return new GivenArgumentWhenSteps<>(preparation);
+    }
+
+    @Override
+    public <$Argument> AndGivenArgument<$SystemUnderTest, $Argument> givenArgument(
+            Class<$Argument> mutableArgumentClass, Consumer<$Argument> givenStep) {
+        preparation.recordGivenStep(() -> {
+            $Argument argument;
+            try {
+                argument = mutableArgumentClass.newInstance();
+            } catch (Exception exception) {
+                exception.printStackTrace();
+                throw new RuntimeException("Not yet implemented!");
+            }
+            givenStep.accept(argument);
             return argument;
         });
         return new GivenArgumentWhenSteps<>(preparation);
