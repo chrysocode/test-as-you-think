@@ -103,12 +103,15 @@ public class GivenWhenSteps<$SystemUnderTest> implements Given<$SystemUnderTest>
         return prepareArgument(() -> {
             $Argument argument = null;
             try {
-                if (isImmutable(immutableArgumentClass)) {
+                if (asList(BigDecimal.class, BigInteger.class, Boolean.class, Byte.class, Character.class, Double.class,
+                        File.class, Float.class, Integer.class, Long.class, Short.class, String.class)
+                        .stream()
+                        .anyMatch(immutableArgumentClass::equals)) {
+                    argument = givenStep.apply(argument);
+                } else if (immutableArgumentClass.isAnnotationPresent(Immutable.class)) {
                     Constructor<$Argument> argumentConstructor = immutableArgumentClass.getConstructor(
                             immutableArgumentClass);
                     argument = argumentConstructor.newInstance(givenStep.apply(argument));
-                } else {
-                    throw new RuntimeException("Not yet implemented!");
                 }
             } catch (Exception exception) {
                 exception.printStackTrace();
@@ -116,14 +119,6 @@ public class GivenWhenSteps<$SystemUnderTest> implements Given<$SystemUnderTest>
             }
             return argument;
         });
-    }
-
-    private <$Argument> boolean isImmutable(Class<$Argument> immutableArgumentClass) {
-        return immutableArgumentClass.isAnnotationPresent(Immutable.class) || asList(BigDecimal.class, BigInteger.class,
-                Boolean.class, Byte.class, Character.class, Double.class, File.class, Float.class, Integer.class,
-                Long.class, Short.class, String.class)
-                .stream()
-                .anyMatch(immutableArgumentClass::equals);
     }
 
     @Override

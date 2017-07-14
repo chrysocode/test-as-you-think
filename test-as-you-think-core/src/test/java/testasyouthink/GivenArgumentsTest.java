@@ -80,7 +80,7 @@ public class GivenArgumentsTest {
     }
 
     @Test
-    public void should_receive_one_argument_with_its_string_type() {
+    public void should_receive_one_argument_with_its_type_known_as_immutable() {
         // GIVEN
         givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
         systemUnderTestMock.voidMethodWithParameter(GIVEN_STRING);
