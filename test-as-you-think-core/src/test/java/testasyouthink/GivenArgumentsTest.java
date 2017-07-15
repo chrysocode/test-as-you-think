@@ -27,7 +27,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import testasyouthink.GivenArgumentsTest.Parameter.Immutable;
-import testasyouthink.GivenArgumentsTest.Parameter.ImmutableButUninstantiable;
+import testasyouthink.GivenArgumentsTest.Parameter.ImmutableWithoutCopyConstructor;
 import testasyouthink.GivenArgumentsTest.Parameter.Mutable;
 import testasyouthink.GivenArgumentsTest.Parameter.MutableButUninstantiable;
 import testasyouthink.fixture.GivenWhenThenDefinition;
@@ -144,18 +144,19 @@ public class GivenArgumentsTest {
     }
 
     @Test
-    public void should_fail_to_instantiate_one_argument_with_its_immutable_type() throws Throwable {
+    public void should_fail_to_instantiate_one_argument_with_its_immutable_type_given_no_copy_constructor() throws
+            Throwable {
         //GIVEN
         class SystemUnderTestWithUninstantiableParameter extends
-                ParameterizedSystemUnderTest<ImmutableButUninstantiable, Void, Void> {}
+                ParameterizedSystemUnderTest<ImmutableWithoutCopyConstructor, Void, Void> {}
         SystemUnderTestWithUninstantiableParameter sutWithUninstantiableParameter = mocksControl.createMock(
                 SystemUnderTestWithUninstantiableParameter.class);
         mocksControl.replay();
 
         // WHEN
         Throwable thrown = catchThrowable(() -> givenSut(sutWithUninstantiableParameter)
-                .givenArgument(ImmutableButUninstantiable.class, immutableButUninstantiable -> {
-                    return new ImmutableButUninstantiable();
+                .givenArgument(ImmutableWithoutCopyConstructor.class, immutableButUninstantiable -> {
+                    return new ImmutableWithoutCopyConstructor();
                 })
                 .whenSutRuns(ParameterizedSystemUnderTest::voidMethodWithParameter)
                 .then(() -> {}));
@@ -164,7 +165,7 @@ public class GivenArgumentsTest {
         assertThat(thrown)
                 .isInstanceOf(AssertionError.class)
                 .hasMessage("Impossible to instantiate the argument of the " //
-                        + "testasyouthink.GivenArgumentsTest$Parameter$ImmutableButUninstantiable" //
+                        + "testasyouthink.GivenArgumentsTest$Parameter$ImmutableWithoutCopyConstructor" //
                         + " type! A copy constructor is missing.")
                 .hasCauseInstanceOf(RuntimeException.class);
     }
@@ -495,7 +496,7 @@ public class GivenArgumentsTest {
         }
 
         @org.hibernate.annotations.Immutable
-        public static class ImmutableButUninstantiable {
+        public static class ImmutableWithoutCopyConstructor {
             // Missing constructor able to receive another preexisting instance
         }
 
