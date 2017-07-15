@@ -45,7 +45,6 @@ import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Predicate;
 
 public interface GivenWhenThenDsl {
@@ -66,7 +65,7 @@ public interface GivenWhenThenDsl {
                     CheckedSupplier<$Argument> givenStep);
 
             <$Argument> AndGivenArgument<$SystemUnderTest, $Argument> givenArgument(
-                    Class<$Argument> immutableArgumentClass, Function<$Argument, $Argument> givenStep);
+                    Class<$Argument> immutableArgumentClass, CheckedFunction<$Argument, $Argument> givenStep);
 
             <$Argument> AndGivenArgument<$SystemUnderTest, $Argument> givenArgument(
                     Class<$Argument> mutableArgumentClass, Consumer<$Argument> givenStep);
