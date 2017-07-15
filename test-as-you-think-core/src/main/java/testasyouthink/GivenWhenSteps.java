@@ -35,6 +35,7 @@ import testasyouthink.function.Functions;
 
 import java.io.File;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.function.Consumer;
@@ -102,20 +103,24 @@ public class GivenWhenSteps<$SystemUnderTest> implements Given<$SystemUnderTest>
             Class<$Argument> immutableArgumentClass, Function<$Argument, $Argument> givenStep) {
         return prepareArgument(() -> {
             $Argument argument = null;
-            try {
-                if (asList(BigDecimal.class, BigInteger.class, Boolean.class, Byte.class, Character.class, Double.class,
-                        File.class, Float.class, Integer.class, Long.class, Short.class, String.class)
-                        .stream()
-                        .anyMatch(immutableArgumentClass::equals)) {
-                    argument = givenStep.apply(argument);
-                } else if (immutableArgumentClass.isAnnotationPresent(Immutable.class)) {
-                    Constructor<$Argument> argumentConstructor = immutableArgumentClass.getConstructor(
-                            immutableArgumentClass);
+            if (asList(BigDecimal.class, BigInteger.class, Boolean.class, Byte.class, Character.class, Double.class,
+                    File.class, Float.class, Integer.class, Long.class, Short.class, String.class)
+                    .stream()
+                    .anyMatch(immutableArgumentClass::equals)) {
+                argument = givenStep.apply(argument);
+            } else if (immutableArgumentClass.isAnnotationPresent(Immutable.class)) {
+                Constructor<$Argument> argumentConstructor = null;
+                try {
+                    argumentConstructor = immutableArgumentClass.getConstructor(immutableArgumentClass);
                     argument = argumentConstructor.newInstance(givenStep.apply(argument));
+                } catch (NoSuchMethodException exception) {
+                    throw new RuntimeException("Impossible to instantiate the argument of the " //
+                            + immutableArgumentClass.getName() + " type!" //
+                            + " A copy constructor is missing.", exception);
+                } catch (InstantiationException | IllegalAccessException | InvocationTargetException exception) {
+                    exception.printStackTrace();
+                    throw new RuntimeException("Not yet implemented!");
                 }
-            } catch (Exception exception) {
-                exception.printStackTrace();
-                throw new RuntimeException("Not yet implemented!");
             }
             return argument;
         });

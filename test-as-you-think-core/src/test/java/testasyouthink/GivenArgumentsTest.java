@@ -32,6 +32,7 @@ import testasyouthink.fixture.ParameterizedSystemUnderTest;
 import testasyouthink.fixture.SystemUnderTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.easymock.EasyMock.anyObject;
 import static org.easymock.EasyMock.createStrictControl;
 import static org.easymock.EasyMock.expect;
@@ -138,6 +139,32 @@ public class GivenArgumentsTest {
                 })
                 .whenSutRuns(ParameterizedSystemUnderTest::voidMethodWithParameter)
                 .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult());
+    }
+
+    @Test
+    public void should_fail_to_instantiate_one_argument_with_its_immutable_type() throws Throwable {
+        //GIVEN
+        class SystemUnderTestWithUninstantiableParameter extends
+                ParameterizedSystemUnderTest<UninstantiableImmutableParameter, Void, Void> {}
+        SystemUnderTestWithUninstantiableParameter sutWithUninstantiableParameter = mocksControl.createMock(
+                SystemUnderTestWithUninstantiableParameter.class);
+        mocksControl.replay();
+
+        // WHEN
+        Throwable thrown = catchThrowable(() -> givenSut(sutWithUninstantiableParameter)
+                .givenArgument(UninstantiableImmutableParameter.class, immutableButUninstantiable -> {
+                    return new UninstantiableImmutableParameter();
+                })
+                .whenSutRuns(ParameterizedSystemUnderTest::voidMethodWithParameter)
+                .then(() -> {}));
+
+        // THEN
+        assertThat(thrown)
+                .isInstanceOf(AssertionError.class)
+                .hasMessage("Impossible to instantiate the argument of the " //
+                        + "testasyouthink.GivenArgumentsTest$UninstantiableImmutableParameter" //
+                        + " type! A copy constructor is missing.")
+                .hasCauseInstanceOf(RuntimeException.class);
     }
 
     @Test
@@ -421,6 +448,11 @@ public class GivenArgumentsTest {
                     assertThat(result).isEqualTo(EXPECTED_RESULT);
                     givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                 });
+    }
+
+    @Immutable
+    public static class UninstantiableImmutableParameter {
+        // Missing constructor able to receive another preexisting instance
     }
 
     @Immutable
