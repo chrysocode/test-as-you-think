@@ -29,6 +29,7 @@ import testasyouthink.GivenWhenThenDsl.VerificationStage.ThenFailure;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.ThenWithoutResult;
 import testasyouthink.function.CheckedBiConsumer;
 import testasyouthink.function.CheckedBiFunction;
+import testasyouthink.function.CheckedFunction;
 import testasyouthink.function.CheckedSupplier;
 import testasyouthink.function.Functions;
 
@@ -54,6 +55,13 @@ public class GivenArgumentWhenSteps<$SystemUnderTest, $Argument> implements AndG
     public <$Argument2> AndGivenTwoArguments<$SystemUnderTest, $Argument, $Argument2> andArgument(
             Class<$Argument2> mutableArgumentClass, Consumer<$Argument2> givenStep) {
         preparation.recordGivenStep(mutableArgumentClass, givenStep);
+        return new GivenTwoArgumentsWhenSteps<>(preparation);
+    }
+
+    @Override
+    public <$Argument2> AndGivenTwoArguments<$SystemUnderTest, $Argument, $Argument2> andArgument(
+            Class<$Argument2> immutableArgumentClass, CheckedFunction<$Argument2, $Argument2> givenStep) {
+        preparation.recordGivenStep(immutableArgumentClass, givenStep);
         return new GivenTwoArgumentsWhenSteps<>(preparation);
     }
 

@@ -22,6 +22,7 @@
 
 package testasyouthink;
 
+import testasyouthink.function.CheckedFunction;
 import testasyouthink.function.CheckedSupplier;
 import testasyouthink.function.Functions;
 
@@ -61,6 +62,11 @@ class Preparation<$SystemUnderTest> {
 
     <$Argument> void recordGivenStep(Class<$Argument> mutableArgumentClass, Consumer<$Argument> givenStep) {
         argumentSuppliers.add(argumentPreparation.buildMutableArgumentSupplier(mutableArgumentClass, givenStep));
+    }
+
+    <$Argument> void recordGivenStep(Class<$Argument> immutableArgumentClass,
+            CheckedFunction<$Argument, $Argument> givenStep) {
+        argumentSuppliers.add(argumentPreparation.buildImmutableArgumentSupplier(immutableArgumentClass, givenStep));
     }
 
     Queue<CheckedSupplier> getArgumentSuppliers() {

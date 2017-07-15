@@ -22,7 +22,6 @@
 
 package testasyouthink;
 
-import org.hibernate.annotations.Immutable;
 import testasyouthink.GivenWhenThenDsl.PreparationStage.AndGiven;
 import testasyouthink.GivenWhenThenDsl.PreparationStage.AndGivenArgument;
 import testasyouthink.GivenWhenThenDsl.PreparationStage.Given;
@@ -34,15 +33,8 @@ import testasyouthink.function.CheckedFunction;
 import testasyouthink.function.CheckedSupplier;
 import testasyouthink.function.Functions;
 
-import java.io.File;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-
-import static java.util.Arrays.asList;
 
 public class GivenWhenSteps<$SystemUnderTest> implements Given<$SystemUnderTest>, AndGiven<$SystemUnderTest> {
 
@@ -103,29 +95,8 @@ public class GivenWhenSteps<$SystemUnderTest> implements Given<$SystemUnderTest>
     @Override
     public <$Argument> AndGivenArgument<$SystemUnderTest, $Argument> givenArgument(
             Class<$Argument> immutableArgumentClass, CheckedFunction<$Argument, $Argument> givenStep) {
-        return prepareArgument(() -> {
-            $Argument argument = null;
-            if (asList(BigDecimal.class, BigInteger.class, Boolean.class, Byte.class, Character.class, Double.class,
-                    File.class, Float.class, Integer.class, Long.class, Short.class, String.class)
-                    .stream()
-                    .anyMatch(immutableArgumentClass::equals)) {
-                argument = givenStep.apply(argument);
-            } else if (immutableArgumentClass.isAnnotationPresent(Immutable.class)) {
-                Constructor<$Argument> argumentConstructor;
-                try {
-                    argumentConstructor = immutableArgumentClass.getConstructor(immutableArgumentClass);
-                    argument = argumentConstructor.newInstance(givenStep.apply(argument));
-                } catch (NoSuchMethodException exception) {
-                    throw new RuntimeException("Impossible to instantiate the argument of the " //
-                            + immutableArgumentClass.getName() + " type!" //
-                            + " A copy constructor is missing.", exception);
-                } catch (InstantiationException | IllegalAccessException | InvocationTargetException exception) {
-                    throw new RuntimeException("Impossible to instantiate the argument of the " //
-                            + immutableArgumentClass.getName() + " type!", exception);
-                }
-            }
-            return argument;
-        });
+        preparation.recordGivenStep(immutableArgumentClass, givenStep);
+        return new GivenArgumentWhenSteps<>(preparation);
     }
 
     @Override
