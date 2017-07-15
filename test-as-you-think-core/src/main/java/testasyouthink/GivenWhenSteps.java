@@ -133,9 +133,9 @@ public class GivenWhenSteps<$SystemUnderTest> implements Given<$SystemUnderTest>
             $Argument argument;
             try {
                 argument = mutableArgumentClass.newInstance();
-            } catch (Exception exception) {
-                exception.printStackTrace();
-                throw new RuntimeException("Not yet implemented!");
+            } catch (InstantiationException | IllegalAccessException exception) {
+                throw new RuntimeException("Impossible to instantiate the argument of the " //
+                        + mutableArgumentClass.getName() + " type!", exception);
             }
             givenStep.accept(argument);
             return argument;
