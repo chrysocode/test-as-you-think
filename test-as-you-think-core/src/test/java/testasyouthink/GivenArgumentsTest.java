@@ -26,6 +26,10 @@ import org.easymock.IMocksControl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import testasyouthink.GivenArgumentsTest.Parameter.Immutable;
+import testasyouthink.GivenArgumentsTest.Parameter.ImmutableButUninstantiable;
+import testasyouthink.GivenArgumentsTest.Parameter.Mutable;
+import testasyouthink.GivenArgumentsTest.Parameter.MutableButUninstantiable;
 import testasyouthink.fixture.GivenWhenThenDefinition;
 import testasyouthink.fixture.ParameterizedSystemUnderTest;
 import testasyouthink.fixture.SystemUnderTest;
@@ -160,7 +164,7 @@ public class GivenArgumentsTest {
         assertThat(thrown)
                 .isInstanceOf(AssertionError.class)
                 .hasMessage("Impossible to instantiate the argument of the " //
-                        + "testasyouthink.GivenArgumentsTest$ImmutableButUninstantiable" //
+                        + "testasyouthink.GivenArgumentsTest$Parameter$ImmutableButUninstantiable" //
                         + " type! A copy constructor is missing.")
                 .hasCauseInstanceOf(RuntimeException.class);
     }
@@ -184,7 +188,7 @@ public class GivenArgumentsTest {
         assertThat(thrown)
                 .isInstanceOf(AssertionError.class)
                 .hasMessage("Impossible to instantiate the argument of the " //
-                        + "testasyouthink.GivenArgumentsTest$MutableButUninstantiable type!")
+                        + "testasyouthink.GivenArgumentsTest$Parameter$MutableButUninstantiable type!")
                 .hasCauseInstanceOf(RuntimeException.class);
     }
 
@@ -471,32 +475,35 @@ public class GivenArgumentsTest {
                 });
     }
 
-    @org.hibernate.annotations.Immutable
-    public static class Immutable {
+    public static class Parameter {
 
-        public Immutable() {}
+        @org.hibernate.annotations.Immutable
+        public static class Immutable {
 
-        public Immutable(Immutable value) {}
-    }
+            public Immutable() {}
 
-    public static class Mutable {
-
-        private int forDemonstration;
-
-        public void setForDemonstration(int forDemonstration) {
-            this.forDemonstration = forDemonstration;
+            public Immutable(Immutable value) {}
         }
-    }
 
-    @org.hibernate.annotations.Immutable
-    public static class ImmutableButUninstantiable {
-        // Missing constructor able to receive another preexisting instance
-    }
+        public static class Mutable {
 
-    public static class MutableButUninstantiable {
+            private int forDemonstration;
 
-        public MutableButUninstantiable() throws InstantiationException {
-            throw new InstantiationException("Impossible to instantiate it!");
+            public void setForDemonstration(int forDemonstration) {
+                this.forDemonstration = forDemonstration;
+            }
+        }
+
+        @org.hibernate.annotations.Immutable
+        public static class ImmutableButUninstantiable {
+            // Missing constructor able to receive another preexisting instance
+        }
+
+        public static class MutableButUninstantiable {
+
+            public MutableButUninstantiable() throws InstantiationException {
+                throw new InstantiationException("Impossible to instantiate it!");
+            }
         }
     }
 }
