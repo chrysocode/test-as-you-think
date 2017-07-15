@@ -96,6 +96,9 @@ public interface GivenWhenThenDsl {
             <$Argument2> AndGivenTwoArguments<$SystemUnderTest, $Argument, $Argument2> andArgument(
                     CheckedSupplier<$Argument2> givenStep);
 
+            <$Argument2> AndGivenTwoArguments<$SystemUnderTest, $Argument, $Argument2> andArgument(
+                    Class<$Argument2> mutableArgumentClass, Consumer<$Argument2> givenStep);
+
             <$Argument2> AndGivenTwoArguments<$SystemUnderTest, $Argument, $Argument2> andArgument(String description,
                     CheckedSupplier<$Argument2> givenStep);
 

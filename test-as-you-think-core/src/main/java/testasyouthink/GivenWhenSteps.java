@@ -131,17 +131,8 @@ public class GivenWhenSteps<$SystemUnderTest> implements Given<$SystemUnderTest>
     @Override
     public <$Argument> AndGivenArgument<$SystemUnderTest, $Argument> givenArgument(
             Class<$Argument> mutableArgumentClass, Consumer<$Argument> givenStep) {
-        return prepareArgument(() -> {
-            $Argument argument;
-            try {
-                argument = mutableArgumentClass.newInstance();
-            } catch (InstantiationException | IllegalAccessException exception) {
-                throw new RuntimeException("Impossible to instantiate the argument of the " //
-                        + mutableArgumentClass.getName() + " type!", exception);
-            }
-            givenStep.accept(argument);
-            return argument;
-        });
+        preparation.recordGivenStep(mutableArgumentClass, givenStep);
+        return new GivenArgumentWhenSteps<>(preparation);
     }
 
     @Override

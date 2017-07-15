@@ -35,6 +35,7 @@ import java.util.function.Supplier;
 class Preparation<$SystemUnderTest> {
 
     private final Functions functions = Functions.INSTANCE;
+    private final ArgumentPreparation argumentPreparation = ArgumentPreparation.INSTANCE;
     private final Supplier<$SystemUnderTest> givenSutStep;
     private final List<Consumer<$SystemUnderTest>> givenSteps;
     private final Queue<CheckedSupplier> argumentSuppliers;
@@ -56,6 +57,10 @@ class Preparation<$SystemUnderTest> {
 
     <$Argument> void recordGivenStep(CheckedSupplier<$Argument> givenStep) {
         argumentSuppliers.add(givenStep);
+    }
+
+    <$Argument> void recordGivenStep(Class<$Argument> mutableArgumentClass, Consumer<$Argument> givenStep) {
+        argumentSuppliers.add(argumentPreparation.buildMutableArgumentSupplier(mutableArgumentClass, givenStep));
     }
 
     Queue<CheckedSupplier> getArgumentSuppliers() {

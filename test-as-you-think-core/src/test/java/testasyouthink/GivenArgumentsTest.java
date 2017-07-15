@@ -336,6 +336,32 @@ public class GivenArgumentsTest {
     }
 
     @Test
+    public void should_receive_two_arguments_with_their_types_given_a_second_mutable_argument() {
+        //GIVEN
+        givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+        expectLastCall().times(2);
+        class SystemUnderTestWithTwoParameters extends ParameterizedSystemUnderTest<Mutable, Mutable, Void> {}
+        SystemUnderTestWithTwoParameters sutWithTwoParameters = mocksControl.createMock(
+                SystemUnderTestWithTwoParameters.class);
+        sutWithTwoParameters.voidMethodWithTwoParameters(anyObject(Mutable.class), anyObject(Mutable.class));
+        givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+        mocksControl.replay();
+
+        // WHEN
+        givenSut(sutWithTwoParameters)
+                .givenArgument(Mutable.class, argument -> {
+                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                    argument.setForDemonstration(123);
+                })
+                .andArgument(Mutable.class, argument -> {
+                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                    argument.setForDemonstration(456);
+                })
+                .whenSutRuns(ParameterizedSystemUnderTest::voidMethodWithTwoParameters)
+                .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult());
+    }
+
+    @Test
     public void should_receive_three_arguments_given_a_void_method() {
         //GIVEN
         givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();

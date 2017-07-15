@@ -32,12 +32,14 @@ import testasyouthink.function.CheckedBiFunction;
 import testasyouthink.function.CheckedSupplier;
 import testasyouthink.function.Functions;
 
+import java.util.function.Consumer;
+
 public class GivenArgumentWhenSteps<$SystemUnderTest, $Argument> implements AndGivenArgument<$SystemUnderTest,
         $Argument> {
 
     private final Functions functions = Functions.INSTANCE;
-    private final ThenStepFactory thenStepFactory = ThenStepFactory.INSTANCE;
     private final Preparation<$SystemUnderTest> preparation;
+    private final ThenStepFactory thenStepFactory = ThenStepFactory.INSTANCE;
 
     GivenArgumentWhenSteps(Preparation<$SystemUnderTest> preparation) {this.preparation = preparation;}
 
@@ -45,6 +47,13 @@ public class GivenArgumentWhenSteps<$SystemUnderTest, $Argument> implements AndG
     public <$Argument2> AndGivenTwoArguments<$SystemUnderTest, $Argument, $Argument2> andArgument(
             CheckedSupplier<$Argument2> givenStep) {
         preparation.recordGivenStep(givenStep);
+        return new GivenTwoArgumentsWhenSteps<>(preparation);
+    }
+
+    @Override
+    public <$Argument2> AndGivenTwoArguments<$SystemUnderTest, $Argument, $Argument2> andArgument(
+            Class<$Argument2> mutableArgumentClass, Consumer<$Argument2> givenStep) {
+        preparation.recordGivenStep(mutableArgumentClass, givenStep);
         return new GivenTwoArgumentsWhenSteps<>(preparation);
     }
 
