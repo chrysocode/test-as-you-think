@@ -31,6 +31,7 @@ import testasyouthink.GivenWhenThenDsl.VerificationStage.ThenFailure;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.ThenWithoutResult;
 import testasyouthink.function.CheckedConsumer;
 import testasyouthink.function.CheckedFunction;
+import testasyouthink.function.CheckedSupplier;
 import testasyouthink.function.Functions;
 
 import java.io.File;
@@ -88,13 +89,15 @@ public class GivenWhenSteps<$SystemUnderTest> implements Given<$SystemUnderTest>
         return given(fixtureSpecification, givenStep);
     }
 
-    private <$Argument> AndGivenArgument<$SystemUnderTest, $Argument> prepareArgument(Supplier<$Argument> givenStep) {
+    private <$Argument> AndGivenArgument<$SystemUnderTest, $Argument> prepareArgument(
+            CheckedSupplier<$Argument> givenStep) {
         preparation.recordGivenStep(givenStep);
         return new GivenArgumentWhenSteps<>(preparation);
     }
 
     @Override
-    public <$Argument> AndGivenArgument<$SystemUnderTest, $Argument> givenArgument(Supplier<$Argument> givenStep) {
+    public <$Argument> AndGivenArgument<$SystemUnderTest, $Argument> givenArgument(
+            CheckedSupplier<$Argument> givenStep) {
         return prepareArgument(givenStep);
     }
 
@@ -144,14 +147,14 @@ public class GivenWhenSteps<$SystemUnderTest> implements Given<$SystemUnderTest>
 
     @Override
     public <$Argument> AndGivenArgument<$SystemUnderTest, $Argument> givenArgument(String description,
-            Supplier<$Argument> givenStep) {
+            CheckedSupplier<$Argument> givenStep) {
         return givenArgument(givenStep);
     }
 
     @Override
     public <$Argument> AndGivenArgument<$SystemUnderTest, $Argument> givenArgument(String description,
             $Argument argument) {
-        return prepareArgument(functions.toSupplier(argument));
+        return prepareArgument(functions.toCheckedSupplier(argument));
     }
 
     @Override

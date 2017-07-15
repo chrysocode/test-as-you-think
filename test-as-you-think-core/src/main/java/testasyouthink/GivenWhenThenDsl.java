@@ -35,6 +35,7 @@ import testasyouthink.function.CheckedConsumer;
 import testasyouthink.function.CheckedFunction;
 import testasyouthink.function.CheckedQuadriConsumer;
 import testasyouthink.function.CheckedQuadriFunction;
+import testasyouthink.function.CheckedSupplier;
 import testasyouthink.function.CheckedTriConsumer;
 import testasyouthink.function.CheckedTriFunction;
 
@@ -46,7 +47,6 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 
 public interface GivenWhenThenDsl {
 
@@ -62,7 +62,8 @@ public interface GivenWhenThenDsl {
 
             AndGiven<$SystemUnderTest> given(String fixtureSpecification, Consumer<$SystemUnderTest> givenStep);
 
-            <$Argument> AndGivenArgument<$SystemUnderTest, $Argument> givenArgument(Supplier<$Argument> givenStep);
+            <$Argument> AndGivenArgument<$SystemUnderTest, $Argument> givenArgument(
+                    CheckedSupplier<$Argument> givenStep);
 
             <$Argument> AndGivenArgument<$SystemUnderTest, $Argument> givenArgument(
                     Class<$Argument> immutableArgumentClass, Function<$Argument, $Argument> givenStep);
@@ -71,7 +72,7 @@ public interface GivenWhenThenDsl {
                     Class<$Argument> mutableArgumentClass, Consumer<$Argument> givenStep);
 
             <$Argument> AndGivenArgument<$SystemUnderTest, $Argument> givenArgument(String description,
-                    Supplier<$Argument> givenStep);
+                    CheckedSupplier<$Argument> givenStep);
 
             <$Argument> AndGivenArgument<$SystemUnderTest, $Argument> givenArgument(String description,
                     $Argument argument);
@@ -83,7 +84,8 @@ public interface GivenWhenThenDsl {
 
             AndGiven<$SystemUnderTest> and(String fixtureSpecification, Consumer<$SystemUnderTest> givenStep);
 
-            <$Argument> AndGivenArgument<$SystemUnderTest, $Argument> givenArgument(Supplier<$Argument> givenStep);
+            <$Argument> AndGivenArgument<$SystemUnderTest, $Argument> givenArgument(
+                    CheckedSupplier<$Argument> givenStep);
 
             <$Argument> AndGivenArgument<$SystemUnderTest, $Argument> givenArgument(String description,
                     $Argument argument);
@@ -93,10 +95,10 @@ public interface GivenWhenThenDsl {
                 $Argument> {
 
             <$Argument2> AndGivenTwoArguments<$SystemUnderTest, $Argument, $Argument2> andArgument(
-                    Supplier<$Argument2> givenStep);
+                    CheckedSupplier<$Argument2> givenStep);
 
             <$Argument2> AndGivenTwoArguments<$SystemUnderTest, $Argument, $Argument2> andArgument(String description,
-                    Supplier<$Argument2> givenStep);
+                    CheckedSupplier<$Argument2> givenStep);
 
             <$Argument2> AndGivenTwoArguments<$SystemUnderTest, $Argument, $Argument2> andArgument(String description,
                     $Argument2 argument);
@@ -106,10 +108,10 @@ public interface GivenWhenThenDsl {
                 WhenApplyingTwoArguments<$SystemUnderTest, $Argument1, $Argument2> {
 
             <$Argument3> WhenApplyingThreeArguments<$SystemUnderTest, $Argument1, $Argument2, $Argument3> andArgument(
-                    Supplier<$Argument3> givenStep);
+                    CheckedSupplier<$Argument3> givenStep);
 
             <$Argument3> WhenApplyingThreeArguments<$SystemUnderTest, $Argument1, $Argument2, $Argument3> andArgument(
-                    String description, Supplier<$Argument3> givenStep);
+                    String description, CheckedSupplier<$Argument3> givenStep);
 
             <$Argument3> WhenApplyingThreeArguments<$SystemUnderTest, $Argument1, $Argument2, $Argument3> andArgument(
                     String description, $Argument3 argument);

@@ -27,11 +27,10 @@ import testasyouthink.GivenWhenThenDsl.PreparationStage.AndGivenTwoArguments;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.Then;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.ThenFailure;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.ThenWithoutResult;
+import testasyouthink.function.CheckedSupplier;
 import testasyouthink.function.CheckedTriConsumer;
 import testasyouthink.function.CheckedTriFunction;
 import testasyouthink.function.Functions;
-
-import java.util.function.Supplier;
 
 public class GivenTwoArgumentsWhenSteps<$SystemUnderTest, $Argument1, $Argument2> implements
         AndGivenTwoArguments<$SystemUnderTest, $Argument1, $Argument2> {
@@ -46,21 +45,21 @@ public class GivenTwoArgumentsWhenSteps<$SystemUnderTest, $Argument1, $Argument2
 
     @Override
     public <$Argument3> WhenApplyingThreeArguments<$SystemUnderTest, $Argument1, $Argument2, $Argument3> andArgument(
-            Supplier<$Argument3> givenStep) {
+            CheckedSupplier<$Argument3> givenStep) {
         preparation.recordGivenStep(givenStep);
         return new GivenThreeArgumentsWhenSteps<>(preparation);
     }
 
     @Override
     public <$Argument3> WhenApplyingThreeArguments<$SystemUnderTest, $Argument1, $Argument2, $Argument3> andArgument(
-            String description, Supplier<$Argument3> givenStep) {
+            String description, CheckedSupplier<$Argument3> givenStep) {
         return andArgument(givenStep);
     }
 
     @Override
     public <$Argument3> WhenApplyingThreeArguments<$SystemUnderTest, $Argument1, $Argument2, $Argument3> andArgument(
             String description, $Argument3 argument) {
-        preparation.recordGivenStep(functions.toSupplier(argument));
+        preparation.recordGivenStep(functions.toCheckedSupplier(argument));
         return new GivenThreeArgumentsWhenSteps<>(preparation);
     }
 
