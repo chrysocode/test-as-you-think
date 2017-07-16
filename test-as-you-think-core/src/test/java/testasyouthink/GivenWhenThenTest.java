@@ -164,9 +164,9 @@ public class GivenWhenThenTest {
                 .hasCauseInstanceOf(NullPointerException.class);
     }
 
-    static class SystemUnderTestFailingToBeInstantiated {
+    public static class SystemUnderTestFailingToBeInstantiated {
 
-        SystemUnderTestFailingToBeInstantiated() throws Exception {
+        public SystemUnderTestFailingToBeInstantiated() throws Exception {
             throw new NullPointerException("Impossible to instantiate it!");
         }
 

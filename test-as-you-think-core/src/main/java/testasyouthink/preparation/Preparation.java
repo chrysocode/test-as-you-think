@@ -35,16 +35,31 @@ import java.util.function.Supplier;
 public class Preparation<$SystemUnderTest> {
 
     private final Functions functions = Functions.INSTANCE;
+    private final SutPreparation sutPreparation = SutPreparation.INSTANCE;
     private final ArgumentPreparation argumentPreparation = ArgumentPreparation.INSTANCE;
-    private final Supplier<$SystemUnderTest> givenSutStep;
+    private Supplier<$SystemUnderTest> givenSutStep;
     private final List<Consumer<$SystemUnderTest>> givenSteps;
-    private final Queue<CheckedSupplier> argumentSuppliers;
+    private Queue<CheckedSupplier> argumentSuppliers;
     private $SystemUnderTest systemUnderTest;
 
-    public Preparation(Supplier<$SystemUnderTest> givenSutStep) {
-        this.givenSutStep = givenSutStep;
+    public Preparation() {
         givenSteps = new ArrayList<>();
         argumentSuppliers = new LinkedList<>();
+    }
+
+    public Preparation(Class<$SystemUnderTest> sutClass) {
+        this();
+        givenSutStep = sutPreparation.buildSutSupplier(sutClass);
+    }
+
+    public Preparation($SystemUnderTest systemUnderTest) {
+        this();
+        givenSutStep = sutPreparation.buildSutSupplier(systemUnderTest);
+    }
+
+    public Preparation(Supplier<$SystemUnderTest> givenSutStep) {
+        this();
+        this.givenSutStep = givenSutStep;
     }
 
     public void recordGivenStep(Runnable givenStep) {

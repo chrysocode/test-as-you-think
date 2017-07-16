@@ -43,8 +43,16 @@ public class GivenWhenSteps<$SystemUnderTest> implements Given<$SystemUnderTest>
     private final Preparation<$SystemUnderTest> preparation;
     private final ThenStepFactory thenStepFactory = ThenStepFactory.INSTANCE;
 
-    GivenWhenSteps(Supplier<$SystemUnderTest> givenSutStep) {
-        preparation = new Preparation<>(givenSutStep);
+    GivenWhenSteps(Class<$SystemUnderTest> sutClass) {
+        preparation = new Preparation<>(sutClass);
+    }
+
+    GivenWhenSteps($SystemUnderTest systemUnderTest) {
+        preparation = new Preparation<>(systemUnderTest);
+    }
+
+    GivenWhenSteps(Supplier<$SystemUnderTest> sutSupplier) {
+        preparation = new Preparation<>(sutSupplier);
     }
 
     @Override
