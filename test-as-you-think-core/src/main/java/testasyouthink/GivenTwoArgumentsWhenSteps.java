@@ -33,6 +33,8 @@ import testasyouthink.function.CheckedTriConsumer;
 import testasyouthink.function.CheckedTriFunction;
 import testasyouthink.function.Functions;
 
+import java.util.function.Consumer;
+
 public class GivenTwoArgumentsWhenSteps<$SystemUnderTest, $Argument1, $Argument2> implements
         AndGivenTwoArguments<$SystemUnderTest, $Argument1, $Argument2> {
 
@@ -55,6 +57,13 @@ public class GivenTwoArgumentsWhenSteps<$SystemUnderTest, $Argument1, $Argument2
     public <$Argument3> WhenApplyingThreeArguments<$SystemUnderTest, $Argument1, $Argument2, $Argument3> andArgument(
             Class<$Argument3> immutableArgumentClass, CheckedFunction<$Argument3, $Argument3> givenStep) {
         preparation.recordGivenStep(immutableArgumentClass, givenStep);
+        return new GivenThreeArgumentsWhenSteps<>(preparation);
+    }
+
+    @Override
+    public <$Argument3> WhenApplyingThreeArguments<$SystemUnderTest, $Argument1, $Argument2, $Argument3> andArgument(
+            Class<$Argument3> mutableArgumentClass, Consumer<$Argument3> givenStep) {
+        preparation.recordGivenStep(mutableArgumentClass, givenStep);
         return new GivenThreeArgumentsWhenSteps<>(preparation);
     }
 

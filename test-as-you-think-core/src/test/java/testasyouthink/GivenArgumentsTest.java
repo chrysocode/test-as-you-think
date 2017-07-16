@@ -502,6 +502,34 @@ public class GivenArgumentsTest {
     }
 
     @Test
+    public void should_receive_three_arguments_with_their_types_given_a_third_mutable_argument() {
+        //GIVEN
+        givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+        expectLastCall().times(3);
+        class SystemUnderTestWithThreeParameters extends ParameterizedSystemUnderTest<Mutable, Mutable, Mutable> {}
+        SystemUnderTestWithThreeParameters sutWithThreeParametersMock = mocksControl.createMock(
+                SystemUnderTestWithThreeParameters.class);
+        sutWithThreeParametersMock.voidMethodWithThreeParameters(anyObject(Mutable.class), anyObject(Mutable.class),
+                anyObject(Mutable.class));
+        givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+        mocksControl.replay();
+
+        // WHEN
+        givenSut(sutWithThreeParametersMock)
+                .givenArgument(Mutable.class, mutable -> {
+                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                })
+                .andArgument(Mutable.class, mutable -> {
+                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                })
+                .andArgument(Mutable.class, mutable -> {
+                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                })
+                .whenSutRuns(ParameterizedSystemUnderTest::voidMethodWithThreeParameters)
+                .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult());
+    }
+
+    @Test
     public void should_receive_one_argument_value_given_a_void_method() {
         //GIVEN
         systemUnderTestMock.voidMethodWithParameter(GIVEN_STRING);
