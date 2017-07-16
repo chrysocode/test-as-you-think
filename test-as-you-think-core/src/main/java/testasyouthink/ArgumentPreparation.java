@@ -37,7 +37,7 @@ enum ArgumentPreparation {
             try {
                 argument = mutableArgumentClass.newInstance();
             } catch (InstantiationException | IllegalAccessException exception) {
-                throw new PreparationError("Impossible to instantiate the argument of the " //
+                throw new PreparationError("Fails to instantiate the argument of the " //
                         + mutableArgumentClass.getName() + " type!", exception);
             }
             givenStep.accept(argument);

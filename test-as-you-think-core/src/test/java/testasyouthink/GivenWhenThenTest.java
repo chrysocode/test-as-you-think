@@ -159,7 +159,7 @@ public class GivenWhenThenTest {
         thrown.printStackTrace();
         assertThat(thrown)
                 .isInstanceOf(PreparationError.class)
-                .hasMessage("Impossible to instantiate the system under test!")
+                .hasMessage("Fails to instantiate the system under test!")
                 .hasCauseInstanceOf(NullPointerException.class);
     }
 

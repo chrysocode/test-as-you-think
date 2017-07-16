@@ -121,7 +121,7 @@ public class GivenArgumentsTest {
         thrown.printStackTrace();
         assertThat(thrown)
                 .isInstanceOf(PreparationError.class)
-                .hasMessage("Impossible to instantiate the argument of the " //
+                .hasMessage("Fails to instantiate the argument of the " //
                         + "testasyouthink.GivenArgumentsTest$Parameter$MutableButUninstantiable type!")
                 .hasCauseInstanceOf(InstantiationException.class);
     }
