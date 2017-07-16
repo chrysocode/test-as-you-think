@@ -27,6 +27,7 @@ import testasyouthink.GivenWhenThenDsl.PreparationStage.Given;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.Then;
 import testasyouthink.function.CheckedFunction;
 import testasyouthink.function.Functions;
+import testasyouthink.preparation.PreparationError;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;

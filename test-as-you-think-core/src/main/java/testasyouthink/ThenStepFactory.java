@@ -24,6 +24,7 @@ package testasyouthink;
 
 import testasyouthink.function.CheckedConsumer;
 import testasyouthink.function.CheckedFunction;
+import testasyouthink.preparation.Preparation;
 
 enum ThenStepFactory {
 

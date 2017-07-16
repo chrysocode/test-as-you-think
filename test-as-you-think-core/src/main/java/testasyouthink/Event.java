@@ -25,6 +25,7 @@ package testasyouthink;
 import testasyouthink.function.CheckedConsumer;
 import testasyouthink.function.CheckedFunction;
 import testasyouthink.function.Functions;
+import testasyouthink.preparation.PreparationError;
 
 import java.util.function.Supplier;
 

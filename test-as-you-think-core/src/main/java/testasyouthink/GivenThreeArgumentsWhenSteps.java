@@ -29,6 +29,7 @@ import testasyouthink.GivenWhenThenDsl.VerificationStage.ThenWithoutResult;
 import testasyouthink.function.CheckedQuadriConsumer;
 import testasyouthink.function.CheckedQuadriFunction;
 import testasyouthink.function.Functions;
+import testasyouthink.preparation.Preparation;
 
 public class GivenThreeArgumentsWhenSteps<$SystemUnderTest, $Argument1, $Argument2, $Argument3> implements
         WhenApplyingThreeArguments<$SystemUnderTest, $Argument1, $Argument2, $Argument3> {

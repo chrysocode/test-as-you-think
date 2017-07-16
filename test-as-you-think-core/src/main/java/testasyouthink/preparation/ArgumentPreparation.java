@@ -20,7 +20,7 @@
  * #L%
  */
 
-package testasyouthink;
+package testasyouthink.preparation;
 
 import testasyouthink.function.CheckedSupplier;
 

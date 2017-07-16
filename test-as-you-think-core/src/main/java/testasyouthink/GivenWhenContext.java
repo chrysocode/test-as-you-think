@@ -22,6 +22,8 @@
 
 package testasyouthink;
 
+import testasyouthink.preparation.Preparation;
+
 class GivenWhenContext<$SystemUnderTest, $Result> {
 
     private final Preparation<$SystemUnderTest> preparation;

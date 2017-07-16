@@ -20,7 +20,7 @@
  * #L%
  */
 
-package testasyouthink;
+package testasyouthink.preparation;
 
 public class PreparationError extends Error {
 
