@@ -116,6 +116,9 @@ public interface GivenWhenThenDsl {
                     CheckedSupplier<$Argument3> givenStep);
 
             <$Argument3> WhenApplyingThreeArguments<$SystemUnderTest, $Argument1, $Argument2, $Argument3> andArgument(
+                    Class<$Argument3> immutableArgumentClass, CheckedFunction<$Argument3, $Argument3> givenStep);
+
+            <$Argument3> WhenApplyingThreeArguments<$SystemUnderTest, $Argument1, $Argument2, $Argument3> andArgument(
                     String description, CheckedSupplier<$Argument3> givenStep);
 
             <$Argument3> WhenApplyingThreeArguments<$SystemUnderTest, $Argument1, $Argument2, $Argument3> andArgument(
