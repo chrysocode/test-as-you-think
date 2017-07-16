@@ -29,8 +29,6 @@ import testasyouthink.preparation.PreparationError;
 
 import java.util.function.Supplier;
 
-import static org.assertj.core.api.Assertions.fail;
-
 class Event<$SystemUnderTest, $Result> {
 
     private final Functions functions = Functions.INSTANCE;
@@ -48,13 +46,14 @@ class Event<$SystemUnderTest, $Result> {
     }
 
     $Result happen() {
-        $Result result = null;
+        $Result result;
         try {
             result = whenStep.apply(givenSutStep.get());
         } catch (PreparationError preparationError) {
             throw preparationError;
         } catch (Throwable throwable) {
-            fail(throwable.getMessage(), throwable);
+            throw new ExecutionError("Fails to execute the target method of the system under test " //
+                    + "because of an unexpected exception!", throwable);
         }
 
         return result;

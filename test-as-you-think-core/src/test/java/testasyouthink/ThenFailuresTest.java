@@ -26,6 +26,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import testasyouthink.fixture.ExpectedException;
+import testasyouthink.fixture.GivenWhenThenDefinition;
 import testasyouthink.fixture.SystemUnderTest;
 import testasyouthink.fixture.UnexpectedException;
 
@@ -41,9 +42,11 @@ import static testasyouthink.TestAsYouThink.givenSut;
 public class ThenFailuresTest {
 
     private static final String EXPECTED_MESSAGE = "expected message";
-    private static final String MISSING_EXCEPTION = "An expected exception must have been raised before!";
     private static final String UNEXPECTED_MESSAGE = "unexpected message";
+    private static final String EXPECTED_ERROR_MESSAGE = "Fails to execute the target method " //
+            + "of the system under test because of an unexpected exception!";
     private SystemUnderTest systemUnderTestMock;
+    private GivenWhenThenDefinition givenWhenThenDefinitionMock;
 
     @Before
     public void prepareFixtures() {
@@ -60,7 +63,7 @@ public class ThenFailuresTest {
     @Test
     public void should_verify_the_sut_fails() throws Throwable {
         // GIVEN
-        expect(systemUnderTestMock.methodWithThrowsClause()).andThrow(new Exception());
+        expect(systemUnderTestMock.methodWithThrowsClause()).andThrow(new ExpectedException());
         replay(systemUnderTestMock);
 
         // WHEN
@@ -95,6 +98,7 @@ public class ThenFailuresTest {
                 .becauseOf(ExpectedException.class));
 
         // THEN
+        thrown.printStackTrace();
         assertThat(thrown).isInstanceOf(AssertionError.class);
     }
 
@@ -127,41 +131,49 @@ public class ThenFailuresTest {
                 .withMessage(EXPECTED_MESSAGE));
 
         // THEN
+        thrown.printStackTrace();
         assertThat(thrown).isInstanceOf(AssertionError.class);
     }
 
     @Test
-    public void should_fail_given_a_non_void_method() throws Throwable {
+    public void should_fail_to_execute_given_a_non_void_method() throws Throwable {
         // GIVEN
-        expect(systemUnderTestMock.nonVoidMethodWithThrowsClause()).andThrow(new Exception());
-        replay(systemUnderTestMock);
+        expect(systemUnderTestMock.nonVoidMethodWithThrowsClause()).andThrow(new UnexpectedException());
+        givenWhenThenDefinitionMock = strictMock(GivenWhenThenDefinition.class);
+        replay(systemUnderTestMock, givenWhenThenDefinitionMock);
 
         // WHEN
         Throwable thrown = catchThrowable(() -> givenSut(systemUnderTestMock)
                 .when(SystemUnderTest::nonVoidMethodWithThrowsClause)
-                .then(() -> {
-                    throw new RuntimeException(MISSING_EXCEPTION);
-                }));
+                .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
 
         // THEN
-        assertThat(thrown).isInstanceOf(AssertionError.class);
+        thrown.printStackTrace();
+        assertThat(thrown)
+                .isInstanceOf(ExecutionError.class)
+                .hasMessage(EXPECTED_ERROR_MESSAGE)
+                .hasCauseInstanceOf(UnexpectedException.class);
+        verify(givenWhenThenDefinitionMock);
     }
 
     @Test
     public void should_fail_given_a_void_method() throws Throwable {
         // GIVEN
         systemUnderTestMock.voidMethodWithThrowsClause();
-        expectLastCall().andThrow(new Exception());
-        replay(systemUnderTestMock);
+        expectLastCall().andThrow(new UnexpectedException());
+        givenWhenThenDefinitionMock = strictMock(GivenWhenThenDefinition.class);
+        replay(systemUnderTestMock, givenWhenThenDefinitionMock);
 
         // WHEN
         Throwable thrown = catchThrowable(() -> givenSut(systemUnderTestMock)
                 .when(SystemUnderTest::voidMethodWithThrowsClause)
-                .then((Runnable) () -> {
-                    throw new RuntimeException(MISSING_EXCEPTION);
-                }));
+                .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
 
         // THEN
-        assertThat(thrown).isInstanceOf(AssertionError.class);
+        assertThat(thrown)
+                .isInstanceOf(ExecutionError.class)
+                .hasMessage(EXPECTED_ERROR_MESSAGE)
+                .hasCauseInstanceOf(UnexpectedException.class);
+        verify(givenWhenThenDefinitionMock);
     }
 }
