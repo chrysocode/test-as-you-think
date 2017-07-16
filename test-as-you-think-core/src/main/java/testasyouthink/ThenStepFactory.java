@@ -22,6 +22,7 @@
 
 package testasyouthink;
 
+import testasyouthink.execution.Event;
 import testasyouthink.function.CheckedConsumer;
 import testasyouthink.function.CheckedFunction;
 import testasyouthink.preparation.Preparation;

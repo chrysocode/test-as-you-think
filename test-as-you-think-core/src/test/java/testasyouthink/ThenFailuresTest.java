@@ -25,6 +25,7 @@ package testasyouthink;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import testasyouthink.execution.ExecutionError;
 import testasyouthink.fixture.ExpectedException;
 import testasyouthink.fixture.GivenWhenThenDefinition;
 import testasyouthink.fixture.SystemUnderTest;

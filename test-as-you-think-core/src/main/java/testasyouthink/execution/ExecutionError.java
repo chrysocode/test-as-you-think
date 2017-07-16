@@ -20,7 +20,7 @@
  * #L%
  */
 
-package testasyouthink;
+package testasyouthink.execution;
 
 public class ExecutionError extends Error {
 

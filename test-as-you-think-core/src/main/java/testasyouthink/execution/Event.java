@@ -20,7 +20,7 @@
  * #L%
  */
 
-package testasyouthink;
+package testasyouthink.execution;
 
 import testasyouthink.function.CheckedConsumer;
 import testasyouthink.function.CheckedFunction;
@@ -29,23 +29,23 @@ import testasyouthink.preparation.PreparationError;
 
 import java.util.function.Supplier;
 
-class Event<$SystemUnderTest, $Result> {
+public class Event<$SystemUnderTest, $Result> {
 
     private final Functions functions = Functions.INSTANCE;
     private final Supplier<$SystemUnderTest> givenSutStep;
     private final CheckedFunction<$SystemUnderTest, $Result> whenStep;
 
-    Event(Supplier<$SystemUnderTest> givenSutStep, CheckedFunction<$SystemUnderTest, $Result> whenStep) {
+    public Event(Supplier<$SystemUnderTest> givenSutStep, CheckedFunction<$SystemUnderTest, $Result> whenStep) {
         this.givenSutStep = givenSutStep;
         this.whenStep = whenStep;
     }
 
-    Event(Supplier<$SystemUnderTest> givenSutStep, CheckedConsumer<$SystemUnderTest> whenStep) {
+    public Event(Supplier<$SystemUnderTest> givenSutStep, CheckedConsumer<$SystemUnderTest> whenStep) {
         this.givenSutStep = givenSutStep;
         this.whenStep = functions.toFunction(whenStep);
     }
 
-    $Result happen() {
+    public $Result happen() {
         $Result result;
         try {
             result = whenStep.apply(givenSutStep.get());
