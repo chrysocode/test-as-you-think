@@ -25,6 +25,8 @@ package testasyouthink;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import testasyouthink.execution.ExecutionError;
 import testasyouthink.fixture.ExpectedException;
 import testasyouthink.fixture.GivenWhenThenDefinition;
@@ -42,6 +44,7 @@ import static testasyouthink.TestAsYouThink.givenSut;
 
 public class ThenFailuresTest {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(ThenFailuresTest.class);
     private static final String EXPECTED_MESSAGE = "expected message";
     private static final String UNEXPECTED_MESSAGE = "unexpected message";
     private static final String EXPECTED_ERROR_MESSAGE = "Fails to execute the target method " //
@@ -99,7 +102,7 @@ public class ThenFailuresTest {
                 .becauseOf(ExpectedException.class));
 
         // THEN
-        thrown.printStackTrace();
+        LOGGER.debug("Stack trace", thrown);
         assertThat(thrown).isInstanceOf(AssertionError.class);
     }
 
@@ -132,7 +135,7 @@ public class ThenFailuresTest {
                 .withMessage(EXPECTED_MESSAGE));
 
         // THEN
-        thrown.printStackTrace();
+        LOGGER.debug("Stack trace", thrown);
         assertThat(thrown).isInstanceOf(AssertionError.class);
     }
 
@@ -149,7 +152,7 @@ public class ThenFailuresTest {
                 .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
 
         // THEN
-        thrown.printStackTrace();
+        LOGGER.debug("Stack trace", thrown);
         assertThat(thrown)
                 .isInstanceOf(ExecutionError.class)
                 .hasMessage(EXPECTED_ERROR_MESSAGE)
@@ -171,6 +174,7 @@ public class ThenFailuresTest {
                 .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
 
         // THEN
+        LOGGER.debug("Stack trace", thrown);
         assertThat(thrown)
                 .isInstanceOf(ExecutionError.class)
                 .hasMessage(EXPECTED_ERROR_MESSAGE)

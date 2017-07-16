@@ -25,6 +25,8 @@ package testasyouthink;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import testasyouthink.fixture.GivenWhenThenDefinition;
 import testasyouthink.fixture.SystemUnderTest;
 import testasyouthink.preparation.PreparationError;
@@ -40,6 +42,7 @@ import static testasyouthink.fixture.GivenWhenThenDefinition.orderedSteps;
 
 public class GivenWhenThenTest {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(GivenWhenThenTest.class);
     private static final String EXPECTED_RESULT = "expected result";
     private GivenWhenThenDefinition givenWhenThenDefinitionMock;
 
@@ -157,7 +160,7 @@ public class GivenWhenThenTest {
                 .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
 
         // THEN
-        thrown.printStackTrace();
+        LOGGER.debug("Stack trace", thrown);
         assertThat(thrown)
                 .isInstanceOf(PreparationError.class)
                 .hasMessage("Fails to instantiate the system under test!")

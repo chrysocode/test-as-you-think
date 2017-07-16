@@ -26,6 +26,8 @@ import org.easymock.IMocksControl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import testasyouthink.execution.ExecutionError;
 import testasyouthink.fixture.GivenWhenThenDefinition;
 import testasyouthink.fixture.SystemUnderTest;
@@ -39,6 +41,7 @@ import static testasyouthink.TestAsYouThink.givenSut;
 
 public class GivenArgumentsThenFailuresTest {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(GivenArgumentsThenFailuresTest.class);
     private static final String GIVEN_STRING = "given argument";
     private static final int GIVEN_INTEGER = 201705;
     private static final boolean GIVEN_BOOLEAN = false;
@@ -81,7 +84,7 @@ public class GivenArgumentsThenFailuresTest {
                 .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
 
         // THEN
-        thrown.printStackTrace();
+        LOGGER.debug("Stack trace", thrown);
         assertThat(thrown)
                 .isInstanceOf(ExecutionError.class)
                 .hasMessage(EXPECTED_ERROR_MESSAGE)
@@ -105,7 +108,7 @@ public class GivenArgumentsThenFailuresTest {
                 .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
 
         // THEN
-        thrown.printStackTrace();
+        LOGGER.debug("Stack trace", thrown);
         assertThat(thrown)
                 .isInstanceOf(ExecutionError.class)
                 .hasMessage(EXPECTED_ERROR_MESSAGE)
@@ -135,7 +138,7 @@ public class GivenArgumentsThenFailuresTest {
                 .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
 
         // THEN
-        thrown.printStackTrace();
+        LOGGER.debug("Stack trace", thrown);
         assertThat(thrown)
                 .isInstanceOf(ExecutionError.class)
                 .hasMessage(EXPECTED_ERROR_MESSAGE)
@@ -165,7 +168,7 @@ public class GivenArgumentsThenFailuresTest {
                 .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
 
         // THEN
-        thrown.printStackTrace();
+        LOGGER.debug("Stack trace", thrown);
         assertThat(thrown)
                 .isInstanceOf(ExecutionError.class)
                 .hasMessage(EXPECTED_ERROR_MESSAGE)
@@ -199,7 +202,7 @@ public class GivenArgumentsThenFailuresTest {
                 .then(sut -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
 
         // THEN
-        thrown.printStackTrace();
+        LOGGER.debug("Stack trace", thrown);
         assertThat(thrown)
                 .isInstanceOf(ExecutionError.class)
                 .hasMessage(EXPECTED_ERROR_MESSAGE)
@@ -233,7 +236,7 @@ public class GivenArgumentsThenFailuresTest {
                 .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
 
         // THEN
-        thrown.printStackTrace();
+        LOGGER.debug("Stack trace", thrown);
         assertThat(thrown)
                 .isInstanceOf(ExecutionError.class)
                 .hasMessage(EXPECTED_ERROR_MESSAGE)

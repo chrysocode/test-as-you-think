@@ -26,6 +26,8 @@ import org.easymock.IMocksControl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import testasyouthink.GivenArgumentsTest.Parameter.Mutable;
 import testasyouthink.GivenArgumentsTest.Parameter.MutableButUninstantiable;
 import testasyouthink.fixture.GivenWhenThenDefinition;
@@ -42,6 +44,8 @@ import static org.easymock.EasyMock.expectLastCall;
 import static testasyouthink.TestAsYouThink.givenSut;
 
 public class GivenArgumentsTest {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(GivenArgumentsTest.class);
 
     private static final String GIVEN_STRING = "given argument";
     private static final int GIVEN_INTEGER = 201705;
@@ -106,7 +110,7 @@ public class GivenArgumentsTest {
     @Test
     public void should_fail_to_instantiate_one_argument_with_its_mutable_type() throws Throwable {
         //GIVEN
-        class SystemUnderTestWithUninstantiableParameter extends
+        class SystemUnderTestWithUninstantiableParameter extends 
                 ParameterizedSystemUnderTest<MutableButUninstantiable, Void, Void> {}
         SystemUnderTestWithUninstantiableParameter sutWithUninstantiableParameter = mocksControl.createMock(
                 SystemUnderTestWithUninstantiableParameter.class);
@@ -119,7 +123,7 @@ public class GivenArgumentsTest {
                 .then(() -> {}));
 
         // THEN
-        thrown.printStackTrace();
+        LOGGER.debug("Stack trace", thrown);
         assertThat(thrown)
                 .isInstanceOf(PreparationError.class)
                 .hasMessage("Fails to instantiate the argument of the " //
