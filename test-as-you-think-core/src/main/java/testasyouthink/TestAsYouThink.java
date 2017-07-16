@@ -52,7 +52,7 @@ public class TestAsYouThink {
             try {
                 sut = sutClass.newInstance();
             } catch (Exception exception) {
-                throw new RuntimeException("Impossible to instantiate the system under test!", exception);
+                throw new PreparationError("Impossible to instantiate the system under test!", exception);
             }
             return sut;
         });

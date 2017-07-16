@@ -145,7 +145,7 @@ public class GivenWhenThenTest {
     }
 
     @Test
-    public void should_fail_creating_sut_instance() throws Throwable {
+    public void should_fail_to_create_a_sut_instance() throws Throwable {
         // GIVEN
         reset(givenWhenThenDefinitionMock);
         replay(givenWhenThenDefinitionMock);
@@ -156,16 +156,17 @@ public class GivenWhenThenTest {
                 .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
 
         // THEN
+        thrown.printStackTrace();
         assertThat(thrown)
-                .isInstanceOf(AssertionError.class)
+                .isInstanceOf(PreparationError.class)
                 .hasMessage("Impossible to instantiate the system under test!")
-                .hasCauseInstanceOf(RuntimeException.class);
+                .hasCauseInstanceOf(NullPointerException.class);
     }
 
     static class SystemUnderTestFailingToBeInstantiated {
 
         SystemUnderTestFailingToBeInstantiated() throws Exception {
-            throw new Exception("Impossible to instantiate it!");
+            throw new NullPointerException("Impossible to instantiate it!");
         }
 
         void voidMethod() {}
