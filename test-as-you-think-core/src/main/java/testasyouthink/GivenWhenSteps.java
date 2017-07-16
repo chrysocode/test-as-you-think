@@ -30,6 +30,7 @@ import testasyouthink.GivenWhenThenDsl.VerificationStage.ThenFailure;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.ThenWithoutResult;
 import testasyouthink.function.CheckedConsumer;
 import testasyouthink.function.CheckedFunction;
+import testasyouthink.function.CheckedSupplier;
 import testasyouthink.function.Functions;
 
 import java.util.function.Consumer;
@@ -79,23 +80,35 @@ public class GivenWhenSteps<$SystemUnderTest> implements Given<$SystemUnderTest>
         return given(fixtureSpecification, givenStep);
     }
 
-    @Override
-    public <$Argument> AndGivenArgument<$SystemUnderTest, $Argument> givenArgument(Supplier<$Argument> givenStep) {
+    private <$Argument> AndGivenArgument<$SystemUnderTest, $Argument> prepareArgument(
+            CheckedSupplier<$Argument> givenStep) {
         preparation.recordGivenStep(givenStep);
         return new GivenArgumentWhenSteps<>(preparation);
     }
 
     @Override
+    public <$Argument> AndGivenArgument<$SystemUnderTest, $Argument> givenArgument(
+            CheckedSupplier<$Argument> givenStep) {
+        return prepareArgument(givenStep);
+    }
+
+    @Override
+    public <$Argument> AndGivenArgument<$SystemUnderTest, $Argument> givenArgument(
+            Class<$Argument> mutableArgumentClass, Consumer<$Argument> givenStep) {
+        preparation.recordGivenStep(mutableArgumentClass, givenStep);
+        return new GivenArgumentWhenSteps<>(preparation);
+    }
+
+    @Override
     public <$Argument> AndGivenArgument<$SystemUnderTest, $Argument> givenArgument(String description,
-            Supplier<$Argument> givenStep) {
+            CheckedSupplier<$Argument> givenStep) {
         return givenArgument(givenStep);
     }
 
     @Override
     public <$Argument> AndGivenArgument<$SystemUnderTest, $Argument> givenArgument(String description,
             $Argument argument) {
-        preparation.recordGivenStep(functions.toSupplier(argument));
-        return new GivenArgumentWhenSteps<>(preparation);
+        return prepareArgument(functions.toCheckedSupplier(argument));
     }
 
     @Override

@@ -22,6 +22,7 @@
 
 package testasyouthink;
 
+import testasyouthink.function.CheckedSupplier;
 import testasyouthink.function.Functions;
 
 import java.util.ArrayList;
@@ -34,9 +35,10 @@ import java.util.function.Supplier;
 class Preparation<$SystemUnderTest> {
 
     private final Functions functions = Functions.INSTANCE;
+    private final ArgumentPreparation argumentPreparation = ArgumentPreparation.INSTANCE;
     private final Supplier<$SystemUnderTest> givenSutStep;
     private final List<Consumer<$SystemUnderTest>> givenSteps;
-    private final Queue<Supplier> argumentSuppliers;
+    private final Queue<CheckedSupplier> argumentSuppliers;
     private $SystemUnderTest systemUnderTest;
 
     Preparation(Supplier<$SystemUnderTest> givenSutStep) {
@@ -53,11 +55,15 @@ class Preparation<$SystemUnderTest> {
         givenSteps.add(givenStep);
     }
 
-    <$Argument> void recordGivenStep(Supplier<$Argument> givenStep) {
+    <$Argument> void recordGivenStep(CheckedSupplier<$Argument> givenStep) {
         argumentSuppliers.add(givenStep);
     }
 
-    Queue<Supplier> getArgumentSuppliers() {
+    <$Argument> void recordGivenStep(Class<$Argument> mutableArgumentClass, Consumer<$Argument> givenStep) {
+        argumentSuppliers.add(argumentPreparation.buildMutableArgumentSupplier(mutableArgumentClass, givenStep));
+    }
+
+    Queue<CheckedSupplier> getArgumentSuppliers() {
         return argumentSuppliers;
     }
 
@@ -73,6 +79,6 @@ class Preparation<$SystemUnderTest> {
     }
 
     Supplier<$SystemUnderTest> supplySut() {
-        return () -> systemUnderTest();
+        return this::systemUnderTest;
     }
 }
