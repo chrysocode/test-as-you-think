@@ -22,26 +22,9 @@
 
 package testasyouthink;
 
-import testasyouthink.function.CheckedSupplier;
+public class PreparationError extends Error {
 
-import java.util.function.Consumer;
-
-enum ArgumentPreparation {
-
-    INSTANCE;
-
-    <$Argument> CheckedSupplier<$Argument> buildMutableArgumentSupplier(Class<$Argument> mutableArgumentClass,
-            Consumer<$Argument> givenStep) {
-        return () -> {
-            $Argument argument;
-            try {
-                argument = mutableArgumentClass.newInstance();
-            } catch (InstantiationException | IllegalAccessException exception) {
-                throw new PreparationError("Impossible to instantiate the argument of the " //
-                        + mutableArgumentClass.getName() + " type!", exception);
-            }
-            givenStep.accept(argument);
-            return argument;
-        };
+    public PreparationError(String message, Throwable cause) {
+        super(message, cause);
     }
 }

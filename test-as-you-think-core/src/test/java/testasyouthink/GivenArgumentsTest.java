@@ -118,11 +118,12 @@ public class GivenArgumentsTest {
                 .then(() -> {}));
 
         // THEN
+        thrown.printStackTrace();
         assertThat(thrown)
-                .isInstanceOf(AssertionError.class)
+                .isInstanceOf(PreparationError.class)
                 .hasMessage("Impossible to instantiate the argument of the " //
                         + "testasyouthink.GivenArgumentsTest$Parameter$MutableButUninstantiable type!")
-                .hasCauseInstanceOf(RuntimeException.class);
+                .hasCauseInstanceOf(InstantiationException.class);
     }
 
     @Test

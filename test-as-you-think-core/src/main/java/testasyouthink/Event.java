@@ -50,6 +50,8 @@ class Event<$SystemUnderTest, $Result> {
         $Result result = null;
         try {
             result = whenStep.apply(givenSutStep.get());
+        } catch (PreparationError preparationError) {
+            throw preparationError;
         } catch (Throwable throwable) {
             fail(throwable.getMessage(), throwable);
         }
