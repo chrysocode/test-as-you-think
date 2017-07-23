@@ -324,6 +324,14 @@ To understand how version numbers change, please read the [Semantic Versioning](
 
 ## Release Notes
 
+### 0.5 version: System under test as a test fixture
+
+- Prepare the system under test as any other test fixture.
+- Prepare the arguments from their types.
+- Improve errors: each testing stage has its own type of error, and the real failure becomes the cause of the error.
+- Verify the cause of a failure with its message.
+- Verify failures without having preparation previously.
+
 ### 0.4.2 version: Cobertura as a code coverage analyzer
 
 - Generate the documentation TOC updating with [markdown-toc](https://github.com/jonschlinkert/markdown-toc) and commit the documentation change while building with Maven.
