@@ -151,4 +151,20 @@ public class ThenFailuresTest {
         LOGGER.debug("Stack trace", thrown);
         assertThat(thrown).isInstanceOf(AssertionError.class);
     }
+
+    @Test
+    public void should_verify_the_cause_of_a_failure() throws Throwable {
+        //GIVEN
+        expect(systemUnderTestMock.methodWithThrowsClause()).andThrow(
+                new ExpectedException(EXPECTED_MESSAGE, new NullPointerException()));
+        replay(systemUnderTestMock);
+
+        // WHEN
+        givenSut(systemUnderTestMock)
+                .whenSutRunsOutsideOperatingConditions(SystemUnderTest::methodWithThrowsClause)
+                .thenItFails()
+                .becauseOf(ExpectedException.class)
+                .withMessage(EXPECTED_MESSAGE)
+                .havingCause(NullPointerException.class);
+    }
 }

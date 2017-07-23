@@ -259,17 +259,16 @@ public interface GivenWhenThenDsl {
 
         interface ThenFailure {
 
-            ThenFailureWithExpectedException thenItFails();
+            AndThenFailure thenItFails();
         }
 
-        interface ThenFailureWithExpectedException {
+        interface AndThenFailure {
 
-            ThenFailureWithExpectedMessage becauseOf(Class<? extends Throwable> expectedThrowableClass);
-        }
+            AndThenFailure becauseOf(Class<? extends Throwable> expectedThrowableClass);
 
-        interface ThenFailureWithExpectedMessage {
+            AndThenFailure withMessage(String expectedMessage);
 
-            void withMessage(String expectedMessage);
+            AndThenFailure havingCause(Class<? extends Throwable> expectedCauseClass);
         }
     }
 }
