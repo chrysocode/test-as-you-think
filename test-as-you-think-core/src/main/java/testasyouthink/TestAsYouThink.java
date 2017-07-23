@@ -74,14 +74,8 @@ public class TestAsYouThink {
 
     public static ThenFailure whenOutsideOperatingConditions(CheckedRunnable whenStep) {
         Preparation<Void> nothingToPrepare = new Preparation<>();
-        Event<Void, Throwable> event = new Event<>(nothingToPrepare.supplySut(), Void -> {
-            try {
-                whenStep.run();
-            } catch (Throwable thrown) {
-                return thrown;
-            }
-            return null;
-        });
+        Event<Void, Throwable> event = new Event<>(nothingToPrepare.supplySut(),
+                functions.toFunctionWithThrowableAsResult(whenStep));
         GivenWhenContext<Void, Throwable> context = new GivenWhenContext<>(nothingToPrepare, event);
         return new ThenStep<>(context);
     }

@@ -59,10 +59,21 @@ public enum Functions {
             Throwable result = null;
             try {
                 checkedConsumer.accept(toBeConsumed);
-            } catch (Throwable throwable) {
-                result = throwable;
+            } catch (Throwable thrown) {
+                result = thrown;
             }
             return result;
+        };
+    }
+
+    public CheckedFunction<Void, Throwable> toFunctionWithThrowableAsResult(CheckedRunnable whenStep) {
+        return Void -> {
+            try {
+                whenStep.run();
+            } catch (Throwable thrown) {
+                return thrown;
+            }
+            return null;
         };
     }
 
