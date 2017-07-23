@@ -160,6 +160,12 @@ public class ThenStep<$SystemUnderTest, $Result> implements Then<$SystemUnderTes
     }
 
     @Override
+    public AndThenFailure withCauseMessage(String expectedMessage) {
+        assertThat(((Throwable) context.returnResultOrVoid()).getCause()).hasMessage(expectedMessage);
+        return this;
+    }
+
+    @Override
     public AndThen<$SystemUnderTest, $Result> thenSutRepliesWithin(long timeLimit) {
         Assertions
                 .assertThat(context::returnResultOrVoid)

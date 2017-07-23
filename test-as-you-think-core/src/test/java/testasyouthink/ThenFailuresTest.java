@@ -44,6 +44,7 @@ public class ThenFailuresTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(ThenFailuresTest.class);
     private static final String EXPECTED_MESSAGE = "expected message";
     private static final String UNEXPECTED_MESSAGE = "unexpected message";
+    private static final String EXPECTED_CAUSE_MESSAGE = "expected cause message";
     private SystemUnderTest systemUnderTestMock;
 
     @Before
@@ -186,5 +187,22 @@ public class ThenFailuresTest {
         // THEN
         LOGGER.debug("Stack trace", thrown);
         assertThat(thrown).isInstanceOf(AssertionError.class);
+    }
+
+    @Test
+    public void should_verify_the_cause_message_of_a_failure() throws Throwable {
+        //GIVEN
+        expect(systemUnderTestMock.methodWithThrowsClause()).andThrow(
+                new ExpectedException(EXPECTED_MESSAGE, new ExpectedException(EXPECTED_CAUSE_MESSAGE)));
+        replay(systemUnderTestMock);
+
+        // WHEN
+        givenSut(systemUnderTestMock)
+                .whenSutRunsOutsideOperatingConditions(SystemUnderTest::methodWithThrowsClause)
+                .thenItFails()
+                .becauseOf(ExpectedException.class)
+                .withMessage(EXPECTED_MESSAGE)
+                .havingCause(ExpectedException.class)
+                .withCauseMessage(EXPECTED_CAUSE_MESSAGE);
     }
 }

@@ -269,6 +269,8 @@ public interface GivenWhenThenDsl {
             AndThenFailure withMessage(String expectedMessage);
 
             AndThenFailure havingCause(Class<? extends Throwable> expectedCauseClass);
+
+            AndThenFailure withCauseMessage(String expectedMessage);
         }
     }
 }
