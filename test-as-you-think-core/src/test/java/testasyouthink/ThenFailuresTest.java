@@ -205,4 +205,26 @@ public class ThenFailuresTest {
                 .havingCause(ExpectedException.class)
                 .withCauseMessage(EXPECTED_CAUSE_MESSAGE);
     }
+
+    @Test
+    public void should_fail_to_verify_the_cause_message_of_a_failure_given_an_unexpected_cause_message() throws
+            Throwable {
+        //GIVEN
+        expect(systemUnderTestMock.methodWithThrowsClause()).andThrow(
+                new ExpectedException(EXPECTED_MESSAGE, new ExpectedException("unexpected cause message")));
+        replay(systemUnderTestMock);
+
+        // WHEN
+        Throwable thrown = catchThrowable(() -> givenSut(systemUnderTestMock)
+                .whenSutRunsOutsideOperatingConditions(SystemUnderTest::methodWithThrowsClause)
+                .thenItFails()
+                .becauseOf(ExpectedException.class)
+                .withMessage(EXPECTED_MESSAGE)
+                .havingCause(ExpectedException.class)
+                .withCauseMessage(EXPECTED_CAUSE_MESSAGE));
+
+        // THEN
+        LOGGER.debug("Stack trace", thrown);
+        assertThat(thrown).isInstanceOf(AssertionError.class);
+    }
 }
