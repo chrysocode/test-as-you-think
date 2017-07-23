@@ -26,11 +26,9 @@ import testasyouthink.GivenWhenThenDsl.PreparationStage.AndGiven;
 import testasyouthink.GivenWhenThenDsl.PreparationStage.Given;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.Then;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.ThenFailure;
-import testasyouthink.execution.Event;
 import testasyouthink.function.CheckedFunction;
 import testasyouthink.function.CheckedRunnable;
 import testasyouthink.function.Functions;
-import testasyouthink.preparation.Preparation;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -73,10 +71,6 @@ public class TestAsYouThink {
     }
 
     public static ThenFailure whenOutsideOperatingConditions(CheckedRunnable whenStep) {
-        Preparation<Void> nothingToPrepare = new Preparation<>();
-        Event<Void, Throwable> event = new Event<>(nothingToPrepare.supplySut(),
-                functions.toFunctionWithThrowableAsResult(whenStep));
-        GivenWhenContext<Void, Throwable> context = new GivenWhenContext<>(nothingToPrepare, event);
-        return new ThenStep<>(context);
+        return thenStepFactory.createThenStep(functions.toFunctionWithThrowableAsResult(whenStep));
     }
 }
