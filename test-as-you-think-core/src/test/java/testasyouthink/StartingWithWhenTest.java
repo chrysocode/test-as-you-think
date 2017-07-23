@@ -25,13 +25,17 @@ package testasyouthink;
 import org.junit.Test;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
+import testasyouthink.fixture.ExpectedException;
 import testasyouthink.fixture.GivenWhenThenDefinition;
 import testasyouthink.fixture.SystemUnderTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static testasyouthink.TestAsYouThink.when;
+import static testasyouthink.TestAsYouThink.whenOutsideOperatingConditions;
 
 public class StartingWithWhenTest {
 
@@ -77,5 +81,19 @@ public class StartingWithWhenTest {
                 .verify(gwtMock)
                 .thenTheActualResultIsInKeepingWithTheExpectedResult();
         inOrder.verifyNoMoreInteractions();
+    }
+
+    @Test
+    public void should_verify_an_expected_failure_by_starting_by_the_when_step() throws Throwable {
+        //GIVEN
+        SystemUnderTest systemUnderTestMock = mock(SystemUnderTest.class);
+        when(systemUnderTestMock.nonVoidMethodWithThrowsClause()).thenThrow(ExpectedException.class);
+
+        // WHEN
+        whenOutsideOperatingConditions(systemUnderTestMock::nonVoidMethodWithThrowsClause).thenItFails();
+
+        // THEN
+        verify(systemUnderTestMock).nonVoidMethodWithThrowsClause();
+        verifyNoMoreInteractions(systemUnderTestMock);
     }
 }

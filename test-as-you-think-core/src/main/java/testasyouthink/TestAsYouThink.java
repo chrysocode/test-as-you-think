@@ -25,8 +25,12 @@ package testasyouthink;
 import testasyouthink.GivenWhenThenDsl.PreparationStage.AndGiven;
 import testasyouthink.GivenWhenThenDsl.PreparationStage.Given;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.Then;
+import testasyouthink.GivenWhenThenDsl.VerificationStage.ThenFailure;
+import testasyouthink.execution.Event;
 import testasyouthink.function.CheckedFunction;
+import testasyouthink.function.CheckedRunnable;
 import testasyouthink.function.Functions;
+import testasyouthink.preparation.Preparation;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -66,5 +70,19 @@ public class TestAsYouThink {
     public static <$SystemUnderTest, $Result> CheckedFunction<$SystemUnderTest, $Result> withReturn(
             CheckedFunction<$SystemUnderTest, $Result> whenStep) {
         return whenStep;
+    }
+
+    public static ThenFailure whenOutsideOperatingConditions(CheckedRunnable whenStep) {
+        Preparation<Void> nothingToPrepare = new Preparation<>();
+        Event<Void, Throwable> event = new Event<>(nothingToPrepare.supplySut(), Void -> {
+            try {
+                whenStep.run();
+            } catch (Throwable thrown) {
+                return thrown;
+            }
+            return null;
+        });
+        GivenWhenContext<Void, Throwable> context = new GivenWhenContext<>(nothingToPrepare, event);
+        return new ThenStep<>(context);
     }
 }
