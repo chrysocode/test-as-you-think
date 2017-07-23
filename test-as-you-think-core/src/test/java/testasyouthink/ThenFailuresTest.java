@@ -25,6 +25,8 @@ package testasyouthink;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import testasyouthink.fixture.ExpectedException;
 import testasyouthink.fixture.SystemUnderTest;
 import testasyouthink.fixture.UnexpectedException;
@@ -32,7 +34,6 @@ import testasyouthink.fixture.UnexpectedException;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.strictMock;
 import static org.easymock.EasyMock.verify;
@@ -40,8 +41,8 @@ import static testasyouthink.TestAsYouThink.givenSut;
 
 public class ThenFailuresTest {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(ThenFailuresTest.class);
     private static final String EXPECTED_MESSAGE = "expected message";
-    private static final String MISSING_EXCEPTION = "An expected exception must have been raised before!";
     private static final String UNEXPECTED_MESSAGE = "unexpected message";
     private SystemUnderTest systemUnderTestMock;
 
@@ -60,7 +61,7 @@ public class ThenFailuresTest {
     @Test
     public void should_verify_the_sut_fails() throws Throwable {
         // GIVEN
-        expect(systemUnderTestMock.methodWithThrowsClause()).andThrow(new Exception());
+        expect(systemUnderTestMock.methodWithThrowsClause()).andThrow(new ExpectedException());
         replay(systemUnderTestMock);
 
         // WHEN
@@ -72,14 +73,33 @@ public class ThenFailuresTest {
     @Test
     public void should_verify_the_sut_fails_by_raising_an_expected_exception() throws Throwable {
         // GIVEN
-        expect(systemUnderTestMock.methodWithThrowsClause()).andThrow(new ExpectedException());
+        expect(systemUnderTestMock.methodWithThrowsClause()).andThrow(new ExpectedException(EXPECTED_MESSAGE));
         replay(systemUnderTestMock);
 
         // WHEN
         givenSut(systemUnderTestMock)
                 .whenSutRunsOutsideOperatingConditions(SystemUnderTest::methodWithThrowsClause)
                 .thenItFails()
-                .becauseOf(ExpectedException.class);
+                .becauseOf(ExpectedException.class)
+                .withMessage(EXPECTED_MESSAGE);
+    }
+
+    @Test
+    public void should_fail_given_a_missing_failure() throws Throwable {
+        // GIVEN
+        expect(systemUnderTestMock.methodWithThrowsClause()).andReturn("ordinary result");
+        replay(systemUnderTestMock);
+
+        // WHEN
+        Throwable thrown = catchThrowable(() -> givenSut(systemUnderTestMock)
+                .whenSutRunsOutsideOperatingConditions(SystemUnderTest::methodWithThrowsClause)
+                .thenItFails());
+
+        // THEN
+        LOGGER.debug("Stack trace", thrown);
+        assertThat(thrown)
+                .isInstanceOf(AssertionError.class)
+                .hasMessage("Expecting a failure, but it was missing.");
     }
 
     @Test
@@ -95,6 +115,7 @@ public class ThenFailuresTest {
                 .becauseOf(ExpectedException.class));
 
         // THEN
+        LOGGER.debug("Stack trace", thrown);
         assertThat(thrown).isInstanceOf(AssertionError.class);
     }
 
@@ -127,41 +148,7 @@ public class ThenFailuresTest {
                 .withMessage(EXPECTED_MESSAGE));
 
         // THEN
-        assertThat(thrown).isInstanceOf(AssertionError.class);
-    }
-
-    @Test
-    public void should_fail_given_a_non_void_method() throws Throwable {
-        // GIVEN
-        expect(systemUnderTestMock.nonVoidMethodWithThrowsClause()).andThrow(new Exception());
-        replay(systemUnderTestMock);
-
-        // WHEN
-        Throwable thrown = catchThrowable(() -> givenSut(systemUnderTestMock)
-                .when(SystemUnderTest::nonVoidMethodWithThrowsClause)
-                .then(() -> {
-                    throw new RuntimeException(MISSING_EXCEPTION);
-                }));
-
-        // THEN
-        assertThat(thrown).isInstanceOf(AssertionError.class);
-    }
-
-    @Test
-    public void should_fail_given_a_void_method() throws Throwable {
-        // GIVEN
-        systemUnderTestMock.voidMethodWithThrowsClause();
-        expectLastCall().andThrow(new Exception());
-        replay(systemUnderTestMock);
-
-        // WHEN
-        Throwable thrown = catchThrowable(() -> givenSut(systemUnderTestMock)
-                .when(SystemUnderTest::voidMethodWithThrowsClause)
-                .then((Runnable) () -> {
-                    throw new RuntimeException(MISSING_EXCEPTION);
-                }));
-
-        // THEN
+        LOGGER.debug("Stack trace", thrown);
         assertThat(thrown).isInstanceOf(AssertionError.class);
     }
 }

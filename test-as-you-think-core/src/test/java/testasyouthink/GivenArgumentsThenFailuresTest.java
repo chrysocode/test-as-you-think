@@ -26,11 +26,11 @@ import org.easymock.IMocksControl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import testasyouthink.fixture.ExpectedException;
 import testasyouthink.fixture.GivenWhenThenDefinition;
 import testasyouthink.fixture.SystemUnderTest;
 
 import static org.easymock.EasyMock.createStrictControl;
-import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
 import static testasyouthink.TestAsYouThink.givenSut;
 
@@ -39,7 +39,7 @@ public class GivenArgumentsThenFailuresTest {
     private static final String GIVEN_STRING = "given argument";
     private static final int GIVEN_INTEGER = 201705;
     private static final boolean GIVEN_BOOLEAN = false;
-    private static final String MISSING_EXCEPTION = "An expected exception must have been raised before!";
+    private static final String EXPECTED_ERROR_MESSAGE = "Expected error message";
 
     private IMocksControl mocksControl;
     private SystemUnderTest systemUnderTestMock;
@@ -59,158 +59,12 @@ public class GivenArgumentsThenFailuresTest {
         mocksControl.verify();
     }
 
-    @Test(expected = AssertionError.class)
-    public void should_fail_given_a_void_method_with_one_parameter() throws Throwable {
-        // GIVEN
-        givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-        systemUnderTestMock.failWithParameter(GIVEN_STRING);
-        expectLastCall().andThrow(new Exception());
-        mocksControl.replay();
-
-        // WHEN
-        givenSut(systemUnderTestMock)
-                .givenArgument(() -> {
-                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-                    return GIVEN_STRING;
-                })
-                .when(SystemUnderTest::failWithParameter)
-                .then((Runnable) () -> {
-                    throw new RuntimeException(MISSING_EXCEPTION);
-                });
-    }
-
-    @Test(expected = AssertionError.class)
-    public void should_fail_given_a_non_void_method_with_one_parameter() throws Throwable {
-        // GIVEN
-        givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-        expect(systemUnderTestMock.nonVoidFailWithParameter(GIVEN_STRING)).andThrow(new Exception());
-        mocksControl.replay();
-
-        // WHEN
-        givenSut(systemUnderTestMock)
-                .givenArgument(() -> {
-                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-                    return GIVEN_STRING;
-                })
-                .when(SystemUnderTest::nonVoidFailWithParameter)
-                .then(() -> {
-                    throw new RuntimeException(MISSING_EXCEPTION);
-                });
-    }
-
-    @Test(expected = AssertionError.class)
-    public void should_fail_given_a_void_method_with_two_parameters() throws Throwable {
-        // GIVEN
-        givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-        expectLastCall().times(2);
-        systemUnderTestMock.failWithTwoParameters(GIVEN_STRING, GIVEN_INTEGER);
-        expectLastCall().andThrow(new Exception());
-        mocksControl.replay();
-
-        // WHEN
-        givenSut(systemUnderTestMock)
-                .givenArgument(() -> {
-                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-                    return GIVEN_STRING;
-                })
-                .andArgument(() -> {
-                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-                    return GIVEN_INTEGER;
-                })
-                .when(SystemUnderTest::failWithTwoParameters)
-                .then((Runnable) () -> {
-                    throw new RuntimeException(MISSING_EXCEPTION);
-                });
-    }
-
-    @Test(expected = AssertionError.class)
-    public void should_fail_given_a_non_void_method_with_two_parameters() throws Throwable {
-        // GIVEN
-        givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-        expectLastCall().times(2);
-        expect(systemUnderTestMock.nonVoidFailWithTwoParameters(GIVEN_STRING, GIVEN_INTEGER)).andThrow(new Exception());
-        mocksControl.replay();
-
-        // WHEN
-        givenSut(systemUnderTestMock)
-                .givenArgument(() -> {
-                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-                    return GIVEN_STRING;
-                })
-                .andArgument(() -> {
-                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-                    return GIVEN_INTEGER;
-                })
-                .when(SystemUnderTest::nonVoidFailWithTwoParameters)
-                .then(() -> {
-                    throw new RuntimeException(MISSING_EXCEPTION);
-                });
-    }
-
-    @Test(expected = AssertionError.class)
-    public void should_fail_given_a_void_method_with_three_parameters() throws Throwable {
-        // GIVEN
-        givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-        expectLastCall().times(3);
-        systemUnderTestMock.failWithThreeParameters(GIVEN_STRING, GIVEN_INTEGER, GIVEN_BOOLEAN);
-        expectLastCall().andThrow(new Exception());
-        mocksControl.replay();
-
-        // WHEN
-        givenSut(systemUnderTestMock)
-                .givenArgument(() -> {
-                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-                    return GIVEN_STRING;
-                })
-                .andArgument(() -> {
-                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-                    return GIVEN_INTEGER;
-                })
-                .andArgument(() -> {
-                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-                    return GIVEN_BOOLEAN;
-                })
-                .when(SystemUnderTest::failWithThreeParameters)
-                .then(sut -> {
-                    throw new RuntimeException(MISSING_EXCEPTION);
-                });
-    }
-
-    @Test(expected = AssertionError.class)
-    public void should_fail_given_a_non_void_method_with_three_parameters() throws Throwable {
-        // GIVEN
-        givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-        expectLastCall().times(3);
-        expect(systemUnderTestMock.nonVoidFailWithThreeParameters(GIVEN_STRING, GIVEN_INTEGER, GIVEN_BOOLEAN)).andThrow(
-                new Exception());
-        mocksControl.replay();
-
-        // WHEN
-        givenSut(systemUnderTestMock)
-                .givenArgument(() -> {
-                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-                    return GIVEN_STRING;
-                })
-                .andArgument(() -> {
-                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-                    return GIVEN_INTEGER;
-                })
-                .andArgument(() -> {
-                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-                    return GIVEN_BOOLEAN;
-                })
-                .when(SystemUnderTest::nonVoidFailWithThreeParameters)
-                .then(() -> {
-                    throw new RuntimeException(MISSING_EXCEPTION);
-                });
-    }
-
     @Test
     public void should_verify_the_sut_fails_given_one_method_parameter() throws Throwable {
         // GIVEN
         givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
         systemUnderTestMock.failWithParameter(GIVEN_STRING);
-        expectLastCall().andThrow(new Exception());
+        expectLastCall().andThrow(new ExpectedException(EXPECTED_ERROR_MESSAGE));
         mocksControl.replay();
 
         // WHEN
@@ -220,7 +74,9 @@ public class GivenArgumentsThenFailuresTest {
                     return GIVEN_STRING;
                 })
                 .whenSutRunsOutsideOperatingConditions(SystemUnderTest::failWithParameter)
-                .thenItFails();
+                .thenItFails()
+                .becauseOf(ExpectedException.class)
+                .withMessage(EXPECTED_ERROR_MESSAGE);
     }
 
     @Test
@@ -229,7 +85,7 @@ public class GivenArgumentsThenFailuresTest {
         givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
         expectLastCall().times(2);
         systemUnderTestMock.failWithTwoParameters(GIVEN_STRING, GIVEN_INTEGER);
-        expectLastCall().andThrow(new Exception());
+        expectLastCall().andThrow(new ExpectedException(EXPECTED_ERROR_MESSAGE));
         mocksControl.replay();
 
         // WHEN
@@ -243,7 +99,9 @@ public class GivenArgumentsThenFailuresTest {
                     return GIVEN_INTEGER;
                 })
                 .whenSutRunsOutsideOperatingConditions(SystemUnderTest::failWithTwoParameters)
-                .thenItFails();
+                .thenItFails()
+                .becauseOf(ExpectedException.class)
+                .withMessage(EXPECTED_ERROR_MESSAGE);
     }
 
     @Test
@@ -252,7 +110,7 @@ public class GivenArgumentsThenFailuresTest {
         givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
         expectLastCall().times(3);
         systemUnderTestMock.failWithThreeParameters(GIVEN_STRING, GIVEN_INTEGER, GIVEN_BOOLEAN);
-        expectLastCall().andThrow(new Exception());
+        expectLastCall().andThrow(new ExpectedException(EXPECTED_ERROR_MESSAGE));
         mocksControl.replay();
 
         // WHEN
@@ -270,6 +128,8 @@ public class GivenArgumentsThenFailuresTest {
                     return GIVEN_BOOLEAN;
                 })
                 .whenSutRunsOutsideOperatingConditions(SystemUnderTest::failWithThreeParameters)
-                .thenItFails();
+                .thenItFails()
+                .becauseOf(ExpectedException.class)
+                .withMessage(EXPECTED_ERROR_MESSAGE);
     }
 }

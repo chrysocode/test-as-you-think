@@ -39,23 +39,15 @@ public class TestAsYouThink {
     private TestAsYouThink() {}
 
     public static <$SystemUnderTest> Given<$SystemUnderTest> givenSut($SystemUnderTest systemUnderTest) {
-        return new GivenWhenSteps<>(() -> systemUnderTest);
+        return new GivenWhenSteps<>(systemUnderTest);
     }
 
-    public static <$SystemUnderTest> Given<$SystemUnderTest> givenSut(Supplier<$SystemUnderTest> givenStep) {
-        return new GivenWhenSteps<>(givenStep);
+    public static <$SystemUnderTest> Given<$SystemUnderTest> givenSut(Supplier<$SystemUnderTest> givenSutStep) {
+        return new GivenWhenSteps<>(givenSutStep);
     }
 
     public static <$SystemUnderTest> Given<$SystemUnderTest> givenSutClass(Class<$SystemUnderTest> sutClass) {
-        return new GivenWhenSteps<>(() -> {
-            $SystemUnderTest sut;
-            try {
-                sut = sutClass.newInstance();
-            } catch (Exception exception) {
-                throw new RuntimeException("Impossible to instantiate the system under test!", exception);
-            }
-            return sut;
-        });
+        return new GivenWhenSteps<>(sutClass);
     }
 
     public static <$SystemUnderTest> AndGiven<$SystemUnderTest> givenSut(Class<$SystemUnderTest> sutClass,

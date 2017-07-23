@@ -42,6 +42,7 @@ public class ThenStep<$SystemUnderTest, $Result> implements Then<$SystemUnderTes
         AndThen<$SystemUnderTest, $Result>, ThenFailure, ThenFailureWithExpectedException,
         ThenFailureWithExpectedMessage {
 
+    private static final String MISSING_EXCEPTION = "Expecting a failure, but it was missing.";
     private final GivenWhenContext<$SystemUnderTest, $Result> context;
 
     ThenStep(GivenWhenContext<$SystemUnderTest, $Result> context) {
@@ -133,7 +134,12 @@ public class ThenStep<$SystemUnderTest, $Result> implements Then<$SystemUnderTes
 
     @Override
     public ThenFailureWithExpectedException thenItFails() {
-        assertThat(context.returnResultOrVoid()).isInstanceOf(Throwable.class);
+        Object result = context.returnResultOrVoid();
+        if (result == null) {
+            throw new AssertionError(MISSING_EXCEPTION);
+        } else {
+            assertThat(context.returnResultOrVoid()).isInstanceOf(Throwable.class);
+        }
         return this;
     }
 

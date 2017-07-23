@@ -22,8 +22,10 @@
 
 package testasyouthink;
 
+import testasyouthink.execution.Event;
 import testasyouthink.function.CheckedConsumer;
 import testasyouthink.function.CheckedFunction;
+import testasyouthink.preparation.Preparation;
 
 enum ThenStepFactory {
 
@@ -44,12 +46,12 @@ enum ThenStepFactory {
     }
 
     <$Result> ThenStep<Void, $Result> createThenStep(CheckedFunction<Void, $Result> whenStep) {
-        Preparation<Void> nothingToPrepare = new Preparation<>(null);
+        Preparation<Void> nothingToPrepare = new Preparation<>();
         return createThenStep(nothingToPrepare, whenStep);
     }
 
     ThenWithoutResultStep<Void> createThenStep(CheckedConsumer<Void> whenStep) {
-        Preparation<Void> nothingToPrepare = new Preparation<>(null);
+        Preparation<Void> nothingToPrepare = new Preparation<>();
         return createThenStep(nothingToPrepare, whenStep);
     }
 }

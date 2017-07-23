@@ -20,7 +20,7 @@
  * #L%
  */
 
-package testasyouthink;
+package testasyouthink.preparation;
 
 import testasyouthink.function.CheckedSupplier;
 import testasyouthink.function.Functions;
@@ -32,42 +32,57 @@ import java.util.Queue;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-class Preparation<$SystemUnderTest> {
+public class Preparation<$SystemUnderTest> {
 
     private final Functions functions = Functions.INSTANCE;
+    private final SutPreparation sutPreparation = SutPreparation.INSTANCE;
     private final ArgumentPreparation argumentPreparation = ArgumentPreparation.INSTANCE;
-    private final Supplier<$SystemUnderTest> givenSutStep;
+    private Supplier<$SystemUnderTest> givenSutStep;
     private final List<Consumer<$SystemUnderTest>> givenSteps;
-    private final Queue<CheckedSupplier> argumentSuppliers;
+    private Queue<CheckedSupplier> argumentSuppliers;
     private $SystemUnderTest systemUnderTest;
 
-    Preparation(Supplier<$SystemUnderTest> givenSutStep) {
-        this.givenSutStep = givenSutStep;
+    public Preparation() {
         givenSteps = new ArrayList<>();
         argumentSuppliers = new LinkedList<>();
     }
 
-    void recordGivenStep(Runnable givenStep) {
+    public Preparation(Class<$SystemUnderTest> sutClass) {
+        this();
+        givenSutStep = sutPreparation.buildSutSupplier(sutClass);
+    }
+
+    public Preparation($SystemUnderTest systemUnderTest) {
+        this();
+        givenSutStep = sutPreparation.buildSutSupplier(systemUnderTest);
+    }
+
+    public Preparation(Supplier<$SystemUnderTest> givenSutStep) {
+        this();
+        this.givenSutStep = givenSutStep;
+    }
+
+    public void recordGivenStep(Runnable givenStep) {
         givenSteps.add(functions.toConsumer(givenStep));
     }
 
-    void recordGivenStep(Consumer<$SystemUnderTest> givenStep) {
+    public void recordGivenStep(Consumer<$SystemUnderTest> givenStep) {
         givenSteps.add(givenStep);
     }
 
-    <$Argument> void recordGivenStep(CheckedSupplier<$Argument> givenStep) {
+    public <$Argument> void recordGivenStep(CheckedSupplier<$Argument> givenStep) {
         argumentSuppliers.add(givenStep);
     }
 
-    <$Argument> void recordGivenStep(Class<$Argument> mutableArgumentClass, Consumer<$Argument> givenStep) {
+    public <$Argument> void recordGivenStep(Class<$Argument> mutableArgumentClass, Consumer<$Argument> givenStep) {
         argumentSuppliers.add(argumentPreparation.buildMutableArgumentSupplier(mutableArgumentClass, givenStep));
     }
 
-    Queue<CheckedSupplier> getArgumentSuppliers() {
+    public Queue<CheckedSupplier> getArgumentSuppliers() {
         return argumentSuppliers;
     }
 
-    void prepareFixtures() {
+    public void prepareFixtures() {
         givenSteps.forEach(step -> step.accept(systemUnderTest()));
     }
 
@@ -78,7 +93,7 @@ class Preparation<$SystemUnderTest> {
         return systemUnderTest;
     }
 
-    Supplier<$SystemUnderTest> supplySut() {
+    public Supplier<$SystemUnderTest> supplySut() {
         return this::systemUnderTest;
     }
 }

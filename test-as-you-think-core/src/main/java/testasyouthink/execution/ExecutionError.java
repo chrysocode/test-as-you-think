@@ -20,33 +20,11 @@
  * #L%
  */
 
-package testasyouthink;
+package testasyouthink.execution;
 
-import testasyouthink.execution.Event;
-import testasyouthink.preparation.Preparation;
+public class ExecutionError extends Error {
 
-class GivenWhenContext<$SystemUnderTest, $Result> {
-
-    private final Preparation<$SystemUnderTest> preparation;
-    private final Event<$SystemUnderTest, $Result> event;
-    private $Result result;
-
-    GivenWhenContext(Preparation<$SystemUnderTest> preparation, Event<$SystemUnderTest, $Result> event) {
-        this.preparation = preparation;
-        this.event = event;
-    }
-
-    $Result returnResultOrVoid() {
-        if (result == null) {
-            preparation.prepareFixtures();
-            result = event.happen();
-        }
-        return result;
-    }
-
-    $SystemUnderTest getSystemUnderTest() {
-        return preparation
-                .supplySut()
-                .get();
+    public ExecutionError(String message, Throwable cause) {
+        super(message, cause);
     }
 }

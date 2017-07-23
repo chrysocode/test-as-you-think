@@ -25,8 +25,11 @@ package testasyouthink;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import testasyouthink.fixture.GivenWhenThenDefinition;
 import testasyouthink.fixture.SystemUnderTest;
+import testasyouthink.preparation.PreparationError;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
@@ -39,6 +42,7 @@ import static testasyouthink.fixture.GivenWhenThenDefinition.orderedSteps;
 
 public class GivenWhenThenTest {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(GivenWhenThenTest.class);
     private static final String EXPECTED_RESULT = "expected result";
     private GivenWhenThenDefinition givenWhenThenDefinitionMock;
 
@@ -145,7 +149,7 @@ public class GivenWhenThenTest {
     }
 
     @Test
-    public void should_fail_creating_sut_instance() throws Throwable {
+    public void should_fail_to_create_a_sut_instance() throws Throwable {
         // GIVEN
         reset(givenWhenThenDefinitionMock);
         replay(givenWhenThenDefinitionMock);
@@ -156,16 +160,17 @@ public class GivenWhenThenTest {
                 .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
 
         // THEN
+        LOGGER.debug("Stack trace", thrown);
         assertThat(thrown)
-                .isInstanceOf(AssertionError.class)
-                .hasMessage("Impossible to instantiate the system under test!")
-                .hasCauseInstanceOf(RuntimeException.class);
+                .isInstanceOf(PreparationError.class)
+                .hasMessage("Fails to instantiate the system under test!")
+                .hasCauseInstanceOf(NullPointerException.class);
     }
 
-    static class SystemUnderTestFailingToBeInstantiated {
+    public static class SystemUnderTestFailingToBeInstantiated {
 
-        SystemUnderTestFailingToBeInstantiated() throws Exception {
-            throw new Exception("Impossible to instantiate it!");
+        public SystemUnderTestFailingToBeInstantiated() throws Exception {
+            throw new NullPointerException("Impossible to instantiate it!");
         }
 
         void voidMethod() {}

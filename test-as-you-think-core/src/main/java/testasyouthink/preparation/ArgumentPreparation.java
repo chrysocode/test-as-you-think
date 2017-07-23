@@ -20,33 +20,28 @@
  * #L%
  */
 
-package testasyouthink;
+package testasyouthink.preparation;
 
-import testasyouthink.execution.Event;
-import testasyouthink.preparation.Preparation;
+import testasyouthink.function.CheckedSupplier;
 
-class GivenWhenContext<$SystemUnderTest, $Result> {
+import java.util.function.Consumer;
 
-    private final Preparation<$SystemUnderTest> preparation;
-    private final Event<$SystemUnderTest, $Result> event;
-    private $Result result;
+enum ArgumentPreparation {
 
-    GivenWhenContext(Preparation<$SystemUnderTest> preparation, Event<$SystemUnderTest, $Result> event) {
-        this.preparation = preparation;
-        this.event = event;
-    }
+    INSTANCE;
 
-    $Result returnResultOrVoid() {
-        if (result == null) {
-            preparation.prepareFixtures();
-            result = event.happen();
-        }
-        return result;
-    }
-
-    $SystemUnderTest getSystemUnderTest() {
-        return preparation
-                .supplySut()
-                .get();
+    <$Argument> CheckedSupplier<$Argument> buildMutableArgumentSupplier(Class<$Argument> mutableArgumentClass,
+            Consumer<$Argument> givenStep) {
+        return () -> {
+            $Argument argument;
+            try {
+                argument = mutableArgumentClass.newInstance();
+            } catch (InstantiationException | IllegalAccessException exception) {
+                throw new PreparationError("Fails to instantiate the argument of the " //
+                        + mutableArgumentClass.getName() + " type!", exception);
+            }
+            givenStep.accept(argument);
+            return argument;
+        };
     }
 }

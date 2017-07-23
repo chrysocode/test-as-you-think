@@ -154,7 +154,7 @@ public class ThenPredicateTest {
     }
 
     @Test(expected = ComparisonFailure.class)
-    public void should_receive_a_failing_and_then_step_as_a_predicate_given_a_void_method() {
+    public void should_receive_failing_and_then_steps_as_predicates_given_a_void_method() {
         // GIVEN
         givenWhenThenDefinitionMock = orderedSteps(1, 2);
 
@@ -232,7 +232,7 @@ public class ThenPredicateTest {
                 .when(SystemUnderTest::nonVoidMethod)
                 .then((sut, result) -> {
                     givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                    return "expected result".equals(result) && sut != null;
+                    return "expected result" .equals(result) && sut != null;
                 });
     }
 

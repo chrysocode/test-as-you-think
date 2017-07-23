@@ -20,33 +20,27 @@
  * #L%
  */
 
-package testasyouthink;
+package testasyouthink.preparation;
 
-import testasyouthink.execution.Event;
-import testasyouthink.preparation.Preparation;
+import java.util.function.Supplier;
 
-class GivenWhenContext<$SystemUnderTest, $Result> {
+enum SutPreparation {
 
-    private final Preparation<$SystemUnderTest> preparation;
-    private final Event<$SystemUnderTest, $Result> event;
-    private $Result result;
+    INSTANCE;
 
-    GivenWhenContext(Preparation<$SystemUnderTest> preparation, Event<$SystemUnderTest, $Result> event) {
-        this.preparation = preparation;
-        this.event = event;
+    <$SystemUnderTest> Supplier<$SystemUnderTest> buildSutSupplier($SystemUnderTest systemUnderTest) {
+        return () -> systemUnderTest;
     }
 
-    $Result returnResultOrVoid() {
-        if (result == null) {
-            preparation.prepareFixtures();
-            result = event.happen();
-        }
-        return result;
-    }
-
-    $SystemUnderTest getSystemUnderTest() {
-        return preparation
-                .supplySut()
-                .get();
+    <$SystemUnderTest> Supplier<$SystemUnderTest> buildSutSupplier(Class<$SystemUnderTest> sutClass) {
+        return () -> {
+            $SystemUnderTest sut;
+            try {
+                sut = sutClass.newInstance();
+            } catch (Exception exception) {
+                throw new PreparationError("Fails to instantiate the system under test!", exception);
+            }
+            return sut;
+        };
     }
 }
