@@ -85,6 +85,24 @@ public class ThenFailuresTest {
     }
 
     @Test
+    public void should_fail_given_a_missing_failure() throws Throwable {
+        // GIVEN
+        expect(systemUnderTestMock.methodWithThrowsClause()).andReturn("ordinary result");
+        replay(systemUnderTestMock);
+
+        // WHEN
+        Throwable thrown = catchThrowable(() -> givenSut(systemUnderTestMock)
+                .whenSutRunsOutsideOperatingConditions(SystemUnderTest::methodWithThrowsClause)
+                .thenItFails());
+
+        // THEN
+        LOGGER.debug("Stack trace", thrown);
+        assertThat(thrown)
+                .isInstanceOf(AssertionError.class)
+                .hasMessage("Expecting a failure, but it was missing.");
+    }
+
+    @Test
     public void should_fail_given_an_unexpected_exception() throws Throwable {
         // GIVEN
         expect(systemUnderTestMock.methodWithThrowsClause()).andThrow(new UnexpectedException());
