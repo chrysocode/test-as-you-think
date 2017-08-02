@@ -45,13 +45,15 @@ enum ThenStepFactory {
         return new ThenWithoutResultStep<>(context);
     }
 
+    private Preparation<Void> nothingToPrepare() {
+        return new Preparation<>();
+    }
+
     <$Result> ThenStep<Void, $Result> createThenStep(CheckedFunction<Void, $Result> whenStep) {
-        Preparation<Void> nothingToPrepare = new Preparation<>();
-        return createThenStep(nothingToPrepare, whenStep);
+        return createThenStep(nothingToPrepare(), whenStep);
     }
 
     ThenWithoutResultStep<Void> createThenStep(CheckedConsumer<Void> whenStep) {
-        Preparation<Void> nothingToPrepare = new Preparation<>();
-        return createThenStep(nothingToPrepare, whenStep);
+        return createThenStep(nothingToPrepare(), whenStep);
     }
 }

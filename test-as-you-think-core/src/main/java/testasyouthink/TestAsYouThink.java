@@ -25,7 +25,10 @@ package testasyouthink;
 import testasyouthink.GivenWhenThenDsl.PreparationStage.AndGiven;
 import testasyouthink.GivenWhenThenDsl.PreparationStage.Given;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.Then;
+import testasyouthink.GivenWhenThenDsl.VerificationStage.ThenFailure;
+import testasyouthink.GivenWhenThenDsl.VerificationStage.ThenWithoutResult;
 import testasyouthink.function.CheckedFunction;
+import testasyouthink.function.CheckedRunnable;
 import testasyouthink.function.Functions;
 
 import java.util.function.Consumer;
@@ -55,7 +58,7 @@ public class TestAsYouThink {
         return givenSutClass(sutClass).given(givenStep);
     }
 
-    public static ThenWithoutResultStep<Void> when(Runnable whenStep) {
+    public static ThenWithoutResult<Void> when(Runnable whenStep) {
         return thenStepFactory.createThenStep(functions.toCheckedConsumer(whenStep));
     }
 
@@ -66,5 +69,9 @@ public class TestAsYouThink {
     public static <$SystemUnderTest, $Result> CheckedFunction<$SystemUnderTest, $Result> withReturn(
             CheckedFunction<$SystemUnderTest, $Result> whenStep) {
         return whenStep;
+    }
+
+    public static ThenFailure whenOutsideOperatingConditions(CheckedRunnable whenStep) {
+        return thenStepFactory.createThenStep(functions.toFunctionWithThrowableAsResult(whenStep));
     }
 }
