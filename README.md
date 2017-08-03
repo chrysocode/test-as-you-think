@@ -54,7 +54,7 @@ Please use this [permalink](https://goo.gl/XqS4Zf) (goo.gl/XqS4Zf) to share this
 
 *TestAsYouThink* is an open source software library in Java for testing purposes. It is designed as a **fluent API** that will change the way development teams write their unit and integration tests. It aims to take control over the coding practices as **executable guidelines**, from beginners to experts, to get **high-quality tests**. Why should you adopt *TestAsYouThink*?
 - It promotes good coding practices for testing, on writing tests rather than before it with training or after it with code reviews.
-- It enables to give a better structure based on compilable code rather than textual comments to the test code.
+- It makes the testing language ubiquitous to give a better structure based on compilable code rather than textual comments to the test code.
 - It improves test code readability and may bring more conciseness.
 - It brings a functional programming approach to testing that makes reusing test code easier and more natural.
 - It is designed to be easy to use thanks to code completion.
@@ -62,13 +62,13 @@ Please use this [permalink](https://goo.gl/XqS4Zf) (goo.gl/XqS4Zf) to share this
 
 Why to name this API *TestAsYouThink*? The goal of *TestAsYouThink* is to map out the road from a new software functionality idea to its contractualized achievement as an executable test, while preserving product developers against known pitfalls. According to this perspective, any pitfall is likely to extend the developer's journey and to put him off his target. By anticipating such pitfalls, *TestAsYouThink* will be the best way to reduce the distance to proper, durable testing.
 
-Moreover *TestAsYouThink* uses the [Given-When-Then](https://www.agilealliance.org/glossary/gwt/) canvas as a formal guide to compose tests. This canvas originally comes from [Gherkin](https://sites.google.com/site/unclebobconsultingllc/the-truth-about-bdd) that is a grammatical protocol used in the [Behavior-Driven Development](https://en.wikipedia.org/wiki/Behavior-driven_development) method to write test scenarii in a business human-readable way by specifying a software behavior basing on concrete examples. [Given-When-Then](https://www.agilealliance.org/glossary/gwt/) serves to divide any test into the three eponym steps. This canvas is implemented by the *TestAsYouThink* project to deliver a [DSL](https://en.wikipedia.org/wiki/Domain-specific_language) style fluent API.
+Moreover *TestAsYouThink* uses the [Given-When-Then](https://www.agilealliance.org/glossary/gwt/) canvas as a formal guide to compose tests. This canvas originally comes from [Gherkin](https://sites.google.com/site/unclebobconsultingllc/the-truth-about-bdd) that is a grammatical protocol used in the [Behavior-Driven Development](https://en.wikipedia.org/wiki/Behavior-driven_development) method to write test scenarii in a business human-readable way by specifying a software behavior basing on concrete examples. [Given-When-Then](https://www.agilealliance.org/glossary/gwt/) serves to divide any test into the three eponym steps. This canvas is implemented by the *TestAsYouThink* project to deliver a [DSL](https://en.wikipedia.org/wiki/Domain-specific_language) style [fluent API](https://en.wikipedia.org/wiki/Fluent_interface).
 
 # Getting Started
 
 ## Installation
 
-Add *TestAsYouThink* as a dependency to your project with Maven, or download it from [Maven Central](https://search.maven.org/#search%7Cga%7C1%7Ctest%20as%20you%20think).
+Add *TestAsYouThink* as a dependency to your project with [Maven](https://maven.apache.org), or download it from [Maven Central](https://search.maven.org/#search%7Cga%7C1%7Ctest%20as%20you%20think).
 ```xml
 <dependency>
     <groupId>com.github.xapn</groupId>
@@ -245,6 +245,8 @@ import static testasyouthink.TestAsYouThink.when;
 
 when(() -> systemUnderTest.targetMethod(oneOrMoreArguments)).then(...); // or...
 when(systemUnderTest::targetMethod).then(...); // without arguments to be passed to the target method
+
+resultOf(SystemUnderTest::targetMethod).satisfies(requirements); // to chain fluent assertions as explained below
 ```
 
 ### Avoid ambiguous method calls
@@ -377,11 +379,46 @@ givenSutClass(SystemUnderTest.class)
 
 The advantage of *TestAsYouThink* is that the time limit is only applied to the tested event, while [JUnit](https://github.com/junit-team/junit4/wiki/timeout-for-tests) applies its `timeout` to the whole test method with its `@Test` annotation. [JUnit 5](http://junit.org/junit5/docs/snapshot/user-guide/) will propose an `assertTimeout(duration, lambda)` method that returns the lamba result, but such a syntax amalgamates irremediably the expectations and the event.
 
+### Fluent assertions as a chained extension
+
+You never write your assertions without adding [AssertJ](http://joel-costigliola.github.io/assertj) to your projects, don't you? If you have written your test on starting by the event, like this for example...
+```java
+when(SystemUnderTest::targetMethod)
+.then(fellowshipOfTheRing ->
+    assertThat(fellowshipOfTheRing)
+        .hasSize(9)
+        .contains(frodo, sam)
+        .doesNotContain(sauron)
+);
+```
+...maybe you would like to use AssertJ as if it was an extension of *TestAsYouThink*. It is the reason why you can do. It is really useful if the SUT is implicit, when the target method is static for example, and if the assertion scope is narrow. In this case, do not stage your test and write it just as following.
+```java
+import static testasyouthink.TestAsYouThink.resultOf;
+...
+
+resultOf(SystemUnderTest::buildFellowshipOfTheRing)
+    .hasSize(9)
+    .contains(frodo, sam)
+    .doesNotContain(sauron);
+```
+
+This usage is foreseen for very simple tests only. On the contrary, if a test scenario consists of the *Given-When-Then* steps, you should structure the whole test by pointing out each step and wrap the assertions in at least one well identified *Then* step, and maybe different ones according to their matters.
+
+Why use `resultOf()` rather than `assertThat()`? Here the goal is to identify the actual result against the expected result at a glance. According to the assertion API, whether it be [JUnit](http://junit.org/junit5/docs/current/api/org/junit/jupiter/api/Assertions.html) or be [AssertJ](http://joel-costigliola.github.io/assertj/core-8/api/org/assertj/core/api/Assertions.html) or be anything else, the order between the actual and expected results is never the same.
+```java
+assert expectedOrActual.equals(actualOrExpected); // expected or actual at first with the Java assert keyword
+org.junit.Assert.assertEquals(expected, actual); // expected at first with JUnit 4
+org.junit.jupiter.api.Assertions.assertEquals(expected, actual); // expected at first with JUnit 5
+org.testng.AssertJUnit.assertEquals(expected, actual); // expected at first with TestNG
+org.assertj.core.api.Assertions.assertThat(actual).isEqualTo(expected); // actual at first with AssertJ
+```
+As a consequence, if both are inverted, the error message will be wrong and will mislead developers before fixing a failing test. The *TestAsYouThink* `resultOf()` leaves no doubt about which is what by making the testing language ubiquitous.
+
 # Functional approach of testing
 
 The functional programming approach of *TestAsYouThink* applied to testing is a very important advantage for software developers. As the API is designed to receive the test steps as functions, it makes you free to factorize many little pieces of code and to assembly them again as new test scenarii. Whereas the granularity of reuse of most of testing frameworks is based on classes, you will take advantage of the ability of *TestAsYouThink* to play with more and more bricks of code to expand the covered business cases.
 
-You are even able to begin to code a new component behavior directly in a statement lambda as a *When* step inside a test method. If you are already a [Test-Driven Development](https://en.wikipedia.org/wiki/Test-driven_development) aficionado, be aware it might be a second stage on the [TDD](https://en.wikipedia.org/wiki/Test-driven_development) road to improve and expand your practices.
+You are even able to begin to code a new component behavior directly in a statement lambda as a *When* step inside a test method. If you are already a [Test-Driven Development](https://en.wikipedia.org/wiki/Test-driven_development) aficionado, be aware it might be a second stage on the [TDD](https://en.wikipedia.org/wiki/Test-driven_development) road to improve and expand your practices. Make the test pass by writing the least implementation code you can in the test method comes from [TDD as if you meant it](https://cumulative-hypotheses.org/2011/08/30/tdd-as-if-you-meant-it).
 > *TestAsYouThink* is the first and only testing API that naturally supports the "TDD as if you meant it" practice.
 
 # Code Examples
