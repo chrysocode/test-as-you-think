@@ -35,6 +35,7 @@ import testasyouthink.function.CheckedConsumer;
 import testasyouthink.function.CheckedFunction;
 import testasyouthink.function.CheckedQuadriConsumer;
 import testasyouthink.function.CheckedQuadriFunction;
+import testasyouthink.function.CheckedSupplier;
 import testasyouthink.function.CheckedTriConsumer;
 import testasyouthink.function.CheckedTriFunction;
 
@@ -45,13 +46,12 @@ import java.util.function.BiPredicate;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 
 public interface GivenWhenThenDsl {
 
     interface PreparationStage {
 
-        interface Given<$SystemUnderTest> extends When<$SystemUnderTest> {
+        interface Given<$SystemUnderTest> extends GivenArgument<$SystemUnderTest>, When<$SystemUnderTest> {
 
             AndGiven<$SystemUnderTest> given(Runnable givenStep);
 
@@ -60,36 +60,41 @@ public interface GivenWhenThenDsl {
             AndGiven<$SystemUnderTest> given(String fixtureSpecification, Runnable givenStep);
 
             AndGiven<$SystemUnderTest> given(String fixtureSpecification, Consumer<$SystemUnderTest> givenStep);
-
-            <$Argument> AndGivenArgument<$SystemUnderTest, $Argument> givenArgument(Supplier<$Argument> givenStep);
-
-            <$Argument> AndGivenArgument<$SystemUnderTest, $Argument> givenArgument(String description,
-                    Supplier<$Argument> givenStep);
-
-            <$Argument> AndGivenArgument<$SystemUnderTest, $Argument> givenArgument(String description,
-                    $Argument argument);
         }
 
-        interface AndGiven<$SystemUnderTest> extends When<$SystemUnderTest> {
+        interface AndGiven<$SystemUnderTest> extends GivenArgument<$SystemUnderTest>, When<$SystemUnderTest> {
 
             AndGiven<$SystemUnderTest> and(String fixtureSpecification, Runnable givenStep);
 
             AndGiven<$SystemUnderTest> and(String fixtureSpecification, Consumer<$SystemUnderTest> givenStep);
+        }
 
-            <$Argument> AndGivenArgument<$SystemUnderTest, $Argument> givenArgument(Supplier<$Argument> givenStep);
+        interface GivenArgument<$SystemUnderTest> {
+
+            <$Argument> AndGivenArgument<$SystemUnderTest, $Argument> givenArgument(
+                    CheckedSupplier<$Argument> givenStep);
+
+            <$Argument> AndGivenArgument<$SystemUnderTest, $Argument> givenArgument(String description,
+                    CheckedSupplier<$Argument> givenStep);
 
             <$Argument> AndGivenArgument<$SystemUnderTest, $Argument> givenArgument(String description,
                     $Argument argument);
+
+            <$Argument> AndGivenArgument<$SystemUnderTest, $Argument> givenArgument(
+                    Class<$Argument> mutableArgumentClass, Consumer<$Argument> givenStep);
         }
 
         interface AndGivenArgument<$SystemUnderTest, $Argument> extends WhenApplyingOneArgument<$SystemUnderTest,
                 $Argument> {
 
             <$Argument2> AndGivenTwoArguments<$SystemUnderTest, $Argument, $Argument2> andArgument(
-                    Supplier<$Argument2> givenStep);
+                    CheckedSupplier<$Argument2> givenStep);
+
+            <$Argument2> AndGivenTwoArguments<$SystemUnderTest, $Argument, $Argument2> andArgument(
+                    Class<$Argument2> mutableArgumentClass, Consumer<$Argument2> givenStep);
 
             <$Argument2> AndGivenTwoArguments<$SystemUnderTest, $Argument, $Argument2> andArgument(String description,
-                    Supplier<$Argument2> givenStep);
+                    CheckedSupplier<$Argument2> givenStep);
 
             <$Argument2> AndGivenTwoArguments<$SystemUnderTest, $Argument, $Argument2> andArgument(String description,
                     $Argument2 argument);
@@ -99,10 +104,13 @@ public interface GivenWhenThenDsl {
                 WhenApplyingTwoArguments<$SystemUnderTest, $Argument1, $Argument2> {
 
             <$Argument3> WhenApplyingThreeArguments<$SystemUnderTest, $Argument1, $Argument2, $Argument3> andArgument(
-                    Supplier<$Argument3> givenStep);
+                    CheckedSupplier<$Argument3> givenStep);
 
             <$Argument3> WhenApplyingThreeArguments<$SystemUnderTest, $Argument1, $Argument2, $Argument3> andArgument(
-                    String description, Supplier<$Argument3> givenStep);
+                    Class<$Argument3> mutableArgumentClass, Consumer<$Argument3> givenStep);
+
+            <$Argument3> WhenApplyingThreeArguments<$SystemUnderTest, $Argument1, $Argument2, $Argument3> andArgument(
+                    String description, CheckedSupplier<$Argument3> givenStep);
 
             <$Argument3> WhenApplyingThreeArguments<$SystemUnderTest, $Argument1, $Argument2, $Argument3> andArgument(
                     String description, $Argument3 argument);
@@ -251,17 +259,18 @@ public interface GivenWhenThenDsl {
 
         interface ThenFailure {
 
-            ThenFailureWithExpectedException thenItFails();
+            AndThenFailure thenItFails();
         }
 
-        interface ThenFailureWithExpectedException {
+        interface AndThenFailure {
 
-            ThenFailureWithExpectedMessage becauseOf(Class<? extends Throwable> expectedThrowableClass);
-        }
+            AndThenFailure becauseOf(Class<? extends Throwable> expectedThrowableClass);
 
-        interface ThenFailureWithExpectedMessage {
+            AndThenFailure withMessage(String expectedMessage);
 
-            void withMessage(String expectedMessage);
+            AndThenFailure havingCause(Class<? extends Throwable> expectedCauseClass);
+
+            AndThenFailure withCauseMessage(String expectedMessage);
         }
     }
 }

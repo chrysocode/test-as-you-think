@@ -20,19 +20,27 @@
  * #L%
  */
 
-package testasyouthink.fixture;
+package testasyouthink.preparation;
 
-public class ExpectedException extends Exception {
+import java.util.function.Supplier;
 
-    public ExpectedException() {
-        super();
+enum SutPreparation {
+
+    INSTANCE;
+
+    <$SystemUnderTest> Supplier<$SystemUnderTest> buildSutSupplier($SystemUnderTest systemUnderTest) {
+        return () -> systemUnderTest;
     }
 
-    public ExpectedException(String message) {
-        super(message);
-    }
-
-    public ExpectedException(String message, Throwable cause) {
-        super(message, cause);
+    <$SystemUnderTest> Supplier<$SystemUnderTest> buildSutSupplier(Class<$SystemUnderTest> sutClass) {
+        return () -> {
+            $SystemUnderTest sut;
+            try {
+                sut = sutClass.newInstance();
+            } catch (Exception exception) {
+                throw new PreparationError("Fails to instantiate the system under test!", exception);
+            }
+            return sut;
+        };
     }
 }

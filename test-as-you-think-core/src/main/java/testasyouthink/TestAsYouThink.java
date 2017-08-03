@@ -22,11 +22,16 @@
 
 package testasyouthink;
 
+import testasyouthink.GivenWhenThenDsl.PreparationStage.AndGiven;
 import testasyouthink.GivenWhenThenDsl.PreparationStage.Given;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.Then;
+import testasyouthink.GivenWhenThenDsl.VerificationStage.ThenFailure;
+import testasyouthink.GivenWhenThenDsl.VerificationStage.ThenWithoutResult;
 import testasyouthink.function.CheckedFunction;
+import testasyouthink.function.CheckedRunnable;
 import testasyouthink.function.Functions;
 
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class TestAsYouThink {
@@ -40,15 +45,20 @@ public class TestAsYouThink {
         return new GivenWhenSteps<>(systemUnderTest);
     }
 
-    public static <$SystemUnderTest> Given<$SystemUnderTest> givenSutClass(Class<$SystemUnderTest> sutClass) {
-        try {
-            return new GivenWhenSteps<>(sutClass.newInstance());
-        } catch (Exception exception) {
-            throw new RuntimeException(exception.getMessage(), exception);
-        }
+    public static <$SystemUnderTest> Given<$SystemUnderTest> givenSut(Supplier<$SystemUnderTest> givenSutStep) {
+        return new GivenWhenSteps<>(givenSutStep);
     }
 
-    public static ThenWithoutResultStep<Void> when(Runnable whenStep) {
+    public static <$SystemUnderTest> Given<$SystemUnderTest> givenSutClass(Class<$SystemUnderTest> sutClass) {
+        return new GivenWhenSteps<>(sutClass);
+    }
+
+    public static <$SystemUnderTest> AndGiven<$SystemUnderTest> givenSut(Class<$SystemUnderTest> sutClass,
+            Consumer<$SystemUnderTest> givenStep) {
+        return givenSutClass(sutClass).given(givenStep);
+    }
+
+    public static ThenWithoutResult<Void> when(Runnable whenStep) {
         return thenStepFactory.createThenStep(functions.toCheckedConsumer(whenStep));
     }
 
@@ -59,5 +69,9 @@ public class TestAsYouThink {
     public static <$SystemUnderTest, $Result> CheckedFunction<$SystemUnderTest, $Result> withReturn(
             CheckedFunction<$SystemUnderTest, $Result> whenStep) {
         return whenStep;
+    }
+
+    public static ThenFailure whenOutsideOperatingConditions(CheckedRunnable whenStep) {
+        return thenStepFactory.createThenStep(functions.toFunctionWithThrowableAsResult(whenStep));
     }
 }

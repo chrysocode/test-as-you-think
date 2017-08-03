@@ -20,19 +20,11 @@
  * #L%
  */
 
-package testasyouthink.fixture;
+package testasyouthink.preparation;
 
-public class ExpectedException extends Exception {
+public class PreparationError extends Error {
 
-    public ExpectedException() {
-        super();
-    }
-
-    public ExpectedException(String message) {
-        super(message);
-    }
-
-    public ExpectedException(String message, Throwable cause) {
+    public PreparationError(String message, Throwable cause) {
         super(message, cause);
     }
 }

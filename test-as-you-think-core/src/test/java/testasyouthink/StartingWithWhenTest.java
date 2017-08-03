@@ -25,15 +25,24 @@ package testasyouthink;
 import org.junit.Test;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import testasyouthink.fixture.ExpectedException;
 import testasyouthink.fixture.GivenWhenThenDefinition;
 import testasyouthink.fixture.SystemUnderTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static testasyouthink.TestAsYouThink.when;
+import static testasyouthink.TestAsYouThink.whenOutsideOperatingConditions;
 
 public class StartingWithWhenTest {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(StartingWithWhenTest.class);
 
     @Test
     public void should_start_with_when_given_a_void_method() {
@@ -77,5 +86,36 @@ public class StartingWithWhenTest {
                 .verify(gwtMock)
                 .thenTheActualResultIsInKeepingWithTheExpectedResult();
         inOrder.verifyNoMoreInteractions();
+    }
+
+    @Test
+    public void should_verify_an_expected_failure_by_starting_by_the_when_step() throws Throwable {
+        //GIVEN
+        SystemUnderTest systemUnderTestMock = mock(SystemUnderTest.class);
+        when(systemUnderTestMock.nonVoidMethodWithThrowsClause()).thenThrow(ExpectedException.class);
+
+        // WHEN
+        whenOutsideOperatingConditions(systemUnderTestMock::nonVoidMethodWithThrowsClause).thenItFails();
+
+        // THEN
+        verify(systemUnderTestMock).nonVoidMethodWithThrowsClause();
+        verifyNoMoreInteractions(systemUnderTestMock);
+    }
+
+    @Test
+    public void should_fail_to_verify_a_failure_by_starting_by_the_when_step() throws Throwable {
+        //GIVEN
+        SystemUnderTest systemUnderTestMock = mock(SystemUnderTest.class);
+        when(systemUnderTestMock.nonVoidMethodWithThrowsClause()).thenReturn("expected result");
+
+        // WHEN
+        Throwable thrown = catchThrowable(() -> whenOutsideOperatingConditions(
+                systemUnderTestMock::nonVoidMethodWithThrowsClause).thenItFails());
+
+        // THEN
+        LOGGER.debug("Stack trace", thrown);
+        assertThat(thrown).isInstanceOf(AssertionError.class);
+        verify(systemUnderTestMock).nonVoidMethodWithThrowsClause();
+        verifyNoMoreInteractions(systemUnderTestMock);
     }
 }

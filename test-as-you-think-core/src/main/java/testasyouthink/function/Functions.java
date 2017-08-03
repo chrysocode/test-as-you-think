@@ -59,57 +59,69 @@ public enum Functions {
             Throwable result = null;
             try {
                 checkedConsumer.accept(toBeConsumed);
-            } catch (Throwable throwable) {
-                result = throwable;
+            } catch (Throwable thrown) {
+                result = thrown;
             }
             return result;
         };
     }
 
-    public <$Value> Supplier<$Value> toSupplier($Value value) {
+    public CheckedFunction<Void, Throwable> toFunctionWithThrowableAsResult(CheckedRunnable whenStep) {
+        return Void -> {
+            try {
+                whenStep.run();
+            } catch (Throwable thrown) {
+                return thrown;
+            }
+            return null;
+        };
+    }
+
+    public <$Value> CheckedSupplier<$Value> toCheckedSupplier($Value value) {
         return () -> value;
     }
 
     public <$Target, $Argument, $Result> CheckedFunction<$Target, $Result> toFunction(
-            CheckedBiFunction<$Target, $Argument, $Result> biFunction, Queue<Supplier> arguments) {
+            CheckedBiFunction<$Target, $Argument, $Result> biFunction, Queue<CheckedSupplier> arguments) {
         return target -> biFunction.apply(target, ($Argument) arguments
                 .remove()
                 .get());
     }
 
     public <$Target, $Argument1, $Argument2, $Result> CheckedFunction<$Target, $Result> toFunction(
-            CheckedTriFunction<$Target, $Argument1, $Argument2, $Result> triFunction, Queue<Supplier> arguments) {
+            CheckedTriFunction<$Target, $Argument1, $Argument2, $Result> triFunction,
+            Queue<CheckedSupplier> arguments) {
         return toFunction(toBiFunction(triFunction, arguments), arguments);
     }
 
     public <$Target, $Argument1, $Argument2, $Argument3, $Result> CheckedFunction<$Target, $Result> toFunction(
             CheckedQuadriFunction<$Target, $Argument1, $Argument2, $Argument3, $Result> quadriFunction,
-            Queue<Supplier> arguments) {
+            Queue<CheckedSupplier> arguments) {
         return toFunction(toBiFunction(toTriFunction(quadriFunction, arguments), arguments), arguments);
     }
 
     public <$Target, $Argument> CheckedConsumer<$Target> toConsumer(CheckedBiConsumer<$Target, $Argument> biConsumer,
-            Queue<Supplier> arguments) {
+            Queue<CheckedSupplier> arguments) {
         return target -> biConsumer.accept(target, ($Argument) arguments
                 .remove()
                 .get());
     }
 
     public <$Target, $Argument1, $Argument2> CheckedConsumer<$Target> toConsumer(
-            CheckedTriConsumer<$Target, $Argument1, $Argument2> triConsumer, Queue<Supplier> arguments) {
+            CheckedTriConsumer<$Target, $Argument1, $Argument2> triConsumer, Queue<CheckedSupplier> arguments) {
         return toConsumer(toBiConsumer(triConsumer, arguments), arguments);
     }
 
     public <$Target, $Argument1, $Argument2, $Argument3> CheckedConsumer<$Target> toConsumer(
             CheckedQuadriConsumer<$Target, $Argument1, $Argument2, $Argument3> quadriConsumer,
-            Queue<Supplier> arguments) {
+            Queue<CheckedSupplier> arguments) {
         return toConsumer(toBiConsumer(toTriConsumer(quadriConsumer, arguments), arguments), arguments);
     }
 
     static class ConsumerUnitTransformation {
 
         static <$Target, $Argument1, $Argument2> CheckedBiConsumer<$Target, $Argument1> toBiConsumer(
-                CheckedTriConsumer<$Target, $Argument1, $Argument2> triConsumer, Queue<Supplier> arguments) {
+                CheckedTriConsumer<$Target, $Argument1, $Argument2> triConsumer, Queue<CheckedSupplier> arguments) {
             return (target, argument1) -> triConsumer.accept(target, argument1, ($Argument2) arguments
                     .remove()
                     .get());
@@ -118,7 +130,7 @@ public enum Functions {
         static <$Target, $Argument1, $Argument2, $Argument3> CheckedTriConsumer<$Target, $Argument1, $Argument2>
         toTriConsumer(
                 CheckedQuadriConsumer<$Target, $Argument1, $Argument2, $Argument3> quadriConsumer,
-                Queue<Supplier> arguments) {
+                Queue<CheckedSupplier> arguments) {
             return (target, argument1, argument2) -> quadriConsumer.accept(target, argument1, argument2,
                     ($Argument3) arguments
                             .remove()
@@ -129,7 +141,8 @@ public enum Functions {
     static class FunctionUnitTransformation {
 
         static <$Target, $Argument1, $Argument2, $Result> CheckedBiFunction<$Target, $Argument1, $Result> toBiFunction(
-                CheckedTriFunction<$Target, $Argument1, $Argument2, $Result> triFunction, Queue<Supplier> arguments) {
+                CheckedTriFunction<$Target, $Argument1, $Argument2, $Result> triFunction,
+                Queue<CheckedSupplier> arguments) {
             return (target, argument1) -> triFunction.apply(target, argument1, ($Argument2) arguments
                     .remove()
                     .get());
@@ -138,7 +151,7 @@ public enum Functions {
         static <$Target, $Argument1, $Argument2, $Argument3, $Result> CheckedTriFunction<$Target, $Argument1,
                 $Argument2, $Result> toTriFunction(
                 CheckedQuadriFunction<$Target, $Argument1, $Argument2, $Argument3, $Result> quadriFunction,
-                Queue<Supplier> arguments) {
+                Queue<CheckedSupplier> arguments) {
             return (target, argument1, argument2) -> quadriFunction.apply(target, argument1, argument2,
                     ($Argument3) arguments
                             .remove()

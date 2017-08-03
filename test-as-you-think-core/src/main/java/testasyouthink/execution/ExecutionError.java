@@ -20,19 +20,11 @@
  * #L%
  */
 
-package testasyouthink.fixture;
+package testasyouthink.execution;
 
-public class ExpectedException extends Exception {
+public class ExecutionError extends Error {
 
-    public ExpectedException() {
-        super();
-    }
-
-    public ExpectedException(String message) {
-        super(message);
-    }
-
-    public ExpectedException(String message, Throwable cause) {
+    public ExecutionError(String message, Throwable cause) {
         super(message, cause);
     }
 }

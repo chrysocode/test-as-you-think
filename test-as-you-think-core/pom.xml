@@ -5,11 +5,11 @@
     <parent>
         <groupId>com.github.xapn</groupId>
         <artifactId>test-as-you-think-project</artifactId>
-        <version>0.4.2</version>
+        <version>0.5</version>
     </parent>
 
     <artifactId>test-as-you-think-core</artifactId>
-    <name>${project.groupId}:${project.artifactId}:${project.version}:${project.packaging}</name>
+    <name>TestAsYouThink Core</name>
     <description>The TestAsYouThink Core is a DSL style fluent API in Java to promote good coding practices in tests.
     </description>
     <url>https://xapn.github.io/test-as-you-think</url>
@@ -32,6 +32,55 @@
         </pluginManagement>
     </build>
 
+    <profiles>
+        <profile>
+            <id>maven-only</id>
+            <activation>
+                <property>
+                    <name>!idea.version</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <systemPropertyVariables>
+                                <logback.configurationFile>
+                                    ${project.basedir}/src/test/resources/logback-maven.xml
+                                </logback.configurationFile>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>intellij-only</id>
+            <activation>
+                <property>
+                    <name>idea.version</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <systemPropertyVariables>
+                                <logback.configurationFile>
+                                    ${project.basedir}/src/test/resources/logback-ide.xml
+                                </logback.configurationFile>
+                            </systemPropertyVariables>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
@@ -49,6 +98,30 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-annotations -->
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-annotations</artifactId>
+            <version>3.5.6-Final</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>*</groupId>
+                    <artifactId>*</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>

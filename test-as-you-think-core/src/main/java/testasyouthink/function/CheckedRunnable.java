@@ -20,19 +20,10 @@
  * #L%
  */
 
-package testasyouthink.fixture;
+package testasyouthink.function;
 
-public class ExpectedException extends Exception {
+@FunctionalInterface
+public interface CheckedRunnable {
 
-    public ExpectedException() {
-        super();
-    }
-
-    public ExpectedException(String message) {
-        super(message);
-    }
-
-    public ExpectedException(String message, Throwable cause) {
-        super(message, cause);
-    }
+    void run() throws Throwable;
 }

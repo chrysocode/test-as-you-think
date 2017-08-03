@@ -20,19 +20,9 @@
  * #L%
  */
 
-package testasyouthink.fixture;
+package testasyouthink.function;
 
-public class ExpectedException extends Exception {
+public interface CheckedSupplier<R> {
 
-    public ExpectedException() {
-        super();
-    }
-
-    public ExpectedException(String message) {
-        super(message);
-    }
-
-    public ExpectedException(String message, Throwable cause) {
-        super(message, cause);
-    }
+    R get() throws Throwable;
 }

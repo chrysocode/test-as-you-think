@@ -22,6 +22,9 @@
 
 package testasyouthink;
 
+import testasyouthink.execution.Event;
+import testasyouthink.preparation.Preparation;
+
 class GivenWhenContext<$SystemUnderTest, $Result> {
 
     private final Preparation<$SystemUnderTest> preparation;
@@ -42,6 +45,8 @@ class GivenWhenContext<$SystemUnderTest, $Result> {
     }
 
     $SystemUnderTest getSystemUnderTest() {
-        return preparation.getSystemUnderTest();
+        return preparation
+                .supplySut()
+                .get();
     }
 }

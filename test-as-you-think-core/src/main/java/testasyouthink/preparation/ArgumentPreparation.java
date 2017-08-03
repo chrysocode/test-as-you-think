@@ -20,19 +20,28 @@
  * #L%
  */
 
-package testasyouthink.fixture;
+package testasyouthink.preparation;
 
-public class ExpectedException extends Exception {
+import testasyouthink.function.CheckedSupplier;
 
-    public ExpectedException() {
-        super();
-    }
+import java.util.function.Consumer;
 
-    public ExpectedException(String message) {
-        super(message);
-    }
+enum ArgumentPreparation {
 
-    public ExpectedException(String message, Throwable cause) {
-        super(message, cause);
+    INSTANCE;
+
+    <$Argument> CheckedSupplier<$Argument> buildMutableArgumentSupplier(Class<$Argument> mutableArgumentClass,
+            Consumer<$Argument> givenStep) {
+        return () -> {
+            $Argument argument;
+            try {
+                argument = mutableArgumentClass.newInstance();
+            } catch (InstantiationException | IllegalAccessException exception) {
+                throw new PreparationError("Fails to instantiate the argument of the " //
+                        + mutableArgumentClass.getName() + " type!", exception);
+            }
+            givenStep.accept(argument);
+            return argument;
+        };
     }
 }

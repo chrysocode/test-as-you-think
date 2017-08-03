@@ -22,7 +22,9 @@
 
 package testasyouthink.fixture;
 
-import static org.easymock.EasyMock.*;
+import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.replay;
+import static org.easymock.EasyMock.strictMock;
 
 public class GivenWhenThenDefinition {
 

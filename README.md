@@ -1,5 +1,7 @@
 What you think is what you test... Not yet another testing API or framework!
 
+![TestAsYouThink](assets/images/TestAsYouThink.png)
+
 Matter | Badges
 ------ | ------
 Software factory    | [![Maven Central](https://img.shields.io/maven-central/v/com.github.xapn/test-as-you-think-project.svg)](http://search.maven.org/#search%7Cga%7C1%7Ctest-as-you-think) master: { [![Build Status for master](https://travis-ci.org/xapn/test-as-you-think.svg?branch=master)](https://travis-ci.org/xapn/test-as-you-think), [![codecov](https://codecov.io/gh/xapn/test-as-you-think/branch/master/graph/badge.svg)](https://codecov.io/gh/xapn/test-as-you-think) } develop: { [![Build Status for develop](https://travis-ci.org/xapn/test-as-you-think.svg?branch=develop)](https://travis-ci.org/xapn/test-as-you-think), [![codecov](https://codecov.io/gh/xapn/test-as-you-think/branch/develop/graph/badge.svg)](https://codecov.io/gh/xapn/test-as-you-think/branch/develop) } [![Javadocs](http://javadoc.io/badge/com.github.xapn/test-as-you-think-core.svg?color=orange)](http://javadoc.io/doc/com.github.xapn/test-as-you-think-core)
@@ -7,7 +9,7 @@ Source code         | [![LoC](https://tokei.rs/b1/github/xapn/test-as-you-think?
 Licensing           | [![License: GNU LGPL v3](https://img.shields.io/badge/License-LGPL%20v3-blue.svg)](http://www.gnu.org/licenses/lgpl-3.0) [![GitHub contributors](https://img.shields.io/github/contributors/xapn/test-as-you-think.svg)](https://github.com/xapn/test-as-you-think/graphs/contributors)
 Social coding       | [![Twitter URL](https://img.shields.io/twitter/url/https/github.com/xapn/test-as-you-think.svg?style=social)](https://twitter.com/intent/tweet?text=Wow:&url=https%3A%2F%2Fgoo.gl%2FXqS4Zf) [![Twitter Follow](https://img.shields.io/twitter/follow/xengineer.svg?style=social&label=Follow)](https://twitter.com/intent/follow?screen_name=xengineer) [![GitHub stars](https://img.shields.io/github/stars/xapn/test-as-you-think.svg?style=social&label=Star)](https://github.com/xapn/test-as-you-think/stargazers) [![GitHub watchers](https://img.shields.io/github/watchers/xapn/test-as-you-think.svg?style=social&label=Watch)](https://github.com/xapn/test-as-you-think/watchers) [![GitHub forks](https://img.shields.io/github/forks/xapn/test-as-you-think.svg?style=social&label=Fork)](https://github.com/xapn/test-as-you-think/network)
 
-Please use this [permalink](https://goo.gl/XqS4Zf) to share this web page and to get [analytics data](https://goo.gl/#analytics/goo.gl/XqS4Zf/all_time). You can also use this [QR code](https://chart.googleapis.com/chart?cht=qr&chs=150x150&choe=UTF-8&chld=H&chl=https://goo.gl/XqS4Zf).
+Please use this [permalink](https://goo.gl/XqS4Zf) (goo.gl/XqS4Zf) to share this web page and to get [analytics data](https://goo.gl/#analytics/goo.gl/XqS4Zf/all_time). You can also use this [QR code](https://chart.googleapis.com/chart?cht=qr&chs=150x150&choe=UTF-8&chld=H&chl=https://goo.gl/XqS4Zf).
 ![QR code](https://chart.googleapis.com/chart?cht=qr&chs=150x150&choe=UTF-8&chld=H&chl=https://goo.gl/XqS4Zf)
 
 <!-- toc -->
@@ -18,22 +20,26 @@ Please use this [permalink](https://goo.gl/XqS4Zf) to share this web page and to
   * [Basics](#basics)
   * [Test Fixtures](#test-fixtures)
     + [Separation of concerns with multiple Given steps](#separation-of-concerns-with-multiple-given-steps)
-    + [Specifying fixtures](#specifying-fixtures)
+    + [Specifying test fixtures](#specifying-test-fixtures)
+    + [System under test as a test fixture](#system-under-test-as-a-test-fixture)
+    + [Method arguments as a test fixture](#method-arguments-as-a-test-fixture)
   * [Event](#event)
     + [Starting with the event](#starting-with-the-event)
     + [Avoid ambiguous method calls](#avoid-ambiguous-method-calls)
   * [Expectations](#expectations)
     + [Separation of concerns with multiple Then steps](#separation-of-concerns-with-multiple-then-steps)
-    + [Expectations as predicates](#expectations-as-predicates)
     + [Specifying expectations](#specifying-expectations)
+    + [Expectations as predicates](#expectations-as-predicates)
     + [Failures](#failures)
       - [Expected failures](#expected-failures)
       - [Unexpected failures](#unexpected-failures)
     + [Time limit](#time-limit)
+- [Functional approach of testing](#functional-approach-of-testing)
 - [Code Examples](#code-examples)
 - [Releases](#releases)
   * [Versioning](#versioning)
   * [Release Notes](#release-notes)
+    + [0.5 version: System under test as a test fixture](#05-version-system-under-test-as-a-test-fixture)
     + [0.4.2 version: Cobertura as a code coverage analyzer](#042-version-cobertura-as-a-code-coverage-analyzer)
     + [0.4.1 version: Travis CI as a continuous integration platform](#041-version-travis-ci-as-a-continuous-integration-platform)
     + [0.4 version: Time limit as an expectation](#04-version-time-limit-as-an-expectation)
@@ -47,11 +53,12 @@ Please use this [permalink](https://goo.gl/XqS4Zf) to share this web page and to
 # Fluent testing and added value
 
 *TestAsYouThink* is an open source software library in Java for testing purposes. It is designed as a **fluent API** that will change the way development teams write their unit and integration tests. It aims to take control over the coding practices as **executable guidelines**, from beginners to experts, to get **high-quality tests**. Why should you adopt *TestAsYouThink*?
-- It promotes good coding practices for testing on writing tests rather than before it with training or after it with code reviews.
+- It promotes good coding practices for testing, on writing tests rather than before it with training or after it with code reviews.
 - It enables to give a better structure based on compilable code rather than textual comments to the test code.
 - It improves test code readability and may bring more conciseness.
+- It brings a functional programming approach to testing that makes reusing test code easier and more natural.
 - It is designed to be easy to use thanks to code completion.
-- It builds new original features to test execution.
+- It builds new original features to test execution from version to version.
 
 Why to name this API *TestAsYouThink*? The goal of *TestAsYouThink* is to map out the road from a new software functionality idea to its contractualized achievement as an executable test, while preserving product developers against known pitfalls. According to this perspective, any pitfall is likely to extend the developer's journey and to put him off his target. By anticipating such pitfalls, *TestAsYouThink* will be the best way to reduce the distance to proper, durable testing.
 
@@ -66,20 +73,20 @@ Add *TestAsYouThink* as a dependency to your project with Maven, or download it 
 <dependency>
     <groupId>com.github.xapn</groupId>
     <artifactId>test-as-you-think-core</artifactId>
-    <version>0.4</version>
+    <version>0.5</version>
 </dependency>
 ```
 
 ## Basics
 
-Here is the minimal syntax to implement your test methods for a `SystemUnderTest` class.
+Here is the minimal syntax to implement your test methods as a *Given-When-Then* scenario.
 ```java
-givenSutClass(SystemUnderTest.class)
+givenSut(() -> {})
 .when(sut -> {})
 .then(() -> {});
 ```
 
-Let us complete the previous scenario with a very simple example of what you can do, while testing a non-void method of your system under test (abbreviated as SUT later).
+Let us complete the previous scenario with a very simple example of what you can do, while testing a non-void method of your system under test (abbreviated as SUT later), the `SystemUnderTest` class here.
 ```java
 import static testasyouthink.TestAsYouThink.givenSutClass;
 ...
@@ -100,7 +107,7 @@ givenSutClass(SystemUnderTest.class)
 
 Notice that:
 - the `TestAsYouThink` class is the only one end point of the API;
-- any *Given-When-Then* step can be implemented by a lambda or a method reference;
+- any *Given-When-Then* step can be implemented by a lambda or a method reference, so that the granularity of reuse is function, not class;
 - you manipule the same SUT type from the beginning to the end, because the `sut` type is determined during the *Given* step, until the end;
 - there is no need to instantiate the `sut` object, even if it is allowed by the `givenSut(sutInstance)` alternate end point method, as below;
 - the call to any `given()` method is optional;
@@ -125,6 +132,16 @@ givenSut(systemUnderTest)
 
 ## Test Fixtures
 
+A [test fixture](https://en.wikipedia.org/wiki/Test_fixture) is a predictable state of a set of objects or values to prepare a running test at the beginning of its lifecycle. The goal of any test fixture is to make tests repeatable. What follows can be part of a text fixture:
+- the system under test (SUT),
+- its collaborators or the test doubles of its collaborators (like stubs or mocks),
+- its other dependencies,
+- any input data, like an argument passed to the tested method of the SUT.
+
+Through misuse of language, an object such as the previous ones is often called a test fixture.
+
+Rather than mixing all fixtures in one monolith of code, *TestAsYouThink* applies the separation of concerns to fixtures with multiple *Given* steps.
+
 ### Separation of concerns with multiple Given steps
 
 If your fixtures preparation may be divided into several blocks, you can make them materialize.
@@ -132,53 +149,86 @@ If your fixtures preparation may be divided into several blocks, you can make th
 givenSutClass(SystemUnderTest.class)
 .given(() -> {
     // the first Given step
-}).and(() -> { 
-    // another Given step
+})
+.and(() -> {
+    // another Given step to prepare some extra test fixtures
 }) // to be repeated as many times as you need
-.when(sut -> {})
-.then(result -> {});
+.when(sut -> {}).then(() -> {});
 ```
 
-For example, you can separate the preparation between the SUT and the other fixtures.
+### Specifying test fixtures
+
+You are encouraged to explain your intentions to share and remember them by specifying your test fixtures. What makes them specific to the current test case?
+```java
+givenSutClass(SystemUnderTest.class)
+.given("a special fixture", () -> {
+    // Where to prepare it.
+})
+.and("another special fixture", () -> {
+    // Where to prepare it.
+}) // to be repeated as many times as you need
+.when(sut -> {}).then(result -> {});
+```
+
+### System under test as a test fixture
+
+You can prepare the SUT in a separate *Given* step.
 ```java
 givenSutClass(SystemUnderTest.class)
 .given(sut -> {
     // SUT preparation in a Given step
-}).and(() -> {
-    // Other fixtures preparation in another Given step
-}).when(sut -> {})
-.then(result -> {});
+})
+.when(sut -> {}).then(() -> {});
 ```
 
-If some fixtures are the arguments of the method to be tested, you may prefer the following alternate syntaxes.
+The same preparation is allowed with a more compact syntax.
+```java
+givenSut(SystemUnderTest.class, sut -> {
+    // SUT preparation at first
+})
+.when(sut -> {}).then(() -> {});
+```
+
+The following other one lets you prepare the SUT even as facing some instantiation constraints.
+```java
+givenSut(() -> {
+    // SUT preparation at first
+    return systemUnderTest;
+})
+.when(sut -> {}).then(() -> {});
+```
+
+### Method arguments as a test fixture
+
+If some fixtures are the arguments of the method to be tested, you may favor the following alternate syntaxes.
 ```java
 givenSutClass(SystemUnderTest.class)
 .givenArgument("simple argument", anyValue)
 .andArgument("argument to be built", () -> {
     // Where this argument is built.
-}).andArgument("argument already ready to be used", DataProvider::choosenDataSet)
-.when(SystemUnderTest::nonVoidMethodWithArguments)
-.then(result -> {});
+})
+.andArgument("argument already ready to be used", DataProvider::choosenDataSet)
+.when(SystemUnderTest::nonVoidMethodWithArguments).then(result -> {});
 ```
-The arguments will be injected as argument values when the method to be tested is called. As you can guess, `Data::choosenDataSet` is a method reference.
+The arguments prepared as test fixtures will be injected as argument values when the method to be tested is called. As you can guess, `Data::choosenDataSet` is a method reference.
 
-### Specifying fixtures
+Moreover, only __three arguments per method at most__ are accepted: it is considered as a maximum to get a good design. Above, you should refactor the SUT code.
 
-You are encouraged to explain your intentions to share and remember them by specifying your test fixtures. What makes both the known state of the SUT and your data set specific to the current test case?
+Instantiate each argument might be a little tedious: let the API do that for you if the argument type is mutable.
 ```java
 givenSutClass(SystemUnderTest.class)
-.given("a SUT in a known state", sut -> {
-    // Put the SUT in a known state.
-}).and("a specific data set", () -> {
-    // Prepare other fixtures.
-}).when(sut -> {})
-.then(result -> {});
+.givenArgument(Argument.class, whatIsSpecial -> {
+    // Where the argument is prepared.
+    whatIsSpecial.setWhatYouNeed(specialValue);
+})
+.when(SystemUnderTest::targetMethodWithArgument).then(result -> {});
 ```
+Notice that the `whatIsSpecial` name must specify the argument and it replaces the previous literal description.
 
 ## Event
 
 You can use different syntaxes to pass the event to the `when()` method:
-- a method reference (`SystemUnderTest::targetMethod`),
+- a method reference (`SystemUnderTest::targetMethod` or `systemUnderTest::targetMethod` where `systemUnderTest` is an instance),
 - a statement lambda (`sut -> { return sut.targetMethod(); }`),
 - an expression lambda (`sut -> sut.targetMethod()`).
 
@@ -226,8 +276,7 @@ givenSutClass(SystemUnderTest.class)
 
 You can separate expectation concerns if needed. The following example separates expectations between the result and the SUT.
 ```java
-givenSutClass(SystemUnderTest.class)
-.when(sut -> { return sut.nonVoidMethod(); })
+givenSutClass(SystemUnderTest.class).when(sut -> { return sut.nonVoidMethod(); })
 .then(result -> {
     // Where the result meets expectations.
 }, sut -> {
@@ -237,8 +286,7 @@ givenSutClass(SystemUnderTest.class)
 
 You can also separate the result expectations in detached blocks.
 ```java
-givenSutClass(SystemUnderTest.class)
-.when(sut -> { return sut.nonVoidMethod(); })
+givenSutClass(SystemUnderTest.class).when(sut -> { return sut.nonVoidMethod(); })
 .then(result -> {
     // an expectation
 }).and(result -> {
@@ -246,29 +294,27 @@ givenSutClass(SystemUnderTest.class)
 });
 ```
 
-### Expectations as predicates
-
-You can write your expectations by providing one or more predicates instead of assertions.
-```java
-givenSutClass(SystemUnderTest.class)
-.when(sut -> { return sut.nonVoidMethod(); })
-.then(result -> { // a predicate related to the result
-    return booleanExpressionAboutResult();
-}, sut -> { // a predicate related to the SUT
-    return booleanExpressionAboutSut();
-});
-```
-
 ### Specifying expectations
 
 You are encouraged to explain the system under test behavior by specifying your expectations. What is the expected behavior in the current situtation?
 ```java
-givenSutClass(SystemUnderTest.class)
-.when(sut -> { ... })
+givenSutClass(SystemUnderTest.class).when(sut -> { ... })
 .then("first specified expectation", result -> {
     // Expectation as specified
 }).and("second specified expectation", result -> {
     // Another expectation as specified
+});
+```
+
+### Expectations as predicates
+
+You can write your expectations by providing one or more predicates instead of assertions.
+```java
+givenSutClass(SystemUnderTest.class).when(sut -> { return sut.nonVoidMethod(); })
+.then(result -> { // a predicate related to the result
+    return booleanExpressionAboutResult();
+}, sut -> { // a predicate related to the SUT
+    return booleanExpressionAboutSut();
 });
 ```
 
@@ -283,12 +329,33 @@ Because the failure testing is an important part of your use cases, you can veri
 givenSutClass(SystemUnderTest.class)
 .whenSutRunsOutsideOperatingConditions(sut -> {
     // where an event causes a failure
-}).thenItFails().becauseOf(ExpectedFailure.class).withMessage("expected message");
+})
+.thenItFails()
+.becauseOf(ExpectedFailure.class)
+.withMessage("expected message");
 ```
+
+Without an explicit SUT, you get:
+```java
+whenOutsideOperatingCondtions(() -> {
+    // where an event causes a failure
+})
+.thenItFails();
+```
+
+You can also verify the cause like follows: `thenItFails().havingCause(ExpectedCause.class).withCauseMessage("expected cause message")`.
 
 #### Unexpected failures
 
-When an unexpected failure occurs - because of a regression for example -, the test fails by raising an `AssertionError`, because the defaut behavior consists of asserting no failure should happen, unless the software developer wants.
+When an unexpected failure occurs - because of a regression for example -, the test fails by raising an `Error`, because the defaut behavior consists of assuming no failure should happen, unless the software developer wants. There is one `Error` type per testing stage as indicated in the table below.
+
+Testing stage | Error type
+------------- | ----------
+Preparation   | `PreparationError`
+Execution     | `ExecutionError`
+Verification  | `AssertionError`
+
+When a test fails, the origin of the raised error becomes the error cause and the stack trace should explain what exactly happened: the first failure points out the testing stage so that you know what kind of error it is, and the second one is the real failure cause.
 
 ### Time limit
 
@@ -298,7 +365,7 @@ givenSutClass(SystemUnderTest.class)
 .when(SystemUnderTest::spendSomeTime)
 .thenSutRepliesWithin(100);
 ```
-By default, the time limit is given in milliseconds. If you want to use another time unit:
+By default, the time limit is given in milliseconds. If you want to use another time unit, simply use the `java.time.Duration` class:
 ```java
 import java.time.Duration;
 ...
@@ -308,7 +375,14 @@ givenSutClass(SystemUnderTest.class)
 .thenSutRepliesWithin(Duration.ofMinutes(3);
 ```
 
-The advantage of TestAsYouThink is that the time limit is only applied to the tested event, while [JUnit](https://github.com/junit-team/junit4/wiki/timeout-for-tests) applies its `timeout` to the whole test method with its `@Test` annotation. [JUnit 5](http://junit.org/junit5/docs/snapshot/user-guide/) will propose an `assertTimeout(duration, lambda)` method that returns the lamba result, but such a syntax amalgamates irremediably the expectations and the event.
+The advantage of *TestAsYouThink* is that the time limit is only applied to the tested event, while [JUnit](https://github.com/junit-team/junit4/wiki/timeout-for-tests) applies its `timeout` to the whole test method with its `@Test` annotation. [JUnit 5](http://junit.org/junit5/docs/snapshot/user-guide/) will propose an `assertTimeout(duration, lambda)` method that returns the lamba result, but such a syntax amalgamates irremediably the expectations and the event.
+
+# Functional approach of testing
+
+The functional programming approach of *TestAsYouThink* applied to testing is a very important advantage for software developers. As the API is designed to receive the test steps as functions, it makes you free to factorize many little pieces of code and to assembly them again as new test scenarii. Whereas the granularity of reuse of most of testing frameworks is based on classes, you will take advantage of the ability of *TestAsYouThink* to play with more and more bricks of code to expand the covered business cases.
+
+You are even able to begin to code a new component behavior directly in a statement lambda as a *When* step inside a test method. If you are already a [Test-Driven Development](https://en.wikipedia.org/wiki/Test-driven_development) aficionado, be aware it might be a second stage on the [TDD](https://en.wikipedia.org/wiki/Test-driven_development) road to improve and expand your practices.
+> *TestAsYouThink* is the first and only testing API that naturally supports the "TDD as if you meant it" practice.
 
 # Code Examples
 
@@ -323,6 +397,14 @@ You can find concrete examples of use in the following repositories.
 To understand how version numbers change, please read the [Semantic Versioning](http://semver.org/).
 
 ## Release Notes
+
+### 0.5 version: System under test as a test fixture
+
+- Prepare the system under test as any other test fixture.
+- Prepare the arguments from their types.
+- Improve errors: each testing stage has its own type of error, and the real failure becomes the cause of the error.
+- Verify the cause of a failure with its message.
+- Verify failures without having preparation previously.
 
 ### 0.4.2 version: Cobertura as a code coverage analyzer
 
@@ -371,4 +453,4 @@ To understand how version numbers change, please read the [Semantic Versioning](
 
 # License
 
-*TestAsYouThink* is distributed under the GNU LGPLv3 license. The LGPLv3 license is included in the LICENSE.txt file. More information about this license is available at http://www.gnu.org.
+*TestAsYouThink* is distributed under the GNU LGPLv3 license. The LGPLv3 license is included in the LICENSE.txt file. More information about this license is available at [GNU.org](http://www.gnu.org).
