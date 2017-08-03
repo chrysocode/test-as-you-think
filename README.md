@@ -398,6 +398,10 @@ To understand how version numbers change, please read the [Semantic Versioning](
 
 ## Release Notes
 
+### 0.6 version: Fluent assertions as if you meant AssertJ
+
+- Use the [AssertJ](http://joel-costigliola.github.io/assertj) assertions like an extension of the *TestAsYouThink* API with its `resultOf()` end point.
+
 ### 0.5 version: System under test as a test fixture
 
 - Prepare the system under test as any other test fixture.
