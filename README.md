@@ -1,5 +1,7 @@
 What you think is what you test... Not yet another testing API or framework!
 
+![TestAsYouThink](assets/images/TestAsYouThink.png)
+
 Matter | Badges
 ------ | ------
 Software factory    | [![Maven Central](https://img.shields.io/maven-central/v/com.github.xapn/test-as-you-think-project.svg)](http://search.maven.org/#search%7Cga%7C1%7Ctest-as-you-think) master: { [![Build Status for master](https://travis-ci.org/xapn/test-as-you-think.svg?branch=master)](https://travis-ci.org/xapn/test-as-you-think), [![codecov](https://codecov.io/gh/xapn/test-as-you-think/branch/master/graph/badge.svg)](https://codecov.io/gh/xapn/test-as-you-think) } develop: { [![Build Status for develop](https://travis-ci.org/xapn/test-as-you-think.svg?branch=develop)](https://travis-ci.org/xapn/test-as-you-think), [![codecov](https://codecov.io/gh/xapn/test-as-you-think/branch/develop/graph/badge.svg)](https://codecov.io/gh/xapn/test-as-you-think/branch/develop) } [![Javadocs](http://javadoc.io/badge/com.github.xapn/test-as-you-think-core.svg?color=orange)](http://javadoc.io/doc/com.github.xapn/test-as-you-think-core)
