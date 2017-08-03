@@ -81,9 +81,6 @@ public interface GivenWhenThenDsl {
                     $Argument argument);
 
             <$Argument> AndGivenArgument<$SystemUnderTest, $Argument> givenArgument(
-                    Class<$Argument> immutableArgumentClass, CheckedFunction<$Argument, $Argument> givenStep);
-
-            <$Argument> AndGivenArgument<$SystemUnderTest, $Argument> givenArgument(
                     Class<$Argument> mutableArgumentClass, Consumer<$Argument> givenStep);
         }
 
@@ -95,9 +92,6 @@ public interface GivenWhenThenDsl {
 
             <$Argument2> AndGivenTwoArguments<$SystemUnderTest, $Argument, $Argument2> andArgument(
                     Class<$Argument2> mutableArgumentClass, Consumer<$Argument2> givenStep);
-
-            <$Argument2> AndGivenTwoArguments<$SystemUnderTest, $Argument, $Argument2> andArgument(
-                    Class<$Argument2> immutableArgumentClass, CheckedFunction<$Argument2, $Argument2> givenStep);
 
             <$Argument2> AndGivenTwoArguments<$SystemUnderTest, $Argument, $Argument2> andArgument(String description,
                     CheckedSupplier<$Argument2> givenStep);
@@ -111,9 +105,6 @@ public interface GivenWhenThenDsl {
 
             <$Argument3> WhenApplyingThreeArguments<$SystemUnderTest, $Argument1, $Argument2, $Argument3> andArgument(
                     CheckedSupplier<$Argument3> givenStep);
-
-            <$Argument3> WhenApplyingThreeArguments<$SystemUnderTest, $Argument1, $Argument2, $Argument3> andArgument(
-                    Class<$Argument3> immutableArgumentClass, CheckedFunction<$Argument3, $Argument3> givenStep);
 
             <$Argument3> WhenApplyingThreeArguments<$SystemUnderTest, $Argument1, $Argument2, $Argument3> andArgument(
                     Class<$Argument3> mutableArgumentClass, Consumer<$Argument3> givenStep);

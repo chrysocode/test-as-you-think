@@ -22,14 +22,13 @@
 
 package testasyouthink;
 
-import testasyouthink.fixture.ExpectedException;
-import testasyouthink.fixture.SystemUnderTest;
-import testasyouthink.fixture.UnexpectedException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import testasyouthink.fixture.ExpectedException;
+import testasyouthink.fixture.SystemUnderTest;
+import testasyouthink.fixture.UnexpectedException;
 
-import static testasyouthink.TestAsYouThink.givenSut;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.easymock.EasyMock.expect;
@@ -37,6 +36,7 @@ import static org.easymock.EasyMock.expectLastCall;
 import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.strictMock;
 import static org.easymock.EasyMock.verify;
+import static testasyouthink.TestAsYouThink.givenSut;
 
 public class ThenFailuresTest {
 

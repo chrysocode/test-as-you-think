@@ -22,16 +22,16 @@
 
 package testasyouthink;
 
-import testasyouthink.fixture.GivenWhenThenDefinition;
-import testasyouthink.fixture.SystemUnderTest;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import testasyouthink.fixture.GivenWhenThenDefinition;
+import testasyouthink.fixture.SystemUnderTest;
 
-import static testasyouthink.TestAsYouThink.givenSutClass;
-import static testasyouthink.fixture.GivenWhenThenDefinition.orderedSteps;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.easymock.EasyMock.verify;
+import static testasyouthink.TestAsYouThink.givenSutClass;
+import static testasyouthink.fixture.GivenWhenThenDefinition.orderedSteps;
 
 public class ThenExpectationAndExpectationTest {
 

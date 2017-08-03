@@ -22,15 +22,17 @@
 
 package testasyouthink;
 
-import testasyouthink.fixture.GivenWhenThenDefinition;
-import testasyouthink.fixture.SystemUnderTest;
 import org.easymock.IMocksControl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import testasyouthink.fixture.GivenWhenThenDefinition;
+import testasyouthink.fixture.SystemUnderTest;
 
+import static org.easymock.EasyMock.createStrictControl;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.expectLastCall;
 import static testasyouthink.TestAsYouThink.givenSut;
-import static org.easymock.EasyMock.*;
 
 public class GivenArgumentsThenFailuresTest {
 

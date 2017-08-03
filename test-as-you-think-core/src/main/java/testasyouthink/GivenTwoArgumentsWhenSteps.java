@@ -27,7 +27,6 @@ import testasyouthink.GivenWhenThenDsl.PreparationStage.AndGivenTwoArguments;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.Then;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.ThenFailure;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.ThenWithoutResult;
-import testasyouthink.function.CheckedFunction;
 import testasyouthink.function.CheckedSupplier;
 import testasyouthink.function.CheckedTriConsumer;
 import testasyouthink.function.CheckedTriFunction;
@@ -50,13 +49,6 @@ public class GivenTwoArgumentsWhenSteps<$SystemUnderTest, $Argument1, $Argument2
     public <$Argument3> WhenApplyingThreeArguments<$SystemUnderTest, $Argument1, $Argument2, $Argument3> andArgument(
             CheckedSupplier<$Argument3> givenStep) {
         preparation.recordGivenStep(givenStep);
-        return new GivenThreeArgumentsWhenSteps<>(preparation);
-    }
-
-    @Override
-    public <$Argument3> WhenApplyingThreeArguments<$SystemUnderTest, $Argument1, $Argument2, $Argument3> andArgument(
-            Class<$Argument3> immutableArgumentClass, CheckedFunction<$Argument3, $Argument3> givenStep) {
-        preparation.recordGivenStep(immutableArgumentClass, givenStep);
         return new GivenThreeArgumentsWhenSteps<>(preparation);
     }
 

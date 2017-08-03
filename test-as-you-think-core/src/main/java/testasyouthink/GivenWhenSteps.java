@@ -94,13 +94,6 @@ public class GivenWhenSteps<$SystemUnderTest> implements Given<$SystemUnderTest>
 
     @Override
     public <$Argument> AndGivenArgument<$SystemUnderTest, $Argument> givenArgument(
-            Class<$Argument> immutableArgumentClass, CheckedFunction<$Argument, $Argument> givenStep) {
-        preparation.recordGivenStep(immutableArgumentClass, givenStep);
-        return new GivenArgumentWhenSteps<>(preparation);
-    }
-
-    @Override
-    public <$Argument> AndGivenArgument<$SystemUnderTest, $Argument> givenArgument(
             Class<$Argument> mutableArgumentClass, Consumer<$Argument> givenStep) {
         preparation.recordGivenStep(mutableArgumentClass, givenStep);
         return new GivenArgumentWhenSteps<>(preparation);

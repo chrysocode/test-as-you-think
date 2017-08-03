@@ -22,18 +22,9 @@
 
 package testasyouthink;
 
-import org.hibernate.annotations.Immutable;
-import testasyouthink.function.CheckedFunction;
 import testasyouthink.function.CheckedSupplier;
 
-import java.io.File;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.function.Consumer;
-
-import static java.util.Arrays.asList;
 
 enum ArgumentPreparation {
 
@@ -50,33 +41,6 @@ enum ArgumentPreparation {
                         + mutableArgumentClass.getName() + " type!", exception);
             }
             givenStep.accept(argument);
-            return argument;
-        };
-    }
-
-    public <$Argument> CheckedSupplier<$Argument> buildImmutableArgumentSupplier(
-            Class<$Argument> immutableArgumentClass, CheckedFunction<$Argument, $Argument> givenStep) {
-        return () -> {
-            $Argument argument = null;
-            if (asList(BigDecimal.class, BigInteger.class, Boolean.class, Byte.class, Character.class, Double.class,
-                    File.class, Float.class, Integer.class, Long.class, Short.class, String.class)
-                    .stream()
-                    .anyMatch(immutableArgumentClass::equals)) {
-                argument = givenStep.apply(argument);
-            } else if (immutableArgumentClass.isAnnotationPresent(Immutable.class)) {
-                Constructor<$Argument> argumentConstructor;
-                try {
-                    argumentConstructor = immutableArgumentClass.getConstructor(immutableArgumentClass);
-                    argument = argumentConstructor.newInstance(givenStep.apply(argument));
-                } catch (NoSuchMethodException exception) {
-                    throw new RuntimeException("Impossible to instantiate the argument of the " //
-                            + immutableArgumentClass.getName() + " type!" //
-                            + " A copy constructor is missing.", exception);
-                } catch (InstantiationException | IllegalAccessException | InvocationTargetException exception) {
-                    throw new RuntimeException("Impossible to instantiate the argument of the " //
-                            + immutableArgumentClass.getName() + " type!", exception);
-                }
-            }
             return argument;
         };
     }

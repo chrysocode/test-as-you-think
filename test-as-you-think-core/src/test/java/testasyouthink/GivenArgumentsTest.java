@@ -26,9 +26,6 @@ import org.easymock.IMocksControl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import testasyouthink.GivenArgumentsTest.Parameter.Immutable;
-import testasyouthink.GivenArgumentsTest.Parameter.ImmutableButUninstantiable;
-import testasyouthink.GivenArgumentsTest.Parameter.ImmutableWithoutCopyConstructor;
 import testasyouthink.GivenArgumentsTest.Parameter.Mutable;
 import testasyouthink.GivenArgumentsTest.Parameter.MutableButUninstantiable;
 import testasyouthink.fixture.GivenWhenThenDefinition;
@@ -85,45 +82,6 @@ public class GivenArgumentsTest {
     }
 
     @Test
-    public void should_receive_one_argument_with_its_type_known_as_immutable() {
-        // GIVEN
-        givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-        systemUnderTestMock.voidMethodWithParameter(GIVEN_STRING);
-        givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-        mocksControl.replay();
-
-        // WHEN
-        givenSut(systemUnderTestMock)
-                .givenArgument(String.class, oneArgument -> {
-                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-                    return GIVEN_STRING;
-                })
-                .when(SystemUnderTest::voidMethodWithParameter)
-                .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult());
-    }
-
-    @Test
-    public void should_receive_one_argument_with_its_immutable_type() {
-        // GIVEN
-        givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-        class SystemUnderTestWithImmutableParameter extends ParameterizedSystemUnderTest<Immutable, Void, Void> {}
-        SystemUnderTestWithImmutableParameter sutWithImmutableParameterMock = mocksControl.createMock(
-                SystemUnderTestWithImmutableParameter.class);
-        sutWithImmutableParameterMock.voidMethodWithParameter(anyObject(Immutable.class));
-        givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-        mocksControl.replay();
-
-        // WHEN
-        givenSut(sutWithImmutableParameterMock)
-                .givenArgument(Immutable.class, immutableArgument -> {
-                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-                    return new Immutable();
-                })
-                .whenSutRuns(ParameterizedSystemUnderTest::voidMethodWithParameter)
-                .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult());
-    }
-
-    @Test
     public void should_receive_one_argument_with_its_mutable_type() {
         // GIVEN
         givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
@@ -142,58 +100,6 @@ public class GivenArgumentsTest {
                 })
                 .whenSutRuns(ParameterizedSystemUnderTest::voidMethodWithParameter)
                 .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult());
-    }
-
-    @Test
-    public void should_fail_to_instantiate_one_argument_with_its_immutable_type_given_no_copy_constructor() throws
-            Throwable {
-        //GIVEN
-        class SystemUnderTestWithUninstantiableParameter extends
-                ParameterizedSystemUnderTest<ImmutableWithoutCopyConstructor, Void, Void> {}
-        SystemUnderTestWithUninstantiableParameter sutWithUninstantiableParameter = mocksControl.createMock(
-                SystemUnderTestWithUninstantiableParameter.class);
-        mocksControl.replay();
-
-        // WHEN
-        Throwable thrown = catchThrowable(() -> givenSut(sutWithUninstantiableParameter)
-                .givenArgument(ImmutableWithoutCopyConstructor.class, immutableButUninstantiable -> {
-                    return new ImmutableWithoutCopyConstructor();
-                })
-                .whenSutRuns(ParameterizedSystemUnderTest::voidMethodWithParameter)
-                .then(() -> {}));
-
-        // THEN
-        assertThat(thrown)
-                .isInstanceOf(AssertionError.class)
-                .hasMessage("Impossible to instantiate the argument of the " //
-                        + "testasyouthink.GivenArgumentsTest$Parameter$ImmutableWithoutCopyConstructor" //
-                        + " type! A copy constructor is missing.")
-                .hasCauseInstanceOf(RuntimeException.class);
-    }
-
-    @Test
-    public void should_fail_to_instantiate_one_argument_with_its_immutable_type() throws Throwable {
-        //GIVEN
-        class SystemUnderTestWithUninstantiableParameter extends
-                ParameterizedSystemUnderTest<ImmutableButUninstantiable, Void, Void> {}
-        SystemUnderTestWithUninstantiableParameter sutWithUninstantiableParameter = mocksControl.createMock(
-                SystemUnderTestWithUninstantiableParameter.class);
-        mocksControl.replay();
-
-        // WHEN
-        Throwable thrown = catchThrowable(() -> givenSut(sutWithUninstantiableParameter)
-                .givenArgument(ImmutableButUninstantiable.class, immutableButUninstantiable -> {
-                    return new ImmutableButUninstantiable(immutableButUninstantiable);
-                })
-                .whenSutRuns(ParameterizedSystemUnderTest::voidMethodWithParameter)
-                .then(() -> {}));
-
-        // THEN
-        assertThat(thrown)
-                .isInstanceOf(AssertionError.class)
-                .hasMessage("Impossible to instantiate the argument of the " //
-                        + "testasyouthink.GivenArgumentsTest$Parameter$ImmutableButUninstantiable type!")
-                .hasCauseInstanceOf(RuntimeException.class);
     }
 
     @Test
@@ -362,32 +268,6 @@ public class GivenArgumentsTest {
     }
 
     @Test
-    public void should_receive_two_arguments_with_their_types_given_a_second_immutable_argument() {
-        //GIVEN
-        givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-        expectLastCall().times(2);
-        class SystemUnderTestWithTwoParameters extends ParameterizedSystemUnderTest<Mutable, Immutable, Void> {}
-        SystemUnderTestWithTwoParameters sutWithTwoParameters = mocksControl.createMock(
-                SystemUnderTestWithTwoParameters.class);
-        sutWithTwoParameters.voidMethodWithTwoParameters(anyObject(Mutable.class), anyObject(Immutable.class));
-        givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-        mocksControl.replay();
-
-        // WHEN
-        givenSut(sutWithTwoParameters)
-                .givenArgument(Mutable.class, argument -> {
-                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-                    argument.setForDemonstration(123);
-                })
-                .andArgument(Immutable.class, argument -> {
-                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-                    return new Immutable();
-                })
-                .whenSutRuns(ParameterizedSystemUnderTest::voidMethodWithTwoParameters)
-                .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult());
-    }
-
-    @Test
     public void should_receive_three_arguments_given_a_void_method() {
         //GIVEN
         givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
@@ -473,35 +353,6 @@ public class GivenArgumentsTest {
     }
 
     @Test
-    public void should_receive_three_arguments_with_their_types_given_a_third_immutable_argument() {
-        //GIVEN
-        givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-        expectLastCall().times(3);
-        class SystemUnderTestWithThreeParameters extends ParameterizedSystemUnderTest<Mutable, Mutable, Immutable> {}
-        SystemUnderTestWithThreeParameters sutWithThreeParametersMock = mocksControl.createMock(
-                SystemUnderTestWithThreeParameters.class);
-        sutWithThreeParametersMock.voidMethodWithThreeParameters(anyObject(Mutable.class), anyObject(Mutable.class),
-                anyObject(Immutable.class));
-        givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-        mocksControl.replay();
-
-        // WHEN
-        givenSut(sutWithThreeParametersMock)
-                .givenArgument(Mutable.class, mutable -> {
-                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-                })
-                .andArgument(Mutable.class, mutable -> {
-                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-                })
-                .andArgument(Immutable.class, immutable -> {
-                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-                    return new Immutable();
-                })
-                .whenSutRuns(ParameterizedSystemUnderTest::voidMethodWithThreeParameters)
-                .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult());
-    }
-
-    @Test
     public void should_receive_three_arguments_with_their_types_given_a_third_mutable_argument() {
         //GIVEN
         givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
@@ -516,15 +367,12 @@ public class GivenArgumentsTest {
 
         // WHEN
         givenSut(sutWithThreeParametersMock)
-                .givenArgument(Mutable.class, mutable -> {
-                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-                })
-                .andArgument(Mutable.class, mutable -> {
-                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-                })
-                .andArgument(Mutable.class, mutable -> {
-                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-                })
+                .givenArgument(Mutable.class,
+                        mutable -> givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem())
+                .andArgument(Mutable.class,
+                        mutable -> givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem())
+                .andArgument(Mutable.class,
+                        mutable -> givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem())
                 .whenSutRuns(ParameterizedSystemUnderTest::voidMethodWithThreeParameters)
                 .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult());
     }
@@ -613,33 +461,12 @@ public class GivenArgumentsTest {
 
     public static class Parameter {
 
-        @org.hibernate.annotations.Immutable
-        public static class Immutable {
-
-            public Immutable() {}
-
-            public Immutable(Immutable value) {}
-        }
-
         public static class Mutable {
 
             private int forDemonstration;
 
             public void setForDemonstration(int forDemonstration) {
                 this.forDemonstration = forDemonstration;
-            }
-        }
-
-        @org.hibernate.annotations.Immutable
-        public static class ImmutableWithoutCopyConstructor {
-            // Missing constructor able to receive another preexisting instance
-        }
-
-        @org.hibernate.annotations.Immutable
-        public static class ImmutableButUninstantiable {
-
-            public ImmutableButUninstantiable(ImmutableButUninstantiable value) throws InstantiationException {
-                throw new InstantiationException("Impossible to instantiate it!");
             }
         }
 

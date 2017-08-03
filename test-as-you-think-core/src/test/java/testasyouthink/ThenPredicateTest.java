@@ -22,16 +22,16 @@
 
 package testasyouthink;
 
-import testasyouthink.fixture.GivenWhenThenDefinition;
-import testasyouthink.fixture.SystemUnderTest;
 import org.junit.After;
 import org.junit.ComparisonFailure;
 import org.junit.Test;
+import testasyouthink.fixture.GivenWhenThenDefinition;
+import testasyouthink.fixture.SystemUnderTest;
 
-import static testasyouthink.TestAsYouThink.givenSutClass;
-import static testasyouthink.fixture.GivenWhenThenDefinition.orderedSteps;
 import static java.util.Arrays.asList;
 import static org.easymock.EasyMock.verify;
+import static testasyouthink.TestAsYouThink.givenSutClass;
+import static testasyouthink.fixture.GivenWhenThenDefinition.orderedSteps;
 
 public class ThenPredicateTest {
 
