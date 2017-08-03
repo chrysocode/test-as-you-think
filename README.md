@@ -67,7 +67,7 @@ Add *TestAsYouThink* as a dependency to your project with Maven, or download it 
 <dependency>
     <groupId>com.github.xapn</groupId>
     <artifactId>test-as-you-think-core</artifactId>
-    <version>0.4</version>
+    <version>0.5</version>
 </dependency>
 ```
 
