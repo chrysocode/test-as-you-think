@@ -22,13 +22,11 @@
 
 package testasyouthink;
 
-import org.assertj.core.api.AbstractAssert;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.AndThen;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.AndThenFailure;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.Then;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.ThenFailure;
 import testasyouthink.verification.Assertions;
-import testasyouthink.verification.FluentAssertions;
 
 import java.time.Duration;
 import java.util.List;
@@ -43,7 +41,7 @@ public class ThenStep<$SystemUnderTest, $Result> implements Then<$SystemUnderTes
         AndThen<$SystemUnderTest, $Result>, ThenFailure, AndThenFailure {
 
     private static final String MISSING_EXCEPTION = "Expecting a failure, but it was missing.";
-    private final GivenWhenContext<$SystemUnderTest, $Result> context;
+    protected final GivenWhenContext<$SystemUnderTest, $Result> context;
 
     ThenStep(GivenWhenContext<$SystemUnderTest, $Result> context) {
         this.context = context;
@@ -181,10 +179,5 @@ public class ThenStep<$SystemUnderTest, $Result> implements Then<$SystemUnderTes
                 .assertThat(context::returnResultOrVoid)
                 .spendsAtMost(duration);
         return this;
-    }
-
-    @Override
-    public <$ConcreteAssert extends AbstractAssert> $ConcreteAssert thenResult() {
-        return FluentAssertions.toAssertj(context.returnResultOrVoid());
     }
 }

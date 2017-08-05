@@ -188,7 +188,7 @@ public interface GivenWhenThenDsl {
 
     interface VerificationStage {
 
-        interface Then<$SystemUnderTest, $Result> extends ThenResult {
+        interface Then<$SystemUnderTest, $Result> {
 
             AndThen<$SystemUnderTest, $Result> then(Consumer<$Result> thenStep);
 
@@ -274,7 +274,7 @@ public interface GivenWhenThenDsl {
             AndThenFailure withCauseMessage(String expectedMessage);
         }
 
-        interface ThenResult {
+        interface ThenResult<$Result> extends Then<Void, $Result> {
 
             <$ConcreteAssert extends AbstractAssert> $ConcreteAssert thenResult();
         }
