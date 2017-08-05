@@ -20,33 +20,28 @@
  * #L%
  */
 
-package testasyouthink;
+package testasyouthink.verification;
 
-import testasyouthink.execution.Event;
-import testasyouthink.preparation.Preparation;
+import testasyouthink.GivenWhenContext;
+import testasyouthink.GivenWhenThenDsl.VerificationStage.FluentAssertions.ThenFluent;
 
-public class GivenWhenContext<$SystemUnderTest, $Result> {
+import static org.assertj.core.api.Assertions.assertThat;
 
-    private final Preparation<$SystemUnderTest> preparation;
-    private final Event<$SystemUnderTest, $Result> event;
-    private $Result result;
+public class FluentAssertions<$SystemUnderTest, $Result> implements ThenFluent<$SystemUnderTest, $Result> {
 
-    GivenWhenContext(Preparation<$SystemUnderTest> preparation, Event<$SystemUnderTest, $Result> event) {
-        this.preparation = preparation;
-        this.event = event;
+    private GivenWhenContext<$SystemUnderTest, $Result> context;
+
+    public FluentAssertions(GivenWhenContext<$SystemUnderTest, $Result> context) {
+        this.context = context;
     }
 
-    public $Result returnResultOrVoid() {
-        if (result == null) {
-            preparation.prepareFixtures();
-            result = event.happen();
-        }
-        return result;
+    private $Result actual() {
+        return context.returnResultOrVoid();
     }
 
-    $SystemUnderTest getSystemUnderTest() {
-        return preparation
-                .supplySut()
-                .get();
+    @Override
+    public ThenFluent<$SystemUnderTest, $Result> isEqualTo($Result expected) {
+        assertThat(actual()).isEqualTo(expected);
+        return this;
     }
 }

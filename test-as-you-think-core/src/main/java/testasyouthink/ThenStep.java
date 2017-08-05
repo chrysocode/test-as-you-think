@@ -24,9 +24,11 @@ package testasyouthink;
 
 import testasyouthink.GivenWhenThenDsl.VerificationStage.AndThen;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.AndThenFailure;
+import testasyouthink.GivenWhenThenDsl.VerificationStage.FluentAssertions.ThenFluent;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.Then;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.ThenFailure;
 import testasyouthink.verification.Assertions;
+import testasyouthink.verification.FluentAssertions;
 
 import java.time.Duration;
 import java.util.List;
@@ -179,5 +181,10 @@ public class ThenStep<$SystemUnderTest, $Result> implements Then<$SystemUnderTes
                 .assertThat(context::returnResultOrVoid)
                 .spendsAtMost(duration);
         return this;
+    }
+
+    @Override
+    public ThenFluent<$SystemUnderTest, $Result> thenResult() {
+        return new FluentAssertions<>(context);
     }
 }

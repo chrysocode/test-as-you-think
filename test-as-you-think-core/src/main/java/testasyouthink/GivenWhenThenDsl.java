@@ -187,7 +187,7 @@ public interface GivenWhenThenDsl {
 
     interface VerificationStage {
 
-        interface Then<$SystemUnderTest, $Result> {
+        interface Then<$SystemUnderTest, $Result> extends FluentAssertions.ThenResult<$SystemUnderTest, $Result> {
 
             AndThen<$SystemUnderTest, $Result> then(Consumer<$Result> thenStep);
 
@@ -271,6 +271,19 @@ public interface GivenWhenThenDsl {
             AndThenFailure havingCause(Class<? extends Throwable> expectedCauseClass);
 
             AndThenFailure withCauseMessage(String expectedMessage);
+        }
+
+        interface FluentAssertions {
+
+            interface ThenResult<$SystemUnderTest, $Result> {
+
+                ThenFluent<$SystemUnderTest, $Result> thenResult();
+            }
+
+            interface ThenFluent<$SystemUnderTest, $Result> {
+
+                ThenFluent<$SystemUnderTest, $Result> isEqualTo($Result expected);
+            }
         }
     }
 }
