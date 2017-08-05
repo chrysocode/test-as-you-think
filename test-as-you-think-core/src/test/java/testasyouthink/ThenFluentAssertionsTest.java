@@ -22,6 +22,7 @@
 
 package testasyouthink;
 
+import org.assertj.core.api.StringAssert;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -61,7 +62,7 @@ public class ThenFluentAssertionsTest {
     }
 
     @Test
-    public void should_verify_the_actual_string_is_not_equal_to_an_expected_result() {
+    public void should_fail_to_verify_the_actual_string_is_not_equal_to_an_expected_result() {
         // WHEN
         Throwable thrown = catchThrowable(() -> when(() -> {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
@@ -69,6 +70,34 @@ public class ThenFluentAssertionsTest {
         })
                 .thenResult()
                 .isEqualTo("expected result"));
+
+        // THEN
+        LOGGER.debug("Stack trace", thrown);
+        assertThat(thrown).isInstanceOf(AssertionError.class);
+        verify(gwtMock).whenAnEventHappensInRelationToAnActionOfTheConsumer();
+        verifyNoMoreInteractions(gwtMock);
+    }
+
+    @Test
+    public void should_verify_the_actual_string_contains_an_expected_word() {
+        // WHEN
+        when(() -> {
+            gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+            return "expected result";
+        }).<StringAssert>thenResult().contains("expected");
+
+        // THEN
+        verify(gwtMock).whenAnEventHappensInRelationToAnActionOfTheConsumer();
+        verifyNoMoreInteractions(gwtMock);
+    }
+
+    @Test
+    public void should_fail_to_verify_the_actual_string_contains_an_expected_word() {
+        // WHEN
+        Throwable thrown = catchThrowable(() -> when(() -> {
+            gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+            return "actual";
+        }).<StringAssert>thenResult().contains("expected"));
 
         // THEN
         LOGGER.debug("Stack trace", thrown);

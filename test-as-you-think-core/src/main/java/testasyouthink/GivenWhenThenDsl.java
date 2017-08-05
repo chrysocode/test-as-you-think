@@ -22,6 +22,7 @@
 
 package testasyouthink;
 
+import org.assertj.core.api.AbstractAssert;
 import testasyouthink.GivenWhenThenDsl.ExecutionStage.When;
 import testasyouthink.GivenWhenThenDsl.ExecutionStage.WhenApplyingOneArgument;
 import testasyouthink.GivenWhenThenDsl.ExecutionStage.WhenApplyingThreeArguments;
@@ -38,7 +39,6 @@ import testasyouthink.function.CheckedQuadriFunction;
 import testasyouthink.function.CheckedSupplier;
 import testasyouthink.function.CheckedTriConsumer;
 import testasyouthink.function.CheckedTriFunction;
-import testasyouthink.verification.FluentAssertions;
 
 import java.time.Duration;
 import java.util.List;
@@ -188,7 +188,7 @@ public interface GivenWhenThenDsl {
 
     interface VerificationStage {
 
-        interface Then<$SystemUnderTest, $Result> extends ThenResult<$Result> {
+        interface Then<$SystemUnderTest, $Result> extends ThenResult {
 
             AndThen<$SystemUnderTest, $Result> then(Consumer<$Result> thenStep);
 
@@ -274,9 +274,9 @@ public interface GivenWhenThenDsl {
             AndThenFailure withCauseMessage(String expectedMessage);
         }
 
-        interface ThenResult<$Result> {
+        interface ThenResult {
 
-            FluentAssertions<$Result> thenResult();
+            <$ConcreteAssert extends AbstractAssert> $ConcreteAssert thenResult();
         }
     }
 }

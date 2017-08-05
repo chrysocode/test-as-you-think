@@ -24,9 +24,15 @@ package testasyouthink.verification;
 
 import org.assertj.core.api.AbstractAssert;
 
-public class FluentAssertions<$Result> extends AbstractAssert<FluentAssertions<$Result>, $Result> {
+import static org.assertj.core.api.Assertions.assertThat;
 
-    public FluentAssertions($Result result) {
-        super(result, FluentAssertions.class);
+public class FluentAssertions {
+
+    public static <$ConcreteAssert extends AbstractAssert, $Result> $ConcreteAssert toAssertj($Result result) {
+        if (result instanceof String) {
+            return ($ConcreteAssert) assertThat((String) result);
+        } else {
+            throw new UnsupportedOperationException();
+        }
     }
 }

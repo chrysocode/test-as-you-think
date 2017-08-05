@@ -22,6 +22,7 @@
 
 package testasyouthink;
 
+import org.assertj.core.api.AbstractAssert;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.AndThen;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.AndThenFailure;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.Then;
@@ -183,7 +184,7 @@ public class ThenStep<$SystemUnderTest, $Result> implements Then<$SystemUnderTes
     }
 
     @Override
-    public FluentAssertions<$Result> thenResult() {
-        return new FluentAssertions<>(context.returnResultOrVoid());
+    public <$ConcreteAssert extends AbstractAssert> $ConcreteAssert thenResult() {
+        return FluentAssertions.toAssertj(context.returnResultOrVoid());
     }
 }
