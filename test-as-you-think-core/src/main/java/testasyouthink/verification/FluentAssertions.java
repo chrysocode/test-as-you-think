@@ -22,21 +22,11 @@
 
 package testasyouthink.verification;
 
-import testasyouthink.GivenWhenThenDsl.VerificationStage.FluentAssertions.ThenFluent;
+import org.assertj.core.api.AbstractAssert;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-public class FluentAssertions<$Result> implements ThenFluent<$Result> {
-
-    private final $Result actual;
+public class FluentAssertions<$Result> extends AbstractAssert<FluentAssertions<$Result>, $Result> {
 
     public FluentAssertions($Result result) {
-        this.actual = result;
-    }
-
-    @Override
-    public ThenFluent<$Result> isEqualTo($Result expected) {
-        assertThat(actual).isEqualTo(expected);
-        return this;
+        super(result, FluentAssertions.class);
     }
 }

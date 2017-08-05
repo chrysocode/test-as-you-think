@@ -38,6 +38,7 @@ import testasyouthink.function.CheckedQuadriFunction;
 import testasyouthink.function.CheckedSupplier;
 import testasyouthink.function.CheckedTriConsumer;
 import testasyouthink.function.CheckedTriFunction;
+import testasyouthink.verification.FluentAssertions;
 
 import java.time.Duration;
 import java.util.List;
@@ -187,7 +188,7 @@ public interface GivenWhenThenDsl {
 
     interface VerificationStage {
 
-        interface Then<$SystemUnderTest, $Result> extends FluentAssertions.ThenResult<$Result> {
+        interface Then<$SystemUnderTest, $Result> extends ThenResult<$Result> {
 
             AndThen<$SystemUnderTest, $Result> then(Consumer<$Result> thenStep);
 
@@ -273,17 +274,9 @@ public interface GivenWhenThenDsl {
             AndThenFailure withCauseMessage(String expectedMessage);
         }
 
-        interface FluentAssertions {
+        interface ThenResult<$Result> {
 
-            interface ThenResult<$Result> {
-
-                ThenFluent<$Result> thenResult();
-            }
-
-            interface ThenFluent<$Result> {
-
-                ThenFluent<$Result> isEqualTo($Result expected);
-            }
+            FluentAssertions<$Result> thenResult();
         }
     }
 }

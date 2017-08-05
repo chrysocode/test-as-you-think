@@ -24,7 +24,6 @@ package testasyouthink;
 
 import testasyouthink.GivenWhenThenDsl.VerificationStage.AndThen;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.AndThenFailure;
-import testasyouthink.GivenWhenThenDsl.VerificationStage.FluentAssertions.ThenFluent;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.Then;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.ThenFailure;
 import testasyouthink.verification.Assertions;
@@ -184,7 +183,7 @@ public class ThenStep<$SystemUnderTest, $Result> implements Then<$SystemUnderTes
     }
 
     @Override
-    public ThenFluent<$Result> thenResult() {
+    public FluentAssertions<$Result> thenResult() {
         return new FluentAssertions<>(context.returnResultOrVoid());
     }
 }
