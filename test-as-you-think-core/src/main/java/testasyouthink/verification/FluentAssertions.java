@@ -22,26 +22,21 @@
 
 package testasyouthink.verification;
 
-import testasyouthink.GivenWhenContext;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.FluentAssertions.ThenFluent;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class FluentAssertions<$SystemUnderTest, $Result> implements ThenFluent<$SystemUnderTest, $Result> {
+public class FluentAssertions<$Result> implements ThenFluent<$Result> {
 
-    private GivenWhenContext<$SystemUnderTest, $Result> context;
+    private final $Result actual;
 
-    public FluentAssertions(GivenWhenContext<$SystemUnderTest, $Result> context) {
-        this.context = context;
-    }
-
-    private $Result actual() {
-        return context.returnResultOrVoid();
+    public FluentAssertions($Result result) {
+        this.actual = result;
     }
 
     @Override
-    public ThenFluent<$SystemUnderTest, $Result> isEqualTo($Result expected) {
-        assertThat(actual()).isEqualTo(expected);
+    public ThenFluent<$Result> isEqualTo($Result expected) {
+        assertThat(actual).isEqualTo(expected);
         return this;
     }
 }

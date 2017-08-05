@@ -187,7 +187,7 @@ public interface GivenWhenThenDsl {
 
     interface VerificationStage {
 
-        interface Then<$SystemUnderTest, $Result> extends FluentAssertions.ThenResult<$SystemUnderTest, $Result> {
+        interface Then<$SystemUnderTest, $Result> extends FluentAssertions.ThenResult<$Result> {
 
             AndThen<$SystemUnderTest, $Result> then(Consumer<$Result> thenStep);
 
@@ -275,14 +275,14 @@ public interface GivenWhenThenDsl {
 
         interface FluentAssertions {
 
-            interface ThenResult<$SystemUnderTest, $Result> {
+            interface ThenResult<$Result> {
 
-                ThenFluent<$SystemUnderTest, $Result> thenResult();
+                ThenFluent<$Result> thenResult();
             }
 
-            interface ThenFluent<$SystemUnderTest, $Result> {
+            interface ThenFluent<$Result> {
 
-                ThenFluent<$SystemUnderTest, $Result> isEqualTo($Result expected);
+                ThenFluent<$Result> isEqualTo($Result expected);
             }
         }
     }

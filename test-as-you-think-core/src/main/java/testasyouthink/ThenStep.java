@@ -184,7 +184,7 @@ public class ThenStep<$SystemUnderTest, $Result> implements Then<$SystemUnderTes
     }
 
     @Override
-    public ThenFluent<$SystemUnderTest, $Result> thenResult() {
-        return new FluentAssertions<>(context);
+    public ThenFluent<$Result> thenResult() {
+        return new FluentAssertions<>(context.returnResultOrVoid());
     }
 }
