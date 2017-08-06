@@ -22,6 +22,8 @@
 
 package testasyouthink;
 
+import org.assertj.core.api.AbstractCharSequenceAssert;
+import org.assertj.core.api.Assertions;
 import testasyouthink.GivenWhenThenDsl.PreparationStage.AndGiven;
 import testasyouthink.GivenWhenThenDsl.PreparationStage.Given;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.Then;
@@ -29,6 +31,7 @@ import testasyouthink.GivenWhenThenDsl.VerificationStage.ThenFailure;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.ThenWithoutResult;
 import testasyouthink.function.CheckedFunction;
 import testasyouthink.function.CheckedRunnable;
+import testasyouthink.function.CheckedSupplier;
 import testasyouthink.function.Functions;
 
 import java.util.function.Consumer;
@@ -73,5 +76,15 @@ public class TestAsYouThink {
 
     public static ThenFailure whenOutsideOperatingConditions(CheckedRunnable whenStep) {
         return thenStepFactory.createThenStep(functions.toFunctionWithThrowableAsResult(whenStep));
+    }
+
+    public static AbstractCharSequenceAssert<?, String> resultOf(CheckedSupplier<String> whenStep) {
+        String result = null;
+        try {
+            result = whenStep.get();
+        } catch (Throwable throwable) {
+            throw new RuntimeException("Not yet implemented!");
+        }
+        return Assertions.assertThat(result);
     }
 }
