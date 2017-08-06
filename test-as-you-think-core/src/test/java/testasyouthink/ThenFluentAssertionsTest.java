@@ -23,6 +23,8 @@
 package testasyouthink;
 
 import org.assertj.core.api.AbstractAssert;
+import org.assertj.core.api.AbstractCharSequenceAssert;
+import org.assertj.core.api.Assertions;
 import org.assertj.core.api.StringAssert;
 import org.junit.Before;
 import org.junit.Test;
@@ -82,7 +84,11 @@ public class ThenFluentAssertionsTest {
 
     @Test
     public void should_compile_before_running() {
-        ThenResultStep<StringAssert> thenResultStep = new ThenResultStep<>(new StringAssert("plein de bonnes choses"));
+        AbstractCharSequenceAssert<?, String> charSequenceAssert = Assertions.assertThat("actual");
+        AbstractCharSequenceAssert<?, String> charSequenceAssert1 = charSequenceAssert.contains("ac");
+
+        ThenResultStep<String, StringAssert> thenResultStep = new ThenResultStep<>("plein de bonnes choses",
+                new StringAssert("plein de bonnes choses"));
         thenResultStep
                 .thenResult()
                 .contains("bonnes");

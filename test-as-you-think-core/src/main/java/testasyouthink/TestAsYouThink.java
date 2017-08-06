@@ -23,7 +23,7 @@
 package testasyouthink;
 
 import org.assertj.core.api.AbstractAssert;
-import org.assertj.core.api.StringAssert;
+import org.assertj.core.api.Assertions;
 import testasyouthink.GivenWhenThenDsl.PreparationStage.AndGiven;
 import testasyouthink.GivenWhenThenDsl.PreparationStage.Given;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.ThenFailure;
@@ -66,14 +66,15 @@ public class TestAsYouThink {
         return thenStepFactory.createThenStep(functions.toCheckedConsumer(whenStep));
     }
 
-    public static <$Result> ThenResult<? extends AbstractAssert> when(Supplier<$Result> whenStep) {
+    public static <$Result, $Assertions extends AbstractAssert<?, $Result>> ThenResult<$Assertions> when(
+            Supplier<$Result> whenStep) {
         Preparation<Void> nothingToPrepare = new Preparation<>();
         Event<Void, $Result> event = new Event<>(nothingToPrepare.supplySut(), functions.toCheckedFunction(whenStep));
         GivenWhenContext<Void, $Result> context = new GivenWhenContext<>(nothingToPrepare, event);
         $Result result = context.returnResultOrVoid();
 
         if (result instanceof String)
-            return new ThenResultStep<>(new StringAssert((String) result));
+            return new ThenResultStep<>(result, Assertions.assertThat((String) result));
         else {
             throw new UnsupportedOperationException();
         }

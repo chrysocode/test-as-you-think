@@ -25,11 +25,12 @@ package testasyouthink;
 import org.assertj.core.api.AbstractAssert;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.ThenResult;
 
-public class ThenResultStep<$Assertions extends AbstractAssert> implements ThenResult<$Assertions> {
+public class ThenResultStep<$Result, $Assertions extends AbstractAssert<?, $Result>> implements
+        ThenResult<$Assertions> {
 
     private $Assertions assertions;
 
-    ThenResultStep($Assertions assertions) {
+    ThenResultStep($Result result, $Assertions assertions) {
         this.assertions = assertions;
     }
 
