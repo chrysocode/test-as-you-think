@@ -29,6 +29,7 @@ import testasyouthink.GivenWhenThenDsl.PreparationStage.Given;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.Then;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.ThenFailure;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.ThenWithoutResult;
+import testasyouthink.execution.ExecutionError;
 import testasyouthink.function.CheckedFunction;
 import testasyouthink.function.CheckedRunnable;
 import testasyouthink.function.CheckedSupplier;
@@ -39,6 +40,8 @@ import java.util.function.Supplier;
 
 public class TestAsYouThink {
 
+    private static final String EXECUTION_ERROR_MESSAGE = "Fails to execute the target method " //
+            + "of the system under test because of an unexpected failure!";
     private static Functions functions = Functions.INSTANCE;
     private static ThenStepFactory thenStepFactory = ThenStepFactory.INSTANCE;
 
@@ -83,7 +86,7 @@ public class TestAsYouThink {
         try {
             result = whenStep.get();
         } catch (Throwable throwable) {
-            throw new RuntimeException("Not yet implemented!");
+            throw new ExecutionError(EXECUTION_ERROR_MESSAGE, throwable);
         }
         return Assertions.assertThat(result);
     }
