@@ -23,21 +23,24 @@
 package testasyouthink;
 
 import org.assertj.core.api.AbstractCharSequenceAssert;
-import org.assertj.core.api.Assertions;
+import org.assertj.core.api.AbstractIntegerAssert;
 import testasyouthink.GivenWhenThenDsl.PreparationStage.AndGiven;
 import testasyouthink.GivenWhenThenDsl.PreparationStage.Given;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.Then;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.ThenFailure;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.ThenWithoutResult;
+import testasyouthink.execution.Event;
 import testasyouthink.execution.ExecutionError;
 import testasyouthink.function.CheckedFunction;
 import testasyouthink.function.CheckedRunnable;
-import testasyouthink.function.CheckedSupplier;
+import testasyouthink.function.CheckedSuppliers.CheckedIntegerSupplier;
+import testasyouthink.function.CheckedSuppliers.CheckedStringSupplier;
 import testasyouthink.function.Functions;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static testasyouthink.execution.Event.EXECUTION_FAILURE_MESSAGE;
 
 public class TestAsYouThink {
@@ -81,13 +84,23 @@ public class TestAsYouThink {
         return thenStepFactory.createThenStep(functions.toFunctionWithThrowableAsResult(whenStep));
     }
 
-    public static AbstractCharSequenceAssert<?, String> resultOf(CheckedSupplier<String> whenStep) {
-        String result = null;
+    public static AbstractCharSequenceAssert<?, String> resultOf(CheckedStringSupplier whenStep) {
+        String result;
         try {
             result = whenStep.get();
         } catch (Throwable throwable) {
             throw new ExecutionError(EXECUTION_FAILURE_MESSAGE, throwable);
         }
-        return Assertions.assertThat(result);
+        return assertThat(result);
+    }
+
+    public static AbstractIntegerAssert<?> resultOf(CheckedIntegerSupplier whenStep) {
+        Integer result;
+        try {
+            result = whenStep.get();
+        } catch (Throwable throwable) {
+            throw new ExecutionError(EXECUTION_FAILURE_MESSAGE, throwable);
+        }
+        return assertThat(result);
     }
 }

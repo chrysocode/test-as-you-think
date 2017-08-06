@@ -29,6 +29,7 @@ import org.slf4j.LoggerFactory;
 import testasyouthink.execution.ExecutionError;
 import testasyouthink.fixture.GivenWhenThenDefinition;
 import testasyouthink.fixture.UnexpectedException;
+import testasyouthink.function.CheckedSuppliers.CheckedStringSupplier;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
@@ -76,7 +77,7 @@ public class ResultOfEventTest {
     @Test
     public void should_fail_to_execute_because_of_an_unexpected_failure() {
         // WHEN
-        Throwable thrown = catchThrowable(() -> resultOf(() -> {
+        Throwable thrown = catchThrowable(() -> resultOf((CheckedStringSupplier) () -> {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
             throw new UnexpectedException();
         }).isEqualTo("expected"));
@@ -86,5 +87,15 @@ public class ResultOfEventTest {
         assertThat(thrown)
                 .isInstanceOf(ExecutionError.class)
                 .hasMessage(EXPECTED_EXECUTION_FAILURE_MESSAGE);
+    }
+
+    @Test
+    public void should_verify_an_actual_integer_is_conform_to_an_expected_result() {
+        assertThat(resultOf(() -> {
+            gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+            return 123;
+        }).isEqualTo(123)).hasSameClassAs(assertThat(123));
+        verify(gwtMock).whenAnEventHappensInRelationToAnActionOfTheConsumer();
+        verifyNoMoreInteractions(gwtMock);
     }
 }
