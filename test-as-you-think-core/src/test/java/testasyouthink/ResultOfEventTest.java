@@ -36,12 +36,11 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static testasyouthink.TestAsYouThink.resultOf;
+import static testasyouthink.fixture.Specifications.ExpectedMessage.EXPECTED_EXECUTION_FAILURE_MESSAGE;
 
 public class ResultOfEventTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ResultOfEventTest.class);
-    private static final String EXPECTED_ERROR_MESSAGE = "Fails to execute the target method " //
-            + "of the system under test because of an unexpected failure!";
     private GivenWhenThenDefinition gwtMock;
 
     @Before
@@ -86,6 +85,6 @@ public class ResultOfEventTest {
         LOGGER.debug("Stack trace", thrown);
         assertThat(thrown)
                 .isInstanceOf(ExecutionError.class)
-                .hasMessage(EXPECTED_ERROR_MESSAGE);
+                .hasMessage(EXPECTED_EXECUTION_FAILURE_MESSAGE);
     }
 }

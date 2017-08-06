@@ -38,10 +38,10 @@ import testasyouthink.function.Functions;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import static testasyouthink.execution.Event.EXECUTION_FAILURE_MESSAGE;
+
 public class TestAsYouThink {
 
-    private static final String EXECUTION_ERROR_MESSAGE = "Fails to execute the target method " //
-            + "of the system under test because of an unexpected failure!";
     private static Functions functions = Functions.INSTANCE;
     private static ThenStepFactory thenStepFactory = ThenStepFactory.INSTANCE;
 
@@ -86,7 +86,7 @@ public class TestAsYouThink {
         try {
             result = whenStep.get();
         } catch (Throwable throwable) {
-            throw new ExecutionError(EXECUTION_ERROR_MESSAGE, throwable);
+            throw new ExecutionError(EXECUTION_FAILURE_MESSAGE, throwable);
         }
         return Assertions.assertThat(result);
     }
