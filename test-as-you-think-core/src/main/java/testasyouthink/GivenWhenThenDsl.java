@@ -274,9 +274,9 @@ public interface GivenWhenThenDsl {
             AndThenFailure withCauseMessage(String expectedMessage);
         }
 
-        interface ThenResult<$Result> extends Then<Void, $Result> {
+        interface ThenResult<$Assertions extends AbstractAssert> {
 
-            <$ConcreteAssert extends AbstractAssert> $ConcreteAssert thenResult();
+            $Assertions thenResult();
         }
     }
 }

@@ -22,11 +22,13 @@
 
 package testasyouthink;
 
+import org.assertj.core.api.AbstractAssert;
 import org.assertj.core.api.StringAssert;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import testasyouthink.GivenWhenThenDsl.VerificationStage.ThenResult;
 import testasyouthink.fixture.GivenWhenThenDefinition;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -79,12 +81,26 @@ public class ThenFluentAssertionsTest {
     }
 
     @Test
+    public void should_compile_before_running() {
+        ThenResultStep<StringAssert> thenResultStep = new ThenResultStep<>(new StringAssert("plein de bonnes choses"));
+        thenResultStep
+                .thenResult()
+                .contains("bonnes");
+        ThenResult<? extends AbstractAssert> thenResult = when(() -> "expected result");
+        StringAssert stringAssert = thenResult.thenResult();
+        stringAssert.contains("expected result");
+    }
+
+    @Test
     public void should_verify_the_actual_string_contains_an_expected_word() {
         // WHEN
         when(() -> {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
             return "expected result";
-        }).<StringAssert>thenResult().contains("expected");
+        })
+                .thenResult()
+                .isEqualTo("expected result");
+        //.contains("expected");
 
         // THEN
         verify(gwtMock).whenAnEventHappensInRelationToAnActionOfTheConsumer();
@@ -97,7 +113,10 @@ public class ThenFluentAssertionsTest {
         Throwable thrown = catchThrowable(() -> when(() -> {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
             return "actual";
-        }).<StringAssert>thenResult().contains("expected"));
+        })
+                .thenResult()
+                .isEqualTo("expected"));
+        //.contains("expected"));
 
         // THEN
         LOGGER.debug("Stack trace", thrown);

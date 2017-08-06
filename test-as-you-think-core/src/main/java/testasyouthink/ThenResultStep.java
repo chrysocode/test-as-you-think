@@ -24,16 +24,17 @@ package testasyouthink;
 
 import org.assertj.core.api.AbstractAssert;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.ThenResult;
-import testasyouthink.verification.FluentAssertions;
 
-public class ThenResultStep<$Result> extends ThenStep<Void, $Result> implements ThenResult<$Result> {
+public class ThenResultStep<$Assertions extends AbstractAssert> implements ThenResult<$Assertions> {
 
-    ThenResultStep(GivenWhenContext<Void, $Result> context) {
-        super(context);
+    private $Assertions assertions;
+
+    ThenResultStep($Assertions assertions) {
+        this.assertions = assertions;
     }
 
     @Override
-    public <$ConcreteAssert extends AbstractAssert> $ConcreteAssert thenResult() {
-        return FluentAssertions.toAssertj(context.returnResultOrVoid());
+    public $Assertions thenResult() {
+        return assertions;
     }
 }
