@@ -72,10 +72,10 @@ public class StartingWithWhenTest {
         GivenWhenThenDefinition gwtMock = mock(GivenWhenThenDefinition.class);
 
         // WHEN
-        // when(sut::nonVoidMethod).then(result -> {
-        //     assertThat(result).isEqualTo("expected result");
-        //     gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-        // });
+        when(sut::nonVoidMethod).then(result -> {
+            assertThat(result).isEqualTo("expected result");
+            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+        });
 
         // THEN
         InOrder inOrder = Mockito.inOrder(sut, gwtMock);
@@ -109,8 +109,8 @@ public class StartingWithWhenTest {
         when(systemUnderTestMock.nonVoidMethodWithThrowsClause()).thenReturn("expected result");
 
         // WHEN
-        Throwable thrown = catchThrowable(
-                () -> whenOutsideOperatingConditions(systemUnderTestMock::nonVoidMethodWithThrowsClause).thenItFails());
+        Throwable thrown = catchThrowable(() -> whenOutsideOperatingConditions(
+                systemUnderTestMock::nonVoidMethodWithThrowsClause).thenItFails());
 
         // THEN
         LOGGER.debug("Stack trace", thrown);

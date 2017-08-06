@@ -25,7 +25,7 @@ package testasyouthink;
 import testasyouthink.execution.Event;
 import testasyouthink.preparation.Preparation;
 
-public class GivenWhenContext<$SystemUnderTest, $Result> {
+class GivenWhenContext<$SystemUnderTest, $Result> {
 
     private final Preparation<$SystemUnderTest> preparation;
     private final Event<$SystemUnderTest, $Result> event;
@@ -36,7 +36,7 @@ public class GivenWhenContext<$SystemUnderTest, $Result> {
         this.event = event;
     }
 
-    public $Result returnResultOrVoid() {
+    $Result returnResultOrVoid() {
         if (result == null) {
             preparation.prepareFixtures();
             result = event.happen();

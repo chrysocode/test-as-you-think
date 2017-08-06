@@ -22,7 +22,6 @@
 
 package testasyouthink;
 
-import org.assertj.core.api.AbstractAssert;
 import testasyouthink.GivenWhenThenDsl.ExecutionStage.When;
 import testasyouthink.GivenWhenThenDsl.ExecutionStage.WhenApplyingOneArgument;
 import testasyouthink.GivenWhenThenDsl.ExecutionStage.WhenApplyingThreeArguments;
@@ -272,11 +271,6 @@ public interface GivenWhenThenDsl {
             AndThenFailure havingCause(Class<? extends Throwable> expectedCauseClass);
 
             AndThenFailure withCauseMessage(String expectedMessage);
-        }
-
-        interface ThenResult<$Assertions extends AbstractAssert> {
-
-            $Assertions thenResult();
         }
     }
 }

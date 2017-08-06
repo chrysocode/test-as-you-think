@@ -22,18 +22,14 @@
 
 package testasyouthink;
 
-import org.assertj.core.api.AbstractAssert;
-import org.assertj.core.api.Assertions;
 import testasyouthink.GivenWhenThenDsl.PreparationStage.AndGiven;
 import testasyouthink.GivenWhenThenDsl.PreparationStage.Given;
+import testasyouthink.GivenWhenThenDsl.VerificationStage.Then;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.ThenFailure;
-import testasyouthink.GivenWhenThenDsl.VerificationStage.ThenResult;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.ThenWithoutResult;
-import testasyouthink.execution.Event;
 import testasyouthink.function.CheckedFunction;
 import testasyouthink.function.CheckedRunnable;
 import testasyouthink.function.Functions;
-import testasyouthink.preparation.Preparation;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -66,18 +62,8 @@ public class TestAsYouThink {
         return thenStepFactory.createThenStep(functions.toCheckedConsumer(whenStep));
     }
 
-    public static <$Result, $Assertions extends AbstractAssert<?, $Result>> ThenResult<$Assertions> when(
-            Supplier<$Result> whenStep) {
-        Preparation<Void> nothingToPrepare = new Preparation<>();
-        Event<Void, $Result> event = new Event<>(nothingToPrepare.supplySut(), functions.toCheckedFunction(whenStep));
-        GivenWhenContext<Void, $Result> context = new GivenWhenContext<>(nothingToPrepare, event);
-        $Result result = context.returnResultOrVoid();
-
-        if (result instanceof String)
-            return new ThenResultStep<>(result, Assertions.assertThat((String) result));
-        else {
-            throw new UnsupportedOperationException();
-        }
+    public static <$Result> Then<Void, $Result> when(Supplier<$Result> whenStep) {
+        return thenStepFactory.createThenStep(functions.toCheckedFunction(whenStep));
     }
 
     public static <$SystemUnderTest, $Result> CheckedFunction<$SystemUnderTest, $Result> withReturn(
