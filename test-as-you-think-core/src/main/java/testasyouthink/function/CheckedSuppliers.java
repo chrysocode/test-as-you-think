@@ -33,4 +33,9 @@ public interface CheckedSuppliers {
 
         Integer get() throws Throwable;
     }
+
+    interface CheckedLongSupplier {
+
+        Long get() throws Throwable;
+    }
 }

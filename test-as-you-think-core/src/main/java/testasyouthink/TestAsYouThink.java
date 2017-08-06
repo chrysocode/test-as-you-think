@@ -24,16 +24,17 @@ package testasyouthink;
 
 import org.assertj.core.api.AbstractCharSequenceAssert;
 import org.assertj.core.api.AbstractIntegerAssert;
+import org.assertj.core.api.AbstractLongAssert;
 import testasyouthink.GivenWhenThenDsl.PreparationStage.AndGiven;
 import testasyouthink.GivenWhenThenDsl.PreparationStage.Given;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.Then;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.ThenFailure;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.ThenWithoutResult;
-import testasyouthink.execution.Event;
 import testasyouthink.execution.ExecutionError;
 import testasyouthink.function.CheckedFunction;
 import testasyouthink.function.CheckedRunnable;
 import testasyouthink.function.CheckedSuppliers.CheckedIntegerSupplier;
+import testasyouthink.function.CheckedSuppliers.CheckedLongSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedStringSupplier;
 import testasyouthink.function.Functions;
 
@@ -96,6 +97,16 @@ public class TestAsYouThink {
 
     public static AbstractIntegerAssert<?> resultOf(CheckedIntegerSupplier whenStep) {
         Integer result;
+        try {
+            result = whenStep.get();
+        } catch (Throwable throwable) {
+            throw new ExecutionError(EXECUTION_FAILURE_MESSAGE, throwable);
+        }
+        return assertThat(result);
+    }
+
+    public static AbstractLongAssert<?> resultOf(CheckedLongSupplier whenStep) {
+        Long result;
         try {
             result = whenStep.get();
         } catch (Throwable throwable) {
