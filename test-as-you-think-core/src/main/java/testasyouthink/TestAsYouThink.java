@@ -32,6 +32,7 @@ import org.assertj.core.api.AbstractFloatAssert;
 import org.assertj.core.api.AbstractInstantAssert;
 import org.assertj.core.api.AbstractIntegerAssert;
 import org.assertj.core.api.AbstractLongAssert;
+import org.assertj.core.api.AbstractShortAssert;
 import testasyouthink.GivenWhenThenDsl.PreparationStage.AndGiven;
 import testasyouthink.GivenWhenThenDsl.PreparationStage.Given;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.Then;
@@ -50,6 +51,7 @@ import testasyouthink.function.CheckedSuppliers.CheckedFloatSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedInstantSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedIntegerSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedLongSupplier;
+import testasyouthink.function.CheckedSuppliers.CheckedShortSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedStringSupplier;
 import testasyouthink.function.Functions;
 
@@ -119,6 +121,10 @@ public class TestAsYouThink {
     }
 
     public static AbstractByteAssert<?> resultOf(CheckedByteSupplier whenStep) {
+        return assertThat(result(whenStep));
+    }
+
+    public static AbstractShortAssert<?> resultOf(CheckedShortSupplier whenStep) {
         return assertThat(result(whenStep));
     }
 

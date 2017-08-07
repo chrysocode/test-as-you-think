@@ -52,7 +52,7 @@ public class ResultOfEventTest {
     public void prepareFixtures() {
         gwtMock = mock(GivenWhenThenDefinition.class);
     }
-    
+
     @After
     public void verifyMocks() {
         // THEN
@@ -112,6 +112,14 @@ public class ResultOfEventTest {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
             return Byte.valueOf("6");
         }).isEqualTo(Byte.valueOf("6"))).hasSameClassAs(assertThat((byte) 6));
+    }
+
+    @Test
+    public void should_verify_an_actual_short_is_conform_to_an_expected_result() {
+        assertThat(resultOf(() -> {
+            gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+            return Short.valueOf("123");
+        }).isEqualTo(Short.valueOf("123"))).hasSameClassAs(assertThat(Short.valueOf("123")));
     }
 
     @Test
