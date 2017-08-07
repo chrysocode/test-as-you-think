@@ -130,6 +130,16 @@ public class ResultOfEventTest {
     }
 
     @Test
+    public void should_verify_an_actual_double_is_conform_to_an_expected_result() {
+        assertThat(resultOf(() -> {
+            gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+            return Double.valueOf("12.34");
+        }).isEqualTo(Double.valueOf("12.34"))).hasSameClassAs(assertThat(12.34d));
+        verify(gwtMock).whenAnEventHappensInRelationToAnActionOfTheConsumer();
+        verifyNoMoreInteractions(gwtMock);
+    }
+
+    @Test
     public void should_verify_an_actual_boolean_is_conform_to_an_expected_result() {
         assertThat(resultOf(() -> {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();

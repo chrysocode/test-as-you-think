@@ -32,6 +32,8 @@ public interface CheckedSuppliers {
 
     interface CheckedFloatSupplier extends CheckedSupplier<Float> {}
 
+    interface CheckedDoubleSupplier extends CheckedSupplier<Double> {}
+
     interface CheckedBooleanSupplier extends CheckedSupplier<Boolean> {}
 
     interface CheckedByteSupplier extends CheckedSupplier<Byte> {}
