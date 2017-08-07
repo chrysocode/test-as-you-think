@@ -24,18 +24,9 @@ package testasyouthink.function;
 
 public interface CheckedSuppliers {
 
-    interface CheckedStringSupplier {
+    interface CheckedStringSupplier extends CheckedSupplier<String> {}
 
-        String get() throws Throwable;
-    }
+    interface CheckedIntegerSupplier extends CheckedSupplier<Integer> {}
 
-    interface CheckedIntegerSupplier {
-
-        Integer get() throws Throwable;
-    }
-
-    interface CheckedLongSupplier {
-
-        Long get() throws Throwable;
-    }
+    interface CheckedLongSupplier extends CheckedSupplier<Long> {}
 }
