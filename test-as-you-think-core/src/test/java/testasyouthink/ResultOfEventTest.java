@@ -31,6 +31,8 @@ import testasyouthink.fixture.GivenWhenThenDefinition;
 import testasyouthink.fixture.UnexpectedException;
 import testasyouthink.function.CheckedSuppliers.CheckedStringSupplier;
 
+import java.util.Date;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.Mockito.mock;
@@ -145,6 +147,16 @@ public class ResultOfEventTest {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
             return false;
         }).isFalse()).hasSameClassAs(assertThat(false));
+        verify(gwtMock).whenAnEventHappensInRelationToAnActionOfTheConsumer();
+        verifyNoMoreInteractions(gwtMock);
+    }
+
+    @Test
+    public void should_verify_an_actual_date_is_conform_to_an_expected_result() {
+        assertThat(resultOf(() -> {
+            gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+            return new Date(123456);
+        }).hasSameTimeAs(new Date(123456))).hasSameClassAs(assertThat(new Date(123456)));
         verify(gwtMock).whenAnEventHappensInRelationToAnActionOfTheConsumer();
         verifyNoMoreInteractions(gwtMock);
     }

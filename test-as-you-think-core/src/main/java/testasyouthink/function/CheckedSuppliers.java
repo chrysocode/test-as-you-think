@@ -22,9 +22,13 @@
 
 package testasyouthink.function;
 
+import java.util.Date;
+
 public interface CheckedSuppliers {
 
     interface CheckedStringSupplier extends CheckedSupplier<String> {}
+
+    interface CheckedByteSupplier extends CheckedSupplier<Byte> {}
 
     interface CheckedIntegerSupplier extends CheckedSupplier<Integer> {}
 
@@ -36,5 +40,5 @@ public interface CheckedSuppliers {
 
     interface CheckedBooleanSupplier extends CheckedSupplier<Boolean> {}
 
-    interface CheckedByteSupplier extends CheckedSupplier<Byte> {}
+    interface CheckedDateSupplier extends CheckedSupplier<Date> {}
 }
