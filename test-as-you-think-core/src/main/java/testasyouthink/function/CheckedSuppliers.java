@@ -29,4 +29,6 @@ public interface CheckedSuppliers {
     interface CheckedIntegerSupplier extends CheckedSupplier<Integer> {}
 
     interface CheckedLongSupplier extends CheckedSupplier<Long> {}
+
+    interface CheckedBooleanSupplier extends CheckedSupplier<Boolean> {}
 }

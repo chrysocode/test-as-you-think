@@ -108,4 +108,14 @@ public class ResultOfEventTest {
         verify(gwtMock).whenAnEventHappensInRelationToAnActionOfTheConsumer();
         verifyNoMoreInteractions(gwtMock);
     }
+
+    @Test
+    public void should_verify_an_actual_boolean_is_conform_to_an_expected_result() {
+        assertThat(resultOf(() -> {
+            gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+            return false;
+        }).isFalse()).hasSameClassAs(assertThat(false));
+        verify(gwtMock).whenAnEventHappensInRelationToAnActionOfTheConsumer();
+        verifyNoMoreInteractions(gwtMock);
+    }
 }
