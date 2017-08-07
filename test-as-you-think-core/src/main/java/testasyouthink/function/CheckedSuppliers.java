@@ -30,6 +30,8 @@ public interface CheckedSuppliers {
 
     interface CheckedLongSupplier extends CheckedSupplier<Long> {}
 
+    interface CheckedFloatSupplier extends CheckedSupplier<Float> {}
+
     interface CheckedBooleanSupplier extends CheckedSupplier<Boolean> {}
 
     interface CheckedByteSupplier extends CheckedSupplier<Byte> {}
