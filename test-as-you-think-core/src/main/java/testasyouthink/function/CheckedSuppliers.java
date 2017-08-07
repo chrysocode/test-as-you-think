@@ -22,6 +22,7 @@
 
 package testasyouthink.function;
 
+import java.time.Instant;
 import java.util.Date;
 
 public interface CheckedSuppliers {
@@ -43,4 +44,6 @@ public interface CheckedSuppliers {
     interface CheckedBooleanSupplier extends CheckedSupplier<Boolean> {}
 
     interface CheckedDateSupplier extends CheckedSupplier<Date> {}
+
+    interface CheckedInstantSupplier extends CheckedSupplier<Instant> {}
 }
