@@ -90,11 +90,21 @@ public class ResultOfEventTest {
     }
 
     @Test
+    public void should_verify_an_actual_byte_is_conform_to_an_expected_result() {
+        assertThat(resultOf(() -> {
+            gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+            return Byte.valueOf("6");
+        }).isEqualTo(Byte.valueOf("6"))).hasSameClassAs(assertThat((byte) 6));
+        verify(gwtMock).whenAnEventHappensInRelationToAnActionOfTheConsumer();
+        verifyNoMoreInteractions(gwtMock);
+    }
+
+    @Test
     public void should_verify_an_actual_integer_is_conform_to_an_expected_result() {
         assertThat(resultOf(() -> {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
-            return 123;
-        }).isEqualTo(123)).hasSameClassAs(assertThat(123));
+            return Integer.valueOf(123);
+        }).isEqualTo(Integer.valueOf(123))).hasSameClassAs(assertThat(123));
         verify(gwtMock).whenAnEventHappensInRelationToAnActionOfTheConsumer();
         verifyNoMoreInteractions(gwtMock);
     }
