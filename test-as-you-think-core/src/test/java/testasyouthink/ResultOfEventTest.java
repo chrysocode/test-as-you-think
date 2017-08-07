@@ -52,6 +52,16 @@ public class ResultOfEventTest {
     }
 
     @Test
+    public void should_verify_an_actual_character_is_conform_to_an_expected_result() {
+        assertThat(resultOf(() -> {
+            gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+            return Character.valueOf('b');
+        }).isBetween('a', 'c')).hasSameClassAs(assertThat('a'));
+        verify(gwtMock).whenAnEventHappensInRelationToAnActionOfTheConsumer();
+        verifyNoMoreInteractions(gwtMock);
+    }
+
+    @Test
     public void should_verify_an_actual_string_is_conform_to_an_expected_result() {
         assertThat(resultOf(() -> {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();

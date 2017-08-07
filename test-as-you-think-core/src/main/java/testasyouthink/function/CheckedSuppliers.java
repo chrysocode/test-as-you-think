@@ -26,6 +26,8 @@ import java.util.Date;
 
 public interface CheckedSuppliers {
 
+    interface CheckedCharacterSupplier extends CheckedSupplier<Character> {}
+
     interface CheckedStringSupplier extends CheckedSupplier<String> {}
 
     interface CheckedByteSupplier extends CheckedSupplier<Byte> {}
