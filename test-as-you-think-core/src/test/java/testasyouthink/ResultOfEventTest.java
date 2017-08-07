@@ -22,6 +22,7 @@
 
 package testasyouthink;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -51,6 +52,13 @@ public class ResultOfEventTest {
     public void prepareFixtures() {
         gwtMock = mock(GivenWhenThenDefinition.class);
     }
+    
+    @After
+    public void verifyMocks() {
+        // THEN
+        verify(gwtMock).whenAnEventHappensInRelationToAnActionOfTheConsumer();
+        verifyNoMoreInteractions(gwtMock);
+    }
 
     @Test
     public void should_verify_an_actual_character_is_conform_to_an_expected_result() {
@@ -58,8 +66,6 @@ public class ResultOfEventTest {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
             return Character.valueOf('b');
         }).isBetween('a', 'c')).hasSameClassAs(assertThat('a'));
-        verify(gwtMock).whenAnEventHappensInRelationToAnActionOfTheConsumer();
-        verifyNoMoreInteractions(gwtMock);
     }
 
     @Test
@@ -70,8 +76,6 @@ public class ResultOfEventTest {
         })
                 .isEqualTo("expected result")
                 .contains("result")).hasSameClassAs(assertThat(""));
-        verify(gwtMock).whenAnEventHappensInRelationToAnActionOfTheConsumer();
-        verifyNoMoreInteractions(gwtMock);
     }
 
     @Test
@@ -108,8 +112,6 @@ public class ResultOfEventTest {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
             return Byte.valueOf("6");
         }).isEqualTo(Byte.valueOf("6"))).hasSameClassAs(assertThat((byte) 6));
-        verify(gwtMock).whenAnEventHappensInRelationToAnActionOfTheConsumer();
-        verifyNoMoreInteractions(gwtMock);
     }
 
     @Test
@@ -118,8 +120,6 @@ public class ResultOfEventTest {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
             return Integer.valueOf(123);
         }).isEqualTo(Integer.valueOf(123))).hasSameClassAs(assertThat(123));
-        verify(gwtMock).whenAnEventHappensInRelationToAnActionOfTheConsumer();
-        verifyNoMoreInteractions(gwtMock);
     }
 
     @Test
@@ -128,8 +128,6 @@ public class ResultOfEventTest {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
             return 123L;
         }).isEqualTo(123L)).hasSameClassAs(assertThat(123L));
-        verify(gwtMock).whenAnEventHappensInRelationToAnActionOfTheConsumer();
-        verifyNoMoreInteractions(gwtMock);
     }
 
     @Test
@@ -138,8 +136,6 @@ public class ResultOfEventTest {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
             return Float.valueOf("12.34");
         }).isEqualTo(Float.valueOf("12.34"))).hasSameClassAs(assertThat(12.34f));
-        verify(gwtMock).whenAnEventHappensInRelationToAnActionOfTheConsumer();
-        verifyNoMoreInteractions(gwtMock);
     }
 
     @Test
@@ -148,8 +144,6 @@ public class ResultOfEventTest {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
             return Double.valueOf("12.34");
         }).isEqualTo(Double.valueOf("12.34"))).hasSameClassAs(assertThat(12.34d));
-        verify(gwtMock).whenAnEventHappensInRelationToAnActionOfTheConsumer();
-        verifyNoMoreInteractions(gwtMock);
     }
 
     @Test
@@ -158,8 +152,6 @@ public class ResultOfEventTest {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
             return false;
         }).isFalse()).hasSameClassAs(assertThat(false));
-        verify(gwtMock).whenAnEventHappensInRelationToAnActionOfTheConsumer();
-        verifyNoMoreInteractions(gwtMock);
     }
 
     @Test
@@ -168,8 +160,6 @@ public class ResultOfEventTest {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
             return new Date(123456);
         }).hasSameTimeAs(new Date(123456))).hasSameClassAs(assertThat(new Date(123456)));
-        verify(gwtMock).whenAnEventHappensInRelationToAnActionOfTheConsumer();
-        verifyNoMoreInteractions(gwtMock);
     }
 
     @Test
@@ -178,7 +168,5 @@ public class ResultOfEventTest {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
             return Instant.ofEpochSecond(123456);
         }).isAfter(Instant.ofEpochSecond(100000))).hasSameClassAs(assertThat(Instant.ofEpochSecond(123456)));
-        verify(gwtMock).whenAnEventHappensInRelationToAnActionOfTheConsumer();
-        verifyNoMoreInteractions(gwtMock);
     }
 }
