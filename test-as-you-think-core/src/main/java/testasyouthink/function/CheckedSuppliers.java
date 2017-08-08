@@ -22,6 +22,7 @@
 
 package testasyouthink.function;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.Instant;
 import java.util.Date;
@@ -45,6 +46,8 @@ public interface CheckedSuppliers {
     interface CheckedDoubleSupplier extends CheckedSupplier<Double> {}
 
     interface CheckedBigIntegerSupplier extends CheckedSupplier<BigInteger> {}
+
+    interface CheckedBigDecimalSupplier extends CheckedSupplier<BigDecimal> {}
 
     interface CheckedBooleanSupplier extends CheckedSupplier<Boolean> {}
 

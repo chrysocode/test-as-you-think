@@ -22,6 +22,7 @@
 
 package testasyouthink;
 
+import org.assertj.core.api.AbstractBigDecimalAssert;
 import org.assertj.core.api.AbstractBigIntegerAssert;
 import org.assertj.core.api.AbstractBooleanAssert;
 import org.assertj.core.api.AbstractByteAssert;
@@ -43,6 +44,7 @@ import testasyouthink.execution.ExecutionError;
 import testasyouthink.function.CheckedFunction;
 import testasyouthink.function.CheckedRunnable;
 import testasyouthink.function.CheckedSupplier;
+import testasyouthink.function.CheckedSuppliers.CheckedBigDecimalSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedBigIntegerSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedBooleanSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedByteSupplier;
@@ -147,6 +149,10 @@ public class TestAsYouThink {
     }
 
     public static AbstractBigIntegerAssert<?> resultOf(CheckedBigIntegerSupplier whenStep) {
+        return assertThat(result(whenStep));
+    }
+
+    public static AbstractBigDecimalAssert<?> resultOf(CheckedBigDecimalSupplier whenStep) {
         return assertThat(result(whenStep));
     }
 

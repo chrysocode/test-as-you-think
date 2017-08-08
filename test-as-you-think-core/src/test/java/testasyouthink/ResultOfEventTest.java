@@ -32,6 +32,7 @@ import testasyouthink.fixture.GivenWhenThenDefinition;
 import testasyouthink.fixture.UnexpectedException;
 import testasyouthink.function.CheckedSuppliers.CheckedStringSupplier;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.Instant;
 import java.util.Date;
@@ -161,6 +162,14 @@ public class ResultOfEventTest {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
             return BigInteger.valueOf(1234);
         }).isEqualTo(BigInteger.valueOf(1234))).hasSameClassAs(assertThat(BigInteger.valueOf(1234)));
+    }
+
+    @Test
+    public void should_verify_an_actual_big_decimal_is_conform_to_an_expected_result() {
+        assertThat(resultOf(() -> {
+            gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+            return new BigDecimal("12.34");
+        }).isEqualTo(new BigDecimal("12.34"))).hasSameClassAs(assertThat(BigDecimal.ONE));
     }
 
     @Test
