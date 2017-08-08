@@ -36,6 +36,7 @@ import org.assertj.core.api.AbstractInstantAssert;
 import org.assertj.core.api.AbstractIntegerAssert;
 import org.assertj.core.api.AbstractLongAssert;
 import org.assertj.core.api.AbstractShortAssert;
+import org.assertj.core.api.ListAssert;
 import testasyouthink.GivenWhenThenDsl.PreparationStage.AndGiven;
 import testasyouthink.GivenWhenThenDsl.PreparationStage.Given;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.Then;
@@ -56,6 +57,7 @@ import testasyouthink.function.CheckedSuppliers.CheckedFileSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedFloatSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedInstantSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedIntegerSupplier;
+import testasyouthink.function.CheckedSuppliers.CheckedListSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedLongSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedShortSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedStringSupplier;
@@ -171,6 +173,10 @@ public class TestAsYouThink {
     }
 
     public static AbstractFileAssert<?> resultOf(CheckedFileSupplier whenStep) {
+        return assertThat(result(whenStep));
+    }
+
+    public static <$Element> ListAssert<$Element> resultOf(CheckedListSupplier<$Element> whenStep) {
         return assertThat(result(whenStep));
     }
 }

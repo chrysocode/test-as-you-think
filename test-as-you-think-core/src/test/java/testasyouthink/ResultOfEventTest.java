@@ -36,6 +36,8 @@ import java.io.File;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -203,5 +205,13 @@ public class ResultOfEventTest {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
             return new File(File.separator);
         }).exists()).hasSameClassAs(assertThat(new File(File.separator)));
+    }
+
+    @Test
+    public void should_verify_an_actual_list_is_conform_to_an_expected_result() {
+        assertThat(resultOf(() -> {
+            gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+            return Arrays.asList("one", "two", "three");
+        }).hasSize(3)).hasSameClassAs(assertThat(new ArrayList<>()));
     }
 }
