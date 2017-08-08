@@ -22,6 +22,7 @@
 
 package testasyouthink;
 
+import org.assertj.core.api.AbstractBigIntegerAssert;
 import org.assertj.core.api.AbstractBooleanAssert;
 import org.assertj.core.api.AbstractByteAssert;
 import org.assertj.core.api.AbstractCharSequenceAssert;
@@ -42,6 +43,7 @@ import testasyouthink.execution.ExecutionError;
 import testasyouthink.function.CheckedFunction;
 import testasyouthink.function.CheckedRunnable;
 import testasyouthink.function.CheckedSupplier;
+import testasyouthink.function.CheckedSuppliers.CheckedBigIntegerSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedBooleanSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedByteSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedCharacterSupplier;
@@ -141,6 +143,10 @@ public class TestAsYouThink {
     }
 
     public static AbstractDoubleAssert<?> resultOf(CheckedDoubleSupplier whenStep) {
+        return assertThat(result(whenStep));
+    }
+
+    public static AbstractBigIntegerAssert<?> resultOf(CheckedBigIntegerSupplier whenStep) {
         return assertThat(result(whenStep));
     }
 
