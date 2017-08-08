@@ -30,6 +30,7 @@ import org.assertj.core.api.AbstractCharSequenceAssert;
 import org.assertj.core.api.AbstractCharacterAssert;
 import org.assertj.core.api.AbstractDateAssert;
 import org.assertj.core.api.AbstractDoubleAssert;
+import org.assertj.core.api.AbstractFileAssert;
 import org.assertj.core.api.AbstractFloatAssert;
 import org.assertj.core.api.AbstractInstantAssert;
 import org.assertj.core.api.AbstractIntegerAssert;
@@ -51,6 +52,7 @@ import testasyouthink.function.CheckedSuppliers.CheckedByteSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedCharacterSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedDateSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedDoubleSupplier;
+import testasyouthink.function.CheckedSuppliers.CheckedFileSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedFloatSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedInstantSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedIntegerSupplier;
@@ -165,6 +167,10 @@ public class TestAsYouThink {
     }
 
     public static AbstractInstantAssert<?> resultOf(CheckedInstantSupplier whenStep) {
+        return assertThat(result(whenStep));
+    }
+
+    public static AbstractFileAssert<?> resultOf(CheckedFileSupplier whenStep) {
         return assertThat(result(whenStep));
     }
 }

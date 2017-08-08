@@ -22,6 +22,7 @@
 
 package testasyouthink.function;
 
+import java.io.File;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.Instant;
@@ -54,4 +55,6 @@ public interface CheckedSuppliers {
     interface CheckedDateSupplier extends CheckedSupplier<Date> {}
 
     interface CheckedInstantSupplier extends CheckedSupplier<Instant> {}
+
+    interface CheckedFileSupplier extends CheckedSupplier<File> {}
 }

@@ -32,6 +32,7 @@ import testasyouthink.fixture.GivenWhenThenDefinition;
 import testasyouthink.fixture.UnexpectedException;
 import testasyouthink.function.CheckedSuppliers.CheckedStringSupplier;
 
+import java.io.File;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.Instant;
@@ -194,5 +195,13 @@ public class ResultOfEventTest {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
             return Instant.ofEpochSecond(123456);
         }).isAfter(Instant.ofEpochSecond(100000))).hasSameClassAs(assertThat(Instant.ofEpochSecond(123456)));
+    }
+
+    @Test
+    public void should_verify_an_actual_file_is_conform_to_an_expected_result() {
+        assertThat(resultOf(() -> {
+            gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+            return new File(File.separator);
+        }).exists()).hasSameClassAs(assertThat(new File(File.separator)));
     }
 }
