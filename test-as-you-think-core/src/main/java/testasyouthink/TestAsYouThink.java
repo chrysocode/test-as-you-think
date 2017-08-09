@@ -36,6 +36,7 @@ import org.assertj.core.api.AbstractInstantAssert;
 import org.assertj.core.api.AbstractIntegerAssert;
 import org.assertj.core.api.AbstractLocalDateAssert;
 import org.assertj.core.api.AbstractLocalDateTimeAssert;
+import org.assertj.core.api.AbstractLocalTimeAssert;
 import org.assertj.core.api.AbstractLongAssert;
 import org.assertj.core.api.AbstractPathAssert;
 import org.assertj.core.api.AbstractShortAssert;
@@ -63,6 +64,7 @@ import testasyouthink.function.CheckedSuppliers.CheckedIntegerSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedListSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedLocalDateSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedLocalDateTimeSupplier;
+import testasyouthink.function.CheckedSuppliers.CheckedLocalTimeSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedLongSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedPathSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedShortSupplier;
@@ -179,6 +181,10 @@ public class TestAsYouThink {
     }
 
     public static AbstractLocalDateTimeAssert<?> resultOf(CheckedLocalDateTimeSupplier whenStep) {
+        return assertThat(result(whenStep));
+    }
+
+    public static AbstractLocalTimeAssert<?> resultOf(CheckedLocalTimeSupplier whenStep) {
         return assertThat(result(whenStep));
     }
 

@@ -29,6 +29,7 @@ import java.nio.file.Path;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Date;
 import java.util.List;
 
@@ -61,6 +62,8 @@ public interface CheckedSuppliers {
     interface CheckedLocalDateSupplier extends CheckedSupplier<LocalDate> {}
 
     interface CheckedLocalDateTimeSupplier extends CheckedSupplier<LocalDateTime> {}
+
+    interface CheckedLocalTimeSupplier extends CheckedSupplier<LocalTime> {}
 
     interface CheckedInstantSupplier extends CheckedSupplier<Instant> {}
 
