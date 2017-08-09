@@ -208,6 +208,14 @@ public class ResultOfEventTest {
     }
 
     @Test
+    public void should_verify_an_actual_path_is_conform_to_an_expected_result() {
+        assertThat(resultOf(() -> {
+            gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+            return new File(File.separator).toPath();
+        }).isAbsolute()).hasSameClassAs(assertThat(new File(File.separator).toPath()));
+    }
+
+    @Test
     public void should_verify_an_actual_list_is_conform_to_an_expected_result() {
         assertThat(resultOf(() -> {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
