@@ -37,6 +37,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -198,6 +199,15 @@ public class ResultOfEventTest {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
             return LocalDate.of(2017, 8, 9);
         }).isAfter(LocalDate.of(2017, 8, 1))).hasSameClassAs(assertThat(LocalDate.of(2017, 8, 9)));
+    }
+
+    @Test
+    public void should_verify_an_actual_local_date_time_is_conform_to_an_expected_result() {
+        assertThat(resultOf(() -> {
+            gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+            return LocalDateTime.of(2017, 8, 9, 12, 30);
+        }).isAfter(LocalDateTime.of(2017, 8, 9, 10, 15))).hasSameClassAs(
+                assertThat(LocalDateTime.of(2017, 8, 9, 12, 30)));
     }
 
     @Test
