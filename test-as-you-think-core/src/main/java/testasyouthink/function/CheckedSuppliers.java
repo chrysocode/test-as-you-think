@@ -27,6 +27,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.file.Path;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -55,6 +56,8 @@ public interface CheckedSuppliers {
     interface CheckedBooleanSupplier extends CheckedSupplier<Boolean> {}
 
     interface CheckedDateSupplier extends CheckedSupplier<Date> {}
+
+    interface CheckedLocalDateSupplier extends CheckedSupplier<LocalDate> {}
 
     interface CheckedInstantSupplier extends CheckedSupplier<Instant> {}
 
