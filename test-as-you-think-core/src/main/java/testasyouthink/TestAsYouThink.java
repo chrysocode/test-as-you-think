@@ -40,6 +40,7 @@ import org.assertj.core.api.AbstractLocalTimeAssert;
 import org.assertj.core.api.AbstractLongAssert;
 import org.assertj.core.api.AbstractPathAssert;
 import org.assertj.core.api.AbstractShortAssert;
+import org.assertj.core.api.IterableAssert;
 import org.assertj.core.api.ListAssert;
 import org.assertj.core.api.MapAssert;
 import testasyouthink.GivenWhenThenDsl.PreparationStage.AndGiven;
@@ -62,6 +63,7 @@ import testasyouthink.function.CheckedSuppliers.CheckedFileSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedFloatSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedInstantSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedIntegerSupplier;
+import testasyouthink.function.CheckedSuppliers.CheckedIteratorSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedListSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedLocalDateSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedLocalDateTimeSupplier;
@@ -79,6 +81,7 @@ import java.util.function.Supplier;
 import static org.assertj.core.api.Assertions.assertThat;
 import static testasyouthink.execution.Event.EXECUTION_FAILURE_MESSAGE;
 
+@SuppressWarnings("WeakerAccess")
 public class TestAsYouThink {
 
     private static Functions functions = Functions.INSTANCE;
@@ -199,6 +202,10 @@ public class TestAsYouThink {
     }
 
     public static AbstractPathAssert<?> resultOf(CheckedPathSupplier whenStep) {
+        return assertThat(result(whenStep));
+    }
+
+    public static <$Element> IterableAssert<$Element> resultOf(CheckedIteratorSupplier<$Element> whenStep) {
         return assertThat(result(whenStep));
     }
 

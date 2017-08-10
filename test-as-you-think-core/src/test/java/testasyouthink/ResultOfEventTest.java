@@ -245,6 +245,16 @@ public class ResultOfEventTest {
     }
 
     @Test
+    public void should_verify_an_actual_iterator_is_conform_to_an_expected_result() {
+        assertThat(resultOf(() -> {
+            gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+            return Arrays
+                    .asList("one", "two", "three")
+                    .iterator();
+        }).doesNotContain("four")).hasSameClassAs(assertThat(new ArrayList<>().iterator()));
+    }
+
+    @Test
     public void should_verify_an_actual_list_is_conform_to_an_expected_result() {
         assertThat(resultOf(() -> {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
