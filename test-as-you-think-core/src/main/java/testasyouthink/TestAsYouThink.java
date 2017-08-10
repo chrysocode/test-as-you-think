@@ -63,6 +63,7 @@ import testasyouthink.function.CheckedSuppliers.CheckedFileSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedFloatSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedInstantSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedIntegerSupplier;
+import testasyouthink.function.CheckedSuppliers.CheckedIterableSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedIteratorSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedListSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedLocalDateSupplier;
@@ -202,6 +203,10 @@ public class TestAsYouThink {
     }
 
     public static AbstractPathAssert<?> resultOf(CheckedPathSupplier whenStep) {
+        return assertThat(result(whenStep));
+    }
+
+    public static <$Element> IterableAssert<$Element> resultOf(CheckedIterableSupplier<$Element> whenStep) {
         return assertThat(result(whenStep));
     }
 

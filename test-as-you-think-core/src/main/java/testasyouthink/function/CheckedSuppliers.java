@@ -73,6 +73,8 @@ public interface CheckedSuppliers {
 
     interface CheckedPathSupplier extends CheckedSupplier<Path> {}
 
+    interface CheckedIterableSupplier<$Element> extends CheckedSupplier<Iterable<$Element>> {}
+
     interface CheckedIteratorSupplier<$Element> extends CheckedSupplier<Iterator<$Element>> {}
 
     interface CheckedListSupplier<$Element> extends CheckedSupplier<List<$Element>> {}
