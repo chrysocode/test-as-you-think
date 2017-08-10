@@ -32,6 +32,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public interface CheckedSuppliers {
 
@@ -71,5 +72,7 @@ public interface CheckedSuppliers {
 
     interface CheckedPathSupplier extends CheckedSupplier<Path> {}
 
-    interface CheckedListSupplier<T> extends CheckedSupplier<List<T>> {}
+    interface CheckedListSupplier<$Element> extends CheckedSupplier<List<$Element>> {}
+
+    interface CheckedMapSupplier<$Key, $Value> extends CheckedSupplier<Map<$Key, $Value>> {}
 }

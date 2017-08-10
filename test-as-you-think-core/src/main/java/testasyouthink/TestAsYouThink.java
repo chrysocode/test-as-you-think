@@ -41,6 +41,7 @@ import org.assertj.core.api.AbstractLongAssert;
 import org.assertj.core.api.AbstractPathAssert;
 import org.assertj.core.api.AbstractShortAssert;
 import org.assertj.core.api.ListAssert;
+import org.assertj.core.api.MapAssert;
 import testasyouthink.GivenWhenThenDsl.PreparationStage.AndGiven;
 import testasyouthink.GivenWhenThenDsl.PreparationStage.Given;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.Then;
@@ -66,6 +67,7 @@ import testasyouthink.function.CheckedSuppliers.CheckedLocalDateSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedLocalDateTimeSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedLocalTimeSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedLongSupplier;
+import testasyouthink.function.CheckedSuppliers.CheckedMapSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedPathSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedShortSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedStringSupplier;
@@ -201,6 +203,10 @@ public class TestAsYouThink {
     }
 
     public static <$Element> ListAssert<$Element> resultOf(CheckedListSupplier<$Element> whenStep) {
+        return assertThat(result(whenStep));
+    }
+
+    public static <$Key, $Value> MapAssert<$Key, $Value> resultOf(CheckedMapSupplier<$Key, $Value> whenStep) {
         return assertThat(result(whenStep));
     }
 }

@@ -42,6 +42,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
@@ -249,5 +250,17 @@ public class ResultOfEventTest {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
             return Arrays.asList("one", "two", "three");
         }).hasSize(3)).hasSameClassAs(assertThat(new ArrayList<>()));
+    }
+
+    @Test
+    public void should_verify_an_actual_map_is_conform_to_an_expected_result() {
+        assertThat(resultOf(() -> {
+            gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+            return new HashMap<Integer, String>() {{
+                put(1, "one");
+                put(2, "two");
+                put(3, "three");
+            }};
+        }).hasSize(3)).hasSameClassAs(assertThat(new HashMap<>()));
     }
 }
