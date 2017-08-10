@@ -35,6 +35,8 @@ import testasyouthink.function.CheckedSuppliers.CheckedStringSupplier;
 import java.io.File;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -234,6 +236,14 @@ public class ResultOfEventTest {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
             return new File(File.separator);
         }).exists()).hasSameClassAs(assertThat(new File(File.separator)));
+    }
+
+    @Test
+    public void should_verify_an_actual_uri_is_conform_to_an_expected_result() throws URISyntaxException {
+        assertThat(resultOf(() -> {
+            gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+            return new URI("uri");
+        }).hasNoParameters()).hasSameClassAs(assertThat(new URI("uri")));
     }
 
     @Test

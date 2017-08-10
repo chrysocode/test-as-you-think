@@ -25,6 +25,7 @@ package testasyouthink.function;
 import java.io.File;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.net.URI;
 import java.nio.file.Path;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -70,6 +71,8 @@ public interface CheckedSuppliers {
     interface CheckedInstantSupplier extends CheckedSupplier<Instant> {}
 
     interface CheckedFileSupplier extends CheckedSupplier<File> {}
+
+    interface CheckedUriSupplier extends CheckedSupplier<URI> {}
 
     interface CheckedPathSupplier extends CheckedSupplier<Path> {}
 

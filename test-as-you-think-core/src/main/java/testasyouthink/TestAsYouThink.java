@@ -40,6 +40,7 @@ import org.assertj.core.api.AbstractLocalTimeAssert;
 import org.assertj.core.api.AbstractLongAssert;
 import org.assertj.core.api.AbstractPathAssert;
 import org.assertj.core.api.AbstractShortAssert;
+import org.assertj.core.api.AbstractUriAssert;
 import org.assertj.core.api.IterableAssert;
 import org.assertj.core.api.ListAssert;
 import org.assertj.core.api.MapAssert;
@@ -74,6 +75,7 @@ import testasyouthink.function.CheckedSuppliers.CheckedMapSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedPathSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedShortSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedStringSupplier;
+import testasyouthink.function.CheckedSuppliers.CheckedUriSupplier;
 import testasyouthink.function.Functions;
 
 import java.util.function.Consumer;
@@ -199,6 +201,10 @@ public class TestAsYouThink {
     }
 
     public static AbstractFileAssert<?> resultOf(CheckedFileSupplier whenStep) {
+        return assertThat(result(whenStep));
+    }
+
+    public static AbstractUriAssert<?> resultOf(CheckedUriSupplier whenStep) {
         return assertThat(result(whenStep));
     }
 
