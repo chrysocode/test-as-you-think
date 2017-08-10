@@ -35,8 +35,10 @@ import testasyouthink.function.CheckedSuppliers.CheckedStringSupplier;
 import java.io.File;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -239,6 +241,14 @@ public class ResultOfEventTest {
     }
 
     @Test
+    public void should_verify_an_actual_path_is_conform_to_an_expected_result() {
+        assertThat(resultOf(() -> {
+            gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+            return new File(File.separator).toPath();
+        }).isAbsolute()).hasSameClassAs(assertThat(new File(File.separator).toPath()));
+    }
+
+    @Test
     public void should_verify_an_actual_uri_is_conform_to_an_expected_result() throws URISyntaxException {
         assertThat(resultOf(() -> {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
@@ -247,11 +257,11 @@ public class ResultOfEventTest {
     }
 
     @Test
-    public void should_verify_an_actual_path_is_conform_to_an_expected_result() {
+    public void should_verify_an_actual_url_is_conform_to_an_expected_result() throws MalformedURLException {
         assertThat(resultOf(() -> {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
-            return new File(File.separator).toPath();
-        }).isAbsolute()).hasSameClassAs(assertThat(new File(File.separator).toPath()));
+            return new URL("http://uri");
+        }).hasNoParameters()).hasSameClassAs(assertThat(new URL("http://uri")));
     }
 
     @Test

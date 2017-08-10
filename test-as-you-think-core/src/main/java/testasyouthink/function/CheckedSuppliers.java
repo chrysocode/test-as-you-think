@@ -26,6 +26,7 @@ import java.io.File;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.URI;
+import java.net.URL;
 import java.nio.file.Path;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -72,9 +73,11 @@ public interface CheckedSuppliers {
 
     interface CheckedFileSupplier extends CheckedSupplier<File> {}
 
+    interface CheckedPathSupplier extends CheckedSupplier<Path> {}
+
     interface CheckedUriSupplier extends CheckedSupplier<URI> {}
 
-    interface CheckedPathSupplier extends CheckedSupplier<Path> {}
+    interface CheckedUrlSupplier extends CheckedSupplier<URL> {}
 
     interface CheckedIterableSupplier<$Element> extends CheckedSupplier<Iterable<$Element>> {}
 
