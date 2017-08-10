@@ -45,6 +45,7 @@ import org.assertj.core.api.AbstractUrlAssert;
 import org.assertj.core.api.IterableAssert;
 import org.assertj.core.api.ListAssert;
 import org.assertj.core.api.MapAssert;
+import org.assertj.core.api.OptionalAssert;
 import testasyouthink.GivenWhenThenDsl.PreparationStage.AndGiven;
 import testasyouthink.GivenWhenThenDsl.PreparationStage.Given;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.Then;
@@ -73,6 +74,7 @@ import testasyouthink.function.CheckedSuppliers.CheckedLocalDateTimeSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedLocalTimeSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedLongSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedMapSupplier;
+import testasyouthink.function.CheckedSuppliers.CheckedOptionalSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedPathSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedShortSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedStringSupplier;
@@ -174,6 +176,10 @@ public class TestAsYouThink {
     }
 
     public static AbstractBigDecimalAssert<?> resultOf(CheckedBigDecimalSupplier whenStep) {
+        return assertThat(result(whenStep));
+    }
+
+    public static <$Value> OptionalAssert<$Value> resultOf(CheckedOptionalSupplier<$Value> whenStep) {
         return assertThat(result(whenStep));
     }
 

@@ -47,6 +47,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
@@ -181,6 +182,14 @@ public class ResultOfEventTest {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
             return new BigDecimal("12.34");
         }).isEqualTo(new BigDecimal("12.34"))).hasSameClassAs(assertThat(BigDecimal.ONE));
+    }
+
+    @Test
+    public void should_verify_an_actual_optional_is_conform_to_an_expected_result() {
+        assertThat(resultOf(() -> {
+            gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+            return Optional.of("optional");
+        }).isPresent()).hasSameClassAs(assertThat(Optional.empty()));
     }
 
     @Test
