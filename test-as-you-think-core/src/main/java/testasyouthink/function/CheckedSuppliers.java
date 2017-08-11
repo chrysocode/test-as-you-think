@@ -38,6 +38,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.OptionalInt;
+import java.util.OptionalLong;
 
 public interface CheckedSuppliers {
 
@@ -64,6 +65,8 @@ public interface CheckedSuppliers {
     interface CheckedOptionalSupplier<$Value> extends CheckedSupplier<Optional<$Value>> {}
 
     interface CheckedOptionalIntSupplier extends CheckedSupplier<OptionalInt> {}
+
+    interface CheckedOptionalLongSupplier extends CheckedSupplier<OptionalLong> {}
 
     interface CheckedBooleanSupplier extends CheckedSupplier<Boolean> {}
 
