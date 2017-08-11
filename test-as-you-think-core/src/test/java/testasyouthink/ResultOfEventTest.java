@@ -48,6 +48,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Optional;
+import java.util.OptionalDouble;
 import java.util.OptionalInt;
 import java.util.OptionalLong;
 
@@ -208,6 +209,14 @@ public class ResultOfEventTest {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
             return OptionalLong.of(123);
         }).isPresent()).hasSameClassAs(assertThat(OptionalLong.empty()));
+    }
+
+    @Test
+    public void should_verify_an_actual_optional_double_is_conform_to_an_expected_result() {
+        assertThat(resultOf(() -> {
+            gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+            return OptionalDouble.of(123);
+        }).isPresent()).hasSameClassAs(assertThat(OptionalDouble.empty()));
     }
 
     @Test

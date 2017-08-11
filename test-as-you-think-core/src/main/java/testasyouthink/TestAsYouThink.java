@@ -46,6 +46,7 @@ import org.assertj.core.api.IterableAssert;
 import org.assertj.core.api.ListAssert;
 import org.assertj.core.api.MapAssert;
 import org.assertj.core.api.OptionalAssert;
+import org.assertj.core.api.OptionalDoubleAssert;
 import org.assertj.core.api.OptionalIntAssert;
 import org.assertj.core.api.OptionalLongAssert;
 import testasyouthink.GivenWhenThenDsl.PreparationStage.AndGiven;
@@ -76,6 +77,7 @@ import testasyouthink.function.CheckedSuppliers.CheckedLocalDateTimeSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedLocalTimeSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedLongSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedMapSupplier;
+import testasyouthink.function.CheckedSuppliers.CheckedOptionalDoubleSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedOptionalIntSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedOptionalLongSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedOptionalSupplier;
@@ -192,6 +194,10 @@ public class TestAsYouThink {
     }
 
     public static OptionalLongAssert resultOf(CheckedOptionalLongSupplier whenStep) {
+        return assertThat(result(whenStep));
+    }
+
+    public static OptionalDoubleAssert resultOf(CheckedOptionalDoubleSupplier whenStep) {
         return assertThat(result(whenStep));
     }
 

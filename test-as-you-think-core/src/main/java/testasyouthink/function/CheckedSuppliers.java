@@ -37,6 +37,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.OptionalDouble;
 import java.util.OptionalInt;
 import java.util.OptionalLong;
 
@@ -67,6 +68,8 @@ public interface CheckedSuppliers {
     interface CheckedOptionalIntSupplier extends CheckedSupplier<OptionalInt> {}
 
     interface CheckedOptionalLongSupplier extends CheckedSupplier<OptionalLong> {}
+
+    interface CheckedOptionalDoubleSupplier extends CheckedSupplier<OptionalDouble> {}
 
     interface CheckedBooleanSupplier extends CheckedSupplier<Boolean> {}
 
