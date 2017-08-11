@@ -40,6 +40,7 @@ import java.util.Optional;
 import java.util.OptionalDouble;
 import java.util.OptionalInt;
 import java.util.OptionalLong;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public interface CheckedSuppliers {
 
@@ -98,4 +99,6 @@ public interface CheckedSuppliers {
     interface CheckedListSupplier<$Element> extends CheckedSupplier<List<$Element>> {}
 
     interface CheckedMapSupplier<$Key, $Value> extends CheckedSupplier<Map<$Key, $Value>> {}
+
+    interface CheckedAtomicBooleanSupplier extends CheckedSupplier<AtomicBoolean> {}
 }

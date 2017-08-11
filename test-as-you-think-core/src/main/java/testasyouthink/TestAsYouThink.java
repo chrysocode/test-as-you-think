@@ -42,6 +42,7 @@ import org.assertj.core.api.AbstractPathAssert;
 import org.assertj.core.api.AbstractShortAssert;
 import org.assertj.core.api.AbstractUriAssert;
 import org.assertj.core.api.AbstractUrlAssert;
+import org.assertj.core.api.AtomicBooleanAssert;
 import org.assertj.core.api.IterableAssert;
 import org.assertj.core.api.ListAssert;
 import org.assertj.core.api.MapAssert;
@@ -58,6 +59,7 @@ import testasyouthink.execution.ExecutionError;
 import testasyouthink.function.CheckedFunction;
 import testasyouthink.function.CheckedRunnable;
 import testasyouthink.function.CheckedSupplier;
+import testasyouthink.function.CheckedSuppliers.CheckedAtomicBooleanSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedBigDecimalSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedBigIntegerSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedBooleanSupplier;
@@ -254,6 +256,10 @@ public class TestAsYouThink {
     }
 
     public static <$Key, $Value> MapAssert<$Key, $Value> resultOf(CheckedMapSupplier<$Key, $Value> whenStep) {
+        return assertThat(result(whenStep));
+    }
+
+    public static AtomicBooleanAssert resultOf(CheckedAtomicBooleanSupplier whenStep) {
         return assertThat(result(whenStep));
     }
 }
