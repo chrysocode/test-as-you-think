@@ -41,6 +41,7 @@ import java.util.OptionalDouble;
 import java.util.OptionalInt;
 import java.util.OptionalLong;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public interface CheckedSuppliers {
 
@@ -101,4 +102,6 @@ public interface CheckedSuppliers {
     interface CheckedMapSupplier<$Key, $Value> extends CheckedSupplier<Map<$Key, $Value>> {}
 
     interface CheckedAtomicBooleanSupplier extends CheckedSupplier<AtomicBoolean> {}
+
+    interface CheckedAtomicIntegerSupplier extends CheckedSupplier<AtomicInteger> {}
 }
