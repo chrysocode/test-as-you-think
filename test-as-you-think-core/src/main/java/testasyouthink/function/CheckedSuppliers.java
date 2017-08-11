@@ -37,6 +37,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.OptionalInt;
 
 public interface CheckedSuppliers {
 
@@ -60,7 +61,9 @@ public interface CheckedSuppliers {
 
     interface CheckedBigDecimalSupplier extends CheckedSupplier<BigDecimal> {}
 
-    interface CheckedOptionalSupplier<T> extends CheckedSupplier<Optional<T>> {}
+    interface CheckedOptionalSupplier<$Value> extends CheckedSupplier<Optional<$Value>> {}
+
+    interface CheckedOptionalIntSupplier extends CheckedSupplier<OptionalInt> {}
 
     interface CheckedBooleanSupplier extends CheckedSupplier<Boolean> {}
 

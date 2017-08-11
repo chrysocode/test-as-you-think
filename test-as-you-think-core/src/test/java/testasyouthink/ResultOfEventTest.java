@@ -48,6 +48,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Optional;
+import java.util.OptionalInt;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
@@ -190,6 +191,14 @@ public class ResultOfEventTest {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
             return Optional.of("optional");
         }).isPresent()).hasSameClassAs(assertThat(Optional.empty()));
+    }
+
+    @Test
+    public void should_verify_an_actual_optional_int_is_conform_to_an_expected_result() {
+        assertThat(resultOf(() -> {
+            gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+            return OptionalInt.of(123);
+        }).isPresent()).hasSameClassAs(assertThat(OptionalInt.empty()));
     }
 
     @Test

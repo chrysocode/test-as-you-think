@@ -46,6 +46,7 @@ import org.assertj.core.api.IterableAssert;
 import org.assertj.core.api.ListAssert;
 import org.assertj.core.api.MapAssert;
 import org.assertj.core.api.OptionalAssert;
+import org.assertj.core.api.OptionalIntAssert;
 import testasyouthink.GivenWhenThenDsl.PreparationStage.AndGiven;
 import testasyouthink.GivenWhenThenDsl.PreparationStage.Given;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.Then;
@@ -74,6 +75,7 @@ import testasyouthink.function.CheckedSuppliers.CheckedLocalDateTimeSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedLocalTimeSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedLongSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedMapSupplier;
+import testasyouthink.function.CheckedSuppliers.CheckedOptionalIntSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedOptionalSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedPathSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedShortSupplier;
@@ -180,6 +182,10 @@ public class TestAsYouThink {
     }
 
     public static <$Value> OptionalAssert<$Value> resultOf(CheckedOptionalSupplier<$Value> whenStep) {
+        return assertThat(result(whenStep));
+    }
+
+    public static OptionalIntAssert resultOf(CheckedOptionalIntSupplier whenStep) {
         return assertThat(result(whenStep));
     }
 
