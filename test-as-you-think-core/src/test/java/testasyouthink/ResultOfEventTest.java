@@ -53,6 +53,7 @@ import java.util.OptionalInt;
 import java.util.OptionalLong;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
@@ -354,5 +355,13 @@ public class ResultOfEventTest {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
             return new AtomicInteger(123);
         }).hasPositiveValue()).hasSameClassAs(assertThat(new AtomicInteger()));
+    }
+
+    @Test
+    public void should_verify_an_actual_atomic_long_is_conform_to_an_expected_result() {
+        assertThat(resultOf(() -> {
+            gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+            return new AtomicLong(123);
+        }).hasPositiveValue()).hasSameClassAs(assertThat(new AtomicLong()));
     }
 }
