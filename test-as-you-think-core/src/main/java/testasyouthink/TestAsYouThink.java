@@ -48,6 +48,7 @@ import org.assertj.core.api.AtomicIntegerArrayAssert;
 import org.assertj.core.api.AtomicIntegerAssert;
 import org.assertj.core.api.AtomicLongArrayAssert;
 import org.assertj.core.api.AtomicLongAssert;
+import org.assertj.core.api.CompletableFutureAssert;
 import org.assertj.core.api.IterableAssert;
 import org.assertj.core.api.ListAssert;
 import org.assertj.core.api.MapAssert;
@@ -74,6 +75,7 @@ import testasyouthink.function.CheckedSuppliers.CheckedBigIntegerSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedBooleanSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedByteSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedCharacterSupplier;
+import testasyouthink.function.CheckedSuppliers.CheckedCompletableFutureSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedDateSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedDoubleSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedFileSupplier;
@@ -292,6 +294,10 @@ public class TestAsYouThink {
 
     public static <$Value> AbstractFutureAssert<?, ? extends Future<? extends $Value>, $Value> resultOf(
             CheckedFutureSupplier<$Value> whenStep) {
+        return assertThat(result(whenStep));
+    }
+
+    public static <$Value> CompletableFutureAssert<$Value> resultOf(CheckedCompletableFutureSupplier<$Value> whenStep) {
         return assertThat(result(whenStep));
     }
 }

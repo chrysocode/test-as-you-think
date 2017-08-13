@@ -40,6 +40,7 @@ import java.util.Optional;
 import java.util.OptionalDouble;
 import java.util.OptionalInt;
 import java.util.OptionalLong;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -116,4 +117,6 @@ public interface CheckedSuppliers {
     interface CheckedAtomicLongArraySupplier extends CheckedSupplier<AtomicLongArray> {}
 
     interface CheckedFutureSupplier<$Value> extends CheckedSupplier<Future<$Value>> {}
+
+    interface CheckedCompletableFutureSupplier<$Value> extends CheckedSupplier<CompletableFuture<$Value>> {}
 }

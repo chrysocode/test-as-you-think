@@ -51,6 +51,7 @@ import java.util.Optional;
 import java.util.OptionalDouble;
 import java.util.OptionalInt;
 import java.util.OptionalLong;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -397,5 +398,15 @@ public class ResultOfEventTest {
             future.get();
             return future;
         }).isDone()).hasSameClassAs(assertThat((Future<String>) new FutureTask<>(() -> "anything")));
+    }
+
+    @Test
+    public void should_verify_an_actual_completable_future_is_conform_to_an_expected_result() {
+        assertThat(resultOf(() -> {
+            gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+            CompletableFuture<String> completableFuture = new CompletableFuture<>();
+            completableFuture.complete("result");
+            return completableFuture;
+        }).isDone()).hasSameClassAs(assertThat(new CompletableFuture<String>()));
     }
 }
