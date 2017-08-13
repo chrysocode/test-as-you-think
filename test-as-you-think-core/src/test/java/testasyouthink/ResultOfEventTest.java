@@ -51,6 +51,10 @@ import java.util.Optional;
 import java.util.OptionalDouble;
 import java.util.OptionalInt;
 import java.util.OptionalLong;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.FutureTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicIntegerArray;
@@ -381,5 +385,17 @@ public class ResultOfEventTest {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
             return new AtomicLongArray(3);
         }).hasSize(3)).hasSameClassAs(assertThat(new AtomicLongArray(0)));
+    }
+
+    @Test
+    public void should_verify_an_actual_future_is_conform_to_an_expected_result() {
+        assertThat(resultOf(() -> {
+            gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+            Future<String> future = new FutureTask<>(() -> "result of callable");
+            ExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+            executorService.execute((Runnable) future);
+            future.get();
+            return future;
+        }).isDone()).hasSameClassAs(assertThat((Future<String>) new FutureTask<>(() -> "anything")));
     }
 }

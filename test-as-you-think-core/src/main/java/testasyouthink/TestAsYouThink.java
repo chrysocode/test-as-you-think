@@ -32,6 +32,7 @@ import org.assertj.core.api.AbstractDateAssert;
 import org.assertj.core.api.AbstractDoubleAssert;
 import org.assertj.core.api.AbstractFileAssert;
 import org.assertj.core.api.AbstractFloatAssert;
+import org.assertj.core.api.AbstractFutureAssert;
 import org.assertj.core.api.AbstractInstantAssert;
 import org.assertj.core.api.AbstractIntegerAssert;
 import org.assertj.core.api.AbstractLocalDateAssert;
@@ -77,6 +78,7 @@ import testasyouthink.function.CheckedSuppliers.CheckedDateSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedDoubleSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedFileSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedFloatSupplier;
+import testasyouthink.function.CheckedSuppliers.CheckedFutureSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedInstantSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedIntegerSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedIterableSupplier;
@@ -98,6 +100,7 @@ import testasyouthink.function.CheckedSuppliers.CheckedUriSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedUrlSupplier;
 import testasyouthink.function.Functions;
 
+import java.util.concurrent.Future;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -284,6 +287,11 @@ public class TestAsYouThink {
     }
 
     public static AtomicLongArrayAssert resultOf(CheckedAtomicLongArraySupplier whenStep) {
+        return assertThat(result(whenStep));
+    }
+
+    public static <$Value> AbstractFutureAssert<?, ? extends Future<? extends $Value>, $Value> resultOf(
+            CheckedFutureSupplier<$Value> whenStep) {
         return assertThat(result(whenStep));
     }
 }
