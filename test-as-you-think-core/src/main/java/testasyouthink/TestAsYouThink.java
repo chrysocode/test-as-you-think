@@ -43,6 +43,7 @@ import org.assertj.core.api.AbstractShortAssert;
 import org.assertj.core.api.AbstractUriAssert;
 import org.assertj.core.api.AbstractUrlAssert;
 import org.assertj.core.api.AtomicBooleanAssert;
+import org.assertj.core.api.AtomicIntegerArrayAssert;
 import org.assertj.core.api.AtomicIntegerAssert;
 import org.assertj.core.api.AtomicLongAssert;
 import org.assertj.core.api.IterableAssert;
@@ -62,6 +63,7 @@ import testasyouthink.function.CheckedFunction;
 import testasyouthink.function.CheckedRunnable;
 import testasyouthink.function.CheckedSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedAtomicBooleanSupplier;
+import testasyouthink.function.CheckedSuppliers.CheckedAtomicIntegerArraySupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedAtomicIntegerSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedAtomicLongSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedBigDecimalSupplier;
@@ -268,6 +270,10 @@ public class TestAsYouThink {
     }
 
     public static AtomicIntegerAssert resultOf(CheckedAtomicIntegerSupplier whenStep) {
+        return assertThat(result(whenStep));
+    }
+
+    public static AtomicIntegerArrayAssert resultOf(CheckedAtomicIntegerArraySupplier whenStep) {
         return assertThat(result(whenStep));
     }
 

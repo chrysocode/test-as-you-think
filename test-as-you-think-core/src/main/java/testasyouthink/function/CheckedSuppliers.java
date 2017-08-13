@@ -42,6 +42,7 @@ import java.util.OptionalInt;
 import java.util.OptionalLong;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicIntegerArray;
 import java.util.concurrent.atomic.AtomicLong;
 
 public interface CheckedSuppliers {
@@ -105,6 +106,8 @@ public interface CheckedSuppliers {
     interface CheckedAtomicBooleanSupplier extends CheckedSupplier<AtomicBoolean> {}
 
     interface CheckedAtomicIntegerSupplier extends CheckedSupplier<AtomicInteger> {}
+
+    interface CheckedAtomicIntegerArraySupplier extends CheckedSupplier<AtomicIntegerArray> {}
 
     interface CheckedAtomicLongSupplier extends CheckedSupplier<AtomicLong> {}
 }
