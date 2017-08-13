@@ -55,6 +55,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicIntegerArray;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicLongArray;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
@@ -372,5 +373,13 @@ public class ResultOfEventTest {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
             return new AtomicLong(123);
         }).hasPositiveValue()).hasSameClassAs(assertThat(new AtomicLong()));
+    }
+
+    @Test
+    public void should_verify_an_actual_atomic_long_array_is_conform_to_an_expected_result() {
+        assertThat(resultOf(() -> {
+            gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+            return new AtomicLongArray(3);
+        }).hasSize(3)).hasSameClassAs(assertThat(new AtomicLongArray(0)));
     }
 }
