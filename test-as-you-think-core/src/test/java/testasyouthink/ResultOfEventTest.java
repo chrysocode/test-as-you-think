@@ -61,6 +61,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicIntegerArray;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicLongArray;
+import java.util.function.IntPredicate;
 import java.util.function.Predicate;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -433,5 +434,13 @@ public class ResultOfEventTest {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
             return (Predicate<String>) string -> string.contains("ult");
         }).accepts("result")).hasSameClassAs(assertThat((Predicate<String>) t -> false));
+    }
+
+    @Test
+    public void should_verify_an_actual_int_predicate_is_conform_to_an_expected_result() {
+        assertThat(resultOf(() -> {
+            gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+            return (IntPredicate) number -> number < 100;
+        }).accepts(99)).hasSameClassAs(assertThat((IntPredicate) t -> t == 0));
     }
 }

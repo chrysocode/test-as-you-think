@@ -50,6 +50,7 @@ import org.assertj.core.api.AtomicIntegerAssert;
 import org.assertj.core.api.AtomicLongArrayAssert;
 import org.assertj.core.api.AtomicLongAssert;
 import org.assertj.core.api.CompletableFutureAssert;
+import org.assertj.core.api.IntPredicateAssert;
 import org.assertj.core.api.IterableAssert;
 import org.assertj.core.api.ListAssert;
 import org.assertj.core.api.MapAssert;
@@ -86,6 +87,7 @@ import testasyouthink.function.CheckedSuppliers.CheckedFileSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedFloatSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedFutureSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedInstantSupplier;
+import testasyouthink.function.CheckedSuppliers.CheckedIntPredicateSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedIntegerSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedIterableSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedIteratorSupplier;
@@ -315,6 +317,10 @@ public class TestAsYouThink {
     }
 
     public static <$Value> PredicateAssert<$Value> resultOf(CheckedPredicateSupplier<$Value> whenStep) {
+        return assertThat(result(whenStep));
+    }
+
+    public static IntPredicateAssert resultOf(CheckedIntPredicateSupplier whenStep) {
         return assertThat(result(whenStep));
     }
 }

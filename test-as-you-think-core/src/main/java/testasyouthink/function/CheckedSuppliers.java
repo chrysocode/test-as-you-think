@@ -47,6 +47,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicIntegerArray;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicLongArray;
+import java.util.function.IntPredicate;
 import java.util.function.Predicate;
 
 public interface CheckedSuppliers {
@@ -126,4 +127,6 @@ public interface CheckedSuppliers {
     interface CheckedClassSupplier extends CheckedSupplier<Class> {}
 
     interface CheckedPredicateSupplier<$Value> extends CheckedSupplier<Predicate<$Value>> {}
+
+    interface CheckedIntPredicateSupplier extends CheckedSupplier<IntPredicate> {}
 }
