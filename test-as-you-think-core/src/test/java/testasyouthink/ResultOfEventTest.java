@@ -32,6 +32,7 @@ import testasyouthink.fixture.GivenWhenThenDefinition;
 import testasyouthink.fixture.UnexpectedException;
 import testasyouthink.function.CheckedSuppliers.CheckedStringSupplier;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -468,5 +469,13 @@ public class ResultOfEventTest {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
             return new String[]{"one", "two", "three"};
         }).hasSize(3)).hasSameClassAs(assertThat(new String[]{}));
+    }
+
+    @Test
+    public void should_verify_an_actual_input_stream_is_conform_to_an_expected_result() {
+        assertThat(resultOf(() -> {
+            gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+            return new ByteArrayInputStream(new byte[]{0, 1, 2});
+        }).isNotNull()).hasSameClassAs(assertThat(new ByteArrayInputStream(new byte[]{0})));
     }
 }

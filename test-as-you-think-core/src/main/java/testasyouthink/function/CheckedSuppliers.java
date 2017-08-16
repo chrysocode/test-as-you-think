@@ -23,6 +23,7 @@
 package testasyouthink.function;
 
 import java.io.File;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.URI;
@@ -140,4 +141,6 @@ public interface CheckedSuppliers {
 
         R[] get() throws Throwable;
     }
+
+    interface CheckedInputStreamSupplier extends CheckedSupplier<InputStream> {}
 }
