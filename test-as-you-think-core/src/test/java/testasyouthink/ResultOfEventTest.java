@@ -61,6 +61,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicIntegerArray;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicLongArray;
+import java.util.function.DoublePredicate;
 import java.util.function.IntPredicate;
 import java.util.function.LongPredicate;
 import java.util.function.Predicate;
@@ -451,5 +452,13 @@ public class ResultOfEventTest {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
             return (LongPredicate) number -> number < 100;
         }).accepts(99)).hasSameClassAs(assertThat((LongPredicate) t -> t == 0));
+    }
+
+    @Test
+    public void should_verify_an_actual_double_predicate_is_conform_to_an_expected_result() {
+        assertThat(resultOf(() -> {
+            gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+            return (DoublePredicate) number -> number < 100;
+        }).accepts(99)).hasSameClassAs(assertThat((DoublePredicate) t -> t == 0));
     }
 }
