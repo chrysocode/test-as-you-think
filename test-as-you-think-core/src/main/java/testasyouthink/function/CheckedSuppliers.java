@@ -121,4 +121,6 @@ public interface CheckedSuppliers {
     interface CheckedFutureSupplier<$Value> extends CheckedSupplier<Future<$Value>> {}
 
     interface CheckedCompletableFutureSupplier<$Value> extends CheckedSupplier<CompletableFuture<$Value>> {}
+
+    interface CheckedClassSupplier extends CheckedSupplier<Class> {}
 }

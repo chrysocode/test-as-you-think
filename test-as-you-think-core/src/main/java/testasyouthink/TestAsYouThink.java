@@ -28,6 +28,7 @@ import org.assertj.core.api.AbstractBooleanAssert;
 import org.assertj.core.api.AbstractByteAssert;
 import org.assertj.core.api.AbstractCharSequenceAssert;
 import org.assertj.core.api.AbstractCharacterAssert;
+import org.assertj.core.api.AbstractClassAssert;
 import org.assertj.core.api.AbstractDateAssert;
 import org.assertj.core.api.AbstractDoubleAssert;
 import org.assertj.core.api.AbstractFileAssert;
@@ -76,6 +77,7 @@ import testasyouthink.function.CheckedSuppliers.CheckedBooleanSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedByteSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedCharSequenceSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedCharacterSupplier;
+import testasyouthink.function.CheckedSuppliers.CheckedClassSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedCompletableFutureSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedDateSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedDoubleSupplier;
@@ -303,6 +305,10 @@ public class TestAsYouThink {
     }
 
     public static <$Value> CompletableFutureAssert<$Value> resultOf(CheckedCompletableFutureSupplier<$Value> whenStep) {
+        return assertThat(result(whenStep));
+    }
+
+    public static AbstractClassAssert<?> resultOf(CheckedClassSupplier whenStep) {
         return assertThat(result(whenStep));
     }
 }

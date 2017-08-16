@@ -417,4 +417,12 @@ public class ResultOfEventTest {
             return completableFuture;
         }).isDone()).hasSameClassAs(assertThat(new CompletableFuture<String>()));
     }
+
+    @Test
+    public void should_verify_an_actual_class_is_conform_to_an_expected_result() {
+        assertThat(resultOf(() -> {
+            gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+            return String.class;
+        }).isNotInterface()).hasSameClassAs(assertThat(String.class));
+    }
 }
