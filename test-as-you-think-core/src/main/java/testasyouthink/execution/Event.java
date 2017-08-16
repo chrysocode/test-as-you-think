@@ -31,6 +31,8 @@ import java.util.function.Supplier;
 
 public class Event<$SystemUnderTest, $Result> {
 
+    public static final String EXECUTION_FAILURE_MESSAGE = "Fails to execute the target method " //
+            + "of the system under test because of an unexpected failure!";
     private final Functions functions = Functions.INSTANCE;
     private final Supplier<$SystemUnderTest> givenSutStep;
     private final CheckedFunction<$SystemUnderTest, $Result> whenStep;
@@ -52,8 +54,7 @@ public class Event<$SystemUnderTest, $Result> {
         } catch (PreparationError preparationError) {
             throw preparationError;
         } catch (Throwable throwable) {
-            throw new ExecutionError("Fails to execute the target method of the system under test " //
-                    + "because of an unexpected exception!", throwable);
+            throw new ExecutionError(EXECUTION_FAILURE_MESSAGE, throwable);
         }
 
         return result;
