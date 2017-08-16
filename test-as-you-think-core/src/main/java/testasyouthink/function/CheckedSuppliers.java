@@ -135,4 +135,9 @@ public interface CheckedSuppliers {
     interface CheckedLongPredicateSupplier extends CheckedSupplier<LongPredicate> {}
 
     interface CheckedDoublePredicateSupplier extends CheckedSupplier<DoublePredicate> {}
+
+    interface CheckedArraySupplier<R> {
+
+        R[] get() throws Throwable;
+    }
 }

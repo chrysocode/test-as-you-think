@@ -461,4 +461,12 @@ public class ResultOfEventTest {
             return (DoublePredicate) number -> number < 100;
         }).accepts(99)).hasSameClassAs(assertThat((DoublePredicate) t -> t == 0));
     }
+
+    @Test
+    public void should_verify_an_actual_object_array_is_conform_to_an_expected_result() {
+        assertThat(resultOf(() -> {
+            gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+            return new String[]{"one", "two", "three"};
+        }).hasSize(3)).hasSameClassAs(assertThat(new String[]{}));
+    }
 }

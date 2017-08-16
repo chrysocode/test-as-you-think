@@ -40,6 +40,7 @@ import org.assertj.core.api.AbstractLocalDateAssert;
 import org.assertj.core.api.AbstractLocalDateTimeAssert;
 import org.assertj.core.api.AbstractLocalTimeAssert;
 import org.assertj.core.api.AbstractLongAssert;
+import org.assertj.core.api.AbstractObjectArrayAssert;
 import org.assertj.core.api.AbstractPathAssert;
 import org.assertj.core.api.AbstractShortAssert;
 import org.assertj.core.api.AbstractUriAssert;
@@ -70,6 +71,7 @@ import testasyouthink.execution.ExecutionError;
 import testasyouthink.function.CheckedFunction;
 import testasyouthink.function.CheckedRunnable;
 import testasyouthink.function.CheckedSupplier;
+import testasyouthink.function.CheckedSuppliers.CheckedArraySupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedAtomicBooleanSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedAtomicIntegerArraySupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedAtomicIntegerSupplier;
@@ -163,6 +165,16 @@ public class TestAsYouThink {
 
     private static <$Result> $Result result(CheckedSupplier<$Result> whenStep) {
         $Result result;
+        try {
+            result = whenStep.get();
+        } catch (Throwable throwable) {
+            throw new ExecutionError(EXECUTION_FAILURE_MESSAGE, throwable);
+        }
+        return result;
+    }
+
+    private static <$Element> $Element[] arrayAsResult(CheckedArraySupplier<$Element> whenStep) {
+        $Element[] result;
         try {
             result = whenStep.get();
         } catch (Throwable throwable) {
@@ -334,5 +346,9 @@ public class TestAsYouThink {
 
     public static DoublePredicateAssert resultOf(CheckedDoublePredicateSupplier whenStep) {
         return assertThat(result(whenStep));
+    }
+
+    public static <$Element> AbstractObjectArrayAssert<?, $Element> resultOf(CheckedArraySupplier<$Element> whenStep) {
+        return assertThat(arrayAsResult(whenStep));
     }
 }
