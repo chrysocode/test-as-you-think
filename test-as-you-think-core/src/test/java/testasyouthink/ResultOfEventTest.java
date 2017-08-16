@@ -96,6 +96,14 @@ public class ResultOfEventTest {
     }
 
     @Test
+    public void should_verify_an_actual_char_sequence_is_conform_to_an_expected_result() {
+        assertThat(resultOf(() -> {
+            gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+            return (CharSequence) new StringBuilder("result");
+        }).hasSize(6)).hasSameClassAs(assertThat((CharSequence) new StringBuilder()));
+    }
+
+    @Test
     public void should_verify_an_actual_string_is_conform_to_an_expected_result() {
         assertThat(resultOf(() -> {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();

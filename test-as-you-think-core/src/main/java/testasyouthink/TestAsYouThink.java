@@ -74,6 +74,7 @@ import testasyouthink.function.CheckedSuppliers.CheckedBigDecimalSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedBigIntegerSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedBooleanSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedByteSupplier;
+import testasyouthink.function.CheckedSuppliers.CheckedCharSequenceSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedCharacterSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedCompletableFutureSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedDateSupplier;
@@ -161,6 +162,10 @@ public class TestAsYouThink {
     }
 
     public static AbstractCharacterAssert<?> resultOf(CheckedCharacterSupplier whenStep) {
+        return assertThat(result(whenStep));
+    }
+
+    public static AbstractCharSequenceAssert<?, ? extends CharSequence> resultOf(CheckedCharSequenceSupplier whenStep) {
         return assertThat(result(whenStep));
     }
 

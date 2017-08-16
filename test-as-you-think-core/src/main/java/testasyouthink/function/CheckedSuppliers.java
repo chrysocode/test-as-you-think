@@ -52,6 +52,8 @@ public interface CheckedSuppliers {
 
     interface CheckedCharacterSupplier extends CheckedSupplier<Character> {}
 
+    interface CheckedCharSequenceSupplier extends CheckedSupplier<CharSequence> {}
+
     interface CheckedStringSupplier extends CheckedSupplier<String> {}
 
     interface CheckedByteSupplier extends CheckedSupplier<Byte> {}
