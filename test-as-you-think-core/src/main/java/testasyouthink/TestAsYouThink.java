@@ -57,6 +57,7 @@ import org.assertj.core.api.OptionalAssert;
 import org.assertj.core.api.OptionalDoubleAssert;
 import org.assertj.core.api.OptionalIntAssert;
 import org.assertj.core.api.OptionalLongAssert;
+import org.assertj.core.api.PredicateAssert;
 import testasyouthink.GivenWhenThenDsl.PreparationStage.AndGiven;
 import testasyouthink.GivenWhenThenDsl.PreparationStage.Given;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.Then;
@@ -99,6 +100,7 @@ import testasyouthink.function.CheckedSuppliers.CheckedOptionalIntSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedOptionalLongSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedOptionalSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedPathSupplier;
+import testasyouthink.function.CheckedSuppliers.CheckedPredicateSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedShortSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedStringSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedUriSupplier;
@@ -309,6 +311,10 @@ public class TestAsYouThink {
     }
 
     public static AbstractClassAssert<?> resultOf(CheckedClassSupplier whenStep) {
+        return assertThat(result(whenStep));
+    }
+
+    public static <$Value> PredicateAssert<$Value> resultOf(CheckedPredicateSupplier<$Value> whenStep) {
         return assertThat(result(whenStep));
     }
 }
