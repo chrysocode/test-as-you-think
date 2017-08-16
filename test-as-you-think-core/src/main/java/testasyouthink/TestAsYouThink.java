@@ -53,6 +53,7 @@ import org.assertj.core.api.CompletableFutureAssert;
 import org.assertj.core.api.IntPredicateAssert;
 import org.assertj.core.api.IterableAssert;
 import org.assertj.core.api.ListAssert;
+import org.assertj.core.api.LongPredicateAssert;
 import org.assertj.core.api.MapAssert;
 import org.assertj.core.api.OptionalAssert;
 import org.assertj.core.api.OptionalDoubleAssert;
@@ -95,6 +96,7 @@ import testasyouthink.function.CheckedSuppliers.CheckedListSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedLocalDateSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedLocalDateTimeSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedLocalTimeSupplier;
+import testasyouthink.function.CheckedSuppliers.CheckedLongPredicateSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedLongSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedMapSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedOptionalDoubleSupplier;
@@ -321,6 +323,10 @@ public class TestAsYouThink {
     }
 
     public static IntPredicateAssert resultOf(CheckedIntPredicateSupplier whenStep) {
+        return assertThat(result(whenStep));
+    }
+
+    public static LongPredicateAssert resultOf(CheckedLongPredicateSupplier whenStep) {
         return assertThat(result(whenStep));
     }
 }
