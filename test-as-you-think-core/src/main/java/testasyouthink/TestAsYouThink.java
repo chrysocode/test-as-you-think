@@ -124,7 +124,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static testasyouthink.execution.Event.EXECUTION_FAILURE_MESSAGE;
+import static testasyouthink.execution.Execution.EXECUTION_FAILURE_MESSAGE;
 
 public class TestAsYouThink {
 
