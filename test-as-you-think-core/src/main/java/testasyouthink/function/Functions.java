@@ -22,6 +22,8 @@
 
 package testasyouthink.function;
 
+import testasyouthink.function.CheckedSuppliers.CheckedArraySupplier;
+
 import java.util.Queue;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -51,6 +53,14 @@ public enum Functions {
     }
 
     public <R> CheckedFunction<Void, R> toCheckedFunction(Supplier<R> supplier) {
+        return Void -> supplier.get();
+    }
+
+    public <R> CheckedFunction<Void, R> toCheckedFunction(CheckedSupplier<R> supplier) {
+        return Void -> supplier.get();
+    }
+
+    public <R> CheckedFunction<Void, R[]> toCheckedFunction(CheckedArraySupplier<R> supplier) {
         return Void -> supplier.get();
     }
 

@@ -69,7 +69,7 @@ import testasyouthink.GivenWhenThenDsl.PreparationStage.Given;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.Then;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.ThenFailure;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.ThenWithoutResult;
-import testasyouthink.execution.ExecutionError;
+import testasyouthink.execution.Execution;
 import testasyouthink.function.CheckedFunction;
 import testasyouthink.function.CheckedRunnable;
 import testasyouthink.function.CheckedSupplier;
@@ -124,7 +124,6 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static testasyouthink.execution.Execution.EXECUTION_FAILURE_MESSAGE;
 
 public class TestAsYouThink {
 
@@ -168,23 +167,15 @@ public class TestAsYouThink {
     }
 
     private static <$Result> $Result result(CheckedSupplier<$Result> whenStep) {
-        $Result result;
-        try {
-            result = whenStep.get();
-        } catch (Throwable throwable) {
-            throw new ExecutionError(EXECUTION_FAILURE_MESSAGE, throwable);
-        }
-        return result;
+        return Execution
+                .of(whenStep)
+                .run();
     }
 
     private static <$Element> $Element[] arrayAsResult(CheckedArraySupplier<$Element> whenStep) {
-        $Element[] result;
-        try {
-            result = whenStep.get();
-        } catch (Throwable throwable) {
-            throw new ExecutionError(EXECUTION_FAILURE_MESSAGE, throwable);
-        }
-        return result;
+        return Execution
+                .of(whenStep)
+                .run();
     }
 
     public static <$ActualResult> AbstractObjectAssert<?, $ActualResult> resultOf(

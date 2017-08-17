@@ -24,6 +24,8 @@ package testasyouthink.execution;
 
 import testasyouthink.function.CheckedConsumer;
 import testasyouthink.function.CheckedFunction;
+import testasyouthink.function.CheckedSupplier;
+import testasyouthink.function.CheckedSuppliers.CheckedArraySupplier;
 import testasyouthink.function.Functions;
 import testasyouthink.preparation.PreparationError;
 
@@ -33,7 +35,7 @@ public class Execution<$SystemUnderTest, $Result> {
 
     public static final String EXECUTION_FAILURE_MESSAGE = "Fails to execute the target method " //
             + "of the system under test because of an unexpected failure!";
-    private final Functions functions = Functions.INSTANCE;
+    private static final Functions FUNCTIONS = Functions.INSTANCE;
     private final Event<$SystemUnderTest, $Result> event;
 
     public Execution(Supplier<$SystemUnderTest> givenSutStep, CheckedFunction<$SystemUnderTest, $Result> whenStep) {
@@ -41,7 +43,19 @@ public class Execution<$SystemUnderTest, $Result> {
     }
 
     public Execution(Supplier<$SystemUnderTest> givenSutStep, CheckedConsumer<$SystemUnderTest> whenStep) {
-        event = new Event<>(givenSutStep, functions.toFunction(whenStep));
+        event = new Event<>(givenSutStep, FUNCTIONS.toFunction(whenStep));
+    }
+
+    public static <$Result> Execution<Void, $Result> of(CheckedSupplier<$Result> whenStep) {
+        return new Execution<>(noExplicitSut(), FUNCTIONS.toCheckedFunction(whenStep));
+    }
+
+    public static <$Element> Execution<Void, $Element[]> of(CheckedArraySupplier<$Element> whenStep) {
+        return new Execution<>(noExplicitSut(), FUNCTIONS.toCheckedFunction(whenStep));
+    }
+
+    private static Supplier<Void> noExplicitSut() {
+        return () -> null;
     }
 
     public $Result run() {
