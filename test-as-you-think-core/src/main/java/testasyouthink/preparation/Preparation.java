@@ -83,7 +83,8 @@ public class Preparation<$SystemUnderTest> {
     }
 
     public void prepareFixtures() {
-        givenSteps.forEach(step -> step.accept(systemUnderTest()));
+        $SystemUnderTest sutToPrepareAtFirst = systemUnderTest();
+        givenSteps.forEach(step -> step.accept(sutToPrepareAtFirst));
     }
 
     private $SystemUnderTest systemUnderTest() {

@@ -25,6 +25,7 @@ package testasyouthink.execution;
 import testasyouthink.function.CheckedConsumer;
 import testasyouthink.function.CheckedFunction;
 import testasyouthink.function.Functions;
+import testasyouthink.preparation.PreparationError;
 
 import java.util.function.Supplier;
 
@@ -46,6 +47,8 @@ public class Execution<$SystemUnderTest, $Result> {
     public $Result run() {
         try {
             return event.happen();
+        } catch (PreparationError preparationError) {
+            throw preparationError;
         } catch (Throwable throwable) {
             throw new ExecutionError(EXECUTION_FAILURE_MESSAGE, throwable);
         }
