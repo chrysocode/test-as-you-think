@@ -40,12 +40,11 @@ import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.strictMock;
 import static org.easymock.EasyMock.verify;
 import static testasyouthink.TestAsYouThink.givenSut;
+import static testasyouthink.fixture.Specifications.ExpectedMessage.EXPECTED_EXECUTION_FAILURE_MESSAGE;
 
 public class WhenFailuresTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WhenFailuresTest.class);
-    private static final String EXPECTED_ERROR_MESSAGE = "Fails to execute the target method " //
-            + "of the system under test because of an unexpected exception!";
     private SystemUnderTest systemUnderTestMock;
     private GivenWhenThenDefinition givenWhenThenDefinitionMock;
 
@@ -77,7 +76,7 @@ public class WhenFailuresTest {
         LOGGER.debug("Stack trace", thrown);
         assertThat(thrown)
                 .isInstanceOf(ExecutionError.class)
-                .hasMessage(EXPECTED_ERROR_MESSAGE)
+                .hasMessage(EXPECTED_EXECUTION_FAILURE_MESSAGE)
                 .hasCauseInstanceOf(UnexpectedException.class);
         verify(givenWhenThenDefinitionMock);
     }
@@ -99,7 +98,7 @@ public class WhenFailuresTest {
         LOGGER.debug("Stack trace", thrown);
         assertThat(thrown)
                 .isInstanceOf(ExecutionError.class)
-                .hasMessage(EXPECTED_ERROR_MESSAGE)
+                .hasMessage(EXPECTED_EXECUTION_FAILURE_MESSAGE)
                 .hasCauseInstanceOf(UnexpectedException.class);
         verify(givenWhenThenDefinitionMock);
     }

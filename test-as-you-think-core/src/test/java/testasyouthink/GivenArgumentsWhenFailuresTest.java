@@ -39,6 +39,7 @@ import static org.easymock.EasyMock.createStrictControl;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
 import static testasyouthink.TestAsYouThink.givenSut;
+import static testasyouthink.fixture.Specifications.ExpectedMessage.EXPECTED_EXECUTION_FAILURE_MESSAGE;
 
 public class GivenArgumentsWhenFailuresTest {
 
@@ -46,8 +47,6 @@ public class GivenArgumentsWhenFailuresTest {
     private static final String GIVEN_STRING = "given argument";
     private static final int GIVEN_INTEGER = 201705;
     private static final boolean GIVEN_BOOLEAN = false;
-    private static final String EXPECTED_ERROR_MESSAGE = "Fails to execute the target method " //
-            + "of the system under test because of an unexpected exception!";
 
     private IMocksControl mocksControl;
     private SystemUnderTest systemUnderTestMock;
@@ -88,7 +87,7 @@ public class GivenArgumentsWhenFailuresTest {
         LOGGER.debug("Stack trace", thrown);
         assertThat(thrown)
                 .isInstanceOf(ExecutionError.class)
-                .hasMessage(EXPECTED_ERROR_MESSAGE)
+                .hasMessage(EXPECTED_EXECUTION_FAILURE_MESSAGE)
                 .hasCauseInstanceOf(UnexpectedException.class);
     }
 
@@ -112,7 +111,7 @@ public class GivenArgumentsWhenFailuresTest {
         LOGGER.debug("Stack trace", thrown);
         assertThat(thrown)
                 .isInstanceOf(ExecutionError.class)
-                .hasMessage(EXPECTED_ERROR_MESSAGE)
+                .hasMessage(EXPECTED_EXECUTION_FAILURE_MESSAGE)
                 .hasCauseInstanceOf(UnexpectedException.class);
     }
 
@@ -142,7 +141,7 @@ public class GivenArgumentsWhenFailuresTest {
         LOGGER.debug("Stack trace", thrown);
         assertThat(thrown)
                 .isInstanceOf(ExecutionError.class)
-                .hasMessage(EXPECTED_ERROR_MESSAGE)
+                .hasMessage(EXPECTED_EXECUTION_FAILURE_MESSAGE)
                 .hasCauseInstanceOf(UnexpectedException.class);
     }
 
@@ -172,7 +171,7 @@ public class GivenArgumentsWhenFailuresTest {
         LOGGER.debug("Stack trace", thrown);
         assertThat(thrown)
                 .isInstanceOf(ExecutionError.class)
-                .hasMessage(EXPECTED_ERROR_MESSAGE)
+                .hasMessage(EXPECTED_EXECUTION_FAILURE_MESSAGE)
                 .hasCauseInstanceOf(UnexpectedException.class);
     }
 
@@ -206,7 +205,7 @@ public class GivenArgumentsWhenFailuresTest {
         LOGGER.debug("Stack trace", thrown);
         assertThat(thrown)
                 .isInstanceOf(ExecutionError.class)
-                .hasMessage(EXPECTED_ERROR_MESSAGE)
+                .hasMessage(EXPECTED_EXECUTION_FAILURE_MESSAGE)
                 .hasCauseInstanceOf(UnexpectedException.class);
     }
 
@@ -240,7 +239,7 @@ public class GivenArgumentsWhenFailuresTest {
         LOGGER.debug("Stack trace", thrown);
         assertThat(thrown)
                 .isInstanceOf(ExecutionError.class)
-                .hasMessage(EXPECTED_ERROR_MESSAGE)
+                .hasMessage(EXPECTED_EXECUTION_FAILURE_MESSAGE)
                 .hasCauseInstanceOf(UnexpectedException.class);
     }
 }
