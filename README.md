@@ -62,6 +62,8 @@ Please use this [permalink](https://goo.gl/XqS4Zf) (goo.gl/XqS4Zf) to share this
 - It is designed to be easy to use thanks to code completion.
 - It builds new original features to test execution from version to version.
 
+![Ubiquitous language for automated testing](assets/images/ubiquitous_language_for_automated_testing.png)
+
 Why to name this API *TestAsYouThink*? The goal of *TestAsYouThink* is to map out the road from a new software functionality idea to its contractualized achievement as an executable test, while preserving product developers against known pitfalls. According to this perspective, any pitfall is likely to extend the developer's journey and to put him off his target. By anticipating such pitfalls, *TestAsYouThink* will be the best way to reduce the distance to proper, durable testing.
 
 Moreover *TestAsYouThink* uses the [Given-When-Then](https://www.agilealliance.org/glossary/gwt/) canvas as a formal guide to compose tests. This canvas originally comes from [Gherkin](https://sites.google.com/site/unclebobconsultingllc/the-truth-about-bdd) that is a grammatical protocol used in the [Behavior-Driven Development](https://en.wikipedia.org/wiki/Behavior-driven_development) method to write test scenarii in a business human-readable way by specifying a software behavior basing on concrete examples. [Given-When-Then](https://www.agilealliance.org/glossary/gwt/) serves to divide any test into the three eponym steps. This canvas is implemented by the *TestAsYouThink* project to deliver a [DSL](https://en.wikipedia.org/wiki/Domain-specific_language) style [fluent API](https://en.wikipedia.org/wiki/Fluent_interface).
