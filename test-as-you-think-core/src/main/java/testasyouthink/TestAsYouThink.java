@@ -42,6 +42,7 @@ import org.assertj.core.api.AbstractLocalDateTimeAssert;
 import org.assertj.core.api.AbstractLocalTimeAssert;
 import org.assertj.core.api.AbstractLongAssert;
 import org.assertj.core.api.AbstractObjectArrayAssert;
+import org.assertj.core.api.AbstractObjectAssert;
 import org.assertj.core.api.AbstractPathAssert;
 import org.assertj.core.api.AbstractShortAssert;
 import org.assertj.core.api.AbstractUriAssert;
@@ -184,6 +185,11 @@ public class TestAsYouThink {
             throw new ExecutionError(EXECUTION_FAILURE_MESSAGE, throwable);
         }
         return result;
+    }
+
+    public static <$ActualResult> AbstractObjectAssert<?, $ActualResult> resultOf(
+            CheckedSupplier<$ActualResult> whenStep) {
+        return assertThat(result(whenStep));
     }
 
     public static AbstractCharacterAssert<?> resultOf(CheckedCharacterSupplier whenStep) {

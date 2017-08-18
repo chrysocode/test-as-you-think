@@ -27,6 +27,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import testasyouthink.ResultOfEventTest.Results.ActualResult;
+import testasyouthink.ResultOfEventTest.Results.ExpectedResult;
 import testasyouthink.execution.ExecutionError;
 import testasyouthink.fixture.GivenWhenThenDefinition;
 import testasyouthink.fixture.UnexpectedException;
@@ -90,6 +92,23 @@ public class ResultOfEventTest {
         // THEN
         verify(gwtMock).whenAnEventHappensInRelationToAnActionOfTheConsumer();
         verifyNoMoreInteractions(gwtMock);
+    }
+
+    @Test
+    public void should_verify_an_actual_object_is_conform_to_an_expected_result() {
+        assertThat(resultOf(() -> {
+            gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+            return new ActualResult();
+        }).isEqualTo(new ExpectedResult())).hasSameClassAs(assertThat(new ActualResult()));
+    }
+
+    @Test
+    public void should_verify_an_actual_object_array_is_conform_to_an_expected_result() {
+        assertThat(resultOf(() -> {
+            gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+            return new ActualResult[]{new ActualResult(), new ActualResult()};
+        }).isEqualTo(new ExpectedResult[]{new ExpectedResult(), new ExpectedResult()})).hasSameClassAs(
+                assertThat(new ActualResult[]{}));
     }
 
     @Test
@@ -464,18 +483,23 @@ public class ResultOfEventTest {
     }
 
     @Test
-    public void should_verify_an_actual_object_array_is_conform_to_an_expected_result() {
-        assertThat(resultOf(() -> {
-            gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
-            return new String[]{"one", "two", "three"};
-        }).hasSize(3)).hasSameClassAs(assertThat(new String[]{}));
-    }
-
-    @Test
     public void should_verify_an_actual_input_stream_is_conform_to_an_expected_result() {
         assertThat(resultOf(() -> {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
             return new ByteArrayInputStream(new byte[]{0, 1, 2});
         }).isNotNull()).hasSameClassAs(assertThat(new ByteArrayInputStream(new byte[]{0})));
+    }
+
+    static class Results {
+
+        static class ActualResult {
+
+            @Override
+            public boolean equals(Object other) {
+                return other instanceof ExpectedResult;
+            }
+        }
+
+        static class ExpectedResult {}
     }
 }
