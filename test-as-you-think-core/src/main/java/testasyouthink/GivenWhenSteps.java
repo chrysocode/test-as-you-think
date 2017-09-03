@@ -30,6 +30,7 @@ import testasyouthink.GivenWhenThenDsl.VerificationStage.ThenFailure;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.ThenWithoutResult;
 import testasyouthink.function.CheckedConsumer;
 import testasyouthink.function.CheckedFunction;
+import testasyouthink.function.CheckedRunnable;
 import testasyouthink.function.CheckedSupplier;
 import testasyouthink.function.Functions;
 import testasyouthink.preparation.Preparation;
@@ -55,7 +56,7 @@ public class GivenWhenSteps<$SystemUnderTest> implements Given<$SystemUnderTest>
     }
 
     @Override
-    public AndGiven<$SystemUnderTest> given(Runnable givenStep) {
+    public AndGiven<$SystemUnderTest> given(CheckedRunnable givenStep) {
         preparation.recordGivenStep(givenStep);
         return this;
     }
@@ -67,7 +68,7 @@ public class GivenWhenSteps<$SystemUnderTest> implements Given<$SystemUnderTest>
     }
 
     @Override
-    public AndGiven<$SystemUnderTest> given(String fixtureSpecification, Runnable givenStep) {
+    public AndGiven<$SystemUnderTest> given(String fixtureSpecification, CheckedRunnable givenStep) {
         preparation.recordGivenStep(givenStep);
         return this;
     }
@@ -79,7 +80,7 @@ public class GivenWhenSteps<$SystemUnderTest> implements Given<$SystemUnderTest>
     }
 
     @Override
-    public AndGiven<$SystemUnderTest> and(String fixtureSpecification, Runnable givenStep) {
+    public AndGiven<$SystemUnderTest> and(String fixtureSpecification, CheckedRunnable givenStep) {
         return given(fixtureSpecification, givenStep);
     }
 

@@ -157,6 +157,62 @@ public class GivenFailuresTest {
         verifyZeroInteractions(givenWhenThenDefinitionMock);
     }
 
+    @Test
+    public void should_fail_to_prepare_an_ordinary_fixture() {
+        // WHEN
+        Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                .given(() -> {
+                    throw new UnexpectedException();
+                })
+                .when(SystemUnderTest::voidMethod)
+                .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
+
+        // THEN
+        assertThat(thrown)
+                .isInstanceOf(PreparationError.class)
+                .hasMessage("Fails to prepare the test fixture!")
+                .hasCauseInstanceOf(UnexpectedException.class);
+        verifyZeroInteractions(givenWhenThenDefinitionMock);
+    }
+
+    @Test
+    public void should_fail_to_prepare_an_ordinary_fixture_with_its_specification() {
+        // WHEN
+        Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                .given("fixture specification that fails", () -> {
+                    throw new UnexpectedException();
+                })
+                .when(SystemUnderTest::voidMethod)
+                .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
+
+        // THEN
+        assertThat(thrown)
+                .isInstanceOf(PreparationError.class)
+                .hasMessage("Fails to prepare the test fixture!")
+                .hasCauseInstanceOf(UnexpectedException.class);
+        verifyZeroInteractions(givenWhenThenDefinitionMock);
+    }
+
+    @Test
+    public void should_fail_to_prepare_a_second_ordinary_fixture_with_its_specification() {
+        // WHEN
+        Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                .given("fixture specification that passes", () -> {
+                })
+                .and("fixture specification that fails", () -> {
+                    throw new UnexpectedException();
+                })
+                .when(SystemUnderTest::voidMethod)
+                .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
+
+        // THEN
+        assertThat(thrown)
+                .isInstanceOf(PreparationError.class)
+                .hasMessage("Fails to prepare the test fixture!")
+                .hasCauseInstanceOf(UnexpectedException.class);
+        verifyZeroInteractions(givenWhenThenDefinitionMock);
+    }
+
     public static class SystemUnderTestFailingToBeInstantiated {
 
         public SystemUnderTestFailingToBeInstantiated() throws Exception {

@@ -23,6 +23,7 @@
 package testasyouthink.preparation;
 
 import testasyouthink.function.CheckedConsumer;
+import testasyouthink.function.CheckedRunnable;
 import testasyouthink.function.CheckedSupplier;
 import testasyouthink.function.Functions;
 
@@ -62,8 +63,14 @@ public class Preparation<$SystemUnderTest> {
         this.givenSutStep = sutPreparation.buildSutSupplier(givenSutStep);
     }
 
-    public void recordGivenStep(Runnable givenStep) {
-        givenSteps.add(functions.toConsumer(givenStep));
+    public void recordGivenStep(CheckedRunnable givenStep) {
+        givenSteps.add(functions.toConsumer(() -> {
+            try {
+                givenStep.run();
+            } catch (Throwable throwable) {
+                throw new PreparationError("Fails to prepare the test fixture!", throwable);
+            }
+        }));
     }
 
     public void recordGivenStep(CheckedConsumer<$SystemUnderTest> givenStep) {
