@@ -99,6 +99,64 @@ public class GivenFailuresTest {
         verifyZeroInteractions(givenWhenThenDefinitionMock);
     }
 
+    @Test
+    public void should_fail_to_prepare_the_sut() {
+        // WHEN
+        Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                .given(sut -> {
+                    throw new UnexpectedException();
+                })
+                .when(SystemUnderTest::voidMethod)
+                .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
+
+        // THEN
+        LOGGER.debug("Stack trace", thrown);
+        assertThat(thrown)
+                .isInstanceOf(PreparationError.class)
+                .hasMessage("Fails to prepare the system under test!")
+                .hasCauseInstanceOf(UnexpectedException.class);
+        verifyZeroInteractions(givenWhenThenDefinitionMock);
+    }
+
+    @Test
+    public void should_fail_to_prepare_the_sut_with_its_specification() {
+        // WHEN
+        Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                .given("SUT specification", sut -> {
+                    throw new UnexpectedException();
+                })
+                .when(SystemUnderTest::voidMethod)
+                .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
+
+        // THEN
+        LOGGER.debug("Stack trace", thrown);
+        assertThat(thrown)
+                .isInstanceOf(PreparationError.class)
+                .hasMessage("Fails to prepare the system under test!")
+                .hasCauseInstanceOf(UnexpectedException.class);
+        verifyZeroInteractions(givenWhenThenDefinitionMock);
+    }
+
+    @Test
+    public void should_fail_to_prepare_the_sut_with_its_specifications() {
+        // WHEN
+        Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                .given("SUT specification that passes", sut -> {})
+                .and("SUT specification that fails", sut -> {
+                    throw new UnexpectedException();
+                })
+                .when(SystemUnderTest::voidMethod)
+                .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
+
+        // THEN
+        LOGGER.debug("Stack trace", thrown);
+        assertThat(thrown)
+                .isInstanceOf(PreparationError.class)
+                .hasMessage("Fails to prepare the system under test!")
+                .hasCauseInstanceOf(UnexpectedException.class);
+        verifyZeroInteractions(givenWhenThenDefinitionMock);
+    }
+
     public static class SystemUnderTestFailingToBeInstantiated {
 
         public SystemUnderTestFailingToBeInstantiated() throws Exception {

@@ -22,6 +22,7 @@
 
 package testasyouthink.preparation;
 
+import testasyouthink.function.CheckedConsumer;
 import testasyouthink.function.CheckedSupplier;
 import testasyouthink.function.Functions;
 
@@ -65,8 +66,14 @@ public class Preparation<$SystemUnderTest> {
         givenSteps.add(functions.toConsumer(givenStep));
     }
 
-    public void recordGivenStep(Consumer<$SystemUnderTest> givenStep) {
-        givenSteps.add(givenStep);
+    public void recordGivenStep(CheckedConsumer<$SystemUnderTest> givenStep) {
+        givenSteps.add(sut -> {
+            try {
+                givenStep.accept(sut);
+            } catch (Throwable throwable) {
+                throw new PreparationError("Fails to prepare the system under test!", throwable);
+            }
+        });
     }
 
     public <$Argument> void recordGivenStep(CheckedSupplier<$Argument> givenStep) {

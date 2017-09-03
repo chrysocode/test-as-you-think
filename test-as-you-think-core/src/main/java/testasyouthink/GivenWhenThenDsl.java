@@ -55,18 +55,18 @@ public interface GivenWhenThenDsl {
 
             AndGiven<$SystemUnderTest> given(Runnable givenStep);
 
-            AndGiven<$SystemUnderTest> given(Consumer<$SystemUnderTest> givenStep);
+            AndGiven<$SystemUnderTest> given(CheckedConsumer<$SystemUnderTest> givenStep);
 
             AndGiven<$SystemUnderTest> given(String fixtureSpecification, Runnable givenStep);
 
-            AndGiven<$SystemUnderTest> given(String fixtureSpecification, Consumer<$SystemUnderTest> givenStep);
+            AndGiven<$SystemUnderTest> given(String fixtureSpecification, CheckedConsumer<$SystemUnderTest> givenStep);
         }
 
         interface AndGiven<$SystemUnderTest> extends GivenArgument<$SystemUnderTest>, When<$SystemUnderTest> {
 
             AndGiven<$SystemUnderTest> and(String fixtureSpecification, Runnable givenStep);
 
-            AndGiven<$SystemUnderTest> and(String fixtureSpecification, Consumer<$SystemUnderTest> givenStep);
+            AndGiven<$SystemUnderTest> and(String fixtureSpecification, CheckedConsumer<$SystemUnderTest> givenStep);
         }
 
         interface GivenArgument<$SystemUnderTest> {

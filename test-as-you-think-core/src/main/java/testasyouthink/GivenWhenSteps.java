@@ -61,7 +61,7 @@ public class GivenWhenSteps<$SystemUnderTest> implements Given<$SystemUnderTest>
     }
 
     @Override
-    public AndGiven<$SystemUnderTest> given(Consumer<$SystemUnderTest> givenStep) {
+    public AndGiven<$SystemUnderTest> given(CheckedConsumer<$SystemUnderTest> givenStep) {
         preparation.recordGivenStep(givenStep);
         return this;
     }
@@ -73,7 +73,7 @@ public class GivenWhenSteps<$SystemUnderTest> implements Given<$SystemUnderTest>
     }
 
     @Override
-    public AndGiven<$SystemUnderTest> given(String fixtureSpecification, Consumer<$SystemUnderTest> givenStep) {
+    public AndGiven<$SystemUnderTest> given(String fixtureSpecification, CheckedConsumer<$SystemUnderTest> givenStep) {
         preparation.recordGivenStep(givenStep);
         return this;
     }
@@ -84,7 +84,7 @@ public class GivenWhenSteps<$SystemUnderTest> implements Given<$SystemUnderTest>
     }
 
     @Override
-    public AndGiven<$SystemUnderTest> and(String fixtureSpecification, Consumer<$SystemUnderTest> givenStep) {
+    public AndGiven<$SystemUnderTest> and(String fixtureSpecification, CheckedConsumer<$SystemUnderTest> givenStep) {
         return given(fixtureSpecification, givenStep);
     }
 

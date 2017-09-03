@@ -118,7 +118,6 @@ import testasyouthink.function.CheckedSuppliers.CheckedStringSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedUriSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedUrlSupplier;
 import testasyouthink.function.Functions;
-import testasyouthink.preparation.PreparationError;
 
 import java.io.InputStream;
 import java.util.concurrent.Future;
@@ -147,13 +146,7 @@ public class TestAsYouThink {
 
     public static <$SystemUnderTest> AndGiven<$SystemUnderTest> givenSut(Class<$SystemUnderTest> sutClass,
             CheckedConsumer<$SystemUnderTest> givenStep) {
-        return givenSutClass(sutClass).given(sut -> {
-            try {
-                givenStep.accept(sut);
-            } catch (Throwable throwable) {
-                throw new PreparationError("Fails to prepare the system under test!", throwable);
-            }
-        });
+        return givenSutClass(sutClass).given(givenStep);
     }
 
     public static ThenWithoutResult<Void> when(Runnable whenStep) {
