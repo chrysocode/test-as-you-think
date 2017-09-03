@@ -70,6 +70,7 @@ import testasyouthink.GivenWhenThenDsl.VerificationStage.Then;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.ThenFailure;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.ThenWithoutResult;
 import testasyouthink.execution.Execution;
+import testasyouthink.function.CheckedConsumer;
 import testasyouthink.function.CheckedFunction;
 import testasyouthink.function.CheckedRunnable;
 import testasyouthink.function.CheckedSupplier;
@@ -117,10 +118,10 @@ import testasyouthink.function.CheckedSuppliers.CheckedStringSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedUriSupplier;
 import testasyouthink.function.CheckedSuppliers.CheckedUrlSupplier;
 import testasyouthink.function.Functions;
+import testasyouthink.preparation.PreparationError;
 
 import java.io.InputStream;
 import java.util.concurrent.Future;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -145,8 +146,14 @@ public class TestAsYouThink {
     }
 
     public static <$SystemUnderTest> AndGiven<$SystemUnderTest> givenSut(Class<$SystemUnderTest> sutClass,
-            Consumer<$SystemUnderTest> givenStep) {
-        return givenSutClass(sutClass).given(givenStep);
+            CheckedConsumer<$SystemUnderTest> givenStep) {
+        return givenSutClass(sutClass).given(sut -> {
+            try {
+                givenStep.accept(sut);
+            } catch (Throwable throwable) {
+                throw new PreparationError("Fails to prepare the system under test!", throwable);
+            }
+        });
     }
 
     public static ThenWithoutResult<Void> when(Runnable whenStep) {

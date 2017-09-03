@@ -27,6 +27,8 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import testasyouthink.fixture.GivenWhenThenDefinition;
+import testasyouthink.fixture.SystemUnderTest;
+import testasyouthink.fixture.UnexpectedException;
 import testasyouthink.preparation.PreparationError;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -76,6 +78,24 @@ public class GivenFailuresTest {
                 .isInstanceOf(PreparationError.class)
                 .hasMessage("Fails to prepare the system under test!")
                 .hasCauseInstanceOf(NullPointerException.class);
+        verifyZeroInteractions(givenWhenThenDefinitionMock);
+    }
+
+    @Test
+    public void should_fail_to_prepare_the_sut_after_instantiating_it() {
+        // WHEN
+        Throwable thrown = catchThrowable(() -> givenSut(SystemUnderTest.class, sut -> {
+            throw new UnexpectedException();
+        })
+                .when(SystemUnderTest::voidMethod)
+                .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
+
+        // THEN
+        LOGGER.debug("Stack trace", thrown);
+        assertThat(thrown)
+                .isInstanceOf(PreparationError.class)
+                .hasMessage("Fails to prepare the system under test!")
+                .hasCauseInstanceOf(UnexpectedException.class);
         verifyZeroInteractions(givenWhenThenDefinitionMock);
     }
 
