@@ -26,7 +26,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import testasyouthink.GivenFailuresTest.Parameter.MutableButUninstantiable;
 import testasyouthink.fixture.GivenWhenThenDefinition;
+import testasyouthink.fixture.ParameterizedSystemUnderTest;
 import testasyouthink.fixture.SystemUnderTest;
 import testasyouthink.fixture.UnexpectedException;
 import testasyouthink.preparation.PreparationError;
@@ -213,6 +215,30 @@ public class GivenFailuresTest {
         verifyZeroInteractions(givenWhenThenDefinitionMock);
     }
 
+    @Test
+    public void should_fail_to_instantiate_one_argument_with_its_mutable_type() throws Throwable {
+        //GIVEN
+        class SystemUnderTestWithUninstantiableParameter extends
+                ParameterizedSystemUnderTest<MutableButUninstantiable, Void, Void> {}
+        SystemUnderTestWithUninstantiableParameter sutWithUninstantiableParameter = mock(
+                SystemUnderTestWithUninstantiableParameter.class);
+
+        // WHEN
+        Throwable thrown = catchThrowable(() -> givenSut(sutWithUninstantiableParameter)
+                .givenArgument(MutableButUninstantiable.class, mutableButUninstantiable -> {})
+                .whenSutRuns(ParameterizedSystemUnderTest::voidMethodWithParameter)
+                .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
+
+        // THEN
+        LOGGER.debug("Stack trace", thrown);
+        assertThat(thrown)
+                .isInstanceOf(PreparationError.class)
+                .hasMessage("Fails to instantiate the argument of the " //
+                        + "testasyouthink.GivenFailuresTest$Parameter$MutableButUninstantiable type!")
+                .hasCauseInstanceOf(InstantiationException.class);
+        verifyZeroInteractions(givenWhenThenDefinitionMock);
+    }
+
     public static class SystemUnderTestFailingToBeInstantiated {
 
         public SystemUnderTestFailingToBeInstantiated() throws Exception {
@@ -220,5 +246,15 @@ public class GivenFailuresTest {
         }
 
         public void voidMethod() {}
+    }
+
+    public static class Parameter {
+
+        public static class MutableButUninstantiable {
+
+            public MutableButUninstantiable() throws InstantiationException {
+                throw new InstantiationException("Impossible to instantiate it!");
+            }
+        }
     }
 }
