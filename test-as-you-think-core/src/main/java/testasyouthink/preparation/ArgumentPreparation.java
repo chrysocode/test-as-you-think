@@ -22,7 +22,8 @@
 
 package testasyouthink.preparation;
 
-import java.util.function.Consumer;
+import testasyouthink.function.CheckedConsumer;
+
 import java.util.function.Supplier;
 
 enum ArgumentPreparation {
@@ -30,16 +31,19 @@ enum ArgumentPreparation {
     INSTANCE;
 
     <$Argument> Supplier<$Argument> buildMutableArgumentSupplier(Class<$Argument> mutableArgumentClass,
-            Consumer<$Argument> givenStep) {
+            CheckedConsumer<$Argument> givenStep) {
         return () -> {
             $Argument argument;
             try {
                 argument = mutableArgumentClass.newInstance();
+                givenStep.accept(argument);
             } catch (InstantiationException | IllegalAccessException exception) {
                 throw new PreparationError("Fails to instantiate the argument of the " //
                         + mutableArgumentClass.getName() + " type!", exception);
+            } catch (Throwable throwable) {
+                throw new PreparationError("Fails to prepare an argument of the " //
+                        + mutableArgumentClass.getName() + " type for the target method!", throwable);
             }
-            givenStep.accept(argument);
             return argument;
         };
     }

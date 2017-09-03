@@ -82,7 +82,7 @@ public interface GivenWhenThenDsl {
                     $Argument argument);
 
             <$Argument> AndGivenArgument<$SystemUnderTest, $Argument> givenArgument(
-                    Class<$Argument> mutableArgumentClass, Consumer<$Argument> givenStep);
+                    Class<$Argument> mutableArgumentClass, CheckedConsumer<$Argument> givenStep);
         }
 
         interface AndGivenArgument<$SystemUnderTest, $Argument> extends WhenApplyingOneArgument<$SystemUnderTest,
@@ -92,7 +92,7 @@ public interface GivenWhenThenDsl {
                     CheckedSupplier<$Argument2> givenStep);
 
             <$Argument2> AndGivenTwoArguments<$SystemUnderTest, $Argument, $Argument2> andArgument(
-                    Class<$Argument2> mutableArgumentClass, Consumer<$Argument2> givenStep);
+                    Class<$Argument2> mutableArgumentClass, CheckedConsumer<$Argument2> givenStep);
 
             <$Argument2> AndGivenTwoArguments<$SystemUnderTest, $Argument, $Argument2> andArgument(String description,
                     CheckedSupplier<$Argument2> givenStep);
@@ -108,7 +108,7 @@ public interface GivenWhenThenDsl {
                     CheckedSupplier<$Argument3> givenStep);
 
             <$Argument3> WhenApplyingThreeArguments<$SystemUnderTest, $Argument1, $Argument2, $Argument3> andArgument(
-                    Class<$Argument3> mutableArgumentClass, Consumer<$Argument3> givenStep);
+                    Class<$Argument3> mutableArgumentClass, CheckedConsumer<$Argument3> givenStep);
 
             <$Argument3> WhenApplyingThreeArguments<$SystemUnderTest, $Argument1, $Argument2, $Argument3> andArgument(
                     String description, CheckedSupplier<$Argument3> givenStep);

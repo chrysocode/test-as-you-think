@@ -93,7 +93,8 @@ public class Preparation<$SystemUnderTest> {
         });
     }
 
-    public <$Argument> void recordGivenStep(Class<$Argument> mutableArgumentClass, Consumer<$Argument> givenStep) {
+    public <$Argument> void recordGivenStep(Class<$Argument> mutableArgumentClass,
+            CheckedConsumer<$Argument> givenStep) {
         argumentSuppliers.add(argumentPreparation.buildMutableArgumentSupplier(mutableArgumentClass, givenStep));
     }
 
