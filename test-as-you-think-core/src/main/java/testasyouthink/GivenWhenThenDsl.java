@@ -201,7 +201,7 @@ public interface GivenWhenThenDsl {
 
             AndThen<$SystemUnderTest, $Result> thenSutRepliesWithin(long timeLimit);
 
-            AndThen<$SystemUnderTest, $Result> thenSutRepliesWithin(Duration duration);
+            AndThen<$SystemUnderTest, $Result> thenSutRepliesWithin(Duration durationLimit);
 
             void then(List<Predicate<$Result>> thenSteps);
 
@@ -240,7 +240,7 @@ public interface GivenWhenThenDsl {
 
             AndThenWithoutResult<$SystemUnderTest> thenSutRepliesWithin(long timeLimit);
 
-            AndThenWithoutResult<$SystemUnderTest> thenSutRepliesWithin(Duration duration);
+            AndThenWithoutResult<$SystemUnderTest> thenSutRepliesWithin(Duration durationLimit);
         }
 
         interface AndThenWithoutResult<$SystemUnderTest> {

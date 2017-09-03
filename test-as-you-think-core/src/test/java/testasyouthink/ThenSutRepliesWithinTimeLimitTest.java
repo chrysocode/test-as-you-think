@@ -22,7 +22,9 @@
 
 package testasyouthink;
 
+import org.junit.Before;
 import org.junit.Test;
+import testasyouthink.fixture.GivenWhenThenDefinition;
 import testasyouthink.fixture.SystemUnderTest;
 import testasyouthink.function.CheckedConsumer;
 
@@ -32,13 +34,76 @@ import java.util.concurrent.TimeoutException;
 
 import static java.lang.Thread.currentThread;
 import static java.lang.Thread.sleep;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static testasyouthink.TestAsYouThink.givenSutClass;
 
 public class ThenSutRepliesWithinTimeLimitTest {
 
+    private GivenWhenThenDefinition gwtDefinition;
+
+    @Before
+    public void prepareFixtures() {
+        gwtDefinition = mock(GivenWhenThenDefinition.class);
+    }
+
+    @Test(timeout = 300)
+    public void should_reply_within_a_time_limit_given_a_void_method() {
+        // WHEN
+        givenSutClass(SystemUnderTest.class)
+                .given(() -> {
+                    gwtDefinition.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                    try {
+                        sleep(100);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException("To refactor to accept checked functions!");
+                    }
+                })
+                .when(sut -> {
+                    sleep(100);
+                })
+                .thenSutRepliesWithin(200)
+                .and(() -> gwtDefinition.thenTheActualResultIsInKeepingWithTheExpectedResult());
+
+        // THEN
+        verify(gwtDefinition).givenAContextThatDefinesTheInitialStateOfTheSystem();
+        verify(gwtDefinition).thenTheActualResultIsInKeepingWithTheExpectedResult();
+        verifyNoMoreInteractions(gwtDefinition);
+    }
+
+    @Test(timeout = 300)
+    public void should_reply_within_a_time_limit_given_a_non_void_method() {
+        // WHEN
+        givenSutClass(SystemUnderTest.class)
+                .given(() -> {
+                    gwtDefinition.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                    try {
+                        sleep(100);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException("To refactor to accept checked functions!");
+                    }
+                })
+                .when(sut -> {
+                    sleep(100);
+                    return "expected result";
+                })
+                .thenSutRepliesWithin(200)
+                .and(result -> {
+                    assertThat(result).isEqualTo("expected result");
+                    gwtDefinition.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                });
+
+        // THEN
+        verify(gwtDefinition).givenAContextThatDefinesTheInitialStateOfTheSystem();
+        verify(gwtDefinition).thenTheActualResultIsInKeepingWithTheExpectedResult();
+        verifyNoMoreInteractions(gwtDefinition);
+    }
+
     @Test
-    public void should_fail_given_a_time_limit_for_a_void_method() {
+    public void should_fail_to_reply_within_a_time_limit_given_a_void_method() {
         assertThatThrownBy(() -> givenSutClass(SystemUnderTest.class)
                 .when(sut -> {
                     sleep(1000);
@@ -50,7 +115,7 @@ public class ThenSutRepliesWithinTimeLimitTest {
     }
 
     @Test
-    public void should_fail_given_a_duration_limit_for_a_void_method() {
+    public void should_fail_to_reply_within_a_duration_limit_given_a_void_method() {
         assertThatThrownBy(() -> givenSutClass(SystemUnderTest.class)
                 .when(sut -> {
                     sleep(1000);
@@ -62,7 +127,7 @@ public class ThenSutRepliesWithinTimeLimitTest {
     }
 
     @Test
-    public void should_fail_when_the_current_thread_was_interrupted_while_waiting_given_a_void_method() {
+    public void should_fail_to_execute_when_the_current_thread_was_interrupted_while_waiting_given_a_void_method() {
         assertThatThrownBy(() -> givenSutClass(SystemUnderTest.class)
                 .when(sut -> {
                     currentThread()
@@ -77,7 +142,7 @@ public class ThenSutRepliesWithinTimeLimitTest {
     }
 
     @Test
-    public void should_fail_when_the_computation_throws_an_exception_given_a_void_method() {
+    public void should_fail_to_execute_when_the_computation_throws_an_exception_given_a_void_method() {
         assertThatThrownBy(() -> givenSutClass(SystemUnderTest.class)
                 .when((CheckedConsumer<SystemUnderTest>) sut -> {
                     throw new Exception("unexpected exception");
@@ -89,7 +154,7 @@ public class ThenSutRepliesWithinTimeLimitTest {
     }
 
     @Test
-    public void should_fail_given_a_time_limit_for_a_non_void_method() {
+    public void should_fail_to_reply_within_a_time_limit_given_a_non_void_method() {
         assertThatThrownBy(() -> givenSutClass(SystemUnderTest.class)
                 .when(sut -> {
                     sleep(1000);
@@ -102,7 +167,7 @@ public class ThenSutRepliesWithinTimeLimitTest {
     }
 
     @Test
-    public void should_fail_given_a_duration_limit_for_a_non_void_method() {
+    public void should_fail_to_reply_within_a_duration_limit_given_a_non_void_method() {
         assertThatThrownBy(() -> givenSutClass(SystemUnderTest.class)
                 .when(sut -> {
                     sleep(1000);

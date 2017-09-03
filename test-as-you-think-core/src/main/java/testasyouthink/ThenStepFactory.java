@@ -22,7 +22,7 @@
 
 package testasyouthink;
 
-import testasyouthink.execution.Event;
+import testasyouthink.execution.Execution;
 import testasyouthink.function.CheckedConsumer;
 import testasyouthink.function.CheckedFunction;
 import testasyouthink.preparation.Preparation;
@@ -33,15 +33,15 @@ enum ThenStepFactory {
 
     <$SystemUnderTest, $Result> ThenStep<$SystemUnderTest, $Result> createThenStep(
             Preparation<$SystemUnderTest> preparation, CheckedFunction<$SystemUnderTest, $Result> whenStep) {
-        Event<$SystemUnderTest, $Result> event = new Event<>(preparation.supplySut(), whenStep);
-        GivenWhenContext<$SystemUnderTest, $Result> context = new GivenWhenContext<>(preparation, event);
+        Execution<$SystemUnderTest, $Result> execution = new Execution<>(preparation.supplySut(), whenStep);
+        GivenWhenContext<$SystemUnderTest, $Result> context = new GivenWhenContext<>(preparation, execution);
         return new ThenStep<>(context);
     }
 
     <$SystemUnderTest> ThenWithoutResultStep<$SystemUnderTest> createThenStep(Preparation<$SystemUnderTest> preparation,
             CheckedConsumer<$SystemUnderTest> whenStep) {
-        Event<$SystemUnderTest, Void> event = new Event<>(preparation.supplySut(), whenStep);
-        GivenWhenContext<$SystemUnderTest, Void> context = new GivenWhenContext<>(preparation, event);
+        Execution<$SystemUnderTest, Void> execution = new Execution<>(preparation.supplySut(), whenStep);
+        GivenWhenContext<$SystemUnderTest, Void> context = new GivenWhenContext<>(preparation, execution);
         return new ThenWithoutResultStep<>(context);
     }
 

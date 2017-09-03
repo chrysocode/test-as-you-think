@@ -22,41 +22,21 @@
 
 package testasyouthink.execution;
 
-import testasyouthink.function.CheckedConsumer;
 import testasyouthink.function.CheckedFunction;
-import testasyouthink.function.Functions;
-import testasyouthink.preparation.PreparationError;
 
 import java.util.function.Supplier;
 
-public class Event<$SystemUnderTest, $Result> {
+class Event<$SystemUnderTest, $Result> {
 
-    public static final String EXECUTION_FAILURE_MESSAGE = "Fails to execute the target method " //
-            + "of the system under test because of an unexpected failure!";
-    private final Functions functions = Functions.INSTANCE;
     private final Supplier<$SystemUnderTest> givenSutStep;
     private final CheckedFunction<$SystemUnderTest, $Result> whenStep;
 
-    public Event(Supplier<$SystemUnderTest> givenSutStep, CheckedFunction<$SystemUnderTest, $Result> whenStep) {
+    Event(Supplier<$SystemUnderTest> givenSutStep, CheckedFunction<$SystemUnderTest, $Result> whenStep) {
         this.givenSutStep = givenSutStep;
         this.whenStep = whenStep;
     }
 
-    public Event(Supplier<$SystemUnderTest> givenSutStep, CheckedConsumer<$SystemUnderTest> whenStep) {
-        this.givenSutStep = givenSutStep;
-        this.whenStep = functions.toFunction(whenStep);
-    }
-
-    public $Result happen() {
-        $Result result;
-        try {
-            result = whenStep.apply(givenSutStep.get());
-        } catch (PreparationError preparationError) {
-            throw preparationError;
-        } catch (Throwable throwable) {
-            throw new ExecutionError(EXECUTION_FAILURE_MESSAGE, throwable);
-        }
-
-        return result;
+    $Result happen() throws Throwable {
+        return whenStep.apply(givenSutStep.get());
     }
 }
