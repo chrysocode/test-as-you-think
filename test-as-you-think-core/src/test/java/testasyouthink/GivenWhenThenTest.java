@@ -42,7 +42,6 @@ import static testasyouthink.fixture.GivenWhenThenDefinition.orderedSteps;
 
 public class GivenWhenThenTest {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(GivenWhenThenTest.class);
     private static final String EXPECTED_RESULT = "expected result";
     private GivenWhenThenDefinition givenWhenThenDefinitionMock;
 
@@ -146,25 +145,6 @@ public class GivenWhenThenTest {
         })
                 .when(SystemUnderTest::voidMethod)
                 .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult());
-    }
-
-    @Test
-    public void should_fail_to_create_a_sut_instance() throws Throwable {
-        // GIVEN
-        reset(givenWhenThenDefinitionMock);
-        replay(givenWhenThenDefinitionMock);
-
-        // WHEN
-        Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTestFailingToBeInstantiated.class)
-                .when(SystemUnderTestFailingToBeInstantiated::voidMethod)
-                .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
-
-        // THEN
-        LOGGER.debug("Stack trace", thrown);
-        assertThat(thrown)
-                .isInstanceOf(PreparationError.class)
-                .hasMessage("Fails to instantiate the system under test!")
-                .hasCauseInstanceOf(NullPointerException.class);
     }
 
     public static class SystemUnderTestFailingToBeInstantiated {
