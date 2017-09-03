@@ -35,7 +35,6 @@ import testasyouthink.function.Functions;
 import testasyouthink.preparation.Preparation;
 
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 public class GivenWhenSteps<$SystemUnderTest> implements Given<$SystemUnderTest>, AndGiven<$SystemUnderTest> {
 
@@ -51,7 +50,7 @@ public class GivenWhenSteps<$SystemUnderTest> implements Given<$SystemUnderTest>
         preparation = new Preparation<>(systemUnderTest);
     }
 
-    GivenWhenSteps(Supplier<$SystemUnderTest> sutSupplier) {
+    GivenWhenSteps(CheckedSupplier<$SystemUnderTest> sutSupplier) {
         preparation = new Preparation<>(sutSupplier);
     }
 

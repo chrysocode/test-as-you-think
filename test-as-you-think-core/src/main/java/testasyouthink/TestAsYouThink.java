@@ -136,7 +136,7 @@ public class TestAsYouThink {
         return new GivenWhenSteps<>(systemUnderTest);
     }
 
-    public static <$SystemUnderTest> Given<$SystemUnderTest> givenSut(Supplier<$SystemUnderTest> givenSutStep) {
+    public static <$SystemUnderTest> Given<$SystemUnderTest> givenSut(CheckedSupplier<$SystemUnderTest> givenSutStep) {
         return new GivenWhenSteps<>(givenSutStep);
     }
 

@@ -56,9 +56,9 @@ public class Preparation<$SystemUnderTest> {
         givenSutStep = sutPreparation.buildSutSupplier(systemUnderTest);
     }
 
-    public Preparation(Supplier<$SystemUnderTest> givenSutStep) {
+    public Preparation(CheckedSupplier<$SystemUnderTest> givenSutStep) {
         this();
-        this.givenSutStep = givenSutStep;
+        this.givenSutStep = sutPreparation.buildSutSupplier(givenSutStep);
     }
 
     public void recordGivenStep(Runnable givenStep) {

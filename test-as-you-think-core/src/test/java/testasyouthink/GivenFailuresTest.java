@@ -33,6 +33,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verifyZeroInteractions;
+import static testasyouthink.TestAsYouThink.givenSut;
 import static testasyouthink.TestAsYouThink.givenSutClass;
 
 public class GivenFailuresTest {
@@ -62,12 +63,28 @@ public class GivenFailuresTest {
         verifyZeroInteractions(givenWhenThenDefinitionMock);
     }
 
+    @Test
+    public void should_fail_to_supply_a_sut_instance() {
+        // WHEN
+        Throwable thrown = catchThrowable(() -> givenSut(() -> new SystemUnderTestFailingToBeInstantiated())
+                .when(SystemUnderTestFailingToBeInstantiated::voidMethod)
+                .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
+
+        // THEN
+        LOGGER.debug("Stack trace", thrown);
+        assertThat(thrown)
+                .isInstanceOf(PreparationError.class)
+                .hasMessage("Fails to prepare the system under test!")
+                .hasCauseInstanceOf(NullPointerException.class);
+        verifyZeroInteractions(givenWhenThenDefinitionMock);
+    }
+
     public static class SystemUnderTestFailingToBeInstantiated {
 
         public SystemUnderTestFailingToBeInstantiated() throws Exception {
             throw new NullPointerException("Impossible to instantiate it!");
         }
 
-        void voidMethod() {}
+        public void voidMethod() {}
     }
 }

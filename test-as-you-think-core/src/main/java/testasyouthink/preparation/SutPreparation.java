@@ -22,6 +22,8 @@
 
 package testasyouthink.preparation;
 
+import testasyouthink.function.CheckedSupplier;
+
 import java.util.function.Supplier;
 
 enum SutPreparation {
@@ -41,6 +43,16 @@ enum SutPreparation {
                 throw new PreparationError("Fails to instantiate the system under test!", exception);
             }
             return sut;
+        };
+    }
+
+    <$SystemUnderTest> Supplier<$SystemUnderTest> buildSutSupplier(CheckedSupplier<$SystemUnderTest> sutSupplier) {
+        return () -> {
+            try {
+                return sutSupplier.get();
+            } catch (Throwable throwable) {
+                throw new PreparationError("Fails to prepare the system under test!", throwable);
+            }
         };
     }
 }
