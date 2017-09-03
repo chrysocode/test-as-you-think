@@ -22,15 +22,14 @@
 
 package testasyouthink.preparation;
 
-import testasyouthink.function.CheckedSupplier;
-
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 enum ArgumentPreparation {
 
     INSTANCE;
 
-    <$Argument> CheckedSupplier<$Argument> buildMutableArgumentSupplier(Class<$Argument> mutableArgumentClass,
+    <$Argument> Supplier<$Argument> buildMutableArgumentSupplier(Class<$Argument> mutableArgumentClass,
             Consumer<$Argument> givenStep) {
         return () -> {
             $Argument argument;

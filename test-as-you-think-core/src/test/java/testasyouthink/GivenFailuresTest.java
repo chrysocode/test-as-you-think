@@ -31,6 +31,7 @@ import testasyouthink.fixture.GivenWhenThenDefinition;
 import testasyouthink.fixture.ParameterizedSystemUnderTest;
 import testasyouthink.fixture.SystemUnderTest;
 import testasyouthink.fixture.UnexpectedException;
+import testasyouthink.function.CheckedSupplier;
 import testasyouthink.preparation.PreparationError;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -211,6 +212,44 @@ public class GivenFailuresTest {
         assertThat(thrown)
                 .isInstanceOf(PreparationError.class)
                 .hasMessage("Fails to prepare the test fixture!")
+                .hasCauseInstanceOf(UnexpectedException.class);
+        verifyZeroInteractions(givenWhenThenDefinitionMock);
+    }
+
+    @Test
+    public void should_fail_to_supply_one_argument() {
+        // WHEN
+        Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                .givenArgument((CheckedSupplier<String>) () -> {
+                    throw new UnexpectedException();
+                })
+                .when(SystemUnderTest::voidMethodWithParameter)
+                .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
+
+        // THEN
+        LOGGER.debug("Stack trace", thrown);
+        assertThat(thrown)
+                .isInstanceOf(PreparationError.class)
+                .hasMessage("Fails to prepare an argument for the target method!")
+                .hasCauseInstanceOf(UnexpectedException.class);
+        verifyZeroInteractions(givenWhenThenDefinitionMock);
+    }
+
+    @Test
+    public void should_fail_to_supply_one_argument_with_its_specification() {
+        // WHEN
+        Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                .givenArgument("argument specification", (CheckedSupplier<String>) () -> {
+                    throw new UnexpectedException();
+                })
+                .when(SystemUnderTest::voidMethodWithParameter)
+                .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
+
+        // THEN
+        LOGGER.debug("Stack trace", thrown);
+        assertThat(thrown)
+                .isInstanceOf(PreparationError.class)
+                .hasMessage("Fails to prepare an argument for the target method!")
                 .hasCauseInstanceOf(UnexpectedException.class);
         verifyZeroInteractions(givenWhenThenDefinitionMock);
     }

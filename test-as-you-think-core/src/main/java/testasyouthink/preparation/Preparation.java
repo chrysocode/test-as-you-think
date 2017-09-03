@@ -40,7 +40,7 @@ public class Preparation<$SystemUnderTest> {
     private final ArgumentPreparation argumentPreparation = ArgumentPreparation.INSTANCE;
     private final Queue<Consumer<$SystemUnderTest>> givenSteps;
     private Supplier<$SystemUnderTest> givenSutStep;
-    private Queue<CheckedSupplier> argumentSuppliers;
+    private Queue<Supplier> argumentSuppliers;
     private $SystemUnderTest systemUnderTest;
 
     public Preparation() {
@@ -84,14 +84,20 @@ public class Preparation<$SystemUnderTest> {
     }
 
     public <$Argument> void recordGivenStep(CheckedSupplier<$Argument> givenStep) {
-        argumentSuppliers.add(givenStep);
+        argumentSuppliers.add(() -> {
+            try {
+                return givenStep.get();
+            } catch (Throwable throwable) {
+                throw new PreparationError("Fails to prepare an argument for the target method!", throwable);
+            }
+        });
     }
 
     public <$Argument> void recordGivenStep(Class<$Argument> mutableArgumentClass, Consumer<$Argument> givenStep) {
         argumentSuppliers.add(argumentPreparation.buildMutableArgumentSupplier(mutableArgumentClass, givenStep));
     }
 
-    public Queue<CheckedSupplier> getArgumentSuppliers() {
+    public Queue<Supplier> getArgumentSuppliers() {
         return argumentSuppliers;
     }
 
