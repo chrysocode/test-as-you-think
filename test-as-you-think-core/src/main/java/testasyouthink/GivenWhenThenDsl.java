@@ -35,6 +35,7 @@ import testasyouthink.function.CheckedConsumer;
 import testasyouthink.function.CheckedFunction;
 import testasyouthink.function.CheckedQuadriConsumer;
 import testasyouthink.function.CheckedQuadriFunction;
+import testasyouthink.function.CheckedRunnable;
 import testasyouthink.function.CheckedSupplier;
 import testasyouthink.function.CheckedTriConsumer;
 import testasyouthink.function.CheckedTriFunction;
@@ -53,20 +54,20 @@ public interface GivenWhenThenDsl {
 
         interface Given<$SystemUnderTest> extends GivenArgument<$SystemUnderTest>, When<$SystemUnderTest> {
 
-            AndGiven<$SystemUnderTest> given(Runnable givenStep);
+            AndGiven<$SystemUnderTest> given(CheckedRunnable givenStep);
 
-            AndGiven<$SystemUnderTest> given(Consumer<$SystemUnderTest> givenStep);
+            AndGiven<$SystemUnderTest> given(CheckedConsumer<$SystemUnderTest> givenStep);
 
-            AndGiven<$SystemUnderTest> given(String fixtureSpecification, Runnable givenStep);
+            AndGiven<$SystemUnderTest> given(String fixtureSpecification, CheckedRunnable givenStep);
 
-            AndGiven<$SystemUnderTest> given(String fixtureSpecification, Consumer<$SystemUnderTest> givenStep);
+            AndGiven<$SystemUnderTest> given(String fixtureSpecification, CheckedConsumer<$SystemUnderTest> givenStep);
         }
 
         interface AndGiven<$SystemUnderTest> extends GivenArgument<$SystemUnderTest>, When<$SystemUnderTest> {
 
-            AndGiven<$SystemUnderTest> and(String fixtureSpecification, Runnable givenStep);
+            AndGiven<$SystemUnderTest> and(String fixtureSpecification, CheckedRunnable givenStep);
 
-            AndGiven<$SystemUnderTest> and(String fixtureSpecification, Consumer<$SystemUnderTest> givenStep);
+            AndGiven<$SystemUnderTest> and(String fixtureSpecification, CheckedConsumer<$SystemUnderTest> givenStep);
         }
 
         interface GivenArgument<$SystemUnderTest> {

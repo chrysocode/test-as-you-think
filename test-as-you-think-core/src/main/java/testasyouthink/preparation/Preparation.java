@@ -22,6 +22,8 @@
 
 package testasyouthink.preparation;
 
+import testasyouthink.function.CheckedConsumer;
+import testasyouthink.function.CheckedRunnable;
 import testasyouthink.function.CheckedSupplier;
 import testasyouthink.function.Functions;
 
@@ -56,17 +58,29 @@ public class Preparation<$SystemUnderTest> {
         givenSutStep = sutPreparation.buildSutSupplier(systemUnderTest);
     }
 
-    public Preparation(Supplier<$SystemUnderTest> givenSutStep) {
+    public Preparation(CheckedSupplier<$SystemUnderTest> givenSutStep) {
         this();
-        this.givenSutStep = givenSutStep;
+        this.givenSutStep = sutPreparation.buildSutSupplier(givenSutStep);
     }
 
-    public void recordGivenStep(Runnable givenStep) {
-        givenSteps.add(functions.toConsumer(givenStep));
+    public void recordGivenStep(CheckedRunnable givenStep) {
+        givenSteps.add(functions.toConsumer(() -> {
+            try {
+                givenStep.run();
+            } catch (Throwable throwable) {
+                throw new PreparationError("Fails to prepare the test fixture!", throwable);
+            }
+        }));
     }
 
-    public void recordGivenStep(Consumer<$SystemUnderTest> givenStep) {
-        givenSteps.add(givenStep);
+    public void recordGivenStep(CheckedConsumer<$SystemUnderTest> givenStep) {
+        givenSteps.add(sut -> {
+            try {
+                givenStep.accept(sut);
+            } catch (Throwable throwable) {
+                throw new PreparationError("Fails to prepare the system under test!", throwable);
+            }
+        });
     }
 
     public <$Argument> void recordGivenStep(CheckedSupplier<$Argument> givenStep) {

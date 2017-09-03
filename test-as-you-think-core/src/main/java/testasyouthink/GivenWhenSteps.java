@@ -30,12 +30,12 @@ import testasyouthink.GivenWhenThenDsl.VerificationStage.ThenFailure;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.ThenWithoutResult;
 import testasyouthink.function.CheckedConsumer;
 import testasyouthink.function.CheckedFunction;
+import testasyouthink.function.CheckedRunnable;
 import testasyouthink.function.CheckedSupplier;
 import testasyouthink.function.Functions;
 import testasyouthink.preparation.Preparation;
 
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 public class GivenWhenSteps<$SystemUnderTest> implements Given<$SystemUnderTest>, AndGiven<$SystemUnderTest> {
 
@@ -51,41 +51,41 @@ public class GivenWhenSteps<$SystemUnderTest> implements Given<$SystemUnderTest>
         preparation = new Preparation<>(systemUnderTest);
     }
 
-    GivenWhenSteps(Supplier<$SystemUnderTest> sutSupplier) {
+    GivenWhenSteps(CheckedSupplier<$SystemUnderTest> sutSupplier) {
         preparation = new Preparation<>(sutSupplier);
     }
 
     @Override
-    public AndGiven<$SystemUnderTest> given(Runnable givenStep) {
+    public AndGiven<$SystemUnderTest> given(CheckedRunnable givenStep) {
         preparation.recordGivenStep(givenStep);
         return this;
     }
 
     @Override
-    public AndGiven<$SystemUnderTest> given(Consumer<$SystemUnderTest> givenStep) {
+    public AndGiven<$SystemUnderTest> given(CheckedConsumer<$SystemUnderTest> givenStep) {
         preparation.recordGivenStep(givenStep);
         return this;
     }
 
     @Override
-    public AndGiven<$SystemUnderTest> given(String fixtureSpecification, Runnable givenStep) {
+    public AndGiven<$SystemUnderTest> given(String fixtureSpecification, CheckedRunnable givenStep) {
         preparation.recordGivenStep(givenStep);
         return this;
     }
 
     @Override
-    public AndGiven<$SystemUnderTest> given(String fixtureSpecification, Consumer<$SystemUnderTest> givenStep) {
+    public AndGiven<$SystemUnderTest> given(String fixtureSpecification, CheckedConsumer<$SystemUnderTest> givenStep) {
         preparation.recordGivenStep(givenStep);
         return this;
     }
 
     @Override
-    public AndGiven<$SystemUnderTest> and(String fixtureSpecification, Runnable givenStep) {
+    public AndGiven<$SystemUnderTest> and(String fixtureSpecification, CheckedRunnable givenStep) {
         return given(fixtureSpecification, givenStep);
     }
 
     @Override
-    public AndGiven<$SystemUnderTest> and(String fixtureSpecification, Consumer<$SystemUnderTest> givenStep) {
+    public AndGiven<$SystemUnderTest> and(String fixtureSpecification, CheckedConsumer<$SystemUnderTest> givenStep) {
         return given(fixtureSpecification, givenStep);
     }
 

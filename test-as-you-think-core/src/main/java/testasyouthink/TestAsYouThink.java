@@ -70,6 +70,7 @@ import testasyouthink.GivenWhenThenDsl.VerificationStage.Then;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.ThenFailure;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.ThenWithoutResult;
 import testasyouthink.execution.Execution;
+import testasyouthink.function.CheckedConsumer;
 import testasyouthink.function.CheckedFunction;
 import testasyouthink.function.CheckedRunnable;
 import testasyouthink.function.CheckedSupplier;
@@ -120,7 +121,6 @@ import testasyouthink.function.Functions;
 
 import java.io.InputStream;
 import java.util.concurrent.Future;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -136,7 +136,7 @@ public class TestAsYouThink {
         return new GivenWhenSteps<>(systemUnderTest);
     }
 
-    public static <$SystemUnderTest> Given<$SystemUnderTest> givenSut(Supplier<$SystemUnderTest> givenSutStep) {
+    public static <$SystemUnderTest> Given<$SystemUnderTest> givenSut(CheckedSupplier<$SystemUnderTest> givenSutStep) {
         return new GivenWhenSteps<>(givenSutStep);
     }
 
@@ -145,7 +145,7 @@ public class TestAsYouThink {
     }
 
     public static <$SystemUnderTest> AndGiven<$SystemUnderTest> givenSut(Class<$SystemUnderTest> sutClass,
-            Consumer<$SystemUnderTest> givenStep) {
+            CheckedConsumer<$SystemUnderTest> givenStep) {
         return givenSutClass(sutClass).given(givenStep);
     }
 
