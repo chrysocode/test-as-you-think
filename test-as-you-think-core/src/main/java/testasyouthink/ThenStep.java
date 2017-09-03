@@ -167,6 +167,7 @@ public class ThenStep<$SystemUnderTest, $Result> implements Then<$SystemUnderTes
 
     @Override
     public AndThen<$SystemUnderTest, $Result> thenSutRepliesWithin(long timeLimit) {
+        context.prepareFixturesSeparately();
         Assertions
                 .assertThat(context::returnResultOrVoid)
                 .spendsAtMost(timeLimit);
@@ -174,10 +175,11 @@ public class ThenStep<$SystemUnderTest, $Result> implements Then<$SystemUnderTes
     }
 
     @Override
-    public AndThen<$SystemUnderTest, $Result> thenSutRepliesWithin(Duration duration) {
+    public AndThen<$SystemUnderTest, $Result> thenSutRepliesWithin(Duration durationLimit) {
+        context.prepareFixturesSeparately();
         Assertions
                 .assertThat(context::returnResultOrVoid)
-                .spendsAtMost(duration);
+                .spendsAtMost(durationLimit);
         return this;
     }
 }

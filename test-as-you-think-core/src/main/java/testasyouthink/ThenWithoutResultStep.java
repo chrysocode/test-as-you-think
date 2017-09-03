@@ -108,6 +108,7 @@ public class ThenWithoutResultStep<$SystemUnderTest> implements ThenWithoutResul
 
     @Override
     public AndThenWithoutResult<$SystemUnderTest> thenSutRepliesWithin(long timeLimit) {
+        context.prepareFixturesSeparately();
         Assertions
                 .assertThat(context::returnResultOrVoid)
                 .spendsAtMost(timeLimit);
@@ -115,10 +116,11 @@ public class ThenWithoutResultStep<$SystemUnderTest> implements ThenWithoutResul
     }
 
     @Override
-    public AndThenWithoutResult<$SystemUnderTest> thenSutRepliesWithin(Duration duration) {
+    public AndThenWithoutResult<$SystemUnderTest> thenSutRepliesWithin(Duration durationLimit) {
+        context.prepareFixturesSeparately();
         Assertions
                 .assertThat(context::returnResultOrVoid)
-                .spendsAtMost(duration);
+                .spendsAtMost(durationLimit);
         return this;
     }
 }

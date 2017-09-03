@@ -36,6 +36,10 @@ class GivenWhenContext<$SystemUnderTest, $Result> {
         this.execution = execution;
     }
 
+    void prepareFixturesSeparately() {
+        preparation.prepareFixtures();
+    }
+
     $Result returnResultOrVoid() {
         if (result == null) {
             preparation.prepareFixtures();
