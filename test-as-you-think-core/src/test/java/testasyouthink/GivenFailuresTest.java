@@ -278,6 +278,88 @@ public class GivenFailuresTest {
         verifyZeroInteractions(givenWhenThenDefinitionMock);
     }
 
+    @Test
+    public void should_fail_to_supply_a_second_argument() {
+        // WHEN
+        Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                .givenArgument(() -> "argument")
+                .andArgument((CheckedSupplier<Integer>) () -> {
+                    throw new UnexpectedException();
+                })
+                .when(SystemUnderTest::voidMethodWithTwoParameters)
+                .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
+
+        // THEN
+        LOGGER.debug("Stack trace", thrown);
+        assertThat(thrown)
+                .isInstanceOf(PreparationError.class)
+                .hasMessage("Fails to prepare an argument for the target method!")
+                .hasCauseInstanceOf(UnexpectedException.class);
+        verifyZeroInteractions(givenWhenThenDefinitionMock);
+    }
+
+    @Test
+    public void should_fail_to_supply_a_second_argument_with_its_specification() {
+        // WHEN
+        Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                .givenArgument(() -> "argument")
+                .andArgument("argument specification", (CheckedSupplier<Integer>) () -> {
+                    throw new UnexpectedException();
+                })
+                .when(SystemUnderTest::voidMethodWithTwoParameters)
+                .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
+
+        // THEN
+        LOGGER.debug("Stack trace", thrown);
+        assertThat(thrown)
+                .isInstanceOf(PreparationError.class)
+                .hasMessage("Fails to prepare an argument for the target method!")
+                .hasCauseInstanceOf(UnexpectedException.class);
+        verifyZeroInteractions(givenWhenThenDefinitionMock);
+    }
+
+    @Test
+    public void should_fail_to_supply_a_third_argument() {
+        // WHEN
+        Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                .givenArgument(() -> "argument")
+                .andArgument(() -> 2)
+                .andArgument((CheckedSupplier<Boolean>) () -> {
+                    throw new UnexpectedException();
+                })
+                .when(SystemUnderTest::voidMethodWithThreeParameters)
+                .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
+
+        // THEN
+        LOGGER.debug("Stack trace", thrown);
+        assertThat(thrown)
+                .isInstanceOf(PreparationError.class)
+                .hasMessage("Fails to prepare an argument for the target method!")
+                .hasCauseInstanceOf(UnexpectedException.class);
+        verifyZeroInteractions(givenWhenThenDefinitionMock);
+    }
+
+    @Test
+    public void should_fail_to_supply_a_third_argument_with_its_specification() {
+        // WHEN
+        Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                .givenArgument(() -> "argument")
+                .andArgument(() -> 2)
+                .andArgument("argument specification", (CheckedSupplier<Boolean>) () -> {
+                    throw new UnexpectedException();
+                })
+                .when(SystemUnderTest::voidMethodWithThreeParameters)
+                .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
+
+        // THEN
+        LOGGER.debug("Stack trace", thrown);
+        assertThat(thrown)
+                .isInstanceOf(PreparationError.class)
+                .hasMessage("Fails to prepare an argument for the target method!")
+                .hasCauseInstanceOf(UnexpectedException.class);
+        verifyZeroInteractions(givenWhenThenDefinitionMock);
+    }
+
     public static class SystemUnderTestFailingToBeInstantiated {
 
         public SystemUnderTestFailingToBeInstantiated() throws Exception {
