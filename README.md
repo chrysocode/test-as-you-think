@@ -460,6 +460,19 @@ To understand how version numbers change, please read the [Semantic Versioning](
 
 ## Release Notes
 
+### 0.7 version: All testing steps as stage by stage checked functions
+
+- Improve the execution stage within a time limit and its corresponding assertions.
+  - Prepare the SUT separately, and other usual test fixtures.
+  - Prepare the arguments of the target method separately.
+- Check the not yet checked testing steps.
+  - Check the preparation steps of the system under test.
+  - Check the preparation steps of the arguments of the target method.
+  - Check the execution steps.
+  - Check the verification steps.
+- Verify no failure happens.
+- Verify both the result and SUT expectations.
+
 ### 0.6 version: Fluent assertions as if you meant AssertJ
 
 - Use the [AssertJ](http://joel-costigliola.github.io/assertj) assertions like an extension of the *TestAsYouThink* API with its `resultOf()` end point.
