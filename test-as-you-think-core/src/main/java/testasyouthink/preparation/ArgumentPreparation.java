@@ -34,7 +34,7 @@ enum ArgumentPreparation {
 
     <$Argument> Supplier<$Argument> buildMutableArgumentSupplier(Class<$Argument> mutableArgumentClass,
             CheckedConsumer<$Argument> givenStep) {
-        return () -> {
+        return Memoized.of(() -> {
             $Argument argument;
             try {
                 argument = mutableArgumentClass.newInstance();
@@ -47,7 +47,7 @@ enum ArgumentPreparation {
                         + mutableArgumentClass.getName() + " type for the target method!", throwable);
             }
             return argument;
-        };
+        });
     }
 
     public <$Argument> Supplier<$Argument> buidArgumentSupplier(CheckedSupplier<$Argument> givenStep) {

@@ -59,7 +59,7 @@ public class ThenSutRepliesWithinTimeLimitTest {
                     sleep(50);
                 })
                 .whenSutRuns(sut -> gwtDefinition.whenAnEventHappensInRelationToAnActionOfTheConsumer())
-                .thenSutRepliesWithin(10)
+                .thenSutRepliesWithin(49)
                 .and(() -> gwtDefinition.thenTheActualResultIsInKeepingWithTheExpectedResult());
 
         // THEN
@@ -81,7 +81,29 @@ public class ThenSutRepliesWithinTimeLimitTest {
                 .when((sut, argument) -> {
                     gwtDefinition.whenAnEventHappensInRelationToAnActionOfTheConsumer();
                 })
-                .thenSutRepliesWithin(10)
+                .thenSutRepliesWithin(49)
+                .and(() -> gwtDefinition.thenTheActualResultIsInKeepingWithTheExpectedResult());
+
+        // THEN
+        verify(gwtDefinition).givenAContextThatDefinesTheInitialStateOfTheSystem();
+        verify(gwtDefinition).whenAnEventHappensInRelationToAnActionOfTheConsumer();
+        verify(gwtDefinition).thenTheActualResultIsInKeepingWithTheExpectedResult();
+        verifyNoMoreInteractions(gwtDefinition);
+    }
+
+    @Test
+    public void should_reply_within_a_time_limit_given_a_method_with_a_mutable_parameter() {
+        // WHEN
+        givenSutClass(SystemUnderTest.class)
+                .givenArgument(StringBuilder.class, mutable -> {
+                    gwtDefinition.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                    mutable.append("argument");
+                    sleep(50);
+                })
+                .when((sut, argument) -> {
+                    gwtDefinition.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+                })
+                .thenSutRepliesWithin(49)
                 .and(() -> gwtDefinition.thenTheActualResultIsInKeepingWithTheExpectedResult());
 
         // THEN
@@ -103,7 +125,7 @@ public class ThenSutRepliesWithinTimeLimitTest {
                     gwtDefinition.whenAnEventHappensInRelationToAnActionOfTheConsumer();
                     return "expected result";
                 })
-                .thenSutRepliesWithin(10)
+                .thenSutRepliesWithin(49)
                 .and(result -> {
                     assertThat(result).isEqualTo("expected result");
                     gwtDefinition.thenTheActualResultIsInKeepingWithTheExpectedResult();
