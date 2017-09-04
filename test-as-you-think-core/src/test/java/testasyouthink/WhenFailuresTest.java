@@ -22,7 +22,6 @@
 
 package testasyouthink;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -31,46 +30,40 @@ import testasyouthink.execution.ExecutionError;
 import testasyouthink.fixture.GivenWhenThenDefinition;
 import testasyouthink.fixture.SystemUnderTest;
 import testasyouthink.fixture.UnexpectedException;
+import testasyouthink.function.CheckedRunnable;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.expectLastCall;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.strictMock;
-import static org.easymock.EasyMock.verify;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.when;
 import static testasyouthink.TestAsYouThink.givenSut;
+import static testasyouthink.TestAsYouThink.when;
 import static testasyouthink.fixture.Specifications.ExpectedMessage.EXPECTED_EXECUTION_FAILURE_MESSAGE;
 
 public class WhenFailuresTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WhenFailuresTest.class);
     private SystemUnderTest systemUnderTestMock;
-    private GivenWhenThenDefinition givenWhenThenDefinitionMock;
+    private GivenWhenThenDefinition givenWhenThenDefinition;
 
     @Before
     public void prepareFixtures() {
         // GIVEN
-        systemUnderTestMock = strictMock(SystemUnderTest.class);
-    }
-
-    @After
-    public void verifyMocks() {
-        // THEN
-        verify(systemUnderTestMock);
+        systemUnderTestMock = mock(SystemUnderTest.class);
+        givenWhenThenDefinition = mock(GivenWhenThenDefinition.class);
     }
 
     @Test
     public void should_fail_to_execute_given_a_non_void_method() throws Throwable {
         // GIVEN
-        expect(systemUnderTestMock.nonVoidMethodWithThrowsClause()).andThrow(new UnexpectedException());
-        givenWhenThenDefinitionMock = strictMock(GivenWhenThenDefinition.class);
-        replay(systemUnderTestMock, givenWhenThenDefinitionMock);
+        when(systemUnderTestMock.nonVoidMethodWithThrowsClause()).thenThrow(UnexpectedException.class);
 
         // WHEN
         Throwable thrown = catchThrowable(() -> givenSut(systemUnderTestMock)
                 .when(SystemUnderTest::nonVoidMethodWithThrowsClause)
-                .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
+                .then(() -> givenWhenThenDefinition.thenTheActualResultIsInKeepingWithTheExpectedResult()));
 
         // THEN
         LOGGER.debug("Stack trace", thrown);
@@ -78,21 +71,20 @@ public class WhenFailuresTest {
                 .isInstanceOf(ExecutionError.class)
                 .hasMessage(EXPECTED_EXECUTION_FAILURE_MESSAGE)
                 .hasCauseInstanceOf(UnexpectedException.class);
-        verify(givenWhenThenDefinitionMock);
+        verifyZeroInteractions(givenWhenThenDefinition);
     }
 
     @Test
     public void should_fail_to_execute_given_a_void_method() throws Throwable {
         // GIVEN
-        systemUnderTestMock.voidMethodWithThrowsClause();
-        expectLastCall().andThrow(new UnexpectedException());
-        givenWhenThenDefinitionMock = strictMock(GivenWhenThenDefinition.class);
-        replay(systemUnderTestMock, givenWhenThenDefinitionMock);
+        doThrow(UnexpectedException.class)
+                .when(systemUnderTestMock)
+                .voidMethodWithThrowsClause();
 
         // WHEN
         Throwable thrown = catchThrowable(() -> givenSut(systemUnderTestMock)
                 .when(SystemUnderTest::voidMethodWithThrowsClause)
-                .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
+                .then(() -> givenWhenThenDefinition.thenTheActualResultIsInKeepingWithTheExpectedResult()));
 
         // THEN
         LOGGER.debug("Stack trace", thrown);
@@ -100,6 +92,38 @@ public class WhenFailuresTest {
                 .isInstanceOf(ExecutionError.class)
                 .hasMessage(EXPECTED_EXECUTION_FAILURE_MESSAGE)
                 .hasCauseInstanceOf(UnexpectedException.class);
-        verify(givenWhenThenDefinitionMock);
+        verifyZeroInteractions(givenWhenThenDefinition);
+    }
+
+    @Test
+    public void should_fail_to_execute_directly_a_non_void_method() {
+        // WHEN
+        Throwable thrown = catchThrowable(() -> when(() -> {
+            throw new UnexpectedException();
+        }).then(() -> givenWhenThenDefinition.thenTheActualResultIsInKeepingWithTheExpectedResult()));
+
+        // THEN
+        LOGGER.debug("Stack trace", thrown);
+        assertThat(thrown)
+                .isInstanceOf(ExecutionError.class)
+                .hasMessage(EXPECTED_EXECUTION_FAILURE_MESSAGE)
+                .hasCauseInstanceOf(UnexpectedException.class);
+        verifyZeroInteractions(givenWhenThenDefinition);
+    }
+
+    @Test
+    public void should_fail_to_execute_directly_a_void_method() {
+        // WHEN
+        Throwable thrown = catchThrowable(() -> when((CheckedRunnable) () -> {
+            throw new UnexpectedException();
+        }).then(() -> givenWhenThenDefinition.thenTheActualResultIsInKeepingWithTheExpectedResult()));
+
+        // THEN
+        LOGGER.debug("Stack trace", thrown);
+        assertThat(thrown)
+                .isInstanceOf(ExecutionError.class)
+                .hasMessage(EXPECTED_EXECUTION_FAILURE_MESSAGE)
+                .hasCauseInstanceOf(UnexpectedException.class);
+        verifyZeroInteractions(givenWhenThenDefinition);
     }
 }

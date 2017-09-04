@@ -41,7 +41,7 @@ public enum Functions {
         return toBeConsumed -> runnable.run();
     }
 
-    public CheckedConsumer<Void> toCheckedConsumer(Runnable runnable) {
+    public CheckedConsumer<Void> toCheckedConsumer(CheckedRunnable runnable) {
         return toBeConsumed -> runnable.run();
     }
 
@@ -50,10 +50,6 @@ public enum Functions {
             checkedConsumer.accept(toBeConsumed);
             return null;
         };
-    }
-
-    public <R> CheckedFunction<Void, R> toCheckedFunction(Supplier<R> supplier) {
-        return Void -> supplier.get();
     }
 
     public <R> CheckedFunction<Void, R> toCheckedFunction(CheckedSupplier<R> supplier) {
