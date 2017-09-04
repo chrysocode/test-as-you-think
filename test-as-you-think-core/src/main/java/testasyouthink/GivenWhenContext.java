@@ -37,7 +37,7 @@ class GivenWhenContext<$SystemUnderTest, $Result> {
     }
 
     void prepareFixturesSeparately() {
-        preparation.prepareFixtures();
+        preparation.prepareFixturesSeparately();
     }
 
     $Result returnResultOrVoid() {

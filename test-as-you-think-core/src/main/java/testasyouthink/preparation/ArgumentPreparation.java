@@ -24,6 +24,7 @@ package testasyouthink.preparation;
 
 import testasyouthink.function.CheckedConsumer;
 import testasyouthink.function.CheckedSupplier;
+import testasyouthink.function.Memoized;
 
 import java.util.function.Supplier;
 
@@ -50,12 +51,12 @@ enum ArgumentPreparation {
     }
 
     public <$Argument> Supplier<$Argument> buidArgumentSupplier(CheckedSupplier<$Argument> givenStep) {
-        return () -> {
+        return Memoized.of(() -> {
             try {
                 return givenStep.get();
             } catch (Throwable throwable) {
                 throw new PreparationError("Fails to prepare an argument for the target method!", throwable);
             }
-        };
+        });
     }
 }
