@@ -35,8 +35,6 @@ import testasyouthink.function.CheckedSupplier;
 import testasyouthink.function.Functions;
 import testasyouthink.preparation.Preparation;
 
-import java.util.function.Consumer;
-
 public class GivenWhenSteps<$SystemUnderTest> implements Given<$SystemUnderTest>, AndGiven<$SystemUnderTest> {
 
     private final Functions functions = Functions.INSTANCE;
@@ -103,7 +101,7 @@ public class GivenWhenSteps<$SystemUnderTest> implements Given<$SystemUnderTest>
 
     @Override
     public <$Argument> AndGivenArgument<$SystemUnderTest, $Argument> givenArgument(
-            Class<$Argument> mutableArgumentClass, Consumer<$Argument> givenStep) {
+            Class<$Argument> mutableArgumentClass, CheckedConsumer<$Argument> givenStep) {
         preparation.recordGivenStep(mutableArgumentClass, givenStep);
         return new GivenArgumentWhenSteps<>(preparation);
     }

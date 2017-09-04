@@ -22,8 +22,10 @@
 
 package testasyouthink.preparation;
 
+import testasyouthink.function.CheckedConsumer;
 import testasyouthink.function.CheckedSupplier;
 
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 enum SutPreparation {
@@ -50,6 +52,16 @@ enum SutPreparation {
         return () -> {
             try {
                 return sutSupplier.get();
+            } catch (Throwable throwable) {
+                throw new PreparationError("Fails to prepare the system under test!", throwable);
+            }
+        };
+    }
+
+    public <$SystemUnderTest> Consumer<$SystemUnderTest> buildSutSupplier(CheckedConsumer<$SystemUnderTest> givenStep) {
+        return sut -> {
+            try {
+                givenStep.accept(sut);
             } catch (Throwable throwable) {
                 throw new PreparationError("Fails to prepare the system under test!", throwable);
             }
