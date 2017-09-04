@@ -38,6 +38,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 import static testasyouthink.TestAsYouThink.givenSut;
+import static testasyouthink.TestAsYouThink.when;
 import static testasyouthink.fixture.Specifications.ExpectedMessage.EXPECTED_EXECUTION_FAILURE_MESSAGE;
 
 public class WhenFailuresTest {
@@ -83,6 +84,22 @@ public class WhenFailuresTest {
         Throwable thrown = catchThrowable(() -> givenSut(systemUnderTestMock)
                 .when(SystemUnderTest::voidMethodWithThrowsClause)
                 .then(() -> givenWhenThenDefinition.thenTheActualResultIsInKeepingWithTheExpectedResult()));
+
+        // THEN
+        LOGGER.debug("Stack trace", thrown);
+        assertThat(thrown)
+                .isInstanceOf(ExecutionError.class)
+                .hasMessage(EXPECTED_EXECUTION_FAILURE_MESSAGE)
+                .hasCauseInstanceOf(UnexpectedException.class);
+        verifyZeroInteractions(givenWhenThenDefinition);
+    }
+
+    @Test
+    public void should_fail_to_execute_directly_a_non_void_method() {
+        // WHEN
+        Throwable thrown = catchThrowable(() -> when(() -> {
+            throw new UnexpectedException();
+        }).then(() -> givenWhenThenDefinition.thenTheActualResultIsInKeepingWithTheExpectedResult()));
 
         // THEN
         LOGGER.debug("Stack trace", thrown);

@@ -121,7 +121,6 @@ import testasyouthink.function.Functions;
 
 import java.io.InputStream;
 import java.util.concurrent.Future;
-import java.util.function.Supplier;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -153,7 +152,7 @@ public class TestAsYouThink {
         return thenStepFactory.createThenStep(functions.toCheckedConsumer(whenStep));
     }
 
-    public static <$Result> Then<Void, $Result> when(Supplier<$Result> whenStep) {
+    public static <$Result> Then<Void, $Result> when(CheckedSupplier<$Result> whenStep) {
         return thenStepFactory.createThenStep(functions.toCheckedFunction(whenStep));
     }
 

@@ -52,10 +52,6 @@ public enum Functions {
         };
     }
 
-    public <R> CheckedFunction<Void, R> toCheckedFunction(Supplier<R> supplier) {
-        return Void -> supplier.get();
-    }
-
     public <R> CheckedFunction<Void, R> toCheckedFunction(CheckedSupplier<R> supplier) {
         return Void -> supplier.get();
     }
