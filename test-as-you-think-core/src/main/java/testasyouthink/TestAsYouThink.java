@@ -148,7 +148,7 @@ public class TestAsYouThink {
         return givenSutClass(sutClass).given(givenStep);
     }
 
-    public static ThenWithoutResult<Void> when(Runnable whenStep) {
+    public static ThenWithoutResult<Void> when(CheckedRunnable whenStep) {
         return thenStepFactory.createThenStep(functions.toCheckedConsumer(whenStep));
     }
 

@@ -41,7 +41,7 @@ public enum Functions {
         return toBeConsumed -> runnable.run();
     }
 
-    public CheckedConsumer<Void> toCheckedConsumer(Runnable runnable) {
+    public CheckedConsumer<Void> toCheckedConsumer(CheckedRunnable runnable) {
         return toBeConsumed -> runnable.run();
     }
 

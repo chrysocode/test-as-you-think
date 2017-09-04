@@ -30,6 +30,7 @@ import testasyouthink.execution.ExecutionError;
 import testasyouthink.fixture.GivenWhenThenDefinition;
 import testasyouthink.fixture.SystemUnderTest;
 import testasyouthink.fixture.UnexpectedException;
+import testasyouthink.function.CheckedRunnable;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
@@ -98,6 +99,22 @@ public class WhenFailuresTest {
     public void should_fail_to_execute_directly_a_non_void_method() {
         // WHEN
         Throwable thrown = catchThrowable(() -> when(() -> {
+            throw new UnexpectedException();
+        }).then(() -> givenWhenThenDefinition.thenTheActualResultIsInKeepingWithTheExpectedResult()));
+
+        // THEN
+        LOGGER.debug("Stack trace", thrown);
+        assertThat(thrown)
+                .isInstanceOf(ExecutionError.class)
+                .hasMessage(EXPECTED_EXECUTION_FAILURE_MESSAGE)
+                .hasCauseInstanceOf(UnexpectedException.class);
+        verifyZeroInteractions(givenWhenThenDefinition);
+    }
+
+    @Test
+    public void should_fail_to_execute_directly_a_void_method() {
+        // WHEN
+        Throwable thrown = catchThrowable(() -> when((CheckedRunnable) () -> {
             throw new UnexpectedException();
         }).then(() -> givenWhenThenDefinition.thenTheActualResultIsInKeepingWithTheExpectedResult()));
 
