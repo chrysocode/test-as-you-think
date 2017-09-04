@@ -23,6 +23,7 @@
 package testasyouthink.preparation;
 
 import testasyouthink.function.CheckedConsumer;
+import testasyouthink.function.CheckedSupplier;
 
 import java.util.function.Supplier;
 
@@ -45,6 +46,16 @@ enum ArgumentPreparation {
                         + mutableArgumentClass.getName() + " type for the target method!", throwable);
             }
             return argument;
+        };
+    }
+
+    public <$Argument> Supplier<$Argument> buidArgumentSupplier(CheckedSupplier<$Argument> givenStep) {
+        return () -> {
+            try {
+                return givenStep.get();
+            } catch (Throwable throwable) {
+                throw new PreparationError("Fails to prepare an argument for the target method!", throwable);
+            }
         };
     }
 }

@@ -74,23 +74,11 @@ public class Preparation<$SystemUnderTest> {
     }
 
     public void recordGivenStep(CheckedConsumer<$SystemUnderTest> givenStep) {
-        givenSteps.add(sut -> {
-            try {
-                givenStep.accept(sut);
-            } catch (Throwable throwable) {
-                throw new PreparationError("Fails to prepare the system under test!", throwable);
-            }
-        });
+        givenSteps.add(sutPreparation.buildSutSupplier(givenStep));
     }
 
     public <$Argument> void recordGivenStep(CheckedSupplier<$Argument> givenStep) {
-        argumentSuppliers.add(() -> {
-            try {
-                return givenStep.get();
-            } catch (Throwable throwable) {
-                throw new PreparationError("Fails to prepare an argument for the target method!", throwable);
-            }
-        });
+        argumentSuppliers.add(argumentPreparation.buidArgumentSupplier(givenStep));
     }
 
     public <$Argument> void recordGivenStep(Class<$Argument> mutableArgumentClass,
