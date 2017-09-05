@@ -232,10 +232,10 @@ public interface GivenWhenThenDsl {
 
             AndThenWithoutResult<$SystemUnderTest> then(String expectationSpecification, CheckedRunnable thenStep);
 
-            AndThenWithoutResult<$SystemUnderTest> then(Consumer<$SystemUnderTest> thenStep);
+            AndThenWithoutResult<$SystemUnderTest> then(CheckedConsumer<$SystemUnderTest> thenStep);
 
             AndThenWithoutResult<$SystemUnderTest> then(String expectationSpecification,
-                    Consumer<$SystemUnderTest> thenStep);
+                    CheckedConsumer<$SystemUnderTest> thenStep);
 
             AndThenWithoutResult<$SystemUnderTest> then(BooleanSupplier thenStep);
 

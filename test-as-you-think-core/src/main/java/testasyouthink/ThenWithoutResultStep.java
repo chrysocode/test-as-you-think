@@ -24,6 +24,7 @@ package testasyouthink;
 
 import testasyouthink.GivenWhenThenDsl.VerificationStage.AndThenWithoutResult;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.ThenWithoutResult;
+import testasyouthink.function.CheckedConsumer;
 import testasyouthink.function.CheckedRunnable;
 import testasyouthink.verification.Assertions;
 import testasyouthink.verification.VerificationError;
@@ -70,9 +71,15 @@ public class ThenWithoutResultStep<$SystemUnderTest> implements ThenWithoutResul
     }
 
     @Override
-    public AndThenWithoutResult<$SystemUnderTest> then(Consumer<$SystemUnderTest> thenStep) {
+    public AndThenWithoutResult<$SystemUnderTest> then(CheckedConsumer<$SystemUnderTest> thenStep) {
         context.returnResultOrVoid();
-        thenStep.accept(context.getSystemUnderTest());
+        try {
+            thenStep.accept(context.getSystemUnderTest());
+        } catch (AssertionError assertionError) {
+            throw assertionError;
+        } catch (Throwable throwable) {
+            throw new VerificationError("Fails to verify the expectations!", throwable);
+        }
         return this;
     }
 
@@ -109,7 +116,7 @@ public class ThenWithoutResultStep<$SystemUnderTest> implements ThenWithoutResul
 
     @Override
     public AndThenWithoutResult<$SystemUnderTest> then(String expectationSpecification,
-            Consumer<$SystemUnderTest> thenStep) {
+            CheckedConsumer<$SystemUnderTest> thenStep) {
         return then(thenStep);
     }
 
