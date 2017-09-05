@@ -50,47 +50,82 @@ public class ThenSutRepliesWithinTimeLimitTest {
         gwtDefinition = mock(GivenWhenThenDefinition.class);
     }
 
-    @Test(timeout = 300)
+    @Test
     public void should_reply_within_a_time_limit_given_a_void_method() {
         // WHEN
         givenSutClass(SystemUnderTest.class)
                 .given(() -> {
                     gwtDefinition.givenAContextThatDefinesTheInitialStateOfTheSystem();
-                    try {
-                        sleep(100);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException("To refactor to accept checked functions!");
-                    }
+                    sleep(50);
                 })
-                .when(sut -> {
-                    sleep(100);
-                })
-                .thenSutRepliesWithin(200)
+                .whenSutRuns(sut -> gwtDefinition.whenAnEventHappensInRelationToAnActionOfTheConsumer())
+                .thenSutRepliesWithin(49)
                 .and(() -> gwtDefinition.thenTheActualResultIsInKeepingWithTheExpectedResult());
 
         // THEN
         verify(gwtDefinition).givenAContextThatDefinesTheInitialStateOfTheSystem();
+        verify(gwtDefinition).whenAnEventHappensInRelationToAnActionOfTheConsumer();
         verify(gwtDefinition).thenTheActualResultIsInKeepingWithTheExpectedResult();
         verifyNoMoreInteractions(gwtDefinition);
     }
 
-    @Test(timeout = 300)
+    @Test
+    public void should_reply_within_a_time_limit_given_a_method_with_a_parameter() {
+        // WHEN
+        givenSutClass(SystemUnderTest.class)
+                .givenArgument(() -> {
+                    gwtDefinition.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                    sleep(50);
+                    return "argument";
+                })
+                .when((sut, argument) -> {
+                    gwtDefinition.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+                })
+                .thenSutRepliesWithin(49)
+                .and(() -> gwtDefinition.thenTheActualResultIsInKeepingWithTheExpectedResult());
+
+        // THEN
+        verify(gwtDefinition).givenAContextThatDefinesTheInitialStateOfTheSystem();
+        verify(gwtDefinition).whenAnEventHappensInRelationToAnActionOfTheConsumer();
+        verify(gwtDefinition).thenTheActualResultIsInKeepingWithTheExpectedResult();
+        verifyNoMoreInteractions(gwtDefinition);
+    }
+
+    @Test
+    public void should_reply_within_a_time_limit_given_a_method_with_a_mutable_parameter() {
+        // WHEN
+        givenSutClass(SystemUnderTest.class)
+                .givenArgument(StringBuilder.class, mutable -> {
+                    gwtDefinition.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                    mutable.append("argument");
+                    sleep(50);
+                })
+                .when((sut, argument) -> {
+                    gwtDefinition.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+                })
+                .thenSutRepliesWithin(49)
+                .and(() -> gwtDefinition.thenTheActualResultIsInKeepingWithTheExpectedResult());
+
+        // THEN
+        verify(gwtDefinition).givenAContextThatDefinesTheInitialStateOfTheSystem();
+        verify(gwtDefinition).whenAnEventHappensInRelationToAnActionOfTheConsumer();
+        verify(gwtDefinition).thenTheActualResultIsInKeepingWithTheExpectedResult();
+        verifyNoMoreInteractions(gwtDefinition);
+    }
+
+    @Test
     public void should_reply_within_a_time_limit_given_a_non_void_method() {
         // WHEN
         givenSutClass(SystemUnderTest.class)
                 .given(() -> {
                     gwtDefinition.givenAContextThatDefinesTheInitialStateOfTheSystem();
-                    try {
-                        sleep(100);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException("To refactor to accept checked functions!");
-                    }
+                    sleep(50);
                 })
                 .when(sut -> {
-                    sleep(100);
+                    gwtDefinition.whenAnEventHappensInRelationToAnActionOfTheConsumer();
                     return "expected result";
                 })
-                .thenSutRepliesWithin(200)
+                .thenSutRepliesWithin(49)
                 .and(result -> {
                     assertThat(result).isEqualTo("expected result");
                     gwtDefinition.thenTheActualResultIsInKeepingWithTheExpectedResult();
@@ -98,6 +133,7 @@ public class ThenSutRepliesWithinTimeLimitTest {
 
         // THEN
         verify(gwtDefinition).givenAContextThatDefinesTheInitialStateOfTheSystem();
+        verify(gwtDefinition).whenAnEventHappensInRelationToAnActionOfTheConsumer();
         verify(gwtDefinition).thenTheActualResultIsInKeepingWithTheExpectedResult();
         verifyNoMoreInteractions(gwtDefinition);
     }

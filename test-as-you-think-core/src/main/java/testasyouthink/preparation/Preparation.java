@@ -99,6 +99,11 @@ public class Preparation<$SystemUnderTest> {
         }
     }
 
+    public void prepareFixturesSeparately() {
+        prepareFixtures();
+        argumentSuppliers.forEach(Supplier::get);
+    }
+
     private $SystemUnderTest systemUnderTest() {
         if (systemUnderTest == null && givenSutStep != null) {
             systemUnderTest = givenSutStep.get();
