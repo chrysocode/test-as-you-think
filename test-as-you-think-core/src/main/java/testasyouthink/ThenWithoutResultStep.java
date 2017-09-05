@@ -57,9 +57,15 @@ public class ThenWithoutResultStep<$SystemUnderTest> implements ThenWithoutResul
     }
 
     @Override
-    public AndThenWithoutResult<$SystemUnderTest> then(String expectationSpecification, Runnable thenStep) {
+    public AndThenWithoutResult<$SystemUnderTest> then(String expectationSpecification, CheckedRunnable thenStep) {
         context.returnResultOrVoid();
-        thenStep.run();
+        try {
+            thenStep.run();
+        } catch (AssertionError assertionError) {
+            throw assertionError;
+        } catch (Throwable throwable) {
+            throw new VerificationError("Fails to verify the expectations!", throwable);
+        }
         return this;
     }
 

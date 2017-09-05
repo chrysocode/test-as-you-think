@@ -54,4 +54,21 @@ public class ThenUnexpectedFailuresTest {
                 .hasMessage("Fails to verify the expectations!")
                 .hasCauseInstanceOf(UnexpectedException.class);
     }
+
+    @Test
+    public void should_fail_to_run_a_verification_step_with_its_specification_given_a_void_target_method() {
+        // WHEN
+        Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                .when(sut -> {})
+                .then("Expectations", () -> {
+                    throw new UnexpectedException();
+                }));
+
+        // THEN
+        LOGGER.debug("Stack trace", thrown);
+        assertThat(thrown)
+                .isInstanceOf(VerificationError.class)
+                .hasMessage("Fails to verify the expectations!")
+                .hasCauseInstanceOf(UnexpectedException.class);
+    }
 }

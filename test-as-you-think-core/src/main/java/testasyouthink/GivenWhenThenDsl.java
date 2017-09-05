@@ -230,7 +230,7 @@ public interface GivenWhenThenDsl {
 
             AndThenWithoutResult<$SystemUnderTest> then(CheckedRunnable thenStep);
 
-            AndThenWithoutResult<$SystemUnderTest> then(String expectationSpecification, Runnable thenStep);
+            AndThenWithoutResult<$SystemUnderTest> then(String expectationSpecification, CheckedRunnable thenStep);
 
             AndThenWithoutResult<$SystemUnderTest> then(Consumer<$SystemUnderTest> thenStep);
 
