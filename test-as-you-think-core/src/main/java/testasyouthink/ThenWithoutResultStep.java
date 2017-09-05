@@ -24,7 +24,9 @@ package testasyouthink;
 
 import testasyouthink.GivenWhenThenDsl.VerificationStage.AndThenWithoutResult;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.ThenWithoutResult;
+import testasyouthink.function.CheckedRunnable;
 import testasyouthink.verification.Assertions;
+import testasyouthink.verification.VerificationError;
 
 import java.time.Duration;
 import java.util.function.BooleanSupplier;
@@ -42,9 +44,15 @@ public class ThenWithoutResultStep<$SystemUnderTest> implements ThenWithoutResul
     }
 
     @Override
-    public AndThenWithoutResult<$SystemUnderTest> then(Runnable thenStep) {
+    public AndThenWithoutResult<$SystemUnderTest> then(CheckedRunnable thenStep) {
         context.returnResultOrVoid();
-        thenStep.run();
+        try {
+            thenStep.run();
+        } catch (AssertionError assertionError) {
+            throw assertionError;
+        } catch (Throwable throwable) {
+            throw new VerificationError("Fails to verify the expectations!", throwable);
+        }
         return this;
     }
 

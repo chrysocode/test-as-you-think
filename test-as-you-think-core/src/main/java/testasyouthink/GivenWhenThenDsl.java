@@ -228,7 +228,7 @@ public interface GivenWhenThenDsl {
 
         interface ThenWithoutResult<$SystemUnderTest> {
 
-            AndThenWithoutResult<$SystemUnderTest> then(Runnable thenStep);
+            AndThenWithoutResult<$SystemUnderTest> then(CheckedRunnable thenStep);
 
             AndThenWithoutResult<$SystemUnderTest> then(String expectationSpecification, Runnable thenStep);
 
