@@ -26,6 +26,7 @@ import testasyouthink.GivenWhenThenDsl.VerificationStage.AndThenWithoutResult;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.ThenWithoutResult;
 import testasyouthink.function.CheckedConsumer;
 import testasyouthink.function.CheckedRunnable;
+import testasyouthink.function.CheckedSuppliers.CheckedBooleanSupplier;
 import testasyouthink.verification.Assertions;
 import testasyouthink.verification.VerificationError;
 
@@ -84,9 +85,15 @@ public class ThenWithoutResultStep<$SystemUnderTest> implements ThenWithoutResul
     }
 
     @Override
-    public AndThenWithoutResult<$SystemUnderTest> then(BooleanSupplier thenStep) {
+    public AndThenWithoutResult<$SystemUnderTest> then(CheckedBooleanSupplier thenStep) {
         context.returnResultOrVoid();
-        assertThat(thenStep.getAsBoolean()).isTrue();
+        try {
+            assertThat(thenStep.get()).isTrue();
+        } catch (AssertionError assertionError) {
+            throw assertionError;
+        } catch (Throwable throwable) {
+            throw new VerificationError("Fails to verify the expectations!", throwable);
+        }
         return this;
     }
 

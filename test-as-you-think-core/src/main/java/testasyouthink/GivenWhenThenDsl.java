@@ -37,6 +37,7 @@ import testasyouthink.function.CheckedQuadriConsumer;
 import testasyouthink.function.CheckedQuadriFunction;
 import testasyouthink.function.CheckedRunnable;
 import testasyouthink.function.CheckedSupplier;
+import testasyouthink.function.CheckedSuppliers.CheckedBooleanSupplier;
 import testasyouthink.function.CheckedTriConsumer;
 import testasyouthink.function.CheckedTriFunction;
 
@@ -237,7 +238,7 @@ public interface GivenWhenThenDsl {
             AndThenWithoutResult<$SystemUnderTest> then(String expectationSpecification,
                     CheckedConsumer<$SystemUnderTest> thenStep);
 
-            AndThenWithoutResult<$SystemUnderTest> then(BooleanSupplier thenStep);
+            AndThenWithoutResult<$SystemUnderTest> then(CheckedBooleanSupplier thenStep);
 
             AndThenWithoutResult<$SystemUnderTest> thenSutRepliesWithin(long timeLimit);
 
