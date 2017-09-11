@@ -27,6 +27,7 @@ import testasyouthink.GivenWhenThenDsl.VerificationStage.AndThenFailure;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.Then;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.ThenFailure;
 import testasyouthink.function.CheckedConsumer;
+import testasyouthink.function.CheckedRunnable;
 import testasyouthink.verification.Assertions;
 import testasyouthink.verification.VerificationError;
 
@@ -66,9 +67,15 @@ public class ThenStep<$SystemUnderTest, $Result> implements Then<$SystemUnderTes
     }
 
     @Override
-    public AndThen<$SystemUnderTest, $Result> then(Runnable thenStep) {
+    public AndThen<$SystemUnderTest, $Result> then(CheckedRunnable thenStep) {
         context.returnResultOrVoid();
-        thenStep.run();
+        try {
+            thenStep.run();
+        } catch (AssertionError assertionError) {
+            throw assertionError;
+        } catch (Throwable throwable) {
+            throw new VerificationError("Fails to verify expectations!", throwable);
+        }
         return this;
     }
 
@@ -78,9 +85,8 @@ public class ThenStep<$SystemUnderTest, $Result> implements Then<$SystemUnderTes
     }
 
     @Override
-    public AndThen<$SystemUnderTest, $Result> then(String expectationSpecification, Runnable thenStep) {
-        then(thenStep);
-        return this;
+    public AndThen<$SystemUnderTest, $Result> then(String expectationSpecification, CheckedRunnable thenStep) {
+        return then(thenStep);
     }
 
     @Override
@@ -115,9 +121,8 @@ public class ThenStep<$SystemUnderTest, $Result> implements Then<$SystemUnderTes
     }
 
     @Override
-    public AndThen<$SystemUnderTest, $Result> and(Runnable thenStep) {
-        thenStep.run();
-        return this;
+    public AndThen<$SystemUnderTest, $Result> and(CheckedRunnable thenStep) {
+        return then(thenStep);
     }
 
     @Override
@@ -131,7 +136,7 @@ public class ThenStep<$SystemUnderTest, $Result> implements Then<$SystemUnderTes
     }
 
     @Override
-    public AndThen<$SystemUnderTest, $Result> and(String expectationSpecification, Runnable thenStep) {
+    public AndThen<$SystemUnderTest, $Result> and(String expectationSpecification, CheckedRunnable thenStep) {
         return then(expectationSpecification, thenStep);
     }
 

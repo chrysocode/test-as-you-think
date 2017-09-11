@@ -195,9 +195,9 @@ public interface GivenWhenThenDsl {
 
             AndThen<$SystemUnderTest, $Result> then(String expectationSpecification, CheckedConsumer<$Result> thenStep);
 
-            AndThen<$SystemUnderTest, $Result> then(Runnable thenStep);
+            AndThen<$SystemUnderTest, $Result> then(CheckedRunnable thenStep);
 
-            AndThen<$SystemUnderTest, $Result> then(String expectationSpecification, Runnable thenStep);
+            AndThen<$SystemUnderTest, $Result> then(String expectationSpecification, CheckedRunnable thenStep);
 
             AndThen<$SystemUnderTest, $Result> then(Predicate<$Result> thenStep);
 
@@ -220,9 +220,9 @@ public interface GivenWhenThenDsl {
 
             AndThen<$SystemUnderTest, $Result> and(String expectationSpecification, CheckedConsumer<$Result> thenStep);
 
-            AndThen<$SystemUnderTest, $Result> and(Runnable thenStep);
+            AndThen<$SystemUnderTest, $Result> and(CheckedRunnable thenStep);
 
-            AndThen<$SystemUnderTest, $Result> and(String expectationSpecification, Runnable thenStep);
+            AndThen<$SystemUnderTest, $Result> and(String expectationSpecification, CheckedRunnable thenStep);
 
             AndThen<$SystemUnderTest, $Result> and(Predicate<$Result> thenStep);
         }
