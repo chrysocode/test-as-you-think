@@ -26,13 +26,14 @@ import testasyouthink.GivenWhenThenDsl.VerificationStage.AndThen;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.AndThenFailure;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.Then;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.ThenFailure;
+import testasyouthink.function.CheckedConsumer;
 import testasyouthink.verification.Assertions;
+import testasyouthink.verification.VerificationError;
 
 import java.time.Duration;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
-import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -48,8 +49,14 @@ public class ThenStep<$SystemUnderTest, $Result> implements Then<$SystemUnderTes
     }
 
     @Override
-    public AndThen<$SystemUnderTest, $Result> then(Consumer<$Result> thenStep) {
-        thenStep.accept(context.returnResultOrVoid());
+    public AndThen<$SystemUnderTest, $Result> then(CheckedConsumer<$Result> thenStep) {
+        try {
+            thenStep.accept(context.returnResultOrVoid());
+        } catch (AssertionError assertionError) {
+            throw assertionError;
+        } catch (Throwable throwable) {
+            throw new VerificationError("Fails to verify the result expectations!", throwable);
+        }
         return this;
     }
 
@@ -66,9 +73,8 @@ public class ThenStep<$SystemUnderTest, $Result> implements Then<$SystemUnderTes
     }
 
     @Override
-    public AndThen<$SystemUnderTest, $Result> then(String expectationSpecification, Consumer<$Result> thenStep) {
-        then(thenStep);
-        return this;
+    public AndThen<$SystemUnderTest, $Result> then(String expectationSpecification, CheckedConsumer<$Result> thenStep) {
+        return then(thenStep);
     }
 
     @Override
@@ -104,9 +110,8 @@ public class ThenStep<$SystemUnderTest, $Result> implements Then<$SystemUnderTes
     }
 
     @Override
-    public AndThen<$SystemUnderTest, $Result> and(Consumer<$Result> thenStep) {
-        thenStep.accept(context.returnResultOrVoid());
-        return this;
+    public AndThen<$SystemUnderTest, $Result> and(CheckedConsumer<$Result> thenStep) {
+        return then(thenStep);
     }
 
     @Override
@@ -116,7 +121,7 @@ public class ThenStep<$SystemUnderTest, $Result> implements Then<$SystemUnderTes
     }
 
     @Override
-    public AndThen<$SystemUnderTest, $Result> and(String expectationSpecification, Consumer<$Result> thenStep) {
+    public AndThen<$SystemUnderTest, $Result> and(String expectationSpecification, CheckedConsumer<$Result> thenStep) {
         return then(expectationSpecification, thenStep);
     }
 

@@ -24,8 +24,7 @@ package testasyouthink;
 
 import org.junit.Test;
 import testasyouthink.fixture.SystemUnderTest;
-
-import java.util.function.Consumer;
+import testasyouthink.function.CheckedConsumer;
 
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -200,7 +199,7 @@ public class ThenAssertionErrorsTest {
         // WHEN
         Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                 .when(sut -> "result")
-                .then((Consumer<String>) result -> assertThat(true).isFalse()));
+                .then((CheckedConsumer<String>) result -> assertThat(true).isFalse()));
 
         // THEN
         assertThat(thrown)
@@ -214,7 +213,7 @@ public class ThenAssertionErrorsTest {
         Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                 .when(sut -> "result")
                 .then(result -> {})
-                .and((Consumer<String>) result -> assertThat(true).isFalse()));
+                .and((CheckedConsumer<String>) result -> assertThat(true).isFalse()));
 
         // THEN
         assertThat(thrown)

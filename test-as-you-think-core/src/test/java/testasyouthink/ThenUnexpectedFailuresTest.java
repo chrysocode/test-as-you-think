@@ -27,6 +27,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import testasyouthink.fixture.SystemUnderTest;
 import testasyouthink.fixture.UnexpectedException;
+import testasyouthink.function.CheckedConsumer;
 import testasyouthink.function.CheckedRunnable;
 import testasyouthink.verification.VerificationError;
 
@@ -120,6 +121,59 @@ public class ThenUnexpectedFailuresTest {
         assertThat(thrown)
                 .isInstanceOf(VerificationError.class)
                 .hasMessage("Fails to verify the expectations!")
+                .hasCauseInstanceOf(UnexpectedException.class);
+    }
+
+    @Test
+    public void should_fail_to_verify_a_result_expectation_given_a_non_void_target_method() {
+        // WHEN
+        Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                .when(sut -> "result")
+                .then((CheckedConsumer<String>) result -> {
+                    throw new UnexpectedException();
+                }));
+
+        // THEN
+        LOGGER.debug("Stack trace", thrown);
+        assertThat(thrown)
+                .isInstanceOf(VerificationError.class)
+                .hasMessage("Fails to verify the result expectations!")
+                .hasCauseInstanceOf(UnexpectedException.class);
+    }
+
+    @Test
+    public void should_fail_to_verify_a_result_expectation_with_its_specification_given_a_non_void_target_method() {
+        // WHEN
+        Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                .when(sut -> "result")
+                .then("Expectations", result -> {
+                    throw new UnexpectedException();
+                }));
+
+        // THEN
+        LOGGER.debug("Stack trace", thrown);
+        assertThat(thrown)
+                .isInstanceOf(VerificationError.class)
+                .hasMessage("Fails to verify the result expectations!")
+                .hasCauseInstanceOf(UnexpectedException.class);
+    }
+
+    @Test
+    public void
+    should_fail_to_verify_another_result_expectation_with_its_specification_given_a_non_void_target_method() {
+        // WHEN
+        Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                .when(sut -> "result")
+                .then(result -> {})
+                .and("Expectations", result -> {
+                    throw new UnexpectedException();
+                }));
+
+        // THEN
+        LOGGER.debug("Stack trace", thrown);
+        assertThat(thrown)
+                .isInstanceOf(VerificationError.class)
+                .hasMessage("Fails to verify the result expectations!")
                 .hasCauseInstanceOf(UnexpectedException.class);
     }
 }
