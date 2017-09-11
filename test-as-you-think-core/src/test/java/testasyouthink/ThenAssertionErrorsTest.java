@@ -25,6 +25,7 @@ package testasyouthink;
 import org.junit.Test;
 import testasyouthink.fixture.SystemUnderTest;
 
+import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static testasyouthink.TestAsYouThink.givenSutClass;
@@ -76,6 +77,115 @@ public class ThenAssertionErrorsTest {
         Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                 .when(sut -> {})
                 .then("Expectations", sut -> assertThat(true).isFalse()));
+
+        // THEN
+        assertThat(thrown)
+                .isInstanceOf(AssertionError.class)
+                .hasNoCause();
+    }
+
+    @Test
+    public void should_get_an_assertion_error_from_a_result_predicate_given_a_non_void_target_method() {
+        // WHEN
+        Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                .when(sut -> "result")
+                .then(result -> false));
+
+        // THEN
+        assertThat(thrown)
+                .isInstanceOf(AssertionError.class)
+                .hasNoCause();
+    }
+
+    @Test
+    public void should_get_an_assertion_error_from_another_result_predicate_given_a_non_void_target_method() {
+        // WHEN
+        Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                .when(sut -> "result")
+                .then(result -> true)
+                .and(result -> false));
+
+        // THEN
+        assertThat(thrown)
+                .isInstanceOf(AssertionError.class)
+                .hasNoCause();
+    }
+
+    @Test
+    public void should_get_an_assertion_error_from_a_boolean_supplier_given_a_void_target_method() {
+        // WHEN
+        Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                .when(sut -> {})
+                .then(() -> false));
+
+        // THEN
+        assertThat(thrown)
+                .isInstanceOf(AssertionError.class)
+                .hasNoCause();
+    }
+
+    @Test
+    public void should_get_an_assertion_error_from_another_boolean_supplier_given_a_void_target_method() {
+        // WHEN
+        Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                .when(sut -> {})
+                .then(() -> true)
+                .and(() -> false));
+
+        // THEN
+        assertThat(thrown)
+                .isInstanceOf(AssertionError.class)
+                .hasNoCause();
+    }
+
+    @Test
+    public void should_get_an_assertion_error_from_result_predicates_given_a_non_void_target_method() {
+        // WHEN
+        Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                .when(sut -> "result")
+                .then(asList(result -> true, result -> false)));
+
+        // THEN
+        assertThat(thrown)
+                .isInstanceOf(AssertionError.class)
+                .hasNoCause();
+    }
+
+    @Test
+    public void should_get_an_assertion_error_from_a_sut_and_result_predicate_given_a_non_void_target_method() {
+        // WHEN
+        Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                .when(sut -> "result")
+                .then((sut, result) -> false));
+
+        // THEN
+        assertThat(thrown)
+                .isInstanceOf(AssertionError.class)
+                .hasNoCause();
+    }
+
+    @Test
+    public void
+    should_get_an_assertion_error_from_result_and_sut_predicates_because_of_the_result_given_a_non_void_target_method
+            () {
+        // WHEN
+        Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                .when(sut -> "result")
+                .then(result -> false, sut -> true));
+
+        // THEN
+        assertThat(thrown)
+                .isInstanceOf(AssertionError.class)
+                .hasNoCause();
+    }
+
+    @Test
+    public void
+    should_get_an_assertion_error_from_result_and_sut_predicates_because_of_the_sut_given_a_non_void_target_method() {
+        // WHEN
+        Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                .when(sut -> "result")
+                .then(result -> true, sut -> false));
 
         // THEN
         assertThat(thrown)
