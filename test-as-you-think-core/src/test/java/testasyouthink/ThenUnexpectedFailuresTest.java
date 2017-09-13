@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
 import testasyouthink.fixture.SystemUnderTest;
 import testasyouthink.fixture.UnexpectedException;
 import testasyouthink.function.CheckedConsumer;
+import testasyouthink.function.CheckedPredicate;
 import testasyouthink.function.CheckedRunnable;
 import testasyouthink.verification.VerificationError;
 
@@ -236,6 +237,75 @@ public class ThenUnexpectedFailuresTest {
                 .when(sut -> "result")
                 .then("Expectations", () -> {})
                 .and("Expectations", () -> {
+                    throw new UnexpectedException();
+                }));
+
+        // THEN
+        LOGGER.debug("Stack trace", thrown);
+        assertThat(thrown)
+                .isInstanceOf(VerificationError.class)
+                .hasMessage("Fails to verify expectations!")
+                .hasCauseInstanceOf(UnexpectedException.class);
+    }
+
+    @Test
+    public void should_fail_to_check_a_result_predicate_given_a_non_void_target_method() {
+        // WHEN
+        Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                .when(sut -> "result")
+                .then((CheckedPredicate<String>) result -> {
+                    throw new UnexpectedException();
+                }));
+
+        // THEN
+        LOGGER.debug("Stack trace", thrown);
+        assertThat(thrown)
+                .isInstanceOf(VerificationError.class)
+                .hasMessage("Fails to verify expectations!")
+                .hasCauseInstanceOf(UnexpectedException.class);
+    }
+
+    @Test
+    public void should_fail_to_check_another_result_predicate_given_a_non_void_target_method() {
+        // WHEN
+        Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                .when(sut -> "result")
+                .then(result -> true)
+                .and((CheckedPredicate<String>) result -> {
+                    throw new UnexpectedException();
+                }));
+
+        // THEN
+        LOGGER.debug("Stack trace", thrown);
+        assertThat(thrown)
+                .isInstanceOf(VerificationError.class)
+                .hasMessage("Fails to verify expectations!")
+                .hasCauseInstanceOf(UnexpectedException.class);
+    }
+
+    @Test
+    public void should_fail_to_check_result_and_sut_predicates_because_of_the_result_given_a_non_void_target_method() {
+        // WHEN
+        Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                .when(sut -> "result")
+                .then(result -> {
+                    throw new UnexpectedException();
+                }, sut -> true));
+
+        // THEN
+        LOGGER.debug("Stack trace", thrown);
+        assertThat(thrown)
+                .isInstanceOf(VerificationError.class)
+                .hasMessage("Fails to verify expectations!")
+                .hasCauseInstanceOf(UnexpectedException.class);
+    }
+
+    @Test
+    public void should_fail_to_check_result_and_sut_predicates_because_of_the_sut_given_a_non_void_target_method() {
+        // WHEN
+        Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                .when(sut -> "result")
+                .then(result -> true, sut -> {
                     throw new UnexpectedException();
                 }));
 

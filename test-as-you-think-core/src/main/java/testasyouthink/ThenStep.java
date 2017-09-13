@@ -27,6 +27,7 @@ import testasyouthink.GivenWhenThenDsl.VerificationStage.AndThenFailure;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.Then;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.ThenFailure;
 import testasyouthink.function.CheckedConsumer;
+import testasyouthink.function.CheckedPredicate;
 import testasyouthink.function.CheckedRunnable;
 import testasyouthink.verification.Assertions;
 import testasyouthink.verification.VerificationError;
@@ -90,8 +91,14 @@ public class ThenStep<$SystemUnderTest, $Result> implements Then<$SystemUnderTes
     }
 
     @Override
-    public AndThen<$SystemUnderTest, $Result> then(Predicate<$Result> thenStep) {
-        assertThat(thenStep.test(context.returnResultOrVoid())).isTrue();
+    public AndThen<$SystemUnderTest, $Result> then(CheckedPredicate<$Result> thenStep) {
+        try {
+            assertThat(thenStep.test(context.returnResultOrVoid())).isTrue();
+        } catch (AssertionError assertionError) {
+            throw assertionError;
+        } catch (Throwable throwable) {
+            throw new VerificationError("Fails to verify expectations!", throwable);
+        }
         return this;
     }
 
@@ -110,9 +117,16 @@ public class ThenStep<$SystemUnderTest, $Result> implements Then<$SystemUnderTes
     }
 
     @Override
-    public void then(Predicate<$Result> thenStepAboutResult, Predicate<$SystemUnderTest> thenStepAboutSystemUnderTest) {
-        then(thenStepAboutResult);
-        assertThat(thenStepAboutSystemUnderTest.test(context.getSystemUnderTest())).isTrue();
+    public void then(CheckedPredicate<$Result> thenStepAboutResult,
+            CheckedPredicate<$SystemUnderTest> thenStepAboutSystemUnderTest) {
+        try {
+            assertThat(thenStepAboutResult.test(context.returnResultOrVoid())).isTrue();
+            assertThat(thenStepAboutSystemUnderTest.test(context.getSystemUnderTest())).isTrue();
+        } catch (AssertionError assertionError) {
+            throw assertionError;
+        } catch (Throwable throwable) {
+            throw new VerificationError("Fails to verify expectations!", throwable);
+        }
     }
 
     @Override
@@ -131,7 +145,7 @@ public class ThenStep<$SystemUnderTest, $Result> implements Then<$SystemUnderTes
     }
 
     @Override
-    public AndThen<$SystemUnderTest, $Result> and(Predicate<$Result> thenStep) {
+    public AndThen<$SystemUnderTest, $Result> and(CheckedPredicate<$Result> thenStep) {
         return then(thenStep);
     }
 

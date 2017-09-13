@@ -33,6 +33,7 @@ import testasyouthink.function.CheckedBiConsumer;
 import testasyouthink.function.CheckedBiFunction;
 import testasyouthink.function.CheckedConsumer;
 import testasyouthink.function.CheckedFunction;
+import testasyouthink.function.CheckedPredicate;
 import testasyouthink.function.CheckedQuadriConsumer;
 import testasyouthink.function.CheckedQuadriFunction;
 import testasyouthink.function.CheckedRunnable;
@@ -199,7 +200,7 @@ public interface GivenWhenThenDsl {
 
             AndThen<$SystemUnderTest, $Result> then(String expectationSpecification, CheckedRunnable thenStep);
 
-            AndThen<$SystemUnderTest, $Result> then(Predicate<$Result> thenStep);
+            AndThen<$SystemUnderTest, $Result> then(CheckedPredicate<$Result> thenStep);
 
             AndThen<$SystemUnderTest, $Result> thenSutRepliesWithin(long timeLimit);
 
@@ -211,7 +212,8 @@ public interface GivenWhenThenDsl {
 
             void then(BiPredicate<$SystemUnderTest, $Result> thenStep);
 
-            void then(Predicate<$Result> thenStepAboutResult, Predicate<$SystemUnderTest> thenStepAboutSystemUnderTest);
+            void then(CheckedPredicate<$Result> thenStepAboutResult,
+                    CheckedPredicate<$SystemUnderTest> thenStepAboutSystemUnderTest);
         }
 
         interface AndThen<$SystemUnderTest, $Result> {
@@ -224,7 +226,7 @@ public interface GivenWhenThenDsl {
 
             AndThen<$SystemUnderTest, $Result> and(String expectationSpecification, CheckedRunnable thenStep);
 
-            AndThen<$SystemUnderTest, $Result> and(Predicate<$Result> thenStep);
+            AndThen<$SystemUnderTest, $Result> and(CheckedPredicate<$Result> thenStep);
         }
 
         interface ThenWithoutResult<$SystemUnderTest> {
