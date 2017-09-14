@@ -36,7 +36,6 @@ import java.time.Duration;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
-import java.util.function.Predicate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -86,12 +85,16 @@ public class ThenStep<$SystemUnderTest, $Result> implements Then<$SystemUnderTes
     }
 
     @Override
-    public void then(List<Predicate<$Result>> thenSteps) {
-        assertThat(thenSteps
-                .stream()
-                .reduce(Predicate::and)
-                .get()
-                .test(context.returnResultOrVoid())).isTrue();
+    public void then(List<CheckedPredicate<$Result>> thenSteps) {
+        try {
+            assertThat(thenSteps
+                    .stream()
+                    .reduce(CheckedPredicate::and)
+                    .get()
+                    .test(context.returnResultOrVoid())).isTrue();
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }
     }
 
     @Override

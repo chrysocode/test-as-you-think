@@ -22,7 +22,27 @@
 
 package testasyouthink.function;
 
+import java.util.Objects;
+
 public interface CheckedPredicate<$Value> {
 
+    static <$Value> CheckedPredicate<$Value> isEqual(Object targetRef) {
+        return (null == targetRef) ? Objects::isNull : object -> targetRef.equals(object);
+    }
+
     boolean test($Value value) throws Throwable;
+
+    default CheckedPredicate<$Value> and(CheckedPredicate<? super $Value> other) {
+        Objects.requireNonNull(other);
+        return value -> test(value) && other.test(value);
+    }
+
+    default CheckedPredicate<$Value> negate() {
+        return value -> !test(value);
+    }
+
+    default CheckedPredicate<$Value> or(CheckedPredicate<? super $Value> other) {
+        Objects.requireNonNull(other);
+        return value -> test(value) || other.test(value);
+    }
 }

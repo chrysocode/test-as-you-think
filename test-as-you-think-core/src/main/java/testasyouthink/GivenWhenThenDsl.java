@@ -48,7 +48,6 @@ import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
-import java.util.function.Predicate;
 
 public interface GivenWhenThenDsl {
 
@@ -206,7 +205,7 @@ public interface GivenWhenThenDsl {
 
             AndThen<$SystemUnderTest, $Result> thenSutRepliesWithin(Duration durationLimit);
 
-            void then(List<Predicate<$Result>> thenSteps);
+            void then(List<CheckedPredicate<$Result>> thenSteps);
 
             void then(BiConsumer<$SystemUnderTest, $Result> thenStep);
 

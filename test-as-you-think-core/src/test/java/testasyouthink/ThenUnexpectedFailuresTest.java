@@ -32,6 +32,7 @@ import testasyouthink.function.CheckedPredicate;
 import testasyouthink.function.CheckedRunnable;
 import testasyouthink.verification.VerificationError;
 
+import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static testasyouthink.TestAsYouThink.givenSutClass;
@@ -314,6 +315,23 @@ public class ThenUnexpectedFailuresTest {
         assertThat(thrown)
                 .isInstanceOf(VerificationError.class)
                 .hasMessage("Fails to verify the expectations of the system under test!")
+                .hasCauseInstanceOf(UnexpectedException.class);
+    }
+
+    @Test
+    public void should_fail_to_check_some_result_predicates_given_a_non_void_target_method() {
+        // WHEN
+        Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                .when(sut -> "result")
+                .then(asList(result -> true, result -> {
+                    throw new UnexpectedException();
+                }, result -> true)));
+
+        // THEN
+        LOGGER.debug("Stack trace", thrown);
+        assertThat(thrown)
+                .isInstanceOf(VerificationError.class)
+                .hasMessage("Fails to verify the result expectations!")
                 .hasCauseInstanceOf(UnexpectedException.class);
     }
 }
