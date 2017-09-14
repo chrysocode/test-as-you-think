@@ -28,7 +28,7 @@ import testasyouthink.function.CheckedConsumer;
 import testasyouthink.function.CheckedRunnable;
 import testasyouthink.function.CheckedSuppliers.CheckedBooleanSupplier;
 import testasyouthink.verification.Assertions;
-import testasyouthink.verification.VerificationError;
+import testasyouthink.verification.Verification;
 
 import java.time.Duration;
 import java.util.function.BooleanSupplier;
@@ -40,60 +40,34 @@ public class ThenWithoutResultStep<$SystemUnderTest> implements ThenWithoutResul
         AndThenWithoutResult<$SystemUnderTest> {
 
     private final GivenWhenContext<$SystemUnderTest, Void> context;
+    private final Verification<$SystemUnderTest, Void> verification;
 
-    public ThenWithoutResultStep(GivenWhenContext<$SystemUnderTest, Void> context) {
+    ThenWithoutResultStep(GivenWhenContext<$SystemUnderTest, Void> context) {
         this.context = context;
+        verification = new Verification<>(context);
     }
 
     @Override
     public AndThenWithoutResult<$SystemUnderTest> then(CheckedRunnable thenStep) {
-        context.returnResultOrVoid();
-        try {
-            thenStep.run();
-        } catch (AssertionError assertionError) {
-            throw assertionError;
-        } catch (Throwable throwable) {
-            throw new VerificationError("Fails to verify the expectations!", throwable);
-        }
+        verification.verify(thenStep);
         return this;
     }
 
     @Override
     public AndThenWithoutResult<$SystemUnderTest> then(String expectationSpecification, CheckedRunnable thenStep) {
-        context.returnResultOrVoid();
-        try {
-            thenStep.run();
-        } catch (AssertionError assertionError) {
-            throw assertionError;
-        } catch (Throwable throwable) {
-            throw new VerificationError("Fails to verify the expectations!", throwable);
-        }
+        verification.verify(thenStep);
         return this;
     }
 
     @Override
     public AndThenWithoutResult<$SystemUnderTest> then(CheckedConsumer<$SystemUnderTest> thenStep) {
-        context.returnResultOrVoid();
-        try {
-            thenStep.accept(context.getSystemUnderTest());
-        } catch (AssertionError assertionError) {
-            throw assertionError;
-        } catch (Throwable throwable) {
-            throw new VerificationError("Fails to verify the expectations!", throwable);
-        }
+        verification.verifySut(thenStep);
         return this;
     }
 
     @Override
     public AndThenWithoutResult<$SystemUnderTest> then(CheckedBooleanSupplier thenStep) {
-        context.returnResultOrVoid();
-        try {
-            assertThat(thenStep.get()).isTrue();
-        } catch (AssertionError assertionError) {
-            throw assertionError;
-        } catch (Throwable throwable) {
-            throw new VerificationError("Fails to verify the expectations!", throwable);
-        }
+        verification.verify(thenStep);
         return this;
     }
 

@@ -53,7 +53,7 @@ public class ThenUnexpectedFailuresTest {
         LOGGER.debug("Stack trace", thrown);
         assertThat(thrown)
                 .isInstanceOf(VerificationError.class)
-                .hasMessage("Fails to verify the expectations!")
+                .hasMessage("Fails to verify expectations!")
                 .hasCauseInstanceOf(UnexpectedException.class);
     }
 
@@ -70,7 +70,7 @@ public class ThenUnexpectedFailuresTest {
         LOGGER.debug("Stack trace", thrown);
         assertThat(thrown)
                 .isInstanceOf(VerificationError.class)
-                .hasMessage("Fails to verify the expectations!")
+                .hasMessage("Fails to verify expectations!")
                 .hasCauseInstanceOf(UnexpectedException.class);
     }
 
@@ -87,7 +87,7 @@ public class ThenUnexpectedFailuresTest {
         LOGGER.debug("Stack trace", thrown);
         assertThat(thrown)
                 .isInstanceOf(VerificationError.class)
-                .hasMessage("Fails to verify the expectations!")
+                .hasMessage("Fails to verify the expectations of the system under test!")
                 .hasCauseInstanceOf(UnexpectedException.class);
     }
 
@@ -104,7 +104,7 @@ public class ThenUnexpectedFailuresTest {
         LOGGER.debug("Stack trace", thrown);
         assertThat(thrown)
                 .isInstanceOf(VerificationError.class)
-                .hasMessage("Fails to verify the expectations!")
+                .hasMessage("Fails to verify the expectations of the system under test!")
                 .hasCauseInstanceOf(UnexpectedException.class);
     }
 
@@ -121,7 +121,7 @@ public class ThenUnexpectedFailuresTest {
         LOGGER.debug("Stack trace", thrown);
         assertThat(thrown)
                 .isInstanceOf(VerificationError.class)
-                .hasMessage("Fails to verify the expectations!")
+                .hasMessage("Fails to verify expectations!")
                 .hasCauseInstanceOf(UnexpectedException.class);
     }
 
@@ -261,7 +261,7 @@ public class ThenUnexpectedFailuresTest {
         LOGGER.debug("Stack trace", thrown);
         assertThat(thrown)
                 .isInstanceOf(VerificationError.class)
-                .hasMessage("Fails to verify expectations!")
+                .hasMessage("Fails to verify the result expectations!")
                 .hasCauseInstanceOf(UnexpectedException.class);
     }
 
@@ -279,7 +279,7 @@ public class ThenUnexpectedFailuresTest {
         LOGGER.debug("Stack trace", thrown);
         assertThat(thrown)
                 .isInstanceOf(VerificationError.class)
-                .hasMessage("Fails to verify expectations!")
+                .hasMessage("Fails to verify the result expectations!")
                 .hasCauseInstanceOf(UnexpectedException.class);
     }
 
@@ -296,7 +296,7 @@ public class ThenUnexpectedFailuresTest {
         LOGGER.debug("Stack trace", thrown);
         assertThat(thrown)
                 .isInstanceOf(VerificationError.class)
-                .hasMessage("Fails to verify expectations!")
+                .hasMessage("Fails to verify the result expectations!")
                 .hasCauseInstanceOf(UnexpectedException.class);
     }
 
@@ -313,7 +313,7 @@ public class ThenUnexpectedFailuresTest {
         LOGGER.debug("Stack trace", thrown);
         assertThat(thrown)
                 .isInstanceOf(VerificationError.class)
-                .hasMessage("Fails to verify expectations!")
+                .hasMessage("Fails to verify the expectations of the system under test!")
                 .hasCauseInstanceOf(UnexpectedException.class);
     }
 }

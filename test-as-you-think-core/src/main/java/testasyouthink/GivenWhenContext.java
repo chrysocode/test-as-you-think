@@ -25,7 +25,7 @@ package testasyouthink;
 import testasyouthink.execution.Execution;
 import testasyouthink.preparation.Preparation;
 
-class GivenWhenContext<$SystemUnderTest, $Result> {
+public class GivenWhenContext<$SystemUnderTest, $Result> {
 
     private final Preparation<$SystemUnderTest> preparation;
     private final Execution<$SystemUnderTest, $Result> execution;
@@ -40,7 +40,7 @@ class GivenWhenContext<$SystemUnderTest, $Result> {
         preparation.prepareFixturesSeparately();
     }
 
-    $Result returnResultOrVoid() {
+    public $Result returnResultOrVoid() {
         if (result == null) {
             preparation.prepareFixtures();
             result = execution.run();
@@ -48,7 +48,7 @@ class GivenWhenContext<$SystemUnderTest, $Result> {
         return result;
     }
 
-    $SystemUnderTest getSystemUnderTest() {
+    public $SystemUnderTest getSystemUnderTest() {
         return preparation
                 .supplySut()
                 .get();
