@@ -28,6 +28,8 @@ import testasyouthink.function.CheckedPredicate;
 import testasyouthink.function.CheckedRunnable;
 import testasyouthink.function.CheckedSuppliers.CheckedBooleanSupplier;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class Verification<$SystemUnderTest, $Result> {
@@ -99,5 +101,12 @@ public class Verification<$SystemUnderTest, $Result> {
         } catch (Throwable throwable) {
             throw new VerificationError("Fails to verify expectations!", throwable);
         }
+    }
+
+    public void verifyResult(List<CheckedPredicate<$Result>> expectations) {
+        expectations
+                .stream()
+                .reduce(CheckedPredicate::and)
+                .ifPresent(this::verifyResult);
     }
 }

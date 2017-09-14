@@ -86,15 +86,7 @@ public class ThenStep<$SystemUnderTest, $Result> implements Then<$SystemUnderTes
 
     @Override
     public void then(List<CheckedPredicate<$Result>> thenSteps) {
-        try {
-            assertThat(thenSteps
-                    .stream()
-                    .reduce(CheckedPredicate::and)
-                    .get()
-                    .test(context.returnResultOrVoid())).isTrue();
-        } catch (Throwable throwable) {
-            throwable.printStackTrace();
-        }
+        verification.verifyResult(thenSteps);
     }
 
     @Override
