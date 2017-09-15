@@ -47,7 +47,6 @@ import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 import java.util.function.BooleanSupplier;
-import java.util.function.Consumer;
 
 public interface GivenWhenThenDsl {
 
@@ -252,10 +251,10 @@ public interface GivenWhenThenDsl {
 
             AndThenWithoutResult<$SystemUnderTest> and(String expectationSpecification, CheckedRunnable thenStep);
 
-            AndThenWithoutResult<$SystemUnderTest> and(Consumer<$SystemUnderTest> thenStep);
+            AndThenWithoutResult<$SystemUnderTest> and(CheckedConsumer<$SystemUnderTest> thenStep);
 
             AndThenWithoutResult<$SystemUnderTest> and(String expectationSpecification,
-                    Consumer<$SystemUnderTest> thenStep);
+                    CheckedConsumer<$SystemUnderTest> thenStep);
 
             AndThenWithoutResult<$SystemUnderTest> and(BooleanSupplier thenStep);
         }

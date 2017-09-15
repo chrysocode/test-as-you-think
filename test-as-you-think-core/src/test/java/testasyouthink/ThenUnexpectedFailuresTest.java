@@ -112,7 +112,7 @@ public class ThenUnexpectedFailuresTest {
     }
 
     @Test
-    public void should_fail_to_verify_the_sut_given_a_void_target_method() {
+    public void should_fail_to_verify_a_sut_expectation_given_a_void_target_method() {
         // WHEN
         Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                 .when(sut -> {})
@@ -129,11 +129,47 @@ public class ThenUnexpectedFailuresTest {
     }
 
     @Test
-    public void should_fail_to_verify_the_sut_with_its_specification_given_a_void_target_method() {
+    public void should_fail_to_verify_another_sut_expectation_given_a_void_target_method() {
+        // WHEN
+        Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                .when(sut -> {})
+                .then(sut -> {})
+                .and(sut -> {
+                    throw new UnexpectedException();
+                }));
+
+        // THEN
+        LOGGER.debug("Stack trace", thrown);
+        assertThat(thrown)
+                .isInstanceOf(VerificationError.class)
+                .hasMessage("Fails to verify the expectations of the system under test!")
+                .hasCauseInstanceOf(UnexpectedException.class);
+    }
+
+    @Test
+    public void should_fail_to_verify_a_sut_specified_expectation_given_a_void_target_method() {
         // WHEN
         Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                 .when(sut -> {})
                 .then("Expectations", sut -> {
+                    throw new UnexpectedException();
+                }));
+
+        // THEN
+        LOGGER.debug("Stack trace", thrown);
+        assertThat(thrown)
+                .isInstanceOf(VerificationError.class)
+                .hasMessage("Fails to verify the expectations of the system under test!")
+                .hasCauseInstanceOf(UnexpectedException.class);
+    }
+
+    @Test
+    public void should_fail_to_verify_another_sut_specified_expectation_given_a_void_target_method() {
+        // WHEN
+        Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                .when(sut -> {})
+                .then("An expectation", sut -> {})
+                .and("Another expectation", sut -> {
                     throw new UnexpectedException();
                 }));
 

@@ -32,7 +32,6 @@ import testasyouthink.verification.Verification;
 
 import java.time.Duration;
 import java.util.function.BooleanSupplier;
-import java.util.function.Consumer;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -82,9 +81,8 @@ public class ThenWithoutResultStep<$SystemUnderTest> implements ThenWithoutResul
     }
 
     @Override
-    public AndThenWithoutResult<$SystemUnderTest> and(Consumer<$SystemUnderTest> thenStep) {
-        thenStep.accept(context.getSystemUnderTest());
-        return this;
+    public AndThenWithoutResult<$SystemUnderTest> and(CheckedConsumer<$SystemUnderTest> thenStep) {
+        return then(thenStep);
     }
 
     @Override
@@ -101,9 +99,8 @@ public class ThenWithoutResultStep<$SystemUnderTest> implements ThenWithoutResul
 
     @Override
     public AndThenWithoutResult<$SystemUnderTest> and(String expectationSpecification,
-            Consumer<$SystemUnderTest> thenStep) {
-        thenStep.accept(context.getSystemUnderTest());
-        return this;
+            CheckedConsumer<$SystemUnderTest> thenStep) {
+        return then(expectationSpecification, thenStep);
     }
 
     @Override
