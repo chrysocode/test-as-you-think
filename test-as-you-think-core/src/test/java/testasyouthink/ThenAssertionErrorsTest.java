@@ -47,11 +47,39 @@ public class ThenAssertionErrorsTest {
     }
 
     @Test
+    public void should_get_an_assertion_error_from_another_runnable_step_given_a_void_target_method() {
+        // WHEN
+        Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                .when(sut -> {})
+                .then(() -> {})
+                .and(() -> assertThat(true).isFalse()));
+
+        // THEN
+        assertThat(thrown)
+                .isInstanceOf(AssertionError.class)
+                .hasNoCause();
+    }
+
+    @Test
     public void should_get_an_assertion_error_from_a_specified_runnable_step_given_a_void_target_method() {
         // WHEN
         Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                 .when(sut -> {})
                 .then("Expectations", () -> assertThat(true).isFalse()));
+
+        // THEN
+        assertThat(thrown)
+                .isInstanceOf(AssertionError.class)
+                .hasNoCause();
+    }
+
+    @Test
+    public void should_get_an_assertion_error_from_another_specified_runnable_step_given_a_void_target_method() {
+        // WHEN
+        Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                .when(sut -> {})
+                .then("An expectation", () -> {})
+                .and("Another expectation", () -> assertThat(true).isFalse()));
 
         // THEN
         assertThat(thrown)

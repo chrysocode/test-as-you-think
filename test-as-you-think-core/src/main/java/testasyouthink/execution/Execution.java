@@ -29,6 +29,7 @@ import testasyouthink.function.CheckedSuppliers.CheckedArraySupplier;
 import testasyouthink.function.Functions;
 import testasyouthink.preparation.PreparationError;
 
+import java.util.Optional;
 import java.util.function.Supplier;
 
 public class Execution<$SystemUnderTest, $Result> {
@@ -58,9 +59,9 @@ public class Execution<$SystemUnderTest, $Result> {
         return () -> null;
     }
 
-    public $Result run() {
+    public Optional<$Result> run() {
         try {
-            return event.happen();
+            return Optional.ofNullable(event.happen());
         } catch (PreparationError preparationError) {
             throw preparationError;
         } catch (Throwable throwable) {

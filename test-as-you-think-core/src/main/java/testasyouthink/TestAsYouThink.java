@@ -168,13 +168,15 @@ public class TestAsYouThink {
     private static <$Result> $Result result(CheckedSupplier<$Result> whenStep) {
         return Execution
                 .of(whenStep)
-                .run();
+                .run()
+                .orElse(null);
     }
 
     private static <$Element> $Element[] arrayAsResult(CheckedArraySupplier<$Element> whenStep) {
         return Execution
                 .of(whenStep)
-                .run();
+                .run()
+                .orElse(null);
     }
 
     public static <$ActualResult> AbstractObjectAssert<?, $ActualResult> resultOf(

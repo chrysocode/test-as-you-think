@@ -25,11 +25,13 @@ package testasyouthink;
 import testasyouthink.execution.Execution;
 import testasyouthink.preparation.Preparation;
 
+import java.util.Optional;
+
 public class GivenWhenContext<$SystemUnderTest, $Result> {
 
     private final Preparation<$SystemUnderTest> preparation;
     private final Execution<$SystemUnderTest, $Result> execution;
-    private $Result result;
+    private Optional<$Result> result;
 
     GivenWhenContext(Preparation<$SystemUnderTest> preparation, Execution<$SystemUnderTest, $Result> execution) {
         this.preparation = preparation;
@@ -45,7 +47,7 @@ public class GivenWhenContext<$SystemUnderTest, $Result> {
             preparation.prepareFixtures();
             result = execution.run();
         }
-        return result;
+        return result.orElse(null);
     }
 
     public $SystemUnderTest getSystemUnderTest() {

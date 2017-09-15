@@ -248,9 +248,9 @@ public interface GivenWhenThenDsl {
 
         interface AndThenWithoutResult<$SystemUnderTest> {
 
-            AndThenWithoutResult<$SystemUnderTest> and(Runnable thenStep);
+            AndThenWithoutResult<$SystemUnderTest> and(CheckedRunnable thenStep);
 
-            AndThenWithoutResult<$SystemUnderTest> and(String expectationSpecification, Runnable thenStep);
+            AndThenWithoutResult<$SystemUnderTest> and(String expectationSpecification, CheckedRunnable thenStep);
 
             AndThenWithoutResult<$SystemUnderTest> and(Consumer<$SystemUnderTest> thenStep);
 
