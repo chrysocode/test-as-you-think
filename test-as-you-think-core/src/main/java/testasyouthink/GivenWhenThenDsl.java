@@ -265,7 +265,7 @@ public interface GivenWhenThenDsl {
 
         interface AndThenFailure {
 
-            AndThenFailure becauseOf(Class<? extends Throwable> expectedThrowableClass);
+            AndThenFailure becauseOf(Class<? extends Throwable> expectedFailureClass);
 
             AndThenFailure withMessage(String expectedMessage);
 

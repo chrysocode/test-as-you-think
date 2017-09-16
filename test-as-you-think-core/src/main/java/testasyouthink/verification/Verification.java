@@ -35,6 +35,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class Verification<$SystemUnderTest, $Result> {
 
+    private static final String MISSING_EXCEPTION = "Expecting a failure, but it was missing.";
     private final GivenWhenContext<$SystemUnderTest, $Result> context;
 
     public Verification(GivenWhenContext<$SystemUnderTest, $Result> context) {
@@ -116,5 +117,30 @@ public class Verification<$SystemUnderTest, $Result> {
         Assertions
                 .assertThat(context::returnResultOrVoid)
                 .spendsAtMost(durationLimit);
+    }
+
+    public void verifyFailure() {
+        Object result = context.returnResultOrVoid();
+        if (result == null) {
+            throw new AssertionError(MISSING_EXCEPTION);
+        } else {
+            assertThat(context.returnResultOrVoid()).isInstanceOf(Throwable.class);
+        }
+    }
+
+    public void verifyFailure(Class<? extends Throwable> expectedFailureClass) {
+        assertThat(context.returnResultOrVoid()).isInstanceOf(expectedFailureClass);
+    }
+
+    public void verifyFailureMessage(String expectedMessage) {
+        assertThat((Throwable) context.returnResultOrVoid()).hasMessage(expectedMessage);
+    }
+
+    public void verifyFailureCause(Class<? extends Throwable> expectedCauseClass) {
+        assertThat((Throwable) context.returnResultOrVoid()).hasCauseInstanceOf(expectedCauseClass);
+    }
+
+    public void verifyFailureCauseMessage(String expectedMessage) {
+        assertThat(((Throwable) context.returnResultOrVoid()).getCause()).hasMessage(expectedMessage);
     }
 }

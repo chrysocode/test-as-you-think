@@ -36,17 +36,12 @@ import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 public class ThenStep<$SystemUnderTest, $Result> implements Then<$SystemUnderTest, $Result>,
         AndThen<$SystemUnderTest, $Result>, ThenFailure, AndThenFailure {
 
-    private static final String MISSING_EXCEPTION = "Expecting a failure, but it was missing.";
-    private final GivenWhenContext<$SystemUnderTest, $Result> context;
     private Verification<$SystemUnderTest, $Result> verification;
 
     ThenStep(GivenWhenContext<$SystemUnderTest, $Result> context) {
-        this.context = context;
         verification = new Verification<>(context);
     }
 
@@ -127,36 +122,31 @@ public class ThenStep<$SystemUnderTest, $Result> implements Then<$SystemUnderTes
 
     @Override
     public AndThenFailure thenItFails() {
-        Object result = context.returnResultOrVoid();
-        if (result == null) {
-            throw new AssertionError(MISSING_EXCEPTION);
-        } else {
-            assertThat(context.returnResultOrVoid()).isInstanceOf(Throwable.class);
-        }
+        verification.verifyFailure();
         return this;
     }
 
     @Override
-    public AndThenFailure becauseOf(Class<? extends Throwable> expectedThrowableClass) {
-        assertThat(context.returnResultOrVoid()).isInstanceOf(expectedThrowableClass);
+    public AndThenFailure becauseOf(Class<? extends Throwable> expectedFailureClass) {
+        verification.verifyFailure(expectedFailureClass);
         return this;
     }
 
     @Override
     public AndThenFailure withMessage(String expectedMessage) {
-        assertThat((Throwable) context.returnResultOrVoid()).hasMessage(expectedMessage);
+        verification.verifyFailureMessage(expectedMessage);
         return this;
     }
 
     @Override
     public AndThenFailure havingCause(Class<? extends Throwable> expectedCauseClass) {
-        assertThat((Throwable) context.returnResultOrVoid()).hasCauseInstanceOf(expectedCauseClass);
+        verification.verifyFailureCause(expectedCauseClass);
         return this;
     }
 
     @Override
     public AndThenFailure withCauseMessage(String expectedMessage) {
-        assertThat(((Throwable) context.returnResultOrVoid()).getCause()).hasMessage(expectedMessage);
+        verification.verifyFailureCauseMessage(expectedMessage);
         return this;
     }
 
