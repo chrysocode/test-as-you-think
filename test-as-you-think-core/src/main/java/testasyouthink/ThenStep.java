@@ -77,6 +77,13 @@ public class ThenStep<$SystemUnderTest, $Result> implements Then<$SystemUnderTes
     }
 
     @Override
+    public void then(CheckedConsumer<$Result> thenStepAboutResult,
+            CheckedConsumer<$SystemUnderTest> thenStepAboutSystemUnderTest) {
+        verification.verifyResult(thenStepAboutResult);
+        verification.verifySut(thenStepAboutSystemUnderTest);
+    }
+
+    @Override
     public void then(CheckedPredicate<$Result> thenStepAboutResult,
             CheckedPredicate<$SystemUnderTest> thenStepAboutSystemUnderTest) {
         verification.verifyResult(thenStepAboutResult);

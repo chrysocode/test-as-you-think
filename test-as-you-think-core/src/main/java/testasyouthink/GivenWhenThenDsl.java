@@ -203,6 +203,9 @@ public interface GivenWhenThenDsl {
 
             void then(List<CheckedPredicate<$Result>> thenSteps);
 
+            void then(CheckedConsumer<$Result> thenStepAboutResult,
+                    CheckedConsumer<$SystemUnderTest> thenStepAboutSystemUnderTest);
+
             void then(CheckedPredicate<$Result> thenStepAboutResult,
                     CheckedPredicate<$SystemUnderTest> thenStepAboutSystemUnderTest);
         }
