@@ -199,6 +199,24 @@ public class ThenUnexpectedFailuresTest {
     }
 
     @Test
+    public void should_fail_to_apply_another_condition_given_a_void_target_method() {
+        // WHEN
+        Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                .when(sut -> {})
+                .then(() -> true)
+                .and(() -> {
+                    throw new UnexpectedException();
+                }));
+
+        // THEN
+        LOGGER.debug("Stack trace", thrown);
+        assertThat(thrown)
+                .isInstanceOf(VerificationError.class)
+                .hasMessage("Fails to verify expectations!")
+                .hasCauseInstanceOf(UnexpectedException.class);
+    }
+
+    @Test
     public void should_fail_to_verify_a_result_expectation_given_a_non_void_target_method() {
         // WHEN
         Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)

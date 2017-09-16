@@ -46,7 +46,6 @@ import java.time.Duration;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
-import java.util.function.BooleanSupplier;
 
 public interface GivenWhenThenDsl {
 
@@ -256,7 +255,7 @@ public interface GivenWhenThenDsl {
             AndThenWithoutResult<$SystemUnderTest> and(String expectationSpecification,
                     CheckedConsumer<$SystemUnderTest> thenStep);
 
-            AndThenWithoutResult<$SystemUnderTest> and(BooleanSupplier thenStep);
+            AndThenWithoutResult<$SystemUnderTest> and(CheckedBooleanSupplier thenStep);
         }
 
         interface ThenFailure {

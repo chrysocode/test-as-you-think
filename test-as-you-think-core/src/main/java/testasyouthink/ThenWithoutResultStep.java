@@ -31,9 +31,6 @@ import testasyouthink.verification.Assertions;
 import testasyouthink.verification.Verification;
 
 import java.time.Duration;
-import java.util.function.BooleanSupplier;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class ThenWithoutResultStep<$SystemUnderTest> implements ThenWithoutResult<$SystemUnderTest>,
         AndThenWithoutResult<$SystemUnderTest> {
@@ -86,9 +83,8 @@ public class ThenWithoutResultStep<$SystemUnderTest> implements ThenWithoutResul
     }
 
     @Override
-    public AndThenWithoutResult<$SystemUnderTest> and(BooleanSupplier thenStep) {
-        assertThat(thenStep.getAsBoolean()).isTrue();
-        return this;
+    public AndThenWithoutResult<$SystemUnderTest> and(CheckedBooleanSupplier thenStep) {
+        return then(thenStep);
     }
 
     @Override
