@@ -28,6 +28,7 @@ import testasyouthink.function.CheckedPredicate;
 import testasyouthink.function.CheckedRunnable;
 import testasyouthink.function.CheckedSuppliers.CheckedBooleanSupplier;
 
+import java.time.Duration;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -108,5 +109,12 @@ public class Verification<$SystemUnderTest, $Result> {
                 .stream()
                 .reduce(CheckedPredicate::and)
                 .ifPresent(this::verifyResult);
+    }
+
+    public void verify(Duration durationLimit) {
+        context.prepareFixturesSeparately();
+        Assertions
+                .assertThat(context::returnResultOrVoid)
+                .spendsAtMost(durationLimit);
     }
 }

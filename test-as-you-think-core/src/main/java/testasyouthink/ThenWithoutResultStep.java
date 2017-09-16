@@ -27,7 +27,6 @@ import testasyouthink.GivenWhenThenDsl.VerificationStage.ThenWithoutResult;
 import testasyouthink.function.CheckedConsumer;
 import testasyouthink.function.CheckedRunnable;
 import testasyouthink.function.CheckedSuppliers.CheckedBooleanSupplier;
-import testasyouthink.verification.Assertions;
 import testasyouthink.verification.Verification;
 
 import java.time.Duration;
@@ -35,11 +34,9 @@ import java.time.Duration;
 public class ThenWithoutResultStep<$SystemUnderTest> implements ThenWithoutResult<$SystemUnderTest>,
         AndThenWithoutResult<$SystemUnderTest> {
 
-    private final GivenWhenContext<$SystemUnderTest, Void> context;
     private final Verification<$SystemUnderTest, Void> verification;
 
     ThenWithoutResultStep(GivenWhenContext<$SystemUnderTest, Void> context) {
-        this.context = context;
         verification = new Verification<>(context);
     }
 
@@ -51,8 +48,7 @@ public class ThenWithoutResultStep<$SystemUnderTest> implements ThenWithoutResul
 
     @Override
     public AndThenWithoutResult<$SystemUnderTest> then(String expectationSpecification, CheckedRunnable thenStep) {
-        verification.verify(thenStep);
-        return this;
+        return then(thenStep);
     }
 
     @Override
@@ -101,19 +97,12 @@ public class ThenWithoutResultStep<$SystemUnderTest> implements ThenWithoutResul
 
     @Override
     public AndThenWithoutResult<$SystemUnderTest> thenSutRepliesWithin(long timeLimit) {
-        context.prepareFixturesSeparately();
-        Assertions
-                .assertThat(context::returnResultOrVoid)
-                .spendsAtMost(timeLimit);
-        return this;
+        return thenSutRepliesWithin(Duration.ofMillis(timeLimit));
     }
 
     @Override
     public AndThenWithoutResult<$SystemUnderTest> thenSutRepliesWithin(Duration durationLimit) {
-        context.prepareFixturesSeparately();
-        Assertions
-                .assertThat(context::returnResultOrVoid)
-                .spendsAtMost(durationLimit);
+        verification.verify(durationLimit);
         return this;
     }
 }

@@ -29,7 +29,6 @@ import testasyouthink.GivenWhenThenDsl.VerificationStage.ThenFailure;
 import testasyouthink.function.CheckedConsumer;
 import testasyouthink.function.CheckedPredicate;
 import testasyouthink.function.CheckedRunnable;
-import testasyouthink.verification.Assertions;
 import testasyouthink.verification.Verification;
 
 import java.time.Duration;
@@ -163,19 +162,12 @@ public class ThenStep<$SystemUnderTest, $Result> implements Then<$SystemUnderTes
 
     @Override
     public AndThen<$SystemUnderTest, $Result> thenSutRepliesWithin(long timeLimit) {
-        context.prepareFixturesSeparately();
-        Assertions
-                .assertThat(context::returnResultOrVoid)
-                .spendsAtMost(timeLimit);
-        return this;
+        return thenSutRepliesWithin(Duration.ofMillis(timeLimit));
     }
 
     @Override
     public AndThen<$SystemUnderTest, $Result> thenSutRepliesWithin(Duration durationLimit) {
-        context.prepareFixturesSeparately();
-        Assertions
-                .assertThat(context::returnResultOrVoid)
-                .spendsAtMost(durationLimit);
+        verification.verify(durationLimit);
         return this;
     }
 }

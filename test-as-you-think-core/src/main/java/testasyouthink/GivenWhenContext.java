@@ -38,7 +38,7 @@ public class GivenWhenContext<$SystemUnderTest, $Result> {
         this.execution = execution;
     }
 
-    void prepareFixturesSeparately() {
+    public void prepareFixturesSeparately() {
         preparation.prepareFixturesSeparately();
     }
 
