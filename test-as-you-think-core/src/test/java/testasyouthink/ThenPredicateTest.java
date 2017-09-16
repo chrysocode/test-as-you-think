@@ -116,24 +116,6 @@ public class ThenPredicateTest {
     }
 
     @Test
-    public void should_receive_a_then_step_as_a_predicate_on_the_system_and_the_result_given_a_non_void_method() {
-        // GIVEN
-        givenWhenThenDefinitionMock = orderedSteps(1, 1);
-
-        // WHEN
-        givenSutClass(SystemUnderTest.class)
-                .given(sut -> {
-                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-                    sut.setGivenWhenThenDefinition(givenWhenThenDefinitionMock);
-                })
-                .when(SystemUnderTest::nonVoidMethod)
-                .then((sut, result) -> {
-                    givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                    return "expected result".equals(result) && sut != null;
-                });
-    }
-
-    @Test
     public void should_receive_the_then_steps_as_predicates_on_the_system_or_the_result_given_a_non_void_method() {
         // GIVEN
         givenWhenThenDefinitionMock = orderedSteps(1, 2);

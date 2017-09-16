@@ -33,8 +33,6 @@ import testasyouthink.verification.Verification;
 
 import java.time.Duration;
 import java.util.List;
-import java.util.function.BiConsumer;
-import java.util.function.BiPredicate;
 
 public class ThenStep<$SystemUnderTest, $Result> implements Then<$SystemUnderTest, $Result>,
         AndThen<$SystemUnderTest, $Result>, ThenFailure, AndThenFailure {
@@ -49,11 +47,6 @@ public class ThenStep<$SystemUnderTest, $Result> implements Then<$SystemUnderTes
     public AndThen<$SystemUnderTest, $Result> then(CheckedConsumer<$Result> thenStep) {
         verification.verifyResult(thenStep);
         return this;
-    }
-
-    @Override
-    public void then(BiConsumer<$SystemUnderTest, $Result> thenStep) {
-        thenStep.accept(context.getSystemUnderTest(), context.returnResultOrVoid());
     }
 
     @Override
@@ -81,11 +74,6 @@ public class ThenStep<$SystemUnderTest, $Result> implements Then<$SystemUnderTes
     @Override
     public void then(List<CheckedPredicate<$Result>> thenSteps) {
         verification.verifyResult(thenSteps);
-    }
-
-    @Override
-    public void then(BiPredicate<$SystemUnderTest, $Result> thenStep) {
-        assertThat(thenStep.test(context.getSystemUnderTest(), context.returnResultOrVoid())).isTrue();
     }
 
     @Override

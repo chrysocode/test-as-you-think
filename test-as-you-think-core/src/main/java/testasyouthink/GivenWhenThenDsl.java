@@ -44,8 +44,6 @@ import testasyouthink.function.CheckedTriFunction;
 
 import java.time.Duration;
 import java.util.List;
-import java.util.function.BiConsumer;
-import java.util.function.BiPredicate;
 
 public interface GivenWhenThenDsl {
 
@@ -204,10 +202,6 @@ public interface GivenWhenThenDsl {
             AndThen<$SystemUnderTest, $Result> thenSutRepliesWithin(Duration durationLimit);
 
             void then(List<CheckedPredicate<$Result>> thenSteps);
-
-            void then(BiConsumer<$SystemUnderTest, $Result> thenStep);
-
-            void then(BiPredicate<$SystemUnderTest, $Result> thenStep);
 
             void then(CheckedPredicate<$Result> thenStepAboutResult,
                     CheckedPredicate<$SystemUnderTest> thenStepAboutSystemUnderTest);

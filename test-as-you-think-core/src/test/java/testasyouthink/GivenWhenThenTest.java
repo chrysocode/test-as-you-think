@@ -88,22 +88,6 @@ public class GivenWhenThenTest {
     }
 
     @Test
-    public void should_verify_expectations_on_the_sut_given_a_non_void_method() {
-        // WHEN
-        givenSutClass(SystemUnderTest.class)
-                .given(sut -> {
-                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-                    sut.setGivenWhenThenDefinition(givenWhenThenDefinitionMock);
-                })
-                .when(SystemUnderTest::nonVoidMethod)
-                .then((sut, result) -> {
-                    givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                    assertThat(result).isEqualTo(EXPECTED_RESULT);
-                    assertThat(sut.getState()).isNotNull();
-                });
-    }
-
-    @Test
     public void should_verify_expectations_on_the_sut_given_a_void_method() {
         // WHEN
         givenSutClass(SystemUnderTest.class)
