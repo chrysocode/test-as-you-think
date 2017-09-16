@@ -28,8 +28,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import testasyouthink.fixture.GivenWhenThenDefinition;
 import testasyouthink.fixture.SystemUnderTest;
-
-import java.util.function.Consumer;
+import testasyouthink.function.CheckedConsumer;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -57,7 +56,7 @@ public class WhenStepAsExpressionLambdaTest {
         // WHEN
         givenSutClass(SystemUnderTest.class)
                 .when(withReturn(sut -> sut.nonVoidMethod()))
-                .then((Consumer<String>) result -> givenWhenThenDefinitionMock
+                .then((CheckedConsumer<String>) result -> givenWhenThenDefinitionMock
                         .thenTheActualResultIsInKeepingWithTheExpectedResult());
     }
 
@@ -66,7 +65,7 @@ public class WhenStepAsExpressionLambdaTest {
         // WHEN
         givenSutClass(SystemUnderTest.class)
                 .whenSutReturns(sut -> sut.nonVoidMethod())
-                .then((Consumer<String>) result -> givenWhenThenDefinitionMock
+                .then((CheckedConsumer<String>) result -> givenWhenThenDefinitionMock
                         .thenTheActualResultIsInKeepingWithTheExpectedResult());
     }
 
@@ -76,7 +75,7 @@ public class WhenStepAsExpressionLambdaTest {
         givenSutClass(SystemUnderTest.class)
                 .givenArgument("one argument", "argument")
                 .whenSutReturns((sut, argument) -> sut.nonVoidMethodWithParameter(argument))
-                .then((Consumer<String>) result -> givenWhenThenDefinitionMock
+                .then((CheckedConsumer<String>) result -> givenWhenThenDefinitionMock
                         .thenTheActualResultIsInKeepingWithTheExpectedResult());
     }
 
@@ -87,7 +86,7 @@ public class WhenStepAsExpressionLambdaTest {
                 .givenArgument("first argument", "argument")
                 .andArgument("second argument", 20170622)
                 .whenSutReturns((sut, argument1, argument2) -> sut.nonVoidMethodWithTwoParameters(argument1, argument2))
-                .then((Consumer<String>) result -> givenWhenThenDefinitionMock
+                .then((CheckedConsumer<String>) result -> givenWhenThenDefinitionMock
                         .thenTheActualResultIsInKeepingWithTheExpectedResult());
     }
 
@@ -101,7 +100,7 @@ public class WhenStepAsExpressionLambdaTest {
                 .whenSutReturns(
                         (sut, argument1, argument2, argument3) -> sut.nonVoidMethodWithThreeParameters(argument1,
                                 argument2, argument3))
-                .then((Consumer<String>) result -> givenWhenThenDefinitionMock
+                .then((CheckedConsumer<String>) result -> givenWhenThenDefinitionMock
                         .thenTheActualResultIsInKeepingWithTheExpectedResult());
     }
 
