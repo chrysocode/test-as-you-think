@@ -239,6 +239,8 @@ public interface GivenWhenThenDsl {
             AndThenWithoutResult<$SystemUnderTest> thenSutRepliesWithin(long timeLimit);
 
             AndThenWithoutResult<$SystemUnderTest> thenSutRepliesWithin(Duration durationLimit);
+
+            void thenItSucceeds();
         }
 
         interface AndThenWithoutResult<$SystemUnderTest> {

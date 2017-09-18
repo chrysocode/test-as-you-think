@@ -143,4 +143,8 @@ public class Verification<$SystemUnderTest, $Result> {
     public void verifyFailureCauseMessage(String expectedMessage) {
         assertThat(((Throwable) context.returnResultOrVoid()).getCause()).hasMessage(expectedMessage);
     }
+
+    public void verifyNoFailure() {
+        context.returnResultOrVoid();
+    }
 }
