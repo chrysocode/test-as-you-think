@@ -32,6 +32,7 @@ import java.time.Duration;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class Verification<$SystemUnderTest, $Result> {
 
@@ -145,6 +146,6 @@ public class Verification<$SystemUnderTest, $Result> {
     }
 
     public void verifyNoFailure() {
-        context.returnResultOrVoid();
+        assertThatThrownBy(() -> context.returnResultOrVoid()).doesNotThrowAnyException();
     }
 }
