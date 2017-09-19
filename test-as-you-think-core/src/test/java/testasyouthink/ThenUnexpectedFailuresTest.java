@@ -469,6 +469,8 @@ public class ThenUnexpectedFailuresTest {
 
         // THEN
         LOGGER.debug("Stack trace", thrown);
-        assertThat(thrown).isInstanceOf(AssertionError.class);
+        assertThat(thrown)
+                .isInstanceOf(AssertionError.class)
+                .hasMessageContaining(UnexpectedException.class.getName());
     }
 }

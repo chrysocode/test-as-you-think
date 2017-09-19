@@ -23,6 +23,7 @@
 package testasyouthink.verification;
 
 import testasyouthink.GivenWhenContext;
+import testasyouthink.execution.ExecutionError;
 import testasyouthink.function.CheckedConsumer;
 import testasyouthink.function.CheckedPredicate;
 import testasyouthink.function.CheckedRunnable;
@@ -146,6 +147,12 @@ public class Verification<$SystemUnderTest, $Result> {
     }
 
     public void verifyNoFailure() {
-        assertThatThrownBy(() -> context.returnResultOrVoid()).doesNotThrowAnyException();
+        try {
+            context.returnResultOrVoid();
+        } catch (ExecutionError executionError) {
+            assertThatThrownBy(() -> {
+                throw executionError.getCause();
+            }).doesNotThrowAnyException();
+        }
     }
 }
