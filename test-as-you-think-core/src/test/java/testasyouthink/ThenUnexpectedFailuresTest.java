@@ -182,6 +182,40 @@ public class ThenUnexpectedFailuresTest {
     }
 
     @Test
+    public void
+    should_fail_to_verify_the_result_and_sut_expectations_because_of_the_result_given_a_non_void_target_method() {
+        // WHEN
+        Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                .when(sut -> "result")
+                .then(result -> {
+                    throw new UnexpectedException();
+                }, sut -> true));
+
+        // THEN
+        assertThat(thrown)
+                .isInstanceOf(VerificationError.class)
+                .hasMessage("Fails to verify the result expectations!")
+                .hasCauseInstanceOf(UnexpectedException.class);
+    }
+
+    @Test
+    public void
+    should_fail_to_verify_the_result_and_sut_expectations_because_of_the_sut_given_a_non_void_target_method() {
+        // WHEN
+        Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                .when(sut -> "result")
+                .then(result -> true, sut -> {
+                    throw new UnexpectedException();
+                }));
+
+        // THEN
+        assertThat(thrown)
+                .isInstanceOf(VerificationError.class)
+                .hasMessage("Fails to verify the expectations of the system under test!")
+                .hasCauseInstanceOf(UnexpectedException.class);
+    }
+
+    @Test
     public void should_fail_to_apply_a_condition_given_a_void_target_method() {
         // WHEN
         Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)

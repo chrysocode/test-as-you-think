@@ -209,19 +209,6 @@ public class ThenAssertionErrorsTest {
     }
 
     @Test
-    public void should_get_an_assertion_error_from_a_sut_and_result_predicate_given_a_non_void_target_method() {
-        // WHEN
-        Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
-                .when(sut -> "result")
-                .then((sut, result) -> false));
-
-        // THEN
-        assertThat(thrown)
-                .isInstanceOf(AssertionError.class)
-                .hasNoCause();
-    }
-
-    @Test
     public void
     should_get_an_assertion_error_from_result_and_sut_predicates_because_of_the_result_given_a_non_void_target_method
             () {
@@ -297,6 +284,34 @@ public class ThenAssertionErrorsTest {
                 .when(sut -> "result")
                 .then(result -> {})
                 .and("Expectations", result -> assertThat(true).isFalse()));
+
+        // THEN
+        assertThat(thrown)
+                .isInstanceOf(AssertionError.class)
+                .hasNoCause();
+    }
+
+    @Test
+    public void
+    should_get_an_assertion_error_from_result_and_sut_consumers_because_of_the_result_given_a_non_void_target_method() {
+        // WHEN
+        Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                .when(sut -> "result")
+                .then(result -> false, sut -> true));
+
+        // THEN
+        assertThat(thrown)
+                .isInstanceOf(AssertionError.class)
+                .hasNoCause();
+    }
+
+    @Test
+    public void
+    should_get_an_assertion_error_from_result_and_sut_consumers_because_of_the_sut_given_a_non_void_target_method() {
+        // WHEN
+        Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                .when(sut -> "result")
+                .then(result -> true, sut -> false));
 
         // THEN
         assertThat(thrown)
