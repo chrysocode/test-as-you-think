@@ -23,6 +23,7 @@
 package testasyouthink.verification;
 
 import testasyouthink.GivenWhenContext;
+import testasyouthink.execution.ExecutionError;
 import testasyouthink.function.CheckedConsumer;
 import testasyouthink.function.CheckedPredicate;
 import testasyouthink.function.CheckedRunnable;
@@ -32,6 +33,7 @@ import java.time.Duration;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class Verification<$SystemUnderTest, $Result> {
 
@@ -43,8 +45,9 @@ public class Verification<$SystemUnderTest, $Result> {
     }
 
     public void verifyResult(CheckedConsumer<$Result> expectation) {
+        $Result result = context.returnResultOrVoid();
         try {
-            expectation.accept(context.returnResultOrVoid());
+            expectation.accept(result);
         } catch (AssertionError assertionError) {
             throw assertionError;
         } catch (Throwable throwable) {
@@ -64,8 +67,9 @@ public class Verification<$SystemUnderTest, $Result> {
     }
 
     public void verifyResult(CheckedPredicate<$Result> expectation) {
+        $Result result = context.returnResultOrVoid();
         try {
-            assertThat(expectation.test(context.returnResultOrVoid())).isTrue();
+            assertThat(expectation.test(result)).isTrue();
         } catch (AssertionError assertionError) {
             throw assertionError;
         } catch (Throwable throwable) {
@@ -74,6 +78,7 @@ public class Verification<$SystemUnderTest, $Result> {
     }
 
     public void verifySut(CheckedPredicate<$SystemUnderTest> expectation) {
+        context.returnResultOrVoid();
         try {
             assertThat(expectation.test(context.getSystemUnderTest())).isTrue();
         } catch (AssertionError assertionError) {
@@ -142,5 +147,15 @@ public class Verification<$SystemUnderTest, $Result> {
 
     public void verifyFailureCauseMessage(String expectedMessage) {
         assertThat(((Throwable) context.returnResultOrVoid()).getCause()).hasMessage(expectedMessage);
+    }
+
+    public void verifyNoFailure() {
+        try {
+            context.returnResultOrVoid();
+        } catch (ExecutionError executionError) {
+            assertThatThrownBy(() -> {
+                throw executionError.getCause();
+            }).doesNotThrowAnyException();
+        }
     }
 }

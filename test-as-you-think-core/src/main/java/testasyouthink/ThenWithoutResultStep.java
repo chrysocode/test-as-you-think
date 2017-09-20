@@ -105,4 +105,9 @@ public class ThenWithoutResultStep<$SystemUnderTest> implements ThenWithoutResul
         verification.verify(durationLimit);
         return this;
     }
+
+    @Override
+    public void thenItSucceeds() {
+        verification.verifyNoFailure();
+    }
 }

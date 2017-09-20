@@ -36,6 +36,7 @@ import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static testasyouthink.TestAsYouThink.givenSutClass;
+import static testasyouthink.TestAsYouThink.when;
 
 public class ThenUnexpectedFailuresTest {
 
@@ -457,5 +458,19 @@ public class ThenUnexpectedFailuresTest {
                 .isInstanceOf(VerificationError.class)
                 .hasMessage("Fails to verify the result expectations!")
                 .hasCauseInstanceOf(UnexpectedException.class);
+    }
+
+    @Test
+    public void should_fail_to_verify_no_failure_happened_during_the_execution_stage() {
+        // WHEN
+        Throwable thrown = catchThrowable(() -> when((CheckedRunnable) () -> {
+            throw new UnexpectedException();
+        }).thenItSucceeds());
+
+        // THEN
+        LOGGER.debug("Stack trace", thrown);
+        assertThat(thrown)
+                .isInstanceOf(AssertionError.class)
+                .hasMessageContaining(UnexpectedException.class.getName());
     }
 }
