@@ -45,8 +45,9 @@ public class Verification<$SystemUnderTest, $Result> {
     }
 
     public void verifyResult(CheckedConsumer<$Result> expectation) {
+        $Result result = context.returnResultOrVoid();
         try {
-            expectation.accept(context.returnResultOrVoid());
+            expectation.accept(result);
         } catch (AssertionError assertionError) {
             throw assertionError;
         } catch (Throwable throwable) {
@@ -66,8 +67,9 @@ public class Verification<$SystemUnderTest, $Result> {
     }
 
     public void verifyResult(CheckedPredicate<$Result> expectation) {
+        $Result result = context.returnResultOrVoid();
         try {
-            assertThat(expectation.test(context.returnResultOrVoid())).isTrue();
+            assertThat(expectation.test(result)).isTrue();
         } catch (AssertionError assertionError) {
             throw assertionError;
         } catch (Throwable throwable) {
@@ -76,6 +78,7 @@ public class Verification<$SystemUnderTest, $Result> {
     }
 
     public void verifySut(CheckedPredicate<$SystemUnderTest> expectation) {
+        context.returnResultOrVoid();
         try {
             assertThat(expectation.test(context.getSystemUnderTest())).isTrue();
         } catch (AssertionError assertionError) {
