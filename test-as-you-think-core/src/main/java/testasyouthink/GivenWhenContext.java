@@ -22,29 +22,35 @@
 
 package testasyouthink;
 
-import testasyouthink.execution.Event;
+import testasyouthink.execution.Execution;
 import testasyouthink.preparation.Preparation;
 
-class GivenWhenContext<$SystemUnderTest, $Result> {
+import java.util.Optional;
+
+public class GivenWhenContext<$SystemUnderTest, $Result> {
 
     private final Preparation<$SystemUnderTest> preparation;
-    private final Event<$SystemUnderTest, $Result> event;
-    private $Result result;
+    private final Execution<$SystemUnderTest, $Result> execution;
+    private Optional<$Result> result;
 
-    GivenWhenContext(Preparation<$SystemUnderTest> preparation, Event<$SystemUnderTest, $Result> event) {
+    GivenWhenContext(Preparation<$SystemUnderTest> preparation, Execution<$SystemUnderTest, $Result> execution) {
         this.preparation = preparation;
-        this.event = event;
+        this.execution = execution;
     }
 
-    $Result returnResultOrVoid() {
+    public void prepareFixturesSeparately() {
+        preparation.prepareFixturesSeparately();
+    }
+
+    public $Result returnResultOrVoid() {
         if (result == null) {
             preparation.prepareFixtures();
-            result = event.happen();
+            result = execution.run();
         }
-        return result;
+        return result.orElse(null);
     }
 
-    $SystemUnderTest getSystemUnderTest() {
+    public $SystemUnderTest getSystemUnderTest() {
         return preparation
                 .supplySut()
                 .get();

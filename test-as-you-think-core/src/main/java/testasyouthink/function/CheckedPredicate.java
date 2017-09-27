@@ -20,23 +20,29 @@
  * #L%
  */
 
-package testasyouthink.execution;
+package testasyouthink.function;
 
-import testasyouthink.function.CheckedFunction;
+import java.util.Objects;
 
-import java.util.function.Supplier;
+public interface CheckedPredicate<$Value> {
 
-class Event<$SystemUnderTest, $Result> {
-
-    private final Supplier<$SystemUnderTest> givenSutStep;
-    private final CheckedFunction<$SystemUnderTest, $Result> whenStep;
-
-    Event(Supplier<$SystemUnderTest> givenSutStep, CheckedFunction<$SystemUnderTest, $Result> whenStep) {
-        this.givenSutStep = givenSutStep;
-        this.whenStep = whenStep;
+    static <$Value> CheckedPredicate<$Value> isEqual(Object targetRef) {
+        return (null == targetRef) ? Objects::isNull : object -> targetRef.equals(object);
     }
 
-    $Result happen() throws Throwable {
-        return whenStep.apply(givenSutStep.get());
+    boolean test($Value value) throws Throwable;
+
+    default CheckedPredicate<$Value> and(CheckedPredicate<? super $Value> other) {
+        Objects.requireNonNull(other);
+        return value -> test(value) && other.test(value);
+    }
+
+    default CheckedPredicate<$Value> negate() {
+        return value -> !test(value);
+    }
+
+    default CheckedPredicate<$Value> or(CheckedPredicate<? super $Value> other) {
+        Objects.requireNonNull(other);
+        return value -> test(value) || other.test(value);
     }
 }

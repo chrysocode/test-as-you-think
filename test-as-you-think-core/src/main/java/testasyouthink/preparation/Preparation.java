@@ -22,12 +22,13 @@
 
 package testasyouthink.preparation;
 
+import testasyouthink.function.CheckedConsumer;
+import testasyouthink.function.CheckedRunnable;
 import testasyouthink.function.CheckedSupplier;
 import testasyouthink.function.Functions;
 
-import java.util.ArrayList;
+import java.util.ArrayDeque;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Queue;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -37,13 +38,13 @@ public class Preparation<$SystemUnderTest> {
     private final Functions functions = Functions.INSTANCE;
     private final SutPreparation sutPreparation = SutPreparation.INSTANCE;
     private final ArgumentPreparation argumentPreparation = ArgumentPreparation.INSTANCE;
+    private final Queue<Consumer<$SystemUnderTest>> givenSteps;
     private Supplier<$SystemUnderTest> givenSutStep;
-    private final List<Consumer<$SystemUnderTest>> givenSteps;
-    private Queue<CheckedSupplier> argumentSuppliers;
+    private Queue<Supplier> argumentSuppliers;
     private $SystemUnderTest systemUnderTest;
 
     public Preparation() {
-        givenSteps = new ArrayList<>();
+        givenSteps = new ArrayDeque<>();
         argumentSuppliers = new LinkedList<>();
     }
 
@@ -57,33 +58,50 @@ public class Preparation<$SystemUnderTest> {
         givenSutStep = sutPreparation.buildSutSupplier(systemUnderTest);
     }
 
-    public Preparation(Supplier<$SystemUnderTest> givenSutStep) {
+    public Preparation(CheckedSupplier<$SystemUnderTest> givenSutStep) {
         this();
-        this.givenSutStep = givenSutStep;
+        this.givenSutStep = sutPreparation.buildSutSupplier(givenSutStep);
     }
 
-    public void recordGivenStep(Runnable givenStep) {
-        givenSteps.add(functions.toConsumer(givenStep));
+    public void recordGivenStep(CheckedRunnable givenStep) {
+        givenSteps.add(functions.toConsumer(() -> {
+            try {
+                givenStep.run();
+            } catch (Throwable throwable) {
+                throw new PreparationError("Fails to prepare the test fixture!", throwable);
+            }
+        }));
     }
 
-    public void recordGivenStep(Consumer<$SystemUnderTest> givenStep) {
-        givenSteps.add(givenStep);
+    public void recordGivenStep(CheckedConsumer<$SystemUnderTest> givenStep) {
+        givenSteps.add(sutPreparation.buildSutSupplier(givenStep));
     }
 
     public <$Argument> void recordGivenStep(CheckedSupplier<$Argument> givenStep) {
-        argumentSuppliers.add(givenStep);
+        argumentSuppliers.add(argumentPreparation.buidArgumentSupplier(givenStep));
     }
 
-    public <$Argument> void recordGivenStep(Class<$Argument> mutableArgumentClass, Consumer<$Argument> givenStep) {
+    public <$Argument> void recordGivenStep(Class<$Argument> mutableArgumentClass,
+            CheckedConsumer<$Argument> givenStep) {
         argumentSuppliers.add(argumentPreparation.buildMutableArgumentSupplier(mutableArgumentClass, givenStep));
     }
 
-    public Queue<CheckedSupplier> getArgumentSuppliers() {
+    public Queue<Supplier> getArgumentSuppliers() {
         return argumentSuppliers;
     }
 
     public void prepareFixtures() {
-        givenSteps.forEach(step -> step.accept(systemUnderTest()));
+        $SystemUnderTest sutToPrepareAtFirst = systemUnderTest();
+        while (!givenSteps.isEmpty()) {
+            givenSteps
+                    .poll()
+                    .accept(sutToPrepareAtFirst);
+        }
+    }
+
+    public void prepareFixturesSeparately() {
+        prepareFixtures();
+        argumentSuppliers.forEach(Supplier::get);
     }
 
     private $SystemUnderTest systemUnderTest() {

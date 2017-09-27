@@ -69,7 +69,8 @@ import testasyouthink.GivenWhenThenDsl.PreparationStage.Given;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.Then;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.ThenFailure;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.ThenWithoutResult;
-import testasyouthink.execution.ExecutionError;
+import testasyouthink.execution.Execution;
+import testasyouthink.function.CheckedConsumer;
 import testasyouthink.function.CheckedFunction;
 import testasyouthink.function.CheckedRunnable;
 import testasyouthink.function.CheckedSupplier;
@@ -120,11 +121,8 @@ import testasyouthink.function.Functions;
 
 import java.io.InputStream;
 import java.util.concurrent.Future;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static testasyouthink.execution.Event.EXECUTION_FAILURE_MESSAGE;
 
 public class TestAsYouThink {
 
@@ -137,7 +135,7 @@ public class TestAsYouThink {
         return new GivenWhenSteps<>(systemUnderTest);
     }
 
-    public static <$SystemUnderTest> Given<$SystemUnderTest> givenSut(Supplier<$SystemUnderTest> givenSutStep) {
+    public static <$SystemUnderTest> Given<$SystemUnderTest> givenSut(CheckedSupplier<$SystemUnderTest> givenSutStep) {
         return new GivenWhenSteps<>(givenSutStep);
     }
 
@@ -146,15 +144,15 @@ public class TestAsYouThink {
     }
 
     public static <$SystemUnderTest> AndGiven<$SystemUnderTest> givenSut(Class<$SystemUnderTest> sutClass,
-            Consumer<$SystemUnderTest> givenStep) {
+            CheckedConsumer<$SystemUnderTest> givenStep) {
         return givenSutClass(sutClass).given(givenStep);
     }
 
-    public static ThenWithoutResult<Void> when(Runnable whenStep) {
+    public static ThenWithoutResult<Void> when(CheckedRunnable whenStep) {
         return thenStepFactory.createThenStep(functions.toCheckedConsumer(whenStep));
     }
 
-    public static <$Result> Then<Void, $Result> when(Supplier<$Result> whenStep) {
+    public static <$Result> Then<Void, $Result> when(CheckedSupplier<$Result> whenStep) {
         return thenStepFactory.createThenStep(functions.toCheckedFunction(whenStep));
     }
 
@@ -168,23 +166,17 @@ public class TestAsYouThink {
     }
 
     private static <$Result> $Result result(CheckedSupplier<$Result> whenStep) {
-        $Result result;
-        try {
-            result = whenStep.get();
-        } catch (Throwable throwable) {
-            throw new ExecutionError(EXECUTION_FAILURE_MESSAGE, throwable);
-        }
-        return result;
+        return Execution
+                .of(whenStep)
+                .run()
+                .orElse(null);
     }
 
     private static <$Element> $Element[] arrayAsResult(CheckedArraySupplier<$Element> whenStep) {
-        $Element[] result;
-        try {
-            result = whenStep.get();
-        } catch (Throwable throwable) {
-            throw new ExecutionError(EXECUTION_FAILURE_MESSAGE, throwable);
-        }
-        return result;
+        return Execution
+                .of(whenStep)
+                .run()
+                .orElse(null);
     }
 
     public static <$ActualResult> AbstractObjectAssert<?, $ActualResult> resultOf(

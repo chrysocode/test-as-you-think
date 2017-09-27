@@ -33,19 +33,17 @@ import testasyouthink.function.CheckedBiConsumer;
 import testasyouthink.function.CheckedBiFunction;
 import testasyouthink.function.CheckedConsumer;
 import testasyouthink.function.CheckedFunction;
+import testasyouthink.function.CheckedPredicate;
 import testasyouthink.function.CheckedQuadriConsumer;
 import testasyouthink.function.CheckedQuadriFunction;
+import testasyouthink.function.CheckedRunnable;
 import testasyouthink.function.CheckedSupplier;
+import testasyouthink.function.CheckedSuppliers.CheckedBooleanSupplier;
 import testasyouthink.function.CheckedTriConsumer;
 import testasyouthink.function.CheckedTriFunction;
 
 import java.time.Duration;
 import java.util.List;
-import java.util.function.BiConsumer;
-import java.util.function.BiPredicate;
-import java.util.function.BooleanSupplier;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
 
 public interface GivenWhenThenDsl {
 
@@ -53,20 +51,20 @@ public interface GivenWhenThenDsl {
 
         interface Given<$SystemUnderTest> extends GivenArgument<$SystemUnderTest>, When<$SystemUnderTest> {
 
-            AndGiven<$SystemUnderTest> given(Runnable givenStep);
+            AndGiven<$SystemUnderTest> given(CheckedRunnable givenStep);
 
-            AndGiven<$SystemUnderTest> given(Consumer<$SystemUnderTest> givenStep);
+            AndGiven<$SystemUnderTest> given(CheckedConsumer<$SystemUnderTest> givenStep);
 
-            AndGiven<$SystemUnderTest> given(String fixtureSpecification, Runnable givenStep);
+            AndGiven<$SystemUnderTest> given(String fixtureSpecification, CheckedRunnable givenStep);
 
-            AndGiven<$SystemUnderTest> given(String fixtureSpecification, Consumer<$SystemUnderTest> givenStep);
+            AndGiven<$SystemUnderTest> given(String fixtureSpecification, CheckedConsumer<$SystemUnderTest> givenStep);
         }
 
         interface AndGiven<$SystemUnderTest> extends GivenArgument<$SystemUnderTest>, When<$SystemUnderTest> {
 
-            AndGiven<$SystemUnderTest> and(String fixtureSpecification, Runnable givenStep);
+            AndGiven<$SystemUnderTest> and(String fixtureSpecification, CheckedRunnable givenStep);
 
-            AndGiven<$SystemUnderTest> and(String fixtureSpecification, Consumer<$SystemUnderTest> givenStep);
+            AndGiven<$SystemUnderTest> and(String fixtureSpecification, CheckedConsumer<$SystemUnderTest> givenStep);
         }
 
         interface GivenArgument<$SystemUnderTest> {
@@ -81,7 +79,7 @@ public interface GivenWhenThenDsl {
                     $Argument argument);
 
             <$Argument> AndGivenArgument<$SystemUnderTest, $Argument> givenArgument(
-                    Class<$Argument> mutableArgumentClass, Consumer<$Argument> givenStep);
+                    Class<$Argument> mutableArgumentClass, CheckedConsumer<$Argument> givenStep);
         }
 
         interface AndGivenArgument<$SystemUnderTest, $Argument> extends WhenApplyingOneArgument<$SystemUnderTest,
@@ -91,7 +89,7 @@ public interface GivenWhenThenDsl {
                     CheckedSupplier<$Argument2> givenStep);
 
             <$Argument2> AndGivenTwoArguments<$SystemUnderTest, $Argument, $Argument2> andArgument(
-                    Class<$Argument2> mutableArgumentClass, Consumer<$Argument2> givenStep);
+                    Class<$Argument2> mutableArgumentClass, CheckedConsumer<$Argument2> givenStep);
 
             <$Argument2> AndGivenTwoArguments<$SystemUnderTest, $Argument, $Argument2> andArgument(String description,
                     CheckedSupplier<$Argument2> givenStep);
@@ -107,7 +105,7 @@ public interface GivenWhenThenDsl {
                     CheckedSupplier<$Argument3> givenStep);
 
             <$Argument3> WhenApplyingThreeArguments<$SystemUnderTest, $Argument1, $Argument2, $Argument3> andArgument(
-                    Class<$Argument3> mutableArgumentClass, Consumer<$Argument3> givenStep);
+                    Class<$Argument3> mutableArgumentClass, CheckedConsumer<$Argument3> givenStep);
 
             <$Argument3> WhenApplyingThreeArguments<$SystemUnderTest, $Argument1, $Argument2, $Argument3> andArgument(
                     String description, CheckedSupplier<$Argument3> givenStep);
@@ -189,72 +187,74 @@ public interface GivenWhenThenDsl {
 
         interface Then<$SystemUnderTest, $Result> {
 
-            AndThen<$SystemUnderTest, $Result> then(Consumer<$Result> thenStep);
+            AndThen<$SystemUnderTest, $Result> then(CheckedConsumer<$Result> thenStep);
 
-            AndThen<$SystemUnderTest, $Result> then(String expectationSpecification, Consumer<$Result> thenStep);
+            AndThen<$SystemUnderTest, $Result> then(String expectationSpecification, CheckedConsumer<$Result> thenStep);
 
-            AndThen<$SystemUnderTest, $Result> then(Runnable thenStep);
+            AndThen<$SystemUnderTest, $Result> then(CheckedRunnable thenStep);
 
-            AndThen<$SystemUnderTest, $Result> then(String expectationSpecification, Runnable thenStep);
+            AndThen<$SystemUnderTest, $Result> then(String expectationSpecification, CheckedRunnable thenStep);
 
-            AndThen<$SystemUnderTest, $Result> then(Predicate<$Result> thenStep);
+            AndThen<$SystemUnderTest, $Result> then(CheckedPredicate<$Result> thenStep);
 
             AndThen<$SystemUnderTest, $Result> thenSutRepliesWithin(long timeLimit);
 
-            AndThen<$SystemUnderTest, $Result> thenSutRepliesWithin(Duration duration);
+            AndThen<$SystemUnderTest, $Result> thenSutRepliesWithin(Duration durationLimit);
 
-            void then(List<Predicate<$Result>> thenSteps);
+            void then(List<CheckedPredicate<$Result>> thenSteps);
 
-            void then(BiConsumer<$SystemUnderTest, $Result> thenStep);
+            void then(CheckedConsumer<$Result> thenStepAboutResult,
+                    CheckedConsumer<$SystemUnderTest> thenStepAboutSystemUnderTest);
 
-            void then(BiPredicate<$SystemUnderTest, $Result> thenStep);
-
-            void then(Predicate<$Result> thenStepAboutResult, Predicate<$SystemUnderTest> thenStepAboutSystemUnderTest);
+            void then(CheckedPredicate<$Result> thenStepAboutResult,
+                    CheckedPredicate<$SystemUnderTest> thenStepAboutSystemUnderTest);
         }
 
         interface AndThen<$SystemUnderTest, $Result> {
 
-            AndThen<$SystemUnderTest, $Result> and(Consumer<$Result> thenStep);
+            AndThen<$SystemUnderTest, $Result> and(CheckedConsumer<$Result> thenStep);
 
-            AndThen<$SystemUnderTest, $Result> and(String expectationSpecification, Consumer<$Result> thenStep);
+            AndThen<$SystemUnderTest, $Result> and(String expectationSpecification, CheckedConsumer<$Result> thenStep);
 
-            AndThen<$SystemUnderTest, $Result> and(Runnable thenStep);
+            AndThen<$SystemUnderTest, $Result> and(CheckedRunnable thenStep);
 
-            AndThen<$SystemUnderTest, $Result> and(String expectationSpecification, Runnable thenStep);
+            AndThen<$SystemUnderTest, $Result> and(String expectationSpecification, CheckedRunnable thenStep);
 
-            AndThen<$SystemUnderTest, $Result> and(Predicate<$Result> thenStep);
+            AndThen<$SystemUnderTest, $Result> and(CheckedPredicate<$Result> thenStep);
         }
 
         interface ThenWithoutResult<$SystemUnderTest> {
 
-            AndThenWithoutResult<$SystemUnderTest> then(Runnable thenStep);
+            AndThenWithoutResult<$SystemUnderTest> then(CheckedRunnable thenStep);
 
-            AndThenWithoutResult<$SystemUnderTest> then(String expectationSpecification, Runnable thenStep);
+            AndThenWithoutResult<$SystemUnderTest> then(String expectationSpecification, CheckedRunnable thenStep);
 
-            AndThenWithoutResult<$SystemUnderTest> then(Consumer<$SystemUnderTest> thenStep);
+            AndThenWithoutResult<$SystemUnderTest> then(CheckedConsumer<$SystemUnderTest> thenStep);
 
             AndThenWithoutResult<$SystemUnderTest> then(String expectationSpecification,
-                    Consumer<$SystemUnderTest> thenStep);
+                    CheckedConsumer<$SystemUnderTest> thenStep);
 
-            AndThenWithoutResult<$SystemUnderTest> then(BooleanSupplier thenStep);
+            AndThenWithoutResult<$SystemUnderTest> then(CheckedBooleanSupplier thenStep);
 
             AndThenWithoutResult<$SystemUnderTest> thenSutRepliesWithin(long timeLimit);
 
-            AndThenWithoutResult<$SystemUnderTest> thenSutRepliesWithin(Duration duration);
+            AndThenWithoutResult<$SystemUnderTest> thenSutRepliesWithin(Duration durationLimit);
+
+            void thenItSucceeds();
         }
 
         interface AndThenWithoutResult<$SystemUnderTest> {
 
-            AndThenWithoutResult<$SystemUnderTest> and(Runnable thenStep);
+            AndThenWithoutResult<$SystemUnderTest> and(CheckedRunnable thenStep);
 
-            AndThenWithoutResult<$SystemUnderTest> and(String expectationSpecification, Runnable thenStep);
+            AndThenWithoutResult<$SystemUnderTest> and(String expectationSpecification, CheckedRunnable thenStep);
 
-            AndThenWithoutResult<$SystemUnderTest> and(Consumer<$SystemUnderTest> thenStep);
+            AndThenWithoutResult<$SystemUnderTest> and(CheckedConsumer<$SystemUnderTest> thenStep);
 
             AndThenWithoutResult<$SystemUnderTest> and(String expectationSpecification,
-                    Consumer<$SystemUnderTest> thenStep);
+                    CheckedConsumer<$SystemUnderTest> thenStep);
 
-            AndThenWithoutResult<$SystemUnderTest> and(BooleanSupplier thenStep);
+            AndThenWithoutResult<$SystemUnderTest> and(CheckedBooleanSupplier thenStep);
         }
 
         interface ThenFailure {
@@ -264,7 +264,7 @@ public interface GivenWhenThenDsl {
 
         interface AndThenFailure {
 
-            AndThenFailure becauseOf(Class<? extends Throwable> expectedThrowableClass);
+            AndThenFailure becauseOf(Class<? extends Throwable> expectedFailureClass);
 
             AndThenFailure withMessage(String expectedMessage);
 

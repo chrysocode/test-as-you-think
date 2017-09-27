@@ -22,26 +22,41 @@
 
 package testasyouthink.preparation;
 
+import testasyouthink.function.CheckedConsumer;
 import testasyouthink.function.CheckedSupplier;
+import testasyouthink.function.Memoized;
 
-import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 enum ArgumentPreparation {
 
     INSTANCE;
 
-    <$Argument> CheckedSupplier<$Argument> buildMutableArgumentSupplier(Class<$Argument> mutableArgumentClass,
-            Consumer<$Argument> givenStep) {
-        return () -> {
+    <$Argument> Supplier<$Argument> buildMutableArgumentSupplier(Class<$Argument> mutableArgumentClass,
+            CheckedConsumer<$Argument> givenStep) {
+        return Memoized.of(() -> {
             $Argument argument;
             try {
                 argument = mutableArgumentClass.newInstance();
+                givenStep.accept(argument);
             } catch (InstantiationException | IllegalAccessException exception) {
                 throw new PreparationError("Fails to instantiate the argument of the " //
                         + mutableArgumentClass.getName() + " type!", exception);
+            } catch (Throwable throwable) {
+                throw new PreparationError("Fails to prepare an argument of the " //
+                        + mutableArgumentClass.getName() + " type for the target method!", throwable);
             }
-            givenStep.accept(argument);
             return argument;
-        };
+        });
+    }
+
+    public <$Argument> Supplier<$Argument> buidArgumentSupplier(CheckedSupplier<$Argument> givenStep) {
+        return Memoized.of(() -> {
+            try {
+                return givenStep.get();
+            } catch (Throwable throwable) {
+                throw new PreparationError("Fails to prepare an argument for the target method!", throwable);
+            }
+        });
     }
 }

@@ -20,23 +20,11 @@
  * #L%
  */
 
-package testasyouthink.execution;
+package testasyouthink.verification;
 
-import testasyouthink.function.CheckedFunction;
+public class VerificationError extends Error {
 
-import java.util.function.Supplier;
-
-class Event<$SystemUnderTest, $Result> {
-
-    private final Supplier<$SystemUnderTest> givenSutStep;
-    private final CheckedFunction<$SystemUnderTest, $Result> whenStep;
-
-    Event(Supplier<$SystemUnderTest> givenSutStep, CheckedFunction<$SystemUnderTest, $Result> whenStep) {
-        this.givenSutStep = givenSutStep;
-        this.whenStep = whenStep;
-    }
-
-    $Result happen() throws Throwable {
-        return whenStep.apply(givenSutStep.get());
+    public VerificationError(String message, Throwable cause) {
+        super(message, cause);
     }
 }

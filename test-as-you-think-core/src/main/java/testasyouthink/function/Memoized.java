@@ -20,23 +20,28 @@
  * #L%
  */
 
-package testasyouthink.execution;
-
-import testasyouthink.function.CheckedFunction;
+package testasyouthink.function;
 
 import java.util.function.Supplier;
 
-class Event<$SystemUnderTest, $Result> {
+public class Memoized<$Value> implements Supplier<$Value> {
 
-    private final Supplier<$SystemUnderTest> givenSutStep;
-    private final CheckedFunction<$SystemUnderTest, $Result> whenStep;
+    private Supplier<$Value> supplier;
+    private $Value value;
 
-    Event(Supplier<$SystemUnderTest> givenSutStep, CheckedFunction<$SystemUnderTest, $Result> whenStep) {
-        this.givenSutStep = givenSutStep;
-        this.whenStep = whenStep;
+    private Memoized(Supplier<$Value> supplier) {
+        this.supplier = supplier;
     }
 
-    $Result happen() throws Throwable {
-        return whenStep.apply(givenSutStep.get());
+    public static <$Value> Supplier<$Value> of(Supplier<$Value> supplier) {
+        return new Memoized<>(supplier);
+    }
+
+    @Override
+    public $Value get() {
+        if (value == null) {
+            value = supplier.get();
+        }
+        return value;
     }
 }

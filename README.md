@@ -33,6 +33,7 @@ Please use this [permalink](https://goo.gl/XqS4Zf) (goo.gl/XqS4Zf) to share this
     + [Failures](#failures)
       - [Expected failures](#expected-failures)
       - [Unexpected failures](#unexpected-failures)
+      - [No failure](#no-failure)
     + [Time limit](#time-limit)
     + [Fluent assertions as a chained extension](#fluent-assertions-as-a-chained-extension)
 - [Functional approach of testing](#functional-approach-of-testing)
@@ -40,6 +41,7 @@ Please use this [permalink](https://goo.gl/XqS4Zf) (goo.gl/XqS4Zf) to share this
 - [Releases](#releases)
   * [Versioning](#versioning)
   * [Release Notes](#release-notes)
+    + [0.7 version: All testing steps as stage by stage checked functions](#07-version-all-testing-steps-as-stage-by-stage-checked-functions)
     + [0.6 version: Fluent assertions as if you meant AssertJ](#06-version-fluent-assertions-as-if-you-meant-assertj)
     + [0.5 version: System under test as a test fixture](#05-version-system-under-test-as-a-test-fixture)
     + [0.4.2 version: Cobertura as a code coverage analyzer](#042-version-cobertura-as-a-code-coverage-analyzer)
@@ -56,9 +58,9 @@ Please use this [permalink](https://goo.gl/XqS4Zf) (goo.gl/XqS4Zf) to share this
 
 *TestAsYouThink* is an open source software library in Java for testing purposes. It is designed as a **fluent API** that will change the way development teams write their unit and integration tests. It aims to take control over the coding practices as **executable guidelines**, from beginners to experts, to get **high-quality tests**. Why should you adopt *TestAsYouThink*?
 - It promotes good coding practices for testing, on writing tests rather than before it with training or after it with code reviews.
-- It makes the testing language ubiquitous to give a better structure based on compilable code rather than textual comments to the test code.
+- It makes the testing language [ubiquitous](https://martinfowler.com/bliki/UbiquitousLanguage.html) to give a better structure based on compilable code rather than textual comments to the test code.
 - It improves test code readability and may bring more conciseness.
-- It brings a functional programming approach to testing that makes reusing test code easier and more natural.
+- It brings a [functional programming](https://en.wikipedia.org/wiki/Functional_programming) approach to testing that makes reusing test code easier and more natural.
 - It is designed to be easy to use thanks to code completion.
 - It builds new original features to test execution from version to version.
 
@@ -77,7 +79,7 @@ Add *TestAsYouThink* as a dependency to your project with [Maven](https://maven.
 <dependency>
     <groupId>com.github.xapn</groupId>
     <artifactId>test-as-you-think-core</artifactId>
-    <version>0.6</version>
+    <version>0.7</version>
 </dependency>
 ```
 
@@ -123,7 +125,7 @@ Of course, it is also possible to test any void method, instead of a non-void on
 import static testasyouthink.TestAsYouThink.givenSut;
 ...
 
-givenSut(systemUnderTest)
+givenSut(SystemUnderTest::new)
 .given(() -> {
     // Preparation of fixtures
 }).when(sut -> {
@@ -233,8 +235,8 @@ Notice that the `whatIsSpecial` name must specify the argument and it replaces t
 
 You can use different syntaxes to pass the event to the `when()` method:
 - a method reference (`SystemUnderTest::targetMethod` or `systemUnderTest::targetMethod` where `systemUnderTest` is an instance),
-- a statement lambda (`sut -> { return sut.targetMethod(); }`),
-- an expression lambda (`sut -> sut.targetMethod()`).
+- a lambda statement (`sut -> { return sut.targetMethod(); }`),
+- a lambda expression (`sut -> sut.targetMethod()`).
 
 All of them are useful: the more proper one depends on the use case.
 
@@ -245,6 +247,7 @@ You can favor the simplest `when()` method, or choose a more explicit, alternate
 To write very simple tests, you might want to directly attack the system under test. In such a use case, the API syntax becomes very minimalist.
 ```java
 import static testasyouthink.TestAsYouThink.when;
+import static testasyouthink.TestAsYouThink.resultOf;
 ...
 
 when(() -> systemUnderTest.targetMethod(oneOrMoreArguments)).then(...); // or...
@@ -255,13 +258,13 @@ resultOf(SystemUnderTest::targetMethod).satisfies(requirements); // to chain flu
 
 ### Avoid ambiguous method calls
 
-To define the event, you may want to pass an expression lambda to the `when()` method like this.
+To define the event, you may want to pass a lambda expression to the `when()` method like this.
 ```java
 givenSutClass(SystemUnderTest.class)
 .when(sut -> sut.testedMethod()) // compilation error
 .then(...);
 ```
-In such a case, the compiler meets an error because of an ambiguous method call: it does not know which `when()` method must be called. One receives a lambda that returns a value, while another one receives a lambda that returns nothing. Instead of casting the expression lambda to a function or a consumer, you can avoid this compilation problem by using the following alternate methods.
+In such a case, the compiler meets an error because of an ambiguous method call: it does not know which `when()` method must be called. One receives a lambda that returns a value, while another one receives a lambda that returns nothing. Instead of casting the lambda expression to a function or a consumer or replacing it with a lambda statement, you can solve this compilation problem by using the following alternate methods.
 
 Without return:
 ```java
@@ -302,7 +305,7 @@ givenSutClass(SystemUnderTest.class).when(sut -> { return sut.nonVoidMethod(); }
 
 ### Specifying expectations
 
-You are encouraged to explain the system under test behavior by specifying your expectations. What is the expected behavior in the current situtation?
+You are encouraged to explain the system under test behavior by specifying your expectations. What is the expected behavior in the current situation?
 ```java
 givenSutClass(SystemUnderTest.class).when(sut -> { ... })
 .then("first specified expectation", result -> {
@@ -343,7 +346,10 @@ givenSutClass(SystemUnderTest.class)
 
 Without an explicit SUT, you get:
 ```java
-whenOutsideOperatingCondtions(() -> {
+import static testasyouthink.TestAsYouThink.whenOutsideOperatingConditions;
+...
+
+whenOutsideOperatingConditions(() -> {
     // where an event causes a failure
 })
 .thenItFails();
@@ -353,15 +359,24 @@ You can also verify the cause like follows: `thenItFails().havingCause(ExpectedC
 
 #### Unexpected failures
 
-When an unexpected failure occurs - because of a regression for example -, the test fails by raising an `Error`, because the defaut behavior consists of assuming no failure should happen, unless the software developer wants. There is one `Error` type per testing stage as indicated in the table below.
+When an unexpected failure occurs - because of a regression for example -, the test fails by raising an `Error`, because the defaut behavior consists of assuming no failure should happen, unless the software developer wants. Each `Error` type belongs to one testing stage as indicated in the table below.
 
-Testing stage | Error type
-------------- | ----------
-Preparation   | `PreparationError`
-Execution     | `ExecutionError`
-Verification  | `AssertionError`
+Testing stage | Error type          | Meaning
+------------- | ------------------- | -------
+Preparation   | `PreparationError`  | A failure happened while trying to prepare the test fixture. The test is not ready for execution.
+Execution     | `ExecutionError`    | The target method failed to execute. Either the system under test is not ready for execution and some source code is missing, or the preparation is uncomplete.
+Verification  | `VerificationError` | A failure prevented the verification stage from achieving the whole set of assertions.
+Verification  | `AssertionError`    | The behavior during the execution was not compliant with the expectations. Either it is a regression and the SUT must be fixed, or the test needs to be updated after a behavioral change of the SUT.
 
-When a test fails, the origin of the raised error becomes the error cause and the stack trace should explain what exactly happened: the first failure points out the testing stage so that you know what kind of error it is, and the second one is the real failure cause.
+When a test fails, the origin of the raised error becomes the error cause and the stack trace should explain what exactly happened: the first failure points out the testing stage so that you know what kind of solution is needed, and the second one is the real failure cause.
+
+#### No failure
+
+Sometimes the only thing to verify when executing the target method is that no failure happens. This kind of assertion is useful for the methods whose the only purpose is to check a requirement and to raise an exception if it is not satisfied.
+```java
+givenSut(SystemUnderClass::new).when(SystemUnderTest::targetMethod)
+.thenItSucceeds();
+```
 
 ### Time limit
 
@@ -387,6 +402,9 @@ The advantage of *TestAsYouThink* is that the time limit is only applied to the 
 
 You never write your assertions without adding [AssertJ](http://joel-costigliola.github.io/assertj) to your projects, don't you? If you have written your test on starting by the event, like this for example...
 ```java
+import static org.assertj.core.api.Assertions.assertThat;
+...
+
 when(SystemUnderTest::targetMethod)
 .then(fellowshipOfTheRing ->
     assertThat(fellowshipOfTheRing)
@@ -410,19 +428,24 @@ This usage is foreseen for very simple tests only. On the contrary, if a test sc
 
 Why use `resultOf()` rather than `assertThat()`? Here the goal is to identify the actual result against the expected result at a glance. According to the assertion API, whether it be [JUnit](http://junit.org/junit5/docs/current/api/org/junit/jupiter/api/Assertions.html) or be [AssertJ](http://joel-costigliola.github.io/assertj/core-8/api/org/assertj/core/api/Assertions.html) or be anything else, the order between the actual and expected results is never the same.
 ```java
+/* Java only */
 assert expectedOrActual.equals(actualOrExpected); // expected or actual at first with the Java assert keyword
+/* JUnit */
 org.junit.Assert.assertEquals(expected, actual); // expected at first with JUnit 4
 org.junit.jupiter.api.Assertions.assertEquals(expected, actual); // expected at first with JUnit 5
 org.testng.AssertJUnit.assertEquals(expected, actual); // expected at first with TestNG
+/* Hamcrest */
+org.hamcrest.MatcherAssert.assertThat(actual, org.hamcrest.Matchers.is(expected)); // actual at first with Hamcrest
+/* AssertJ */
 org.assertj.core.api.Assertions.assertThat(actual).isEqualTo(expected); // actual at first with AssertJ
 ```
-As a consequence, if both are inverted, the error message will be wrong and will mislead developers before fixing a failing test. The *TestAsYouThink* `resultOf()` leaves no doubt about which is what by making the testing language ubiquitous.
+As a consequence, if both are inverted, the error message will be wrong and will mislead developers before fixing a failing test. The *TestAsYouThink* `resultOf()` leaves no doubt about which is what by making the testing language [ubiquitous](https://martinfowler.com/bliki/UbiquitousLanguage.html).
 
 # Functional approach of testing
 
-The functional programming approach of *TestAsYouThink* applied to testing is a very important advantage for software developers. As the API is designed to receive the test steps as functions, it makes you free to factorize many little pieces of code and to assembly them again as new test scenarii. Whereas the granularity of reuse of most of testing frameworks is based on classes, you will take advantage of the ability of *TestAsYouThink* to play with more and more bricks of code to expand the covered business cases.
+The [functional programming](https://en.wikipedia.org/wiki/Functional_programming) approach of *TestAsYouThink* applied to testing is a very important advantage for software developers. As the API is designed to receive the test steps as functions, it makes you free to factorize many little pieces of code and to assembly them again as new test scenarii. Whereas the granularity of reuse of most of testing frameworks is based on classes, you will take advantage of the ability of *TestAsYouThink* to play with more and more bricks of code to expand the covered business cases.
 
-You are even able to begin to code a new component behavior directly in a statement lambda as a *When* step inside a test method. If you are already a [Test-Driven Development](https://en.wikipedia.org/wiki/Test-driven_development) aficionado, be aware it might be a second stage on the [TDD](https://en.wikipedia.org/wiki/Test-driven_development) road to improve and expand your practices. Make the test pass by writing the least implementation code you can in the test method comes from [TDD as if you meant it](https://cumulative-hypotheses.org/2011/08/30/tdd-as-if-you-meant-it).
+You are even able to begin to code a new component behavior directly in a lambda statement as a *When* step inside a test method. If you are already a [Test-Driven Development](https://en.wikipedia.org/wiki/Test-driven_development) aficionado, be aware it might be a second stage on the [TDD](https://en.wikipedia.org/wiki/Test-driven_development) road to improve and expand your practices. Make the test pass by writing the least implementation code you can in the test method comes from [TDD as if you meant it](https://cumulative-hypotheses.org/2011/08/30/tdd-as-if-you-meant-it).
 > *TestAsYouThink* is the first and only testing API that naturally supports the "TDD as if you meant it" practice.
 
 # Code Examples
@@ -438,6 +461,19 @@ You can find concrete examples of use in the following repositories.
 To understand how version numbers change, please read the [Semantic Versioning](http://semver.org/).
 
 ## Release Notes
+
+### 0.7 version: All testing steps as stage by stage checked functions
+
+- Improve the execution stage within a time limit and its corresponding assertions.
+  - Prepare the SUT separately, and other usual test fixtures.
+  - Prepare the arguments of the target method separately.
+- Check the not yet checked testing steps.
+  - Check the preparation steps of the system under test.
+  - Check the preparation steps of the arguments of the target method.
+  - Check the execution steps.
+  - Check the verification steps.
+- Verify no failure happens.
+- Verify both the result and SUT expectations.
 
 ### 0.6 version: Fluent assertions as if you meant AssertJ
 
@@ -463,7 +499,7 @@ To understand how version numbers change, please read the [Semantic Versioning](
 ### 0.4 version: Time limit as an expectation
 
 - Expect that the system under test replies within a time limit.
-- Resolve ambiguous method calls in relation to using expression lambdas.
+- Resolve ambiguous method calls in relation to using lambda expressions.
 - Start to write a test with the when step.
 
 ### 0.3 version: TestAsYouThink as a Maven distributed OSS library

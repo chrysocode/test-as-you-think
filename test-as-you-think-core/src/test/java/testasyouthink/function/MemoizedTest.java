@@ -20,23 +20,40 @@
  * #L%
  */
 
-package testasyouthink.execution;
+package testasyouthink.function;
 
-import testasyouthink.function.CheckedFunction;
+import org.junit.Test;
+import org.mockito.Mockito;
 
 import java.util.function.Supplier;
 
-class Event<$SystemUnderTest, $Result> {
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 
-    private final Supplier<$SystemUnderTest> givenSutStep;
-    private final CheckedFunction<$SystemUnderTest, $Result> whenStep;
+public class MemoizedTest {
 
-    Event(Supplier<$SystemUnderTest> givenSutStep, CheckedFunction<$SystemUnderTest, $Result> whenStep) {
-        this.givenSutStep = givenSutStep;
-        this.whenStep = whenStep;
+    @Test
+    public void should_memoize_a_supplied_value() {
+        // GIVEN
+        Counter counter = Mockito.mock(Counter.class);
+        Supplier<Double> memoized = Memoized.of(() -> {
+            counter.count();
+            return Math.random();
+        });
+        Double suppliedValue = memoized.get();
+
+        // WHEN
+        Double memoizedResult = memoized.get();
+
+        // THEN
+        assertThat(memoizedResult).isEqualTo(suppliedValue);
+        verify(counter).count();
+        verifyNoMoreInteractions(counter);
     }
 
-    $Result happen() throws Throwable {
-        return whenStep.apply(givenSutStep.get());
+    static class Counter {
+
+        void count() {}
     }
 }

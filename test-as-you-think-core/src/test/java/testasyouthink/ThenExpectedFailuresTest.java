@@ -39,9 +39,9 @@ import static org.easymock.EasyMock.strictMock;
 import static org.easymock.EasyMock.verify;
 import static testasyouthink.TestAsYouThink.givenSut;
 
-public class ThenFailuresTest {
+public class ThenExpectedFailuresTest {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ThenFailuresTest.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ThenExpectedFailuresTest.class);
     private static final String EXPECTED_MESSAGE = "expected message";
     private static final String UNEXPECTED_MESSAGE = "unexpected message";
     private static final String EXPECTED_CAUSE_MESSAGE = "expected cause message";

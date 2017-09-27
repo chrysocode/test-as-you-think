@@ -23,18 +23,11 @@
 package testasyouthink;
 
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import testasyouthink.fixture.GivenWhenThenDefinition;
 import testasyouthink.fixture.SystemUnderTest;
-import testasyouthink.preparation.PreparationError;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.catchThrowable;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.reset;
 import static org.easymock.EasyMock.verify;
 import static testasyouthink.TestAsYouThink.givenSut;
 import static testasyouthink.TestAsYouThink.givenSutClass;
@@ -42,15 +35,8 @@ import static testasyouthink.fixture.GivenWhenThenDefinition.orderedSteps;
 
 public class GivenWhenThenTest {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(GivenWhenThenTest.class);
     private static final String EXPECTED_RESULT = "expected result";
     private GivenWhenThenDefinition givenWhenThenDefinitionMock;
-
-    @Before
-    public void prepareFixtures() {
-        // GIVEN
-        givenWhenThenDefinitionMock = orderedSteps();
-    }
 
     @After
     public void verifyMocks() {
@@ -60,6 +46,9 @@ public class GivenWhenThenTest {
 
     @Test
     public void should_follow_the_given_when_then_full_sequence_given_a_non_void_method() {
+        // GIVEN
+        givenWhenThenDefinitionMock = orderedSteps();
+
         // WHEN
         givenSut(new SystemUnderTest(givenWhenThenDefinitionMock))
                 .given(() -> givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem())
@@ -72,6 +61,9 @@ public class GivenWhenThenTest {
 
     @Test
     public void should_follow_the_given_when_then_full_sequence_given_a_void_method() {
+        // GIVEN
+        givenWhenThenDefinitionMock = orderedSteps();
+
         // WHEN
         givenSut(new SystemUnderTest(givenWhenThenDefinitionMock))
                 .given(() -> givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem())
@@ -81,6 +73,9 @@ public class GivenWhenThenTest {
 
     @Test
     public void should_follow_the_given_when_then_full_sequence_given_a_sut_class_to_be_instantiated() {
+        // GIVEN
+        givenWhenThenDefinitionMock = orderedSteps();
+
         // WHEN
         givenSutClass(SystemUnderTest.class)
                 .given(sut -> {
@@ -95,23 +90,10 @@ public class GivenWhenThenTest {
     }
 
     @Test
-    public void should_verify_expectations_on_the_sut_given_a_non_void_method() {
-        // WHEN
-        givenSutClass(SystemUnderTest.class)
-                .given(sut -> {
-                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-                    sut.setGivenWhenThenDefinition(givenWhenThenDefinitionMock);
-                })
-                .when(SystemUnderTest::nonVoidMethod)
-                .then((sut, result) -> {
-                    givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                    assertThat(result).isEqualTo(EXPECTED_RESULT);
-                    assertThat(sut.getState()).isNotNull();
-                });
-    }
-
-    @Test
     public void should_verify_expectations_on_the_sut_given_a_void_method() {
+        // GIVEN
+        givenWhenThenDefinitionMock = orderedSteps();
+
         // WHEN
         givenSutClass(SystemUnderTest.class)
                 .given(sut -> {
@@ -126,7 +108,31 @@ public class GivenWhenThenTest {
     }
 
     @Test
+    public void should_verify_expectations_on_both_the_result_and_the_sut_given_a_non_void_method() {
+        // GIVEN
+        givenWhenThenDefinitionMock = orderedSteps(1, 2);
+
+        // WHEN
+        givenSutClass(SystemUnderTest.class)
+                .given(sut -> {
+                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                    sut.setGivenWhenThenDefinition(givenWhenThenDefinitionMock);
+                })
+                .when(SystemUnderTest::nonVoidMethod)
+                .then(result -> {
+                    givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                    assertThat(result).isInstanceOf(String.class);
+                }, sut -> {
+                    givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                    assertThat(sut).isInstanceOf(SystemUnderTest.class);
+                });
+    }
+
+    @Test
     public void should_prepare_the_sut_with_a_given_step() {
+        // GIVEN
+        givenWhenThenDefinitionMock = orderedSteps();
+
         // WHEN
         givenSut(() -> {
             SystemUnderTest systemUnderTest = new SystemUnderTest(givenWhenThenDefinitionMock);
@@ -139,6 +145,9 @@ public class GivenWhenThenTest {
 
     @Test
     public void should_prepare_the_sut_with_a_given_step_given_a_sut_class_to_be_instantiated() {
+        // GIVEN
+        givenWhenThenDefinitionMock = orderedSteps();
+
         // WHEN
         givenSut(SystemUnderTest.class, sut -> {
             sut.setGivenWhenThenDefinition(givenWhenThenDefinitionMock);
@@ -146,33 +155,5 @@ public class GivenWhenThenTest {
         })
                 .when(SystemUnderTest::voidMethod)
                 .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult());
-    }
-
-    @Test
-    public void should_fail_to_create_a_sut_instance() throws Throwable {
-        // GIVEN
-        reset(givenWhenThenDefinitionMock);
-        replay(givenWhenThenDefinitionMock);
-
-        // WHEN
-        Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTestFailingToBeInstantiated.class)
-                .when(SystemUnderTestFailingToBeInstantiated::voidMethod)
-                .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
-
-        // THEN
-        LOGGER.debug("Stack trace", thrown);
-        assertThat(thrown)
-                .isInstanceOf(PreparationError.class)
-                .hasMessage("Fails to instantiate the system under test!")
-                .hasCauseInstanceOf(NullPointerException.class);
-    }
-
-    public static class SystemUnderTestFailingToBeInstantiated {
-
-        public SystemUnderTestFailingToBeInstantiated() throws Exception {
-            throw new NullPointerException("Impossible to instantiate it!");
-        }
-
-        void voidMethod() {}
     }
 }

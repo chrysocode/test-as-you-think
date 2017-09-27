@@ -29,11 +29,10 @@ import testasyouthink.GivenWhenThenDsl.VerificationStage.ThenFailure;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.ThenWithoutResult;
 import testasyouthink.function.CheckedBiConsumer;
 import testasyouthink.function.CheckedBiFunction;
+import testasyouthink.function.CheckedConsumer;
 import testasyouthink.function.CheckedSupplier;
 import testasyouthink.function.Functions;
 import testasyouthink.preparation.Preparation;
-
-import java.util.function.Consumer;
 
 public class GivenArgumentWhenSteps<$SystemUnderTest, $Argument> implements AndGivenArgument<$SystemUnderTest,
         $Argument> {
@@ -53,7 +52,7 @@ public class GivenArgumentWhenSteps<$SystemUnderTest, $Argument> implements AndG
 
     @Override
     public <$Argument2> AndGivenTwoArguments<$SystemUnderTest, $Argument, $Argument2> andArgument(
-            Class<$Argument2> mutableArgumentClass, Consumer<$Argument2> givenStep) {
+            Class<$Argument2> mutableArgumentClass, CheckedConsumer<$Argument2> givenStep) {
         preparation.recordGivenStep(mutableArgumentClass, givenStep);
         return new GivenTwoArgumentsWhenSteps<>(preparation);
     }

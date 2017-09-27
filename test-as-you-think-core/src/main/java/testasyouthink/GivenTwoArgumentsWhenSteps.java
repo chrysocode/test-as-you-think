@@ -27,13 +27,12 @@ import testasyouthink.GivenWhenThenDsl.PreparationStage.AndGivenTwoArguments;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.Then;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.ThenFailure;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.ThenWithoutResult;
+import testasyouthink.function.CheckedConsumer;
 import testasyouthink.function.CheckedSupplier;
 import testasyouthink.function.CheckedTriConsumer;
 import testasyouthink.function.CheckedTriFunction;
 import testasyouthink.function.Functions;
 import testasyouthink.preparation.Preparation;
-
-import java.util.function.Consumer;
 
 public class GivenTwoArgumentsWhenSteps<$SystemUnderTest, $Argument1, $Argument2> implements
         AndGivenTwoArguments<$SystemUnderTest, $Argument1, $Argument2> {
@@ -55,7 +54,7 @@ public class GivenTwoArgumentsWhenSteps<$SystemUnderTest, $Argument1, $Argument2
 
     @Override
     public <$Argument3> WhenApplyingThreeArguments<$SystemUnderTest, $Argument1, $Argument2, $Argument3> andArgument(
-            Class<$Argument3> mutableArgumentClass, Consumer<$Argument3> givenStep) {
+            Class<$Argument3> mutableArgumentClass, CheckedConsumer<$Argument3> givenStep) {
         preparation.recordGivenStep(mutableArgumentClass, givenStep);
         return new GivenThreeArgumentsWhenSteps<>(preparation);
     }
