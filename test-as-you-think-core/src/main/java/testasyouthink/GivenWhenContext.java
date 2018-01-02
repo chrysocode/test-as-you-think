@@ -25,6 +25,7 @@ package testasyouthink;
 import testasyouthink.execution.Execution;
 import testasyouthink.preparation.Preparation;
 
+import java.io.File;
 import java.util.Optional;
 
 public class GivenWhenContext<$SystemUnderTest, $Result> {
@@ -54,5 +55,11 @@ public class GivenWhenContext<$SystemUnderTest, $Result> {
         return preparation
                 .supplySut()
                 .get();
+    }
+
+    public File getStdoutAsFile() {
+        return preparation
+                .getStdoutPath()
+                .toFile();
     }
 }

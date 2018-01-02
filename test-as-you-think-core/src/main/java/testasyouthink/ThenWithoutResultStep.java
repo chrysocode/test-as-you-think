@@ -29,6 +29,7 @@ import testasyouthink.function.CheckedRunnable;
 import testasyouthink.function.CheckedSuppliers.CheckedBooleanSupplier;
 import testasyouthink.verification.Verification;
 
+import java.io.File;
 import java.time.Duration;
 
 public class ThenWithoutResultStep<$SystemUnderTest> implements ThenWithoutResult<$SystemUnderTest>,
@@ -109,5 +110,11 @@ public class ThenWithoutResultStep<$SystemUnderTest> implements ThenWithoutResul
     @Override
     public void thenItSucceeds() {
         verification.verifyNoFailure();
+    }
+
+    @Override
+    public AndThenWithoutResult<$SystemUnderTest> thenStdoutAsResult(CheckedConsumer<File> thenStep) {
+        verification.verifyStdout(thenStep);
+        return this;
     }
 }

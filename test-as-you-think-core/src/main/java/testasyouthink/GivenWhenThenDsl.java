@@ -42,6 +42,7 @@ import testasyouthink.function.CheckedSuppliers.CheckedBooleanSupplier;
 import testasyouthink.function.CheckedTriConsumer;
 import testasyouthink.function.CheckedTriFunction;
 
+import java.io.File;
 import java.time.Duration;
 import java.util.List;
 
@@ -58,6 +59,8 @@ public interface GivenWhenThenDsl {
             AndGiven<$SystemUnderTest> given(String fixtureSpecification, CheckedRunnable givenStep);
 
             AndGiven<$SystemUnderTest> given(String fixtureSpecification, CheckedConsumer<$SystemUnderTest> givenStep);
+
+            AndGiven<$SystemUnderTest> givenStdoutToBeCaptured();
         }
 
         interface AndGiven<$SystemUnderTest> extends GivenArgument<$SystemUnderTest>, When<$SystemUnderTest> {
@@ -241,6 +244,8 @@ public interface GivenWhenThenDsl {
             AndThenWithoutResult<$SystemUnderTest> thenSutRepliesWithin(Duration durationLimit);
 
             void thenItSucceeds();
+
+            AndThenWithoutResult<$SystemUnderTest> thenStdoutAsResult(CheckedConsumer<File> thenStep);
         }
 
         interface AndThenWithoutResult<$SystemUnderTest> {

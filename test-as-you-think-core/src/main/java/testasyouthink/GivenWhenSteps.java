@@ -119,6 +119,12 @@ public class GivenWhenSteps<$SystemUnderTest> implements Given<$SystemUnderTest>
     }
 
     @Override
+    public AndGiven<$SystemUnderTest> givenStdoutToBeCaptured() {
+        preparation.captureStdout();
+        return this;
+    }
+
+    @Override
     public <$Result> Then<$SystemUnderTest, $Result> when(CheckedFunction<$SystemUnderTest, $Result> whenStep) {
         return thenStepFactory.createThenStep(preparation, whenStep);
     }

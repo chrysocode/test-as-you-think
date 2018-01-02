@@ -27,6 +27,9 @@ import testasyouthink.function.CheckedRunnable;
 import testasyouthink.function.CheckedSupplier;
 import testasyouthink.function.Functions;
 
+import java.io.PrintStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayDeque;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -42,6 +45,7 @@ public class Preparation<$SystemUnderTest> {
     private Supplier<$SystemUnderTest> givenSutStep;
     private Queue<Supplier> argumentSuppliers;
     private $SystemUnderTest systemUnderTest;
+    private Path stdoutPath;
 
     public Preparation() {
         givenSteps = new ArrayDeque<>();
@@ -113,5 +117,20 @@ public class Preparation<$SystemUnderTest> {
 
     public Supplier<$SystemUnderTest> supplySut() {
         return this::systemUnderTest;
+    }
+
+    public void captureStdout() {
+        recordGivenStep(() -> {
+            stdoutPath = Files.createTempFile("actual_result", ".txt");
+            stdoutPath
+                    .toFile()
+                    .deleteOnExit();
+            PrintStream stdoutStream = new PrintStream(stdoutPath.toString());
+            System.setOut(stdoutStream);
+        });
+    }
+
+    public Path getStdoutPath() {
+        return stdoutPath;
     }
 }

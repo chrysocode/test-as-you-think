@@ -29,6 +29,7 @@ import testasyouthink.function.CheckedPredicate;
 import testasyouthink.function.CheckedRunnable;
 import testasyouthink.function.CheckedSuppliers.CheckedBooleanSupplier;
 
+import java.io.File;
 import java.time.Duration;
 import java.util.List;
 
@@ -122,6 +123,15 @@ public class Verification<$SystemUnderTest, $Result> {
         Assertions
                 .assertThat(context::returnResultOrVoid)
                 .spendsAtMost(durationLimit);
+    }
+
+    public void verifyStdout(CheckedConsumer<File> expectations) {
+        context.returnResultOrVoid();
+        try {
+            expectations.accept(context.getStdoutAsFile());
+        } catch (Throwable throwable) {
+            throw new RuntimeException(throwable);
+        }
     }
 
     public void verifyFailure() {

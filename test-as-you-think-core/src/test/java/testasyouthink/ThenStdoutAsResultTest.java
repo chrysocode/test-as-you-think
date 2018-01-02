@@ -1,36 +1,42 @@
 package testasyouthink;
 
 import org.junit.Test;
+import org.mockito.InOrder;
+import org.mockito.Mockito;
+import testasyouthink.fixture.GivenWhenThenDefinition;
 import testasyouthink.fixture.SystemUnderTest;
 
-import java.io.PrintStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 import static testasyouthink.TestAsYouThink.givenSutClass;
 
 public class ThenStdoutAsResultTest {
 
     @Test
-    public void should_verify_the_standard_output_as_a_result_given_a_void_method() {
+    public void should_verify_the_standard_output_as_a_result_given_a_void_target_method() {
+        // GIVEN
+        GivenWhenThenDefinition gwtMock = mock(GivenWhenThenDefinition.class);
+
+        // WHEN
         givenSutClass(SystemUnderTest.class)
-                .given(() -> {
-                    Path stdoutPath = Files.createFile(Paths.get("actual_result.txt"));
-                    PrintStream stdoutStream = new PrintStream(stdoutPath.toString());
-                    System.setOut(stdoutStream);
-                })
+                .givenStdoutToBeCaptured()
                 .when(sut -> {
+                    gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
                     System.out.println("Stdout as a result");
                 })
-                .then(() -> assertThat(Paths
-                        .get("actual_result.txt")
-                        .toFile()).hasContent("Stdout as a result"));
+                .thenStdoutAsResult(result -> {
+                    gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                    assertThat(result).hasContent("Stdout as a result");
+                });
 
-        Paths
-                .get("actual_result.txt")
-                .toFile()
-                .deleteOnExit();
+        // THEN
+        InOrder inOrder = Mockito.inOrder(gwtMock);
+        inOrder
+                .verify(gwtMock)
+                .whenAnEventHappensInRelationToAnActionOfTheConsumer();
+        inOrder
+                .verify(gwtMock)
+                .thenTheActualResultIsInKeepingWithTheExpectedResult();
+        inOrder.verifyNoMoreInteractions();
     }
 }
