@@ -130,7 +130,7 @@ public class Verification<$SystemUnderTest, $Result> {
         try {
             expectations.accept(context.getStdoutAsFile());
         } catch (Throwable throwable) {
-            throw new RuntimeException(throwable);
+            throw new VerificationError("Fails to verify the expectations of the stdout!", throwable);
         }
     }
 

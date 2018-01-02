@@ -473,4 +473,22 @@ public class ThenUnexpectedFailuresTest {
                 .isInstanceOf(AssertionError.class)
                 .hasMessageContaining(UnexpectedException.class.getName());
     }
+
+    @Test
+    public void should_fail_to_verify_a_stdout_expectation_given_a_void_target_method() {
+        // WHEN
+        Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                .givenStdoutToBeCaptured()
+                .when(sut -> {})
+                .thenStdoutAsResult(result -> {
+                    throw new UnexpectedException();
+                }));
+
+        // THEN
+        LOGGER.debug("Stack trace", thrown);
+        assertThat(thrown)
+                .isInstanceOf(VerificationError.class)
+                .hasMessage("Fails to verify the expectations of the stdout!")
+                .hasCauseInstanceOf(UnexpectedException.class);
+    }
 }
