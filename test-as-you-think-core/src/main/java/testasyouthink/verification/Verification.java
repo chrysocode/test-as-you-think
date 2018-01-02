@@ -129,6 +129,8 @@ public class Verification<$SystemUnderTest, $Result> {
         context.returnResultOrVoid();
         try {
             expectations.accept(context.getStdoutAsFile());
+        } catch (AssertionError assertionError) {
+            throw assertionError;
         } catch (Throwable throwable) {
             throw new VerificationError("Fails to verify the expectations of the stdout!", throwable);
         }
