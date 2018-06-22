@@ -124,9 +124,9 @@ public class Preparation<$SystemUnderTest> {
     public void captureStdout() {
         recordGivenStep(() -> {
             stdoutPath = Files.createTempFile("actual_result", ".txt");
-            stdoutPath
-                    .toFile()
-                    .deleteOnExit();
+            // stdoutPath
+            //         .toFile()
+            //         .deleteOnExit();
             PrintStream stdoutStream = new PrintStream(stdoutPath.toString());
             PrintStream previous = System.out;
             PrintStream allInOne = new PrintStream(new OutputStream() {
