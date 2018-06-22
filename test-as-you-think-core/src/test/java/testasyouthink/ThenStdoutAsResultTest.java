@@ -22,17 +22,29 @@
 
 package testasyouthink;
 
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.mockito.InOrder;
-import org.mockito.Mockito;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import testasyouthink.fixture.GivenWhenThenDefinition;
 import testasyouthink.fixture.SystemUnderTest;
 
+import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
+import java.util.stream.IntStream;
+
+import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static testasyouthink.TestAsYouThink.givenSutClass;
 
 public class ThenStdoutAsResultTest {
+
+    public static final Logger LOGGER = LoggerFactory.getLogger(ThenStdoutAsResultTest.class);
 
     @Test
     public void should_verify_the_standard_output_as_a_result_given_a_void_target_method() {
@@ -52,7 +64,7 @@ public class ThenStdoutAsResultTest {
                 });
 
         // THEN
-        InOrder inOrder = Mockito.inOrder(gwtMock);
+        InOrder inOrder = inOrder(gwtMock);
         inOrder
                 .verify(gwtMock)
                 .whenAnEventHappensInRelationToAnActionOfTheConsumer();
@@ -60,5 +72,66 @@ public class ThenStdoutAsResultTest {
                 .verify(gwtMock)
                 .thenTheActualResultIsInKeepingWithTheExpectedResult();
         inOrder.verifyNoMoreInteractions();
+    }
+
+    @Test
+    public void should_verify_the_standard_output_as_a_result_for_multiple_threads_given_a_void_target_method()
+            throws InterruptedException, ExecutionException, TimeoutException {
+        // GIVEN
+        final int numberOfThreads = 10;
+        List<GivenWhenThenDefinition> gwtMocks = IntStream
+                .range(0, numberOfThreads)
+                .mapToObj(count -> mock(GivenWhenThenDefinition.class))
+                .collect(toList());
+        CountDownLatch counterOfThreadsToPrepare = new CountDownLatch(numberOfThreads);
+        CountDownLatch callingThreadBlocker = new CountDownLatch(1);
+        CountDownLatch counterOfThreadsToComplete = new CountDownLatch(numberOfThreads);
+
+        // WHEN
+        IntStream
+                .range(0, numberOfThreads)
+                .mapToObj(count -> new Thread(() -> {
+                    LOGGER.debug("Entering in thread #{} :)", count);
+                    givenSutClass(SystemUnderTest.class)
+                            .givenStdoutToBeCaptured()
+                            .when(sut -> {
+                                LOGGER.debug("Thread #{} ready!", count);
+                                counterOfThreadsToPrepare.countDown();
+                                LOGGER.debug("Thread #{} waiting...", count);
+                                callingThreadBlocker.await();
+                                LOGGER.debug("Thread #{} continues.", count);
+                                gwtMocks
+                                        .get(count)
+                                        .whenAnEventHappensInRelationToAnActionOfTheConsumer();
+                                System.out.println("Stdout as a result of T#" + count);
+                            })
+                            .thenStdoutAsResult(result -> {
+                                LOGGER.debug("Checking result of thread #{}: {}", count, result);
+                                assertThat(result).hasContent("Stdout as a result of T#" + count);
+                                gwtMocks
+                                        .get(count)
+                                        .thenTheActualResultIsInKeepingWithTheExpectedResult();
+                                counterOfThreadsToComplete.countDown();
+                            });
+                }))
+                .forEach(Thread::start);
+        counterOfThreadsToPrepare.await();
+        LOGGER.debug("All threads ready!");
+        LOGGER.debug("Writing in console can start...");
+        callingThreadBlocker.countDown();
+        counterOfThreadsToComplete.await();
+        LOGGER.debug("All threads complete!");
+
+        // THEN
+        gwtMocks.forEach(gwt -> {
+            InOrder inOrder = inOrder(gwt);
+            inOrder
+                    .verify(gwt)
+                    .whenAnEventHappensInRelationToAnActionOfTheConsumer();
+            inOrder
+                    .verify(gwt)
+                    .thenTheActualResultIsInKeepingWithTheExpectedResult();
+            inOrder.verifyNoMoreInteractions();
+        });
     }
 }
