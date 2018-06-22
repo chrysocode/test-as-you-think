@@ -27,6 +27,8 @@ import testasyouthink.function.CheckedRunnable;
 import testasyouthink.function.CheckedSupplier;
 import testasyouthink.function.Functions;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -126,7 +128,15 @@ public class Preparation<$SystemUnderTest> {
                     .toFile()
                     .deleteOnExit();
             PrintStream stdoutStream = new PrintStream(stdoutPath.toString());
-            System.setOut(stdoutStream);
+            PrintStream previous = System.out;
+            PrintStream allInOne = new PrintStream(new OutputStream() {
+                @Override
+                public void write(int b) throws IOException {
+                    previous.write(b);
+                    stdoutStream.write(b);
+                }
+            });
+            System.setOut(allInOne);
         });
     }
 
