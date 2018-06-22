@@ -22,7 +22,7 @@
 
 package testasyouthink;
 
-import org.assertj.core.api.Assertions;
+import org.assertj.core.api.SoftAssertions;
 import org.junit.Test;
 import org.mockito.InOrder;
 import org.slf4j.Logger;
@@ -86,6 +86,7 @@ public class ThenStdoutAsResultTest {
         CountDownLatch counterOfThreadsToPrepare = new CountDownLatch(numberOfThreads);
         CountDownLatch callingThreadBlocker = new CountDownLatch(1);
         CountDownLatch counterOfThreadsToComplete = new CountDownLatch(numberOfThreads);
+        SoftAssertions softly = new SoftAssertions();
 
         // WHEN
         IntStream
@@ -107,7 +108,9 @@ public class ThenStdoutAsResultTest {
                             })
                             .thenStdoutAsResult(result -> {
                                 LOGGER.debug("Checking result of thread #{}: {}", count, result);
-                                assertThat(result).hasContent("Stdout as a result of T#" + count);
+                                softly
+                                        .assertThat(result)
+                                        .hasContent("Stdout as a result of T#" + count);
                                 gwtMocks
                                         .get(count)
                                         .thenTheActualResultIsInKeepingWithTheExpectedResult();
@@ -133,5 +136,6 @@ public class ThenStdoutAsResultTest {
                     .thenTheActualResultIsInKeepingWithTheExpectedResult();
             inOrder.verifyNoMoreInteractions();
         });
+        softly.assertAll();
     }
 }
