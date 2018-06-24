@@ -33,7 +33,9 @@ import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayDeque;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Queue;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -48,6 +50,14 @@ public class Preparation<$SystemUnderTest> {
     private Queue<Supplier> argumentSuppliers;
     private $SystemUnderTest systemUnderTest;
     private Path stdoutPath;
+    private static final PrintStream SYSTEM_OUT;
+    private static final Map<Long, PrintStream> STDOUT_STREAMS;
+
+    static {
+        SYSTEM_OUT = System.out;
+        STDOUT_STREAMS = new HashMap<>();
+        redirectStdoutOnce();
+    }
 
     public Preparation() {
         givenSteps = new ArrayDeque<>();
@@ -128,16 +138,27 @@ public class Preparation<$SystemUnderTest> {
             //         .toFile()
             //         .deleteOnExit();
             PrintStream stdoutStream = new PrintStream(stdoutPath.toString());
-            PrintStream previous = System.out;
-            PrintStream allInOne = new PrintStream(new OutputStream() {
-                @Override
-                public void write(int b) throws IOException {
-                    previous.write(b);
-                    stdoutStream.write(b);
-                }
-            });
-            System.setOut(allInOne);
+            STDOUT_STREAMS.put(Thread
+                    .currentThread()
+                    .getId(), stdoutStream);
         });
+    }
+
+    private static void redirectStdoutOnce() {
+        PrintStream allInOne = new PrintStream(new OutputStream() {
+            @Override
+            public void write(int b) throws IOException {
+                SYSTEM_OUT.write(b);
+                if (!STDOUT_STREAMS.isEmpty()) {
+                    STDOUT_STREAMS
+                            .get(Thread
+                                    .currentThread()
+                                    .getId())
+                            .write(b);
+                }
+            }
+        });
+        System.setOut(allInOne);
     }
 
     public Path getStdoutPath() {
