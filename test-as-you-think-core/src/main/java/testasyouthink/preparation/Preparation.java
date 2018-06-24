@@ -50,14 +50,6 @@ public class Preparation<$SystemUnderTest> {
     private Queue<Supplier> argumentSuppliers;
     private $SystemUnderTest systemUnderTest;
     private Path stdoutPath;
-    private static final PrintStream SYSTEM_OUT;
-    private static final Map<Long, PrintStream> STDOUT_STREAMS;
-
-    static {
-        SYSTEM_OUT = System.out;
-        STDOUT_STREAMS = new HashMap<>();
-        redirectStdoutOnce();
-    }
 
     public Preparation() {
         givenSteps = new ArrayDeque<>();
@@ -138,30 +130,43 @@ public class Preparation<$SystemUnderTest> {
             //         .toFile()
             //         .deleteOnExit();
             PrintStream stdoutStream = new PrintStream(stdoutPath.toString());
-            STDOUT_STREAMS.put(Thread
+            StdoutRedirection.STDOUT_STREAMS.put(Thread
                     .currentThread()
                     .getId(), stdoutStream);
         });
     }
 
-    private static void redirectStdoutOnce() {
-        PrintStream allInOne = new PrintStream(new OutputStream() {
-            @Override
-            public void write(int b) throws IOException {
-                SYSTEM_OUT.write(b);
-                if (!STDOUT_STREAMS.isEmpty()) {
-                    STDOUT_STREAMS
-                            .get(Thread
-                                    .currentThread()
-                                    .getId())
-                            .write(b);
-                }
-            }
-        });
-        System.setOut(allInOne);
-    }
-
     public Path getStdoutPath() {
         return stdoutPath;
+    }
+
+    private static class StdoutRedirection {
+
+        private static final Map<Long, PrintStream> STDOUT_STREAMS;
+        private static final PrintStream SYSTEM_OUT;
+
+        static {
+            SYSTEM_OUT = System.out;
+            STDOUT_STREAMS = new HashMap<>();
+            redirectStdoutOnce();
+        }
+
+        private static void redirectStdoutOnce() {
+            SYSTEM_OUT.println("REDIRECTION");
+            PrintStream allInOne = new PrintStream(new OutputStream() {
+                @Override
+                public void write(int b) throws IOException {
+                    SYSTEM_OUT.write(b);
+                    if (!STDOUT_STREAMS.isEmpty()) {
+                        STDOUT_STREAMS
+                                .get(Thread
+                                        .currentThread()
+                                        .getId())
+                                .write(b);
+                    }
+                }
+            });
+            System.setOut(allInOne);
+        }
     }
 }
