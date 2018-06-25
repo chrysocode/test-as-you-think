@@ -126,13 +126,12 @@ public class Preparation<$SystemUnderTest> {
     public void captureStdout() {
         recordGivenStep(() -> {
             stdoutPath = Files.createTempFile("actual_result", ".txt");
-            // stdoutPath
-            //         .toFile()
-            //         .deleteOnExit();
-            PrintStream stdoutStream = new PrintStream(stdoutPath.toString());
+            stdoutPath
+                    .toFile()
+                    .deleteOnExit();
             StdoutRedirection.STDOUT_STREAMS.put(Thread
                     .currentThread()
-                    .getId(), stdoutStream);
+                    .getId(), new PrintStream(stdoutPath.toString()));
         });
     }
 
@@ -152,7 +151,6 @@ public class Preparation<$SystemUnderTest> {
         }
 
         private static void redirectStdoutOnce() {
-            SYSTEM_OUT.println("REDIRECTION");
             PrintStream allInOne = new PrintStream(new OutputStream() {
                 @Override
                 public void write(int b) throws IOException {

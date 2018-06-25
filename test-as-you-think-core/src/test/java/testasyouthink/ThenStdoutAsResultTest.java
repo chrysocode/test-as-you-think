@@ -92,25 +92,20 @@ public class ThenStdoutAsResultTest {
         IntStream
                 .range(0, numberOfThreads)
                 .mapToObj(count -> new Thread(() -> {
-                    LOGGER.debug("Entering in thread #{} :)", count);
                     givenSutClass(SystemUnderTest.class)
                             .givenStdoutToBeCaptured()
                             .when(sut -> {
-                                LOGGER.debug("Thread #{} ready!", count);
                                 counterOfThreadsToPrepare.countDown();
-                                LOGGER.debug("Thread #{} waiting...", count);
                                 callingThreadBlocker.await();
-                                LOGGER.debug("Thread #{} continues.", count);
                                 gwtMocks
                                         .get(count)
                                         .whenAnEventHappensInRelationToAnActionOfTheConsumer();
-                                System.out.println("Stdout as a result of T#" + count);
+                                System.out.println("Stdout as a result of thread #" + count);
                             })
                             .thenStdoutAsResult(result -> {
-                                LOGGER.debug("Checking result of thread #{}: {}", count, result);
                                 softly
                                         .assertThat(result)
-                                        .hasContent("Stdout as a result of T#" + count);
+                                        .hasContent("Stdout as a result of thread #" + count);
                                 gwtMocks
                                         .get(count)
                                         .thenTheActualResultIsInKeepingWithTheExpectedResult();
