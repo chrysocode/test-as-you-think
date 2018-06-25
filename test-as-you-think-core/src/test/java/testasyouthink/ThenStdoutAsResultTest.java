@@ -133,4 +133,32 @@ public class ThenStdoutAsResultTest {
         });
         softly.assertAll();
     }
+
+    @Test
+    public void should_verify_the_standard_error_output_as_a_result_given_a_void_target_method() {
+        // GIVEN
+        GivenWhenThenDefinition gwtMock = mock(GivenWhenThenDefinition.class);
+
+        // WHEN
+        givenSutClass(SystemUnderTest.class)
+                .givenStdoutToBeCaptured()
+                .when(sut -> {
+                    gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+                    System.err.println("Standard error output as a result");
+                })
+                .thenStdoutAsResult(result -> {
+                    gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                    assertThat(result).hasContent("Standard error output as a result");
+                });
+
+        // THEN
+        InOrder inOrder = inOrder(gwtMock);
+        inOrder
+                .verify(gwtMock)
+                .whenAnEventHappensInRelationToAnActionOfTheConsumer();
+        inOrder
+                .verify(gwtMock)
+                .thenTheActualResultIsInKeepingWithTheExpectedResult();
+        inOrder.verifyNoMoreInteractions();
+    }
 }

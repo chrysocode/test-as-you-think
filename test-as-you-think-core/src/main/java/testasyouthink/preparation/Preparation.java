@@ -143,18 +143,21 @@ public class Preparation<$SystemUnderTest> {
 
         private static final Map<Long, PrintStream> STDOUT_STREAMS;
         private static final PrintStream SYSTEM_OUT;
+        private static final PrintStream SYSTEM_ERR;
 
         static {
             SYSTEM_OUT = System.out;
+            SYSTEM_ERR = System.err;
             STDOUT_STREAMS = new HashMap<>();
-            redirectStdoutOnce();
+            redirectOutputOnce(SYSTEM_OUT, System::setOut);
+            redirectOutputOnce(SYSTEM_ERR, System::setErr);
         }
 
-        private static void redirectStdoutOnce() {
+        private static void redirectOutputOnce(final PrintStream printStream, Consumer<PrintStream> redirectTo) {
             PrintStream allInOne = new PrintStream(new OutputStream() {
                 @Override
                 public void write(int b) throws IOException {
-                    SYSTEM_OUT.write(b);
+                    printStream.write(b);
                     if (!STDOUT_STREAMS.isEmpty()) {
                         STDOUT_STREAMS
                                 .get(Thread
@@ -164,7 +167,7 @@ public class Preparation<$SystemUnderTest> {
                     }
                 }
             });
-            System.setOut(allInOne);
+            redirectTo.accept(allInOne);
         }
     }
 }
