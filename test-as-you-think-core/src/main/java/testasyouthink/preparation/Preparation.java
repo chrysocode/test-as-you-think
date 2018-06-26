@@ -129,7 +129,7 @@ public class Preparation<$SystemUnderTest> {
             stdoutPath
                     .toFile()
                     .deleteOnExit();
-            StdoutRedirection.STDOUT_STREAMS.put(Thread
+            StdoutRedirection.STDOUT_TO_FILE_STREAMS.put(Thread
                     .currentThread()
                     .getId(), new PrintStream(stdoutPath.toString()));
         });
@@ -141,14 +141,14 @@ public class Preparation<$SystemUnderTest> {
 
     private static class StdoutRedirection {
 
-        private static final Map<Long, PrintStream> STDOUT_STREAMS;
+        private static final Map<Long, PrintStream> STDOUT_TO_FILE_STREAMS;
         private static final PrintStream SYSTEM_OUT;
         private static final PrintStream SYSTEM_ERR;
 
         static {
             SYSTEM_OUT = System.out;
             SYSTEM_ERR = System.err;
-            STDOUT_STREAMS = new HashMap<>();
+            STDOUT_TO_FILE_STREAMS = new HashMap<>();
             redirectOutputOnce(SYSTEM_OUT, System::setOut);
             redirectOutputOnce(SYSTEM_ERR, System::setErr);
         }
@@ -158,8 +158,8 @@ public class Preparation<$SystemUnderTest> {
                 @Override
                 public void write(int b) throws IOException {
                     printStream.write(b);
-                    if (!STDOUT_STREAMS.isEmpty()) {
-                        STDOUT_STREAMS
+                    if (!STDOUT_TO_FILE_STREAMS.isEmpty()) {
+                        STDOUT_TO_FILE_STREAMS
                                 .get(Thread
                                         .currentThread()
                                         .getId())

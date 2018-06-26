@@ -43,6 +43,10 @@ public class GivenWhenContext<$SystemUnderTest, $Result> {
         preparation.prepareFixturesSeparately();
     }
 
+    public void captureStdout() {
+        preparation.captureStdout();
+    }
+
     public $Result returnResultOrVoid() {
         if (result == null) {
             preparation.prepareFixtures();

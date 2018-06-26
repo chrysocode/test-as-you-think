@@ -44,7 +44,7 @@ import static testasyouthink.TestAsYouThink.givenSutClass;
 
 public class ThenStdoutAsResultTest {
 
-    public static final Logger LOGGER = LoggerFactory.getLogger(ThenStdoutAsResultTest.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ThenStdoutAsResultTest.class);
 
     @Test
     public void should_verify_the_standard_output_as_a_result_given_a_void_target_method() {
@@ -53,14 +53,13 @@ public class ThenStdoutAsResultTest {
 
         // WHEN
         givenSutClass(SystemUnderTest.class)
-                .givenStdoutToBeCaptured()
                 .when(sut -> {
                     gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
                     System.out.println("Stdout as a result");
                 })
-                .thenStdoutAsResult(result -> {
+                .thenStandardOutput(stdout -> {
                     gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                    assertThat(result).hasContent("Stdout as a result");
+                    assertThat(stdout).hasContent("Stdout as a result");
                 });
 
         // THEN
@@ -91,27 +90,24 @@ public class ThenStdoutAsResultTest {
         // WHEN
         IntStream
                 .range(0, numberOfThreads)
-                .mapToObj(count -> new Thread(() -> {
-                    givenSutClass(SystemUnderTest.class)
-                            .givenStdoutToBeCaptured()
-                            .when(sut -> {
-                                counterOfThreadsToPrepare.countDown();
-                                callingThreadBlocker.await();
-                                gwtMocks
-                                        .get(count)
-                                        .whenAnEventHappensInRelationToAnActionOfTheConsumer();
-                                System.out.println("Stdout as a result of thread #" + count);
-                            })
-                            .thenStdoutAsResult(result -> {
-                                softly
-                                        .assertThat(result)
-                                        .hasContent("Stdout as a result of thread #" + count);
-                                gwtMocks
-                                        .get(count)
-                                        .thenTheActualResultIsInKeepingWithTheExpectedResult();
-                                counterOfThreadsToComplete.countDown();
-                            });
-                }))
+                .mapToObj(count -> new Thread(() -> givenSutClass(SystemUnderTest.class)
+                        .when(sut -> {
+                            counterOfThreadsToPrepare.countDown();
+                            callingThreadBlocker.await();
+                            gwtMocks
+                                    .get(count)
+                                    .whenAnEventHappensInRelationToAnActionOfTheConsumer();
+                            System.out.println("Stdout as a result of thread #" + count);
+                        })
+                        .thenStandardOutput(stdout -> {
+                            softly
+                                    .assertThat(stdout)
+                                    .hasContent("Stdout as a result of thread #" + count);
+                            gwtMocks
+                                    .get(count)
+                                    .thenTheActualResultIsInKeepingWithTheExpectedResult();
+                            counterOfThreadsToComplete.countDown();
+                        })))
                 .forEach(Thread::start);
         counterOfThreadsToPrepare.await();
         LOGGER.debug("All threads ready!");
@@ -141,14 +137,13 @@ public class ThenStdoutAsResultTest {
 
         // WHEN
         givenSutClass(SystemUnderTest.class)
-                .givenStdoutToBeCaptured()
                 .when(sut -> {
                     gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
                     System.err.println("Standard error output as a result");
                 })
-                .thenStdoutAsResult(result -> {
+                .thenStandardOutput(stdout -> {
                     gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                    assertThat(result).hasContent("Standard error output as a result");
+                    assertThat(stdout).hasContent("Standard error output as a result");
                 });
 
         // THEN

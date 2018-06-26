@@ -379,9 +379,8 @@ public class ThenAssertionErrorsTest {
     public void should_get_an_assertion_error_from_a_stdout_as_a_file_consumer_given_a_void_target_method() {
         // WHEN
         Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
-                .givenStdoutToBeCaptured()
                 .when(sut -> {})
-                .thenStdoutAsResult(result -> assertThat(true).isFalse()));
+                .thenStandardOutput(result -> assertThat(true).isFalse()));
 
         // THEN
         assertThat(thrown)

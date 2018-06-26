@@ -126,6 +126,7 @@ public class Verification<$SystemUnderTest, $Result> {
     }
 
     public void verifyStdout(CheckedConsumer<File> expectations) {
+        context.captureStdout();
         context.returnResultOrVoid();
         try {
             expectations.accept(context.getStdoutAsFile());

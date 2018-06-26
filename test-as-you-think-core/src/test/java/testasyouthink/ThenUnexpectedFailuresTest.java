@@ -478,9 +478,8 @@ public class ThenUnexpectedFailuresTest {
     public void should_fail_to_verify_a_stdout_expectation_given_a_void_target_method() {
         // WHEN
         Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
-                .givenStdoutToBeCaptured()
                 .when(sut -> {})
-                .thenStdoutAsResult(result -> {
+                .thenStandardOutput(result -> {
                     throw new UnexpectedException();
                 }));
 

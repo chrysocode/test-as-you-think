@@ -59,8 +59,6 @@ public interface GivenWhenThenDsl {
             AndGiven<$SystemUnderTest> given(String fixtureSpecification, CheckedRunnable givenStep);
 
             AndGiven<$SystemUnderTest> given(String fixtureSpecification, CheckedConsumer<$SystemUnderTest> givenStep);
-
-            AndGiven<$SystemUnderTest> givenStdoutToBeCaptured();
         }
 
         interface AndGiven<$SystemUnderTest> extends GivenArgument<$SystemUnderTest>, When<$SystemUnderTest> {
@@ -245,7 +243,7 @@ public interface GivenWhenThenDsl {
 
             void thenItSucceeds();
 
-            AndThenWithoutResult<$SystemUnderTest> thenStdoutAsResult(CheckedConsumer<File> thenStep);
+            AndThenWithoutResult<$SystemUnderTest> thenStandardOutput(CheckedConsumer<File> thenStep);
         }
 
         interface AndThenWithoutResult<$SystemUnderTest> {
