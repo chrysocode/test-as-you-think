@@ -209,6 +209,8 @@ public interface GivenWhenThenDsl {
 
             void then(CheckedPredicate<$Result> thenStepAboutResult,
                     CheckedPredicate<$SystemUnderTest> thenStepAboutSystemUnderTest);
+
+            AndThen<$SystemUnderTest, $Result> thenStandardOutput(CheckedConsumer<File> thenStep);
         }
 
         interface AndThen<$SystemUnderTest, $Result> {

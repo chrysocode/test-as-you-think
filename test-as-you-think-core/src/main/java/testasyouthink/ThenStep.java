@@ -31,6 +31,7 @@ import testasyouthink.function.CheckedPredicate;
 import testasyouthink.function.CheckedRunnable;
 import testasyouthink.verification.Verification;
 
+import java.io.File;
 import java.time.Duration;
 import java.util.List;
 
@@ -153,6 +154,12 @@ public class ThenStep<$SystemUnderTest, $Result> implements Then<$SystemUnderTes
     @Override
     public AndThen<$SystemUnderTest, $Result> thenSutRepliesWithin(Duration durationLimit) {
         verification.verify(durationLimit);
+        return this;
+    }
+
+    @Override
+    public AndThen<$SystemUnderTest, $Result> thenStandardOutput(CheckedConsumer<File> thenStep) {
+        verification.verifyStdout(thenStep);
         return this;
     }
 }

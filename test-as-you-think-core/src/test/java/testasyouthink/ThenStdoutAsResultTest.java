@@ -40,6 +40,7 @@ import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static testasyouthink.TestAsYouThink.givenSutClass;
 
 public class ThenStdoutAsResultTest {
@@ -153,6 +154,38 @@ public class ThenStdoutAsResultTest {
                 .whenAnEventHappensInRelationToAnActionOfTheConsumer();
         inOrder
                 .verify(gwtMock)
+                .thenTheActualResultIsInKeepingWithTheExpectedResult();
+        inOrder.verifyNoMoreInteractions();
+    }
+
+    @Test
+    public void should_verify_the_standard_output_as_a_result_given_a_non_void_target_method() {
+        // GIVEN
+        GivenWhenThenDefinition gwtMock = mock(GivenWhenThenDefinition.class);
+
+        // WHEN
+        givenSutClass(SystemUnderTest.class)
+                .when(sut -> {
+                    gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+                    System.out.println("Stdout as a result");
+                    return "expected result";
+                })
+                .thenStandardOutput(stdout -> {
+                    gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                    assertThat(stdout).hasContent("Stdout as a result");
+                })
+                .and(result -> {
+                    gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                    assertThat(result).isEqualTo("expected result");
+                });
+
+        // THEN
+        InOrder inOrder = inOrder(gwtMock);
+        inOrder
+                .verify(gwtMock)
+                .whenAnEventHappensInRelationToAnActionOfTheConsumer();
+        inOrder
+                .verify(gwtMock, times(2))
                 .thenTheActualResultIsInKeepingWithTheExpectedResult();
         inOrder.verifyNoMoreInteractions();
     }
