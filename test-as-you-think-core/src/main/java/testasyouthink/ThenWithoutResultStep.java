@@ -117,4 +117,9 @@ public class ThenWithoutResultStep<$SystemUnderTest> implements ThenWithoutResul
         verification.verifyStdout(thenStep);
         return this;
     }
+
+    @Override
+    public AndThenWithoutResult<$SystemUnderTest> andStandardOutput(CheckedConsumer<File> thenStep) {
+        return thenStandardOutput(thenStep);
+    }
 }

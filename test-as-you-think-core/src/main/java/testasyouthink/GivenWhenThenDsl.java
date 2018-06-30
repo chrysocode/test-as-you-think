@@ -260,6 +260,8 @@ public interface GivenWhenThenDsl {
                     CheckedConsumer<$SystemUnderTest> thenStep);
 
             AndThenWithoutResult<$SystemUnderTest> and(CheckedBooleanSupplier thenStep);
+
+            AndThenWithoutResult<$SystemUnderTest> andStandardOutput(CheckedConsumer<File> thenStep);
         }
 
         interface ThenFailure {
