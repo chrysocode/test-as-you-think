@@ -133,8 +133,8 @@ public class Preparation<$SystemUnderTest> {
                 stdoutPath
                         .toFile()
                         .deleteOnExit();
-                StdoutRedirection.STDOUT_PATHS.put(currentThread().getId(), stdoutPath);
-                StdoutRedirection.STDOUT_TO_FILE_STREAMS.put(currentThread().getId(),
+                StandardRedirection.STDOUT_PATHS.put(currentThread().getId(), stdoutPath);
+                StandardRedirection.STREAMS_TO_FILE.put(currentThread().getId(),
                         new PrintStream(stdoutPath.toString()));
             });
 
@@ -143,13 +143,13 @@ public class Preparation<$SystemUnderTest> {
     }
 
     public Path getStdoutPath() {
-        return StdoutRedirection.STDOUT_PATHS.get(currentThread().getId());
+        return StandardRedirection.STDOUT_PATHS.get(currentThread().getId());
     }
 
-    private static class StdoutRedirection {
+    private static class StandardRedirection {
 
         private static final Map<Long, Path> STDOUT_PATHS;
-        private static final Map<Long, PrintStream> STDOUT_TO_FILE_STREAMS;
+        private static final Map<Long, PrintStream> STREAMS_TO_FILE;
         private static final PrintStream SYSTEM_OUT;
         private static final PrintStream SYSTEM_ERR;
 
@@ -157,18 +157,23 @@ public class Preparation<$SystemUnderTest> {
             SYSTEM_OUT = System.out;
             SYSTEM_ERR = System.err;
             STDOUT_PATHS = new HashMap<>();
-            STDOUT_TO_FILE_STREAMS = new HashMap<>();
-            redirectOutputOnce(SYSTEM_OUT, System::setOut);
-            redirectOutputOnce(SYSTEM_ERR, System::setErr);
+            STREAMS_TO_FILE = new HashMap<>();
+
+            commuteStandardOutputs();
         }
 
-        private static void redirectOutputOnce(final PrintStream printStream, Consumer<PrintStream> redirectTo) {
+        private static void commuteStandardOutputs() {
+            redirectStreamOnce(SYSTEM_OUT, System::setOut);
+            redirectStreamOnce(SYSTEM_ERR, System::setErr);
+        }
+
+        private static void redirectStreamOnce(final PrintStream printStream, Consumer<PrintStream> redirectTo) {
             PrintStream allInOne = new PrintStream(new OutputStream() {
                 @Override
                 public void write(int b) throws IOException {
                     printStream.write(b);
-                    if (!STDOUT_TO_FILE_STREAMS.isEmpty()) {
-                        STDOUT_TO_FILE_STREAMS
+                    if (!STREAMS_TO_FILE.isEmpty()) {
+                        STREAMS_TO_FILE
                                 .get(currentThread().getId())
                                 .write(b);
                     }
