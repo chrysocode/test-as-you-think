@@ -2,7 +2,7 @@
  * #%L
  * Test As You Think
  * %%
- * Copyright (C) 2017 Xavier Pigeon and TestAsYouThink contributors
+ * Copyright (C) 2017 - 2018 Xavier Pigeon and TestAsYouThink contributors
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -472,5 +472,22 @@ public class ThenUnexpectedFailuresTest {
         assertThat(thrown)
                 .isInstanceOf(AssertionError.class)
                 .hasMessageContaining(UnexpectedException.class.getName());
+    }
+
+    @Test
+    public void should_fail_to_verify_a_stdout_expectation_given_a_void_target_method() {
+        // WHEN
+        Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                .when(sut -> {})
+                .thenStandardOutput(result -> {
+                    throw new UnexpectedException();
+                }));
+
+        // THEN
+        LOGGER.debug("Stack trace", thrown);
+        assertThat(thrown)
+                .isInstanceOf(VerificationError.class)
+                .hasMessage("Fails to verify the expectations of the stdout!")
+                .hasCauseInstanceOf(UnexpectedException.class);
     }
 }

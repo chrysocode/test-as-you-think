@@ -2,7 +2,7 @@
  * #%L
  * Test As You Think
  * %%
- * Copyright (C) 2017 Xavier Pigeon and TestAsYouThink contributors
+ * Copyright (C) 2017 - 2018 Xavier Pigeon and TestAsYouThink contributors
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -368,6 +368,19 @@ public class ThenAssertionErrorsTest {
                 .when(sut -> "result")
                 .then("Expectations", () -> {})
                 .and("Expectations", () -> assertThat(true).isFalse()));
+
+        // THEN
+        assertThat(thrown)
+                .isInstanceOf(AssertionError.class)
+                .hasNoCause();
+    }
+
+    @Test
+    public void should_get_an_assertion_error_from_a_stdout_as_a_file_consumer_given_a_void_target_method() {
+        // WHEN
+        Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                .when(sut -> {})
+                .thenStandardOutput(result -> assertThat(true).isFalse()));
 
         // THEN
         assertThat(thrown)

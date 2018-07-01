@@ -2,7 +2,7 @@
  * #%L
  * Test As You Think
  * %%
- * Copyright (C) 2017 Xavier Pigeon and TestAsYouThink contributors
+ * Copyright (C) 2017 - 2018 Xavier Pigeon and TestAsYouThink contributors
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -23,16 +23,18 @@
 package testasyouthink;
 
 import testasyouthink.GivenWhenThenDsl.VerificationStage.AndThenWithoutResult;
+import testasyouthink.GivenWhenThenDsl.VerificationStage.AndThenWithoutResultStandardOutputCaptured;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.ThenWithoutResult;
 import testasyouthink.function.CheckedConsumer;
 import testasyouthink.function.CheckedRunnable;
 import testasyouthink.function.CheckedSuppliers.CheckedBooleanSupplier;
 import testasyouthink.verification.Verification;
 
+import java.io.File;
 import java.time.Duration;
 
 public class ThenWithoutResultStep<$SystemUnderTest> implements ThenWithoutResult<$SystemUnderTest>,
-        AndThenWithoutResult<$SystemUnderTest> {
+        AndThenWithoutResult<$SystemUnderTest>, AndThenWithoutResultStandardOutputCaptured<$SystemUnderTest> {
 
     private final Verification<$SystemUnderTest, Void> verification;
 
@@ -109,5 +111,30 @@ public class ThenWithoutResultStep<$SystemUnderTest> implements ThenWithoutResul
     @Override
     public void thenItSucceeds() {
         verification.verifyNoFailure();
+    }
+
+    @Override
+    public AndThenWithoutResultStandardOutputCaptured<$SystemUnderTest> thenStandardOutput(
+            CheckedConsumer<File> thenStep) {
+        verification.verifyStdout(thenStep);
+        return this;
+    }
+
+    @Override
+    public AndThenWithoutResultStandardOutputCaptured<$SystemUnderTest> thenStandardOutput(
+            String expectationSpecification, CheckedConsumer<File> thenStep) {
+        return thenStandardOutput(thenStep);
+    }
+
+    @Override
+    public AndThenWithoutResultStandardOutputCaptured<$SystemUnderTest> andStandardOutput(
+            CheckedConsumer<File> thenStep) {
+        return thenStandardOutput(thenStep);
+    }
+
+    @Override
+    public AndThenWithoutResultStandardOutputCaptured<$SystemUnderTest> andStandardOutput(
+            String expectationSpecification, CheckedConsumer<File> thenStep) {
+        return thenStandardOutput(thenStep);
     }
 }

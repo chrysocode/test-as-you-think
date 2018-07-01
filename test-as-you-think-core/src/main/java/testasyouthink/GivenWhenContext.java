@@ -2,7 +2,7 @@
  * #%L
  * Test As You Think
  * %%
- * Copyright (C) 2017 Xavier Pigeon and TestAsYouThink contributors
+ * Copyright (C) 2017 - 2018 Xavier Pigeon and TestAsYouThink contributors
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -25,6 +25,7 @@ package testasyouthink;
 import testasyouthink.execution.Execution;
 import testasyouthink.preparation.Preparation;
 
+import java.io.File;
 import java.util.Optional;
 
 public class GivenWhenContext<$SystemUnderTest, $Result> {
@@ -42,6 +43,10 @@ public class GivenWhenContext<$SystemUnderTest, $Result> {
         preparation.prepareFixturesSeparately();
     }
 
+    public void captureStdout() {
+        preparation.captureStdout();
+    }
+
     public $Result returnResultOrVoid() {
         if (result == null) {
             preparation.prepareFixtures();
@@ -54,5 +59,11 @@ public class GivenWhenContext<$SystemUnderTest, $Result> {
         return preparation
                 .supplySut()
                 .get();
+    }
+
+    public File getStdoutAsFile() {
+        return preparation
+                .getStdoutPath()
+                .toFile();
     }
 }
