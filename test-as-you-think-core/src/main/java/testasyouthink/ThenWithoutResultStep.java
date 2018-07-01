@@ -23,6 +23,7 @@
 package testasyouthink;
 
 import testasyouthink.GivenWhenThenDsl.VerificationStage.AndThenWithoutResult;
+import testasyouthink.GivenWhenThenDsl.VerificationStage.AndThenWithoutResultStandardOutputCaptured;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.ThenWithoutResult;
 import testasyouthink.function.CheckedConsumer;
 import testasyouthink.function.CheckedRunnable;
@@ -33,7 +34,7 @@ import java.io.File;
 import java.time.Duration;
 
 public class ThenWithoutResultStep<$SystemUnderTest> implements ThenWithoutResult<$SystemUnderTest>,
-        AndThenWithoutResult<$SystemUnderTest> {
+        AndThenWithoutResult<$SystemUnderTest>, AndThenWithoutResultStandardOutputCaptured<$SystemUnderTest> {
 
     private final Verification<$SystemUnderTest, Void> verification;
 
@@ -113,13 +114,15 @@ public class ThenWithoutResultStep<$SystemUnderTest> implements ThenWithoutResul
     }
 
     @Override
-    public AndThenWithoutResult<$SystemUnderTest> thenStandardOutput(CheckedConsumer<File> thenStep) {
+    public AndThenWithoutResultStandardOutputCaptured<$SystemUnderTest> thenStandardOutput(
+            CheckedConsumer<File> thenStep) {
         verification.verifyStdout(thenStep);
         return this;
     }
 
     @Override
-    public AndThenWithoutResult<$SystemUnderTest> andStandardOutput(CheckedConsumer<File> thenStep) {
+    public AndThenWithoutResultStandardOutputCaptured<$SystemUnderTest> andStandardOutput(
+            CheckedConsumer<File> thenStep) {
         return thenStandardOutput(thenStep);
     }
 }

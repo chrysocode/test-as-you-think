@@ -210,7 +210,7 @@ public interface GivenWhenThenDsl {
             void then(CheckedPredicate<$Result> thenStepAboutResult,
                     CheckedPredicate<$SystemUnderTest> thenStepAboutSystemUnderTest);
 
-            AndThen<$SystemUnderTest, $Result> thenStandardOutput(CheckedConsumer<File> thenStep);
+            AndThenStandardOutputCaptured<$SystemUnderTest, $Result> thenStandardOutput(CheckedConsumer<File> thenStep);
         }
 
         interface AndThen<$SystemUnderTest, $Result> {
@@ -224,8 +224,11 @@ public interface GivenWhenThenDsl {
             AndThen<$SystemUnderTest, $Result> and(String expectationSpecification, CheckedRunnable thenStep);
 
             AndThen<$SystemUnderTest, $Result> and(CheckedPredicate<$Result> thenStep);
+        }
 
-            AndThen<$SystemUnderTest, $Result> andStandardOutput(CheckedConsumer<File> thenStep);
+        interface AndThenStandardOutputCaptured<$SystemUnderTest, $Result> extends AndThen<$SystemUnderTest, $Result> {
+
+            AndThenStandardOutputCaptured<$SystemUnderTest, $Result> andStandardOutput(CheckedConsumer<File> thenStep);
         }
 
         interface ThenWithoutResult<$SystemUnderTest> {
@@ -247,7 +250,8 @@ public interface GivenWhenThenDsl {
 
             void thenItSucceeds();
 
-            AndThenWithoutResult<$SystemUnderTest> thenStandardOutput(CheckedConsumer<File> thenStep);
+            AndThenWithoutResultStandardOutputCaptured<$SystemUnderTest> thenStandardOutput(
+                    CheckedConsumer<File> thenStep);
         }
 
         interface AndThenWithoutResult<$SystemUnderTest> {
@@ -262,8 +266,13 @@ public interface GivenWhenThenDsl {
                     CheckedConsumer<$SystemUnderTest> thenStep);
 
             AndThenWithoutResult<$SystemUnderTest> and(CheckedBooleanSupplier thenStep);
+        }
 
-            AndThenWithoutResult<$SystemUnderTest> andStandardOutput(CheckedConsumer<File> thenStep);
+        interface AndThenWithoutResultStandardOutputCaptured<$SystemUnderTest> extends
+                AndThenWithoutResult<$SystemUnderTest> {
+
+            AndThenWithoutResultStandardOutputCaptured<$SystemUnderTest> andStandardOutput(
+                    CheckedConsumer<File> thenStep);
         }
 
         interface ThenFailure {

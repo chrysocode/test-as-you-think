@@ -24,6 +24,7 @@ package testasyouthink;
 
 import testasyouthink.GivenWhenThenDsl.VerificationStage.AndThen;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.AndThenFailure;
+import testasyouthink.GivenWhenThenDsl.VerificationStage.AndThenStandardOutputCaptured;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.Then;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.ThenFailure;
 import testasyouthink.function.CheckedConsumer;
@@ -36,7 +37,8 @@ import java.time.Duration;
 import java.util.List;
 
 public class ThenStep<$SystemUnderTest, $Result> implements Then<$SystemUnderTest, $Result>,
-        AndThen<$SystemUnderTest, $Result>, ThenFailure, AndThenFailure {
+        AndThen<$SystemUnderTest, $Result>, ThenFailure, AndThenFailure,
+        AndThenStandardOutputCaptured<$SystemUnderTest, $Result> {
 
     private Verification<$SystemUnderTest, $Result> verification;
 
@@ -158,13 +160,13 @@ public class ThenStep<$SystemUnderTest, $Result> implements Then<$SystemUnderTes
     }
 
     @Override
-    public AndThen<$SystemUnderTest, $Result> thenStandardOutput(CheckedConsumer<File> thenStep) {
+    public AndThenStandardOutputCaptured<$SystemUnderTest, $Result> thenStandardOutput(CheckedConsumer<File> thenStep) {
         verification.verifyStdout(thenStep);
         return this;
     }
 
     @Override
-    public AndThen<$SystemUnderTest, $Result> andStandardOutput(CheckedConsumer<File> thenStep) {
+    public AndThenStandardOutputCaptured<$SystemUnderTest, $Result> andStandardOutput(CheckedConsumer<File> thenStep) {
         return thenStandardOutput(thenStep);
     }
 }
