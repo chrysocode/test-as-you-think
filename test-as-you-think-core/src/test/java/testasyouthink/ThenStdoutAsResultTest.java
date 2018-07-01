@@ -253,4 +253,37 @@ public class ThenStdoutAsResultTest {
                 .thenTheActualResultIsInKeepingWithTheExpectedResult();
         inOrder.verifyNoMoreInteractions();
     }
+
+    @Test
+    public void
+    should_verify_the_standard_output_in_2_times_by_specifying_expectations_given_a_non_void_target_method() {
+        // GIVEN
+        GivenWhenThenDefinition gwtMock = mock(GivenWhenThenDefinition.class);
+
+        // WHEN
+        givenSutClass(SystemUnderTest.class)
+                .when(sut -> {
+                    gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+                    System.out.println("Stdout as a result\nwith 2 lines");
+                    return "expected result";
+                })
+                .thenStandardOutput("number of lines", stdout -> {
+                    gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                    assertThat(linesOf(stdout)).hasSize(2);
+                })
+                .andStandardOutput("content", stdout -> {
+                    gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                    assertThat(stdout).hasContent("Stdout as a result\nwith 2 lines");
+                });
+
+        // THEN
+        InOrder inOrder = inOrder(gwtMock);
+        inOrder
+                .verify(gwtMock)
+                .whenAnEventHappensInRelationToAnActionOfTheConsumer();
+        inOrder
+                .verify(gwtMock, times(2))
+                .thenTheActualResultIsInKeepingWithTheExpectedResult();
+        inOrder.verifyNoMoreInteractions();
+    }
 }
