@@ -40,6 +40,8 @@ import java.util.Queue;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import static java.lang.Thread.currentThread;
+
 public class Preparation<$SystemUnderTest> {
 
     private final Functions functions = Functions.INSTANCE;
@@ -49,11 +51,12 @@ public class Preparation<$SystemUnderTest> {
     private Supplier<$SystemUnderTest> givenSutStep;
     private Queue<Supplier> argumentSuppliers;
     private $SystemUnderTest systemUnderTest;
-    private Path stdoutPath;
+    private boolean stdoutCaptured;
 
     public Preparation() {
         givenSteps = new ArrayDeque<>();
         argumentSuppliers = new LinkedList<>();
+        stdoutCaptured = false;
     }
 
     public Preparation(Class<$SystemUnderTest> sutClass) {
@@ -124,23 +127,28 @@ public class Preparation<$SystemUnderTest> {
     }
 
     public void captureStdout() {
-        recordGivenStep(() -> {
-            stdoutPath = Files.createTempFile("actual_result", ".txt");
-            stdoutPath
-                    .toFile()
-                    .deleteOnExit();
-            StdoutRedirection.STDOUT_TO_FILE_STREAMS.put(Thread
-                    .currentThread()
-                    .getId(), new PrintStream(stdoutPath.toString()));
-        });
+        if (!stdoutCaptured) {
+            recordGivenStep(() -> {
+                Path stdoutPath = Files.createTempFile("actual_result", ".txt");
+                stdoutPath
+                        .toFile()
+                        .deleteOnExit();
+                StdoutRedirection.STDOUT_PATHS.put(currentThread().getId(), stdoutPath);
+                StdoutRedirection.STDOUT_TO_FILE_STREAMS.put(currentThread().getId(),
+                        new PrintStream(stdoutPath.toString()));
+            });
+
+            stdoutCaptured = true;
+        }
     }
 
     public Path getStdoutPath() {
-        return stdoutPath;
+        return StdoutRedirection.STDOUT_PATHS.get(currentThread().getId());
     }
 
     private static class StdoutRedirection {
 
+        private static final Map<Long, Path> STDOUT_PATHS;
         private static final Map<Long, PrintStream> STDOUT_TO_FILE_STREAMS;
         private static final PrintStream SYSTEM_OUT;
         private static final PrintStream SYSTEM_ERR;
@@ -148,6 +156,7 @@ public class Preparation<$SystemUnderTest> {
         static {
             SYSTEM_OUT = System.out;
             SYSTEM_ERR = System.err;
+            STDOUT_PATHS = new HashMap<>();
             STDOUT_TO_FILE_STREAMS = new HashMap<>();
             redirectOutputOnce(SYSTEM_OUT, System::setOut);
             redirectOutputOnce(SYSTEM_ERR, System::setErr);
@@ -160,9 +169,7 @@ public class Preparation<$SystemUnderTest> {
                     printStream.write(b);
                     if (!STDOUT_TO_FILE_STREAMS.isEmpty()) {
                         STDOUT_TO_FILE_STREAMS
-                                .get(Thread
-                                        .currentThread()
-                                        .getId())
+                                .get(currentThread().getId())
                                 .write(b);
                     }
                 }
