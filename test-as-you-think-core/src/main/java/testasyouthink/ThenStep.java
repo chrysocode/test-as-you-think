@@ -162,4 +162,9 @@ public class ThenStep<$SystemUnderTest, $Result> implements Then<$SystemUnderTes
         verification.verifyStdout(thenStep);
         return this;
     }
+
+    @Override
+    public AndThen<$SystemUnderTest, $Result> andStandardOutput(CheckedConsumer<File> thenStep) {
+        return thenStandardOutput(thenStep);
+    }
 }

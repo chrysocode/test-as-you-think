@@ -224,6 +224,8 @@ public interface GivenWhenThenDsl {
             AndThen<$SystemUnderTest, $Result> and(String expectationSpecification, CheckedRunnable thenStep);
 
             AndThen<$SystemUnderTest, $Result> and(CheckedPredicate<$Result> thenStep);
+
+            AndThen<$SystemUnderTest, $Result> andStandardOutput(CheckedConsumer<File> thenStep);
         }
 
         interface ThenWithoutResult<$SystemUnderTest> {
