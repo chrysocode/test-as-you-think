@@ -22,9 +22,9 @@
 
 package testasyouthink;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import testasyouthink.fixture.GivenWhenThenDefinition;
 import testasyouthink.fixture.SystemUnderTest;
@@ -34,24 +34,24 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static testasyouthink.TestAsYouThink.givenSutClass;
 import static testasyouthink.TestAsYouThink.when;
 
-public class ThenNoFailureTest {
+class ThenNoFailureTest {
 
     private GivenWhenThenDefinition gwtMock;
 
-    @Before
-    public void prepareFixtures() {
+    @BeforeEach
+    void prepareFixtures() {
         gwtMock = Mockito.mock(GivenWhenThenDefinition.class);
     }
 
-    @After
-    public void verifyMocks() {
+    @AfterEach
+    void verifyMocks() {
         // THEN
         verify(gwtMock).whenAnEventHappensInRelationToAnActionOfTheConsumer();
         verifyNoMoreInteractions(gwtMock);
     }
 
     @Test
-    public void should_verify_no_failure_happened_during_the_execution_stage() {
+    void should_verify_no_failure_happened_during_the_execution_stage() {
         // WHEN
         givenSutClass(SystemUnderTest.class)
                 .when(sut -> { gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer(); })
@@ -59,7 +59,7 @@ public class ThenNoFailureTest {
     }
 
     @Test
-    public void should_verify_no_failure_happened_during_the_execution_stage_while_starting_with_the_event() {
+    void should_verify_no_failure_happened_during_the_execution_stage_while_starting_with_the_event() {
         // WHEN
         when(() -> gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer()).thenItSucceeds();
     }

@@ -22,8 +22,8 @@
 
 package testasyouthink;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import testasyouthink.fixture.GivenWhenThenDefinition;
 import testasyouthink.fixture.SystemUnderTest;
 import testasyouthink.function.CheckedConsumer;
@@ -41,17 +41,17 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static testasyouthink.TestAsYouThink.givenSutClass;
 
-public class ThenSutRepliesWithinTimeLimitTest {
+class ThenSutRepliesWithinTimeLimitTest {
 
     private GivenWhenThenDefinition gwtDefinition;
 
-    @Before
-    public void prepareFixtures() {
+    @BeforeEach
+    void prepareFixtures() {
         gwtDefinition = mock(GivenWhenThenDefinition.class);
     }
 
     @Test
-    public void should_reply_within_a_time_limit_given_a_void_method() {
+    void should_reply_within_a_time_limit_given_a_void_method() {
         // WHEN
         givenSutClass(SystemUnderTest.class)
                 .given(() -> {
@@ -70,7 +70,7 @@ public class ThenSutRepliesWithinTimeLimitTest {
     }
 
     @Test
-    public void should_reply_within_a_time_limit_given_a_method_with_a_parameter() {
+    void should_reply_within_a_time_limit_given_a_method_with_a_parameter() {
         // WHEN
         givenSutClass(SystemUnderTest.class)
                 .givenArgument(() -> {
@@ -92,7 +92,7 @@ public class ThenSutRepliesWithinTimeLimitTest {
     }
 
     @Test
-    public void should_reply_within_a_time_limit_given_a_method_with_a_mutable_parameter() {
+    void should_reply_within_a_time_limit_given_a_method_with_a_mutable_parameter() {
         // WHEN
         givenSutClass(SystemUnderTest.class)
                 .givenArgument(StringBuilder.class, mutable -> {
@@ -114,7 +114,7 @@ public class ThenSutRepliesWithinTimeLimitTest {
     }
 
     @Test
-    public void should_reply_within_a_time_limit_given_a_non_void_method() {
+    void should_reply_within_a_time_limit_given_a_non_void_method() {
         // WHEN
         givenSutClass(SystemUnderTest.class)
                 .given(() -> {
@@ -139,7 +139,7 @@ public class ThenSutRepliesWithinTimeLimitTest {
     }
 
     @Test
-    public void should_fail_to_reply_within_a_time_limit_given_a_void_method() {
+    void should_fail_to_reply_within_a_time_limit_given_a_void_method() {
         assertThatThrownBy(() -> givenSutClass(SystemUnderTest.class)
                 .when(sut -> {
                     sleep(1000);
@@ -151,7 +151,7 @@ public class ThenSutRepliesWithinTimeLimitTest {
     }
 
     @Test
-    public void should_fail_to_reply_within_a_duration_limit_given_a_void_method() {
+    void should_fail_to_reply_within_a_duration_limit_given_a_void_method() {
         assertThatThrownBy(() -> givenSutClass(SystemUnderTest.class)
                 .when(sut -> {
                     sleep(1000);
@@ -163,7 +163,7 @@ public class ThenSutRepliesWithinTimeLimitTest {
     }
 
     @Test
-    public void should_fail_to_execute_when_the_current_thread_was_interrupted_while_waiting_given_a_void_method() {
+    void should_fail_to_execute_when_the_current_thread_was_interrupted_while_waiting_given_a_void_method() {
         assertThatThrownBy(() -> givenSutClass(SystemUnderTest.class)
                 .when(sut -> {
                     currentThread()
@@ -178,7 +178,7 @@ public class ThenSutRepliesWithinTimeLimitTest {
     }
 
     @Test
-    public void should_fail_to_execute_when_the_computation_throws_an_exception_given_a_void_method() {
+    void should_fail_to_execute_when_the_computation_throws_an_exception_given_a_void_method() {
         assertThatThrownBy(() -> givenSutClass(SystemUnderTest.class)
                 .when((CheckedConsumer<SystemUnderTest>) sut -> {
                     throw new Exception("unexpected exception");
@@ -190,7 +190,7 @@ public class ThenSutRepliesWithinTimeLimitTest {
     }
 
     @Test
-    public void should_fail_to_reply_within_a_time_limit_given_a_non_void_method() {
+    void should_fail_to_reply_within_a_time_limit_given_a_non_void_method() {
         assertThatThrownBy(() -> givenSutClass(SystemUnderTest.class)
                 .when(sut -> {
                     sleep(1000);
@@ -203,7 +203,7 @@ public class ThenSutRepliesWithinTimeLimitTest {
     }
 
     @Test
-    public void should_fail_to_reply_within_a_duration_limit_given_a_non_void_method() {
+    void should_fail_to_reply_within_a_duration_limit_given_a_non_void_method() {
         assertThatThrownBy(() -> givenSutClass(SystemUnderTest.class)
                 .when(sut -> {
                     sleep(1000);

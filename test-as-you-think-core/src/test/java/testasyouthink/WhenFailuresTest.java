@@ -22,8 +22,8 @@
 
 package testasyouthink;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import testasyouthink.execution.ExecutionError;
@@ -42,21 +42,21 @@ import static testasyouthink.TestAsYouThink.givenSut;
 import static testasyouthink.TestAsYouThink.when;
 import static testasyouthink.fixture.Specifications.ExpectedMessage.EXPECTED_EXECUTION_FAILURE_MESSAGE;
 
-public class WhenFailuresTest {
+class WhenFailuresTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WhenFailuresTest.class);
     private SystemUnderTest systemUnderTestMock;
     private GivenWhenThenDefinition givenWhenThenDefinition;
 
-    @Before
-    public void prepareFixtures() {
+    @BeforeEach
+    void prepareFixtures() {
         // GIVEN
         systemUnderTestMock = mock(SystemUnderTest.class);
         givenWhenThenDefinition = mock(GivenWhenThenDefinition.class);
     }
 
     @Test
-    public void should_fail_to_execute_given_a_non_void_method() throws Throwable {
+    void should_fail_to_execute_given_a_non_void_method() throws Throwable {
         // GIVEN
         when(systemUnderTestMock.nonVoidMethodWithThrowsClause()).thenThrow(UnexpectedException.class);
 
@@ -75,7 +75,7 @@ public class WhenFailuresTest {
     }
 
     @Test
-    public void should_fail_to_execute_given_a_void_method() throws Throwable {
+    void should_fail_to_execute_given_a_void_method() throws Throwable {
         // GIVEN
         doThrow(UnexpectedException.class)
                 .when(systemUnderTestMock)
@@ -96,7 +96,7 @@ public class WhenFailuresTest {
     }
 
     @Test
-    public void should_fail_to_execute_directly_a_non_void_method() {
+    void should_fail_to_execute_directly_a_non_void_method() {
         // WHEN
         Throwable thrown = catchThrowable(() -> when(() -> {
             throw new UnexpectedException();
@@ -112,7 +112,7 @@ public class WhenFailuresTest {
     }
 
     @Test
-    public void should_fail_to_execute_directly_a_void_method() {
+    void should_fail_to_execute_directly_a_void_method() {
         // WHEN
         Throwable thrown = catchThrowable(() -> when((CheckedRunnable) () -> {
             throw new UnexpectedException();

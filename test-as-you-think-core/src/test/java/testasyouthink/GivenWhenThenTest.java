@@ -22,8 +22,8 @@
 
 package testasyouthink;
 
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 import testasyouthink.fixture.GivenWhenThenDefinition;
 import testasyouthink.fixture.SystemUnderTest;
 
@@ -33,19 +33,19 @@ import static testasyouthink.TestAsYouThink.givenSut;
 import static testasyouthink.TestAsYouThink.givenSutClass;
 import static testasyouthink.fixture.GivenWhenThenDefinition.orderedSteps;
 
-public class GivenWhenThenTest {
+class GivenWhenThenTest {
 
     private static final String EXPECTED_RESULT = "expected result";
     private GivenWhenThenDefinition givenWhenThenDefinitionMock;
 
-    @After
-    public void verifyMocks() {
+    @AfterEach
+    void verifyMocks() {
         // THEN
         verify(givenWhenThenDefinitionMock);
     }
 
     @Test
-    public void should_follow_the_given_when_then_full_sequence_given_a_non_void_method() {
+    void should_follow_the_given_when_then_full_sequence_given_a_non_void_method() {
         // GIVEN
         givenWhenThenDefinitionMock = orderedSteps();
 
@@ -60,7 +60,7 @@ public class GivenWhenThenTest {
     }
 
     @Test
-    public void should_follow_the_given_when_then_full_sequence_given_a_void_method() {
+    void should_follow_the_given_when_then_full_sequence_given_a_void_method() {
         // GIVEN
         givenWhenThenDefinitionMock = orderedSteps();
 
@@ -72,7 +72,7 @@ public class GivenWhenThenTest {
     }
 
     @Test
-    public void should_follow_the_given_when_then_full_sequence_given_a_sut_class_to_be_instantiated() {
+    void should_follow_the_given_when_then_full_sequence_given_a_sut_class_to_be_instantiated() {
         // GIVEN
         givenWhenThenDefinitionMock = orderedSteps();
 
@@ -90,7 +90,7 @@ public class GivenWhenThenTest {
     }
 
     @Test
-    public void should_verify_expectations_on_the_sut_given_a_void_method() {
+    void should_verify_expectations_on_the_sut_given_a_void_method() {
         // GIVEN
         givenWhenThenDefinitionMock = orderedSteps();
 
@@ -108,7 +108,7 @@ public class GivenWhenThenTest {
     }
 
     @Test
-    public void should_verify_expectations_on_both_the_result_and_the_sut_given_a_non_void_method() {
+    void should_verify_expectations_on_both_the_result_and_the_sut_given_a_non_void_method() {
         // GIVEN
         givenWhenThenDefinitionMock = orderedSteps(1, 2);
 
@@ -129,7 +129,7 @@ public class GivenWhenThenTest {
     }
 
     @Test
-    public void should_prepare_the_sut_with_a_given_step() {
+    void should_prepare_the_sut_with_a_given_step() {
         // GIVEN
         givenWhenThenDefinitionMock = orderedSteps();
 
@@ -144,7 +144,7 @@ public class GivenWhenThenTest {
     }
 
     @Test
-    public void should_prepare_the_sut_with_a_given_step_given_a_sut_class_to_be_instantiated() {
+    void should_prepare_the_sut_with_a_given_step_given_a_sut_class_to_be_instantiated() {
         // GIVEN
         givenWhenThenDefinitionMock = orderedSteps();
 

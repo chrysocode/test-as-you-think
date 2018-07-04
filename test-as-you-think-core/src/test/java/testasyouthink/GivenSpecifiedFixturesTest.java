@@ -22,8 +22,8 @@
 
 package testasyouthink;
 
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 import testasyouthink.fixture.GivenWhenThenDefinition;
 import testasyouthink.fixture.SystemUnderTest;
 
@@ -32,19 +32,19 @@ import static org.easymock.EasyMock.verify;
 import static testasyouthink.TestAsYouThink.givenSutClass;
 import static testasyouthink.fixture.GivenWhenThenDefinition.orderedSteps;
 
-public class GivenSpecifiedFixturesTest {
+class GivenSpecifiedFixturesTest {
 
     private static final String EXPECTED_RESULT = "expected result";
     private GivenWhenThenDefinition givenWhenThenDefinitionMock;
 
-    @After
-    public void verifyMocks() {
+    @AfterEach
+    void verifyMocks() {
         // THEN
         verify(givenWhenThenDefinitionMock);
     }
 
     @Test
-    public void should_specify_a_fixture() {
+    void should_specify_a_fixture() {
         // GIVEN
         givenWhenThenDefinitionMock = orderedSteps(1);
 
@@ -63,7 +63,7 @@ public class GivenSpecifiedFixturesTest {
     }
 
     @Test
-    public void should_specify_another_fixture() {
+    void should_specify_another_fixture() {
         // GIVEN
         givenWhenThenDefinitionMock = orderedSteps(1);
 
@@ -81,7 +81,7 @@ public class GivenSpecifiedFixturesTest {
     }
 
     @Test
-    public void should_specify_multiple_fixtures() {
+    void should_specify_multiple_fixtures() {
         // GIVEN
         givenWhenThenDefinitionMock = orderedSteps(3);
 

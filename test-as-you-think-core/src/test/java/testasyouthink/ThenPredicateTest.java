@@ -22,8 +22,8 @@
 
 package testasyouthink;
 
-import org.junit.After;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 import testasyouthink.fixture.GivenWhenThenDefinition;
 import testasyouthink.fixture.SystemUnderTest;
 
@@ -32,18 +32,18 @@ import static org.easymock.EasyMock.verify;
 import static testasyouthink.TestAsYouThink.givenSutClass;
 import static testasyouthink.fixture.GivenWhenThenDefinition.orderedSteps;
 
-public class ThenPredicateTest {
+class ThenPredicateTest {
 
     private GivenWhenThenDefinition givenWhenThenDefinitionMock;
 
-    @After
-    public void verifyMocks() {
+    @AfterEach
+    void verifyMocks() {
         // THEN
         verify(givenWhenThenDefinitionMock);
     }
 
     @Test
-    public void should_receive_a_then_step_as_a_result_predicate_given_a_non_void_method() {
+    void should_receive_a_then_step_as_a_result_predicate_given_a_non_void_method() {
         // GIVEN
         givenWhenThenDefinitionMock = orderedSteps(1, 3);
 
@@ -69,7 +69,7 @@ public class ThenPredicateTest {
     }
 
     @Test
-    public void should_receive_a_then_step_as_a_predicate_given_a_void_method() {
+    void should_receive_a_then_step_as_a_predicate_given_a_void_method() {
         // GIVEN
         givenWhenThenDefinitionMock = orderedSteps(1, 3);
 
@@ -95,7 +95,7 @@ public class ThenPredicateTest {
     }
 
     @Test
-    public void should_receive_the_then_steps_as_predicates_on_the_result_given_a_non_void_method() {
+    void should_receive_the_then_steps_as_predicates_on_the_result_given_a_non_void_method() {
         // GIVEN
         givenWhenThenDefinitionMock = orderedSteps(1, 2);
 
@@ -116,7 +116,7 @@ public class ThenPredicateTest {
     }
 
     @Test
-    public void should_receive_the_then_steps_as_predicates_on_the_system_or_the_result_given_a_non_void_method() {
+    void should_receive_the_then_steps_as_predicates_on_the_system_or_the_result_given_a_non_void_method() {
         // GIVEN
         givenWhenThenDefinitionMock = orderedSteps(1, 2);
 

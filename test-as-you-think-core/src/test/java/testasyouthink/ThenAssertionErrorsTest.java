@@ -22,7 +22,7 @@
 
 package testasyouthink;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import testasyouthink.fixture.SystemUnderTest;
 import testasyouthink.function.CheckedConsumer;
 
@@ -31,10 +31,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static testasyouthink.TestAsYouThink.givenSutClass;
 
-public class ThenAssertionErrorsTest {
+class ThenAssertionErrorsTest {
 
     @Test
-    public void should_get_an_assertion_error_from_a_runnable_step_given_a_void_target_method() {
+    void should_get_an_assertion_error_from_a_runnable_step_given_a_void_target_method() {
         // WHEN
         Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                 .when(sut -> {})
@@ -47,7 +47,7 @@ public class ThenAssertionErrorsTest {
     }
 
     @Test
-    public void should_get_an_assertion_error_from_another_runnable_step_given_a_void_target_method() {
+    void should_get_an_assertion_error_from_another_runnable_step_given_a_void_target_method() {
         // WHEN
         Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                 .when(sut -> {})
@@ -61,7 +61,7 @@ public class ThenAssertionErrorsTest {
     }
 
     @Test
-    public void should_get_an_assertion_error_from_a_specified_runnable_step_given_a_void_target_method() {
+    void should_get_an_assertion_error_from_a_specified_runnable_step_given_a_void_target_method() {
         // WHEN
         Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                 .when(sut -> {})
@@ -74,7 +74,7 @@ public class ThenAssertionErrorsTest {
     }
 
     @Test
-    public void should_get_an_assertion_error_from_another_specified_runnable_step_given_a_void_target_method() {
+    void should_get_an_assertion_error_from_another_specified_runnable_step_given_a_void_target_method() {
         // WHEN
         Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                 .when(sut -> {})
@@ -88,7 +88,7 @@ public class ThenAssertionErrorsTest {
     }
 
     @Test
-    public void should_get_an_assertion_error_from_a_sut_consumer_step_given_a_void_target_method() {
+    void should_get_an_assertion_error_from_a_sut_consumer_step_given_a_void_target_method() {
         // WHEN
         Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                 .when(sut -> {})
@@ -101,7 +101,7 @@ public class ThenAssertionErrorsTest {
     }
 
     @Test
-    public void should_get_an_assertion_error_from_another_sut_consumer_step_given_a_void_target_method() {
+    void should_get_an_assertion_error_from_another_sut_consumer_step_given_a_void_target_method() {
         // WHEN
         Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                 .when(sut -> {})
@@ -115,7 +115,7 @@ public class ThenAssertionErrorsTest {
     }
 
     @Test
-    public void should_get_an_assertion_error_from_a_sut_consumer_specified_step_given_a_void_target_method() {
+    void should_get_an_assertion_error_from_a_sut_consumer_specified_step_given_a_void_target_method() {
         // WHEN
         Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                 .when(sut -> {})
@@ -128,7 +128,7 @@ public class ThenAssertionErrorsTest {
     }
 
     @Test
-    public void should_get_an_assertion_error_from_another_sut_consumer_specified_step_given_a_void_target_method() {
+    void should_get_an_assertion_error_from_another_sut_consumer_specified_step_given_a_void_target_method() {
         // WHEN
         Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                 .when(sut -> {})
@@ -142,7 +142,7 @@ public class ThenAssertionErrorsTest {
     }
 
     @Test
-    public void should_get_an_assertion_error_from_a_result_predicate_given_a_non_void_target_method() {
+    void should_get_an_assertion_error_from_a_result_predicate_given_a_non_void_target_method() {
         // WHEN
         Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                 .when(sut -> "result")
@@ -155,7 +155,7 @@ public class ThenAssertionErrorsTest {
     }
 
     @Test
-    public void should_get_an_assertion_error_from_another_result_predicate_given_a_non_void_target_method() {
+    void should_get_an_assertion_error_from_another_result_predicate_given_a_non_void_target_method() {
         // WHEN
         Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                 .when(sut -> "result")
@@ -169,7 +169,7 @@ public class ThenAssertionErrorsTest {
     }
 
     @Test
-    public void should_get_an_assertion_error_from_a_boolean_supplier_given_a_void_target_method() {
+    void should_get_an_assertion_error_from_a_boolean_supplier_given_a_void_target_method() {
         // WHEN
         Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                 .when(sut -> {})
@@ -182,7 +182,7 @@ public class ThenAssertionErrorsTest {
     }
 
     @Test
-    public void should_get_an_assertion_error_from_another_boolean_supplier_given_a_void_target_method() {
+    void should_get_an_assertion_error_from_another_boolean_supplier_given_a_void_target_method() {
         // WHEN
         Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                 .when(sut -> {})
@@ -196,7 +196,7 @@ public class ThenAssertionErrorsTest {
     }
 
     @Test
-    public void should_get_an_assertion_error_from_result_predicates_given_a_non_void_target_method() {
+    void should_get_an_assertion_error_from_result_predicates_given_a_non_void_target_method() {
         // WHEN
         Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                 .when(sut -> "result")
@@ -209,7 +209,7 @@ public class ThenAssertionErrorsTest {
     }
 
     @Test
-    public void
+    void
     should_get_an_assertion_error_from_result_and_sut_predicates_because_of_the_result_given_a_non_void_target_method
             () {
         // WHEN
@@ -224,7 +224,7 @@ public class ThenAssertionErrorsTest {
     }
 
     @Test
-    public void
+    void
     should_get_an_assertion_error_from_result_and_sut_predicates_because_of_the_sut_given_a_non_void_target_method() {
         // WHEN
         Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
@@ -238,7 +238,7 @@ public class ThenAssertionErrorsTest {
     }
 
     @Test
-    public void should_get_an_assertion_error_from_a_result_consumer_given_a_non_void_target_method() {
+    void should_get_an_assertion_error_from_a_result_consumer_given_a_non_void_target_method() {
         // WHEN
         Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                 .when(sut -> "result")
@@ -251,7 +251,7 @@ public class ThenAssertionErrorsTest {
     }
 
     @Test
-    public void should_get_an_assertion_error_from_another_result_consumer_given_a_non_void_target_method() {
+    void should_get_an_assertion_error_from_another_result_consumer_given_a_non_void_target_method() {
         // WHEN
         Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                 .when(sut -> "result")
@@ -265,7 +265,7 @@ public class ThenAssertionErrorsTest {
     }
 
     @Test
-    public void should_get_an_assertion_error_from_a_specified_result_consumer_given_a_non_void_target_method() {
+    void should_get_an_assertion_error_from_a_specified_result_consumer_given_a_non_void_target_method() {
         // WHEN
         Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                 .when(sut -> "result")
@@ -278,7 +278,7 @@ public class ThenAssertionErrorsTest {
     }
 
     @Test
-    public void should_get_an_assertion_error_from_another_specified_result_consumer_given_a_non_void_target_method() {
+    void should_get_an_assertion_error_from_another_specified_result_consumer_given_a_non_void_target_method() {
         // WHEN
         Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                 .when(sut -> "result")
@@ -292,7 +292,7 @@ public class ThenAssertionErrorsTest {
     }
 
     @Test
-    public void
+    void
     should_get_an_assertion_error_from_result_and_sut_consumers_because_of_the_result_given_a_non_void_target_method() {
         // WHEN
         Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
@@ -306,7 +306,7 @@ public class ThenAssertionErrorsTest {
     }
 
     @Test
-    public void
+    void
     should_get_an_assertion_error_from_result_and_sut_consumers_because_of_the_sut_given_a_non_void_target_method() {
         // WHEN
         Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
@@ -320,7 +320,7 @@ public class ThenAssertionErrorsTest {
     }
 
     @Test
-    public void should_get_an_assertion_error_from_a_runnable_step_given_a_non_void_target_method() {
+    void should_get_an_assertion_error_from_a_runnable_step_given_a_non_void_target_method() {
         // WHEN
         Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                 .when(sut -> "result")
@@ -333,7 +333,7 @@ public class ThenAssertionErrorsTest {
     }
 
     @Test
-    public void should_get_an_assertion_error_from_another_runnable_step_given_a_non_void_target_method() {
+    void should_get_an_assertion_error_from_another_runnable_step_given_a_non_void_target_method() {
         // WHEN
         Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                 .when(sut -> "result")
@@ -347,7 +347,7 @@ public class ThenAssertionErrorsTest {
     }
 
     @Test
-    public void
+    void
     should_get_an_assertion_error_from_a_runnable_step_with_its_specification_given_a_non_void_target_method() {
         // WHEN
         Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
@@ -361,7 +361,7 @@ public class ThenAssertionErrorsTest {
     }
 
     @Test
-    public void
+    void
     should_get_an_assertion_error_from_another_runnable_step_with_its_specification_given_a_non_void_target_method() {
         // WHEN
         Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
@@ -376,7 +376,7 @@ public class ThenAssertionErrorsTest {
     }
 
     @Test
-    public void should_get_an_assertion_error_from_a_stdout_as_a_file_consumer_given_a_void_target_method() {
+    void should_get_an_assertion_error_from_a_stdout_as_a_file_consumer_given_a_void_target_method() {
         // WHEN
         Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                 .when(sut -> {})

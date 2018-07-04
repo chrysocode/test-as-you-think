@@ -23,9 +23,9 @@
 package testasyouthink;
 
 import org.easymock.IMocksControl;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import testasyouthink.execution.ExecutionError;
@@ -41,7 +41,7 @@ import static org.easymock.EasyMock.expectLastCall;
 import static testasyouthink.TestAsYouThink.givenSut;
 import static testasyouthink.fixture.Specifications.ExpectedMessage.EXPECTED_EXECUTION_FAILURE_MESSAGE;
 
-public class GivenArgumentsWhenFailuresTest {
+class GivenArgumentsWhenFailuresTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GivenArgumentsWhenFailuresTest.class);
     private static final String GIVEN_STRING = "given argument";
@@ -52,22 +52,22 @@ public class GivenArgumentsWhenFailuresTest {
     private SystemUnderTest systemUnderTestMock;
     private GivenWhenThenDefinition givenWhenThenDefinitionMock;
 
-    @Before
-    public void prepareFixtures() {
+    @BeforeEach
+    void prepareFixtures() {
         // GIVEN
         mocksControl = createStrictControl();
         systemUnderTestMock = mocksControl.createMock(SystemUnderTest.class);
         givenWhenThenDefinitionMock = mocksControl.createMock(GivenWhenThenDefinition.class);
     }
 
-    @After
-    public void verifyMocks() {
+    @AfterEach
+    void verifyMocks() {
         // THEN
         mocksControl.verify();
     }
 
     @Test
-    public void should_fail_to_execute_given_a_void_method_with_one_parameter() throws Throwable {
+    void should_fail_to_execute_given_a_void_method_with_one_parameter() throws Throwable {
         // GIVEN
         givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
         systemUnderTestMock.failWithParameter(GIVEN_STRING);
@@ -92,7 +92,7 @@ public class GivenArgumentsWhenFailuresTest {
     }
 
     @Test
-    public void should_fail_to_execute_given_a_non_void_method_with_one_parameter() throws Throwable {
+    void should_fail_to_execute_given_a_non_void_method_with_one_parameter() throws Throwable {
         // GIVEN
         givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
         expect(systemUnderTestMock.nonVoidFailWithParameter(GIVEN_STRING)).andThrow(new UnexpectedException());
@@ -116,7 +116,7 @@ public class GivenArgumentsWhenFailuresTest {
     }
 
     @Test
-    public void should_fail_to_execute_given_a_void_method_with_two_parameters() throws Throwable {
+    void should_fail_to_execute_given_a_void_method_with_two_parameters() throws Throwable {
         // GIVEN
         givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
         expectLastCall().times(2);
@@ -146,7 +146,7 @@ public class GivenArgumentsWhenFailuresTest {
     }
 
     @Test
-    public void should_fail_to_execute_given_a_non_void_method_with_two_parameters() throws Throwable {
+    void should_fail_to_execute_given_a_non_void_method_with_two_parameters() throws Throwable {
         // GIVEN
         givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
         expectLastCall().times(2);
@@ -176,7 +176,7 @@ public class GivenArgumentsWhenFailuresTest {
     }
 
     @Test
-    public void should_fail_to_execute_given_a_void_method_with_three_parameters() throws Throwable {
+    void should_fail_to_execute_given_a_void_method_with_three_parameters() throws Throwable {
         // GIVEN
         givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
         expectLastCall().times(3);
@@ -210,7 +210,7 @@ public class GivenArgumentsWhenFailuresTest {
     }
 
     @Test
-    public void should_fail_to_execute_given_a_non_void_method_with_three_parameters() throws Throwable {
+    void should_fail_to_execute_given_a_non_void_method_with_three_parameters() throws Throwable {
         // GIVEN
         givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
         expectLastCall().times(3);

@@ -22,9 +22,9 @@
 
 package testasyouthink;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import testasyouthink.ResultOfEventTest.Results.ActualResult;
@@ -77,25 +77,25 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static testasyouthink.TestAsYouThink.resultOf;
 import static testasyouthink.fixture.Specifications.ExpectedMessage.EXPECTED_EXECUTION_FAILURE_MESSAGE;
 
-public class ResultOfEventTest {
+class ResultOfEventTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ResultOfEventTest.class);
     private GivenWhenThenDefinition gwtMock;
 
-    @Before
-    public void prepareFixtures() {
+    @BeforeEach
+    void prepareFixtures() {
         gwtMock = mock(GivenWhenThenDefinition.class);
     }
 
-    @After
-    public void verifyMocks() {
+    @AfterEach
+    void verifyMocks() {
         // THEN
         verify(gwtMock).whenAnEventHappensInRelationToAnActionOfTheConsumer();
         verifyNoMoreInteractions(gwtMock);
     }
 
     @Test
-    public void should_verify_an_actual_object_is_conform_to_an_expected_result() {
+    void should_verify_an_actual_object_is_conform_to_an_expected_result() {
         assertThat(resultOf(() -> {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
             return new ActualResult();
@@ -103,7 +103,7 @@ public class ResultOfEventTest {
     }
 
     @Test
-    public void should_verify_an_actual_object_array_is_conform_to_an_expected_result() {
+    void should_verify_an_actual_object_array_is_conform_to_an_expected_result() {
         assertThat(resultOf(() -> {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
             return new ActualResult[]{new ActualResult(), new ActualResult()};
@@ -112,7 +112,7 @@ public class ResultOfEventTest {
     }
 
     @Test
-    public void should_verify_an_actual_character_is_conform_to_an_expected_result() {
+    void should_verify_an_actual_character_is_conform_to_an_expected_result() {
         assertThat(resultOf(() -> {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
             return Character.valueOf('b');
@@ -120,7 +120,7 @@ public class ResultOfEventTest {
     }
 
     @Test
-    public void should_verify_an_actual_char_sequence_is_conform_to_an_expected_result() {
+    void should_verify_an_actual_char_sequence_is_conform_to_an_expected_result() {
         assertThat(resultOf(() -> {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
             return (CharSequence) new StringBuilder("result");
@@ -128,7 +128,7 @@ public class ResultOfEventTest {
     }
 
     @Test
-    public void should_verify_an_actual_string_is_conform_to_an_expected_result() {
+    void should_verify_an_actual_string_is_conform_to_an_expected_result() {
         assertThat(resultOf(() -> {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
             return "expected result";
@@ -138,7 +138,7 @@ public class ResultOfEventTest {
     }
 
     @Test
-    public void should_fail_to_verify_an_actual_string_is_conform_to_an_expected_result() {
+    void should_fail_to_verify_an_actual_string_is_conform_to_an_expected_result() {
         // WHEN
         Throwable thrown = catchThrowable(() -> resultOf(() -> {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
@@ -151,7 +151,7 @@ public class ResultOfEventTest {
     }
 
     @Test
-    public void should_fail_to_execute_because_of_an_unexpected_failure() {
+    void should_fail_to_execute_because_of_an_unexpected_failure() {
         // WHEN
         Throwable thrown = catchThrowable(() -> resultOf((CheckedStringSupplier) () -> {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
@@ -166,7 +166,7 @@ public class ResultOfEventTest {
     }
 
     @Test
-    public void should_verify_an_actual_byte_is_conform_to_an_expected_result() {
+    void should_verify_an_actual_byte_is_conform_to_an_expected_result() {
         assertThat(resultOf(() -> {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
             return Byte.valueOf("6");
@@ -174,7 +174,7 @@ public class ResultOfEventTest {
     }
 
     @Test
-    public void should_verify_an_actual_short_is_conform_to_an_expected_result() {
+    void should_verify_an_actual_short_is_conform_to_an_expected_result() {
         assertThat(resultOf(() -> {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
             return Short.valueOf("123");
@@ -182,7 +182,7 @@ public class ResultOfEventTest {
     }
 
     @Test
-    public void should_verify_an_actual_integer_is_conform_to_an_expected_result() {
+    void should_verify_an_actual_integer_is_conform_to_an_expected_result() {
         assertThat(resultOf(() -> {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
             return Integer.valueOf(123);
@@ -190,7 +190,7 @@ public class ResultOfEventTest {
     }
 
     @Test
-    public void should_verify_an_actual_long_is_conform_to_an_expected_result() {
+    void should_verify_an_actual_long_is_conform_to_an_expected_result() {
         assertThat(resultOf(() -> {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
             return 123L;
@@ -198,7 +198,7 @@ public class ResultOfEventTest {
     }
 
     @Test
-    public void should_verify_an_actual_float_is_conform_to_an_expected_result() {
+    void should_verify_an_actual_float_is_conform_to_an_expected_result() {
         assertThat(resultOf(() -> {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
             return Float.valueOf("12.34");
@@ -206,7 +206,7 @@ public class ResultOfEventTest {
     }
 
     @Test
-    public void should_verify_an_actual_double_is_conform_to_an_expected_result() {
+    void should_verify_an_actual_double_is_conform_to_an_expected_result() {
         assertThat(resultOf(() -> {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
             return Double.valueOf("12.34");
@@ -214,7 +214,7 @@ public class ResultOfEventTest {
     }
 
     @Test
-    public void should_verify_an_actual_big_integer_is_conform_to_an_expected_result() {
+    void should_verify_an_actual_big_integer_is_conform_to_an_expected_result() {
         assertThat(resultOf(() -> {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
             return BigInteger.valueOf(1234);
@@ -222,7 +222,7 @@ public class ResultOfEventTest {
     }
 
     @Test
-    public void should_verify_an_actual_big_decimal_is_conform_to_an_expected_result() {
+    void should_verify_an_actual_big_decimal_is_conform_to_an_expected_result() {
         assertThat(resultOf(() -> {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
             return new BigDecimal("12.34");
@@ -230,7 +230,7 @@ public class ResultOfEventTest {
     }
 
     @Test
-    public void should_verify_an_actual_optional_is_conform_to_an_expected_result() {
+    void should_verify_an_actual_optional_is_conform_to_an_expected_result() {
         assertThat(resultOf(() -> {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
             return Optional.of("optional");
@@ -238,7 +238,7 @@ public class ResultOfEventTest {
     }
 
     @Test
-    public void should_verify_an_actual_optional_int_is_conform_to_an_expected_result() {
+    void should_verify_an_actual_optional_int_is_conform_to_an_expected_result() {
         assertThat(resultOf(() -> {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
             return OptionalInt.of(123);
@@ -246,7 +246,7 @@ public class ResultOfEventTest {
     }
 
     @Test
-    public void should_verify_an_actual_optional_long_is_conform_to_an_expected_result() {
+    void should_verify_an_actual_optional_long_is_conform_to_an_expected_result() {
         assertThat(resultOf(() -> {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
             return OptionalLong.of(123);
@@ -254,7 +254,7 @@ public class ResultOfEventTest {
     }
 
     @Test
-    public void should_verify_an_actual_optional_double_is_conform_to_an_expected_result() {
+    void should_verify_an_actual_optional_double_is_conform_to_an_expected_result() {
         assertThat(resultOf(() -> {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
             return OptionalDouble.of(123);
@@ -262,7 +262,7 @@ public class ResultOfEventTest {
     }
 
     @Test
-    public void should_verify_an_actual_boolean_is_conform_to_an_expected_result() {
+    void should_verify_an_actual_boolean_is_conform_to_an_expected_result() {
         assertThat(resultOf(() -> {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
             return false;
@@ -270,7 +270,7 @@ public class ResultOfEventTest {
     }
 
     @Test
-    public void should_verify_an_actual_date_is_conform_to_an_expected_result() {
+    void should_verify_an_actual_date_is_conform_to_an_expected_result() {
         assertThat(resultOf(() -> {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
             return new Date(123456);
@@ -278,7 +278,7 @@ public class ResultOfEventTest {
     }
 
     @Test
-    public void should_verify_an_actual_local_date_is_conform_to_an_expected_result() {
+    void should_verify_an_actual_local_date_is_conform_to_an_expected_result() {
         assertThat(resultOf(() -> {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
             return LocalDate.of(2017, 8, 9);
@@ -286,7 +286,7 @@ public class ResultOfEventTest {
     }
 
     @Test
-    public void should_verify_an_actual_local_date_time_is_conform_to_an_expected_result() {
+    void should_verify_an_actual_local_date_time_is_conform_to_an_expected_result() {
         assertThat(resultOf(() -> {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
             return LocalDateTime.of(2017, 8, 9, 12, 30);
@@ -295,7 +295,7 @@ public class ResultOfEventTest {
     }
 
     @Test
-    public void should_verify_an_actual_local_time_is_conform_to_an_expected_result() {
+    void should_verify_an_actual_local_time_is_conform_to_an_expected_result() {
         assertThat(resultOf(() -> {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
             return LocalTime.of(12, 30);
@@ -303,7 +303,7 @@ public class ResultOfEventTest {
     }
 
     @Test
-    public void should_verify_an_actual_instant_is_conform_to_an_expected_result() {
+    void should_verify_an_actual_instant_is_conform_to_an_expected_result() {
         assertThat(resultOf(() -> {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
             return Instant.ofEpochSecond(123456);
@@ -311,7 +311,7 @@ public class ResultOfEventTest {
     }
 
     @Test
-    public void should_verify_an_actual_file_is_conform_to_an_expected_result() {
+    void should_verify_an_actual_file_is_conform_to_an_expected_result() {
         assertThat(resultOf(() -> {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
             return new File(File.separator);
@@ -319,7 +319,7 @@ public class ResultOfEventTest {
     }
 
     @Test
-    public void should_verify_an_actual_path_is_conform_to_an_expected_result() {
+    void should_verify_an_actual_path_is_conform_to_an_expected_result() {
         assertThat(resultOf(() -> {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
             return new File(File.separator).toPath();
@@ -327,7 +327,7 @@ public class ResultOfEventTest {
     }
 
     @Test
-    public void should_verify_an_actual_uri_is_conform_to_an_expected_result() throws URISyntaxException {
+    void should_verify_an_actual_uri_is_conform_to_an_expected_result() throws URISyntaxException {
         assertThat(resultOf(() -> {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
             return new URI("uri");
@@ -335,7 +335,7 @@ public class ResultOfEventTest {
     }
 
     @Test
-    public void should_verify_an_actual_url_is_conform_to_an_expected_result() throws MalformedURLException {
+    void should_verify_an_actual_url_is_conform_to_an_expected_result() throws MalformedURLException {
         assertThat(resultOf(() -> {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
             return new URL("http://uri");
@@ -343,7 +343,7 @@ public class ResultOfEventTest {
     }
 
     @Test
-    public void should_verify_an_actual_iterable_is_conform_to_an_expected_result() {
+    void should_verify_an_actual_iterable_is_conform_to_an_expected_result() {
         assertThat(resultOf(() -> {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
             return (Iterable<String>) Arrays.asList("one", "two", "three");
@@ -351,7 +351,7 @@ public class ResultOfEventTest {
     }
 
     @Test
-    public void should_verify_an_actual_iterator_is_conform_to_an_expected_result() {
+    void should_verify_an_actual_iterator_is_conform_to_an_expected_result() {
         assertThat(resultOf(() -> {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
             return Arrays
@@ -361,7 +361,7 @@ public class ResultOfEventTest {
     }
 
     @Test
-    public void should_verify_an_actual_list_is_conform_to_an_expected_result() {
+    void should_verify_an_actual_list_is_conform_to_an_expected_result() {
         assertThat(resultOf(() -> {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
             return Arrays.asList("one", "two", "three");
@@ -369,7 +369,7 @@ public class ResultOfEventTest {
     }
 
     @Test
-    public void should_verify_an_actual_map_is_conform_to_an_expected_result() {
+    void should_verify_an_actual_map_is_conform_to_an_expected_result() {
         assertThat(resultOf(() -> {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
             return new HashMap<Integer, String>() {{
@@ -381,7 +381,7 @@ public class ResultOfEventTest {
     }
 
     @Test
-    public void should_verify_an_actual_atomic_boolean_is_conform_to_an_expected_result() {
+    void should_verify_an_actual_atomic_boolean_is_conform_to_an_expected_result() {
         assertThat(resultOf(() -> {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
             return new AtomicBoolean(true);
@@ -389,7 +389,7 @@ public class ResultOfEventTest {
     }
 
     @Test
-    public void should_verify_an_actual_atomic_integer_is_conform_to_an_expected_result() {
+    void should_verify_an_actual_atomic_integer_is_conform_to_an_expected_result() {
         assertThat(resultOf(() -> {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
             return new AtomicInteger(123);
@@ -397,7 +397,7 @@ public class ResultOfEventTest {
     }
 
     @Test
-    public void should_verify_an_actual_atomic_integer_array_is_conform_to_an_expected_result() {
+    void should_verify_an_actual_atomic_integer_array_is_conform_to_an_expected_result() {
         assertThat(resultOf(() -> {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
             return new AtomicIntegerArray(3);
@@ -405,7 +405,7 @@ public class ResultOfEventTest {
     }
 
     @Test
-    public void should_verify_an_actual_atomic_long_is_conform_to_an_expected_result() {
+    void should_verify_an_actual_atomic_long_is_conform_to_an_expected_result() {
         assertThat(resultOf(() -> {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
             return new AtomicLong(123);
@@ -413,7 +413,7 @@ public class ResultOfEventTest {
     }
 
     @Test
-    public void should_verify_an_actual_atomic_long_array_is_conform_to_an_expected_result() {
+    void should_verify_an_actual_atomic_long_array_is_conform_to_an_expected_result() {
         assertThat(resultOf(() -> {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
             return new AtomicLongArray(3);
@@ -421,7 +421,7 @@ public class ResultOfEventTest {
     }
 
     @Test
-    public void should_verify_an_actual_future_is_conform_to_an_expected_result() {
+    void should_verify_an_actual_future_is_conform_to_an_expected_result() {
         assertThat(resultOf(() -> {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
             Future<String> future = new FutureTask<>(() -> "result of callable");
@@ -433,7 +433,7 @@ public class ResultOfEventTest {
     }
 
     @Test
-    public void should_verify_an_actual_completable_future_is_conform_to_an_expected_result() {
+    void should_verify_an_actual_completable_future_is_conform_to_an_expected_result() {
         assertThat(resultOf(() -> {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
             CompletableFuture<String> completableFuture = new CompletableFuture<>();
@@ -443,7 +443,7 @@ public class ResultOfEventTest {
     }
 
     @Test
-    public void should_verify_an_actual_class_is_conform_to_an_expected_result() {
+    void should_verify_an_actual_class_is_conform_to_an_expected_result() {
         assertThat(resultOf(() -> {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
             return String.class;
@@ -451,7 +451,7 @@ public class ResultOfEventTest {
     }
 
     @Test
-    public void should_verify_an_actual_predicate_is_conform_to_an_expected_result() {
+    void should_verify_an_actual_predicate_is_conform_to_an_expected_result() {
         assertThat(resultOf(() -> {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
             return (Predicate<String>) string -> string.contains("ult");
@@ -459,7 +459,7 @@ public class ResultOfEventTest {
     }
 
     @Test
-    public void should_verify_an_actual_int_predicate_is_conform_to_an_expected_result() {
+    void should_verify_an_actual_int_predicate_is_conform_to_an_expected_result() {
         assertThat(resultOf(() -> {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
             return (IntPredicate) number -> number < 100;
@@ -467,7 +467,7 @@ public class ResultOfEventTest {
     }
 
     @Test
-    public void should_verify_an_actual_long_predicate_is_conform_to_an_expected_result() {
+    void should_verify_an_actual_long_predicate_is_conform_to_an_expected_result() {
         assertThat(resultOf(() -> {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
             return (LongPredicate) number -> number < 100;
@@ -475,7 +475,7 @@ public class ResultOfEventTest {
     }
 
     @Test
-    public void should_verify_an_actual_double_predicate_is_conform_to_an_expected_result() {
+    void should_verify_an_actual_double_predicate_is_conform_to_an_expected_result() {
         assertThat(resultOf(() -> {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
             return (DoublePredicate) number -> number < 100;
@@ -483,7 +483,7 @@ public class ResultOfEventTest {
     }
 
     @Test
-    public void should_verify_an_actual_input_stream_is_conform_to_an_expected_result() {
+    void should_verify_an_actual_input_stream_is_conform_to_an_expected_result() {
         assertThat(resultOf(() -> {
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
             return new ByteArrayInputStream(new byte[]{0, 1, 2});

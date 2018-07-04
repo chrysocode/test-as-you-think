@@ -22,8 +22,8 @@
 
 package testasyouthink;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import testasyouthink.GivenFailuresTest.Parameter.Mutable;
@@ -42,19 +42,19 @@ import static org.mockito.Mockito.verifyZeroInteractions;
 import static testasyouthink.TestAsYouThink.givenSut;
 import static testasyouthink.TestAsYouThink.givenSutClass;
 
-public class GivenFailuresTest {
+class GivenFailuresTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GivenFailuresTest.class);
     private GivenWhenThenDefinition givenWhenThenDefinitionMock;
 
-    @Before
-    public void prepareFixtures() {
+    @BeforeEach
+    void prepareFixtures() {
         // GIVEN
         givenWhenThenDefinitionMock = mock(GivenWhenThenDefinition.class);
     }
 
     @Test
-    public void should_fail_to_create_a_sut_instance() throws Throwable {
+    void should_fail_to_create_a_sut_instance() throws Throwable {
         // WHEN
         Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTestFailingToBeInstantiated.class)
                 .when(SystemUnderTestFailingToBeInstantiated::voidMethod)
@@ -70,7 +70,7 @@ public class GivenFailuresTest {
     }
 
     @Test
-    public void should_fail_to_supply_a_sut_instance() {
+    void should_fail_to_supply_a_sut_instance() {
         // WHEN
         Throwable thrown = catchThrowable(() -> givenSut(() -> new SystemUnderTestFailingToBeInstantiated())
                 .when(SystemUnderTestFailingToBeInstantiated::voidMethod)
@@ -86,7 +86,7 @@ public class GivenFailuresTest {
     }
 
     @Test
-    public void should_fail_to_prepare_the_sut_after_instantiating_it() {
+    void should_fail_to_prepare_the_sut_after_instantiating_it() {
         // WHEN
         Throwable thrown = catchThrowable(() -> givenSut(SystemUnderTest.class, sut -> {
             throw new UnexpectedException();
@@ -104,7 +104,7 @@ public class GivenFailuresTest {
     }
 
     @Test
-    public void should_fail_to_prepare_the_sut() {
+    void should_fail_to_prepare_the_sut() {
         // WHEN
         Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                 .given(sut -> {
@@ -123,7 +123,7 @@ public class GivenFailuresTest {
     }
 
     @Test
-    public void should_fail_to_prepare_the_sut_with_its_specification() {
+    void should_fail_to_prepare_the_sut_with_its_specification() {
         // WHEN
         Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                 .given("SUT specification", sut -> {
@@ -142,7 +142,7 @@ public class GivenFailuresTest {
     }
 
     @Test
-    public void should_fail_to_prepare_the_sut_with_its_specifications() {
+    void should_fail_to_prepare_the_sut_with_its_specifications() {
         // WHEN
         Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                 .given("SUT specification that passes", sut -> {})
@@ -162,7 +162,7 @@ public class GivenFailuresTest {
     }
 
     @Test
-    public void should_fail_to_prepare_an_ordinary_fixture() {
+    void should_fail_to_prepare_an_ordinary_fixture() {
         // WHEN
         Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                 .given(() -> {
@@ -180,7 +180,7 @@ public class GivenFailuresTest {
     }
 
     @Test
-    public void should_fail_to_prepare_an_ordinary_fixture_with_its_specification() {
+    void should_fail_to_prepare_an_ordinary_fixture_with_its_specification() {
         // WHEN
         Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                 .given("fixture specification that fails", () -> {
@@ -198,7 +198,7 @@ public class GivenFailuresTest {
     }
 
     @Test
-    public void should_fail_to_prepare_a_second_ordinary_fixture_with_its_specification() {
+    void should_fail_to_prepare_a_second_ordinary_fixture_with_its_specification() {
         // WHEN
         Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                 .given("fixture specification that passes", () -> {
@@ -218,7 +218,7 @@ public class GivenFailuresTest {
     }
 
     @Test
-    public void should_fail_to_supply_one_argument() {
+    void should_fail_to_supply_one_argument() {
         // WHEN
         Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                 .givenArgument((CheckedSupplier<String>) () -> {
@@ -237,7 +237,7 @@ public class GivenFailuresTest {
     }
 
     @Test
-    public void should_fail_to_supply_one_argument_with_its_specification() {
+    void should_fail_to_supply_one_argument_with_its_specification() {
         // WHEN
         Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                 .givenArgument("argument specification", (CheckedSupplier<String>) () -> {
@@ -256,7 +256,7 @@ public class GivenFailuresTest {
     }
 
     @Test
-    public void should_fail_to_instantiate_one_argument_with_its_mutable_type() throws Throwable {
+    void should_fail_to_instantiate_one_argument_with_its_mutable_type() throws Throwable {
         //GIVEN
         class SystemUnderTestWithUninstantiableParameter extends
                 ParameterizedSystemUnderTest<MutableButUninstantiable, Void, Void> {}
@@ -280,7 +280,7 @@ public class GivenFailuresTest {
     }
 
     @Test
-    public void should_fail_to_prepare_one_argument_with_its_mutable_type() throws Throwable {
+    void should_fail_to_prepare_one_argument_with_its_mutable_type() throws Throwable {
         //GIVEN
         class SystemUnderTestWithMutableParameter extends ParameterizedSystemUnderTest<Mutable, Void, Void> {}
         SystemUnderTestWithMutableParameter sutWithMutableParameter = mock(SystemUnderTestWithMutableParameter.class);
@@ -304,7 +304,7 @@ public class GivenFailuresTest {
     }
 
     @Test
-    public void should_fail_to_supply_a_second_argument() {
+    void should_fail_to_supply_a_second_argument() {
         // WHEN
         Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                 .givenArgument(() -> "argument")
@@ -324,7 +324,7 @@ public class GivenFailuresTest {
     }
 
     @Test
-    public void should_fail_to_supply_a_second_argument_with_its_specification() {
+    void should_fail_to_supply_a_second_argument_with_its_specification() {
         // WHEN
         Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                 .givenArgument(() -> "argument")
@@ -344,7 +344,7 @@ public class GivenFailuresTest {
     }
 
     @Test
-    public void should_fail_to_prepare_a_second_argument_with_its_mutable_type() throws Throwable {
+    void should_fail_to_prepare_a_second_argument_with_its_mutable_type() throws Throwable {
         //GIVEN
         class SystemUnderTestWithMutableParameter extends ParameterizedSystemUnderTest<Mutable, Mutable, Void> {}
         SystemUnderTestWithMutableParameter sutWithMutableParameters = mock(SystemUnderTestWithMutableParameter.class);
@@ -369,7 +369,7 @@ public class GivenFailuresTest {
     }
 
     @Test
-    public void should_fail_to_supply_a_third_argument() {
+    void should_fail_to_supply_a_third_argument() {
         // WHEN
         Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                 .givenArgument(() -> "argument")
@@ -390,7 +390,7 @@ public class GivenFailuresTest {
     }
 
     @Test
-    public void should_fail_to_supply_a_third_argument_with_its_specification() {
+    void should_fail_to_supply_a_third_argument_with_its_specification() {
         // WHEN
         Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                 .givenArgument(() -> "argument")
@@ -411,7 +411,7 @@ public class GivenFailuresTest {
     }
 
     @Test
-    public void should_fail_to_prepare_a_third_argument_with_its_mutable_type() throws Throwable {
+    void should_fail_to_prepare_a_third_argument_with_its_mutable_type() throws Throwable {
         //GIVEN
         class SystemUnderTestWithMutableParameter extends ParameterizedSystemUnderTest<Mutable, Mutable, Mutable> {}
         SystemUnderTestWithMutableParameter sutWithMutableParameters = mock(SystemUnderTestWithMutableParameter.class);
@@ -442,7 +442,7 @@ public class GivenFailuresTest {
             throw new NullPointerException("Impossible to instantiate it!");
         }
 
-        public void voidMethod() {}
+        void voidMethod() {}
     }
 
     public static class Parameter {
@@ -451,7 +451,7 @@ public class GivenFailuresTest {
 
             private int forDemonstration;
 
-            public void setForDemonstration(int forDemonstration) {
+            void setForDemonstration(int forDemonstration) {
                 this.forDemonstration = forDemonstration;
             }
         }

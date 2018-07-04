@@ -22,7 +22,7 @@
 
 package testasyouthink.function;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.util.function.Supplier;
@@ -31,10 +31,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
-public class MemoizedTest {
+class MemoizedTest {
 
     @Test
-    public void should_memoize_a_supplied_value() {
+    void should_memoize_a_supplied_value() {
         // GIVEN
         Counter counter = Mockito.mock(Counter.class);
         Supplier<Double> memoized = Memoized.of(() -> {

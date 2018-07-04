@@ -23,9 +23,9 @@
 package testasyouthink;
 
 import org.easymock.IMocksControl;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import testasyouthink.GivenArgumentsTest.Parameter.Mutable;
 import testasyouthink.fixture.GivenWhenThenDefinition;
 import testasyouthink.fixture.ParameterizedSystemUnderTest;
@@ -38,7 +38,7 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
 import static testasyouthink.TestAsYouThink.givenSut;
 
-public class GivenArgumentsTest {
+class GivenArgumentsTest {
 
     private static final String GIVEN_STRING = "given argument";
     private static final int GIVEN_INTEGER = 201705;
@@ -48,21 +48,21 @@ public class GivenArgumentsTest {
     private SystemUnderTest systemUnderTestMock;
     private GivenWhenThenDefinition givenWhenThenDefinitionMock;
 
-    @Before
-    public void prepareFixtures() {
+    @BeforeEach
+    void prepareFixtures() {
         mocksControl = createStrictControl();
         systemUnderTestMock = mocksControl.createMock(SystemUnderTest.class);
         givenWhenThenDefinitionMock = mocksControl.createMock(GivenWhenThenDefinition.class);
     }
 
-    @After
-    public void verifyMocks() {
+    @AfterEach
+    void verifyMocks() {
         // THEN
         mocksControl.verify();
     }
 
     @Test
-    public void should_receive_one_argument_given_a_void_method() {
+    void should_receive_one_argument_given_a_void_method() {
         // GIVEN
         givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
         systemUnderTestMock.voidMethodWithParameter(GIVEN_STRING);
@@ -80,7 +80,7 @@ public class GivenArgumentsTest {
     }
 
     @Test
-    public void should_receive_one_argument_with_its_mutable_type() {
+    void should_receive_one_argument_with_its_mutable_type() {
         // GIVEN
         givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
         class SystemUnderTestWithMutableParameter extends ParameterizedSystemUnderTest<Mutable, Void, Void> {}
@@ -101,7 +101,7 @@ public class GivenArgumentsTest {
     }
 
     @Test
-    public void should_receive_one_argument_with_its_description() {
+    void should_receive_one_argument_with_its_description() {
         // GIVEN
         givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
         systemUnderTestMock.voidMethodWithParameter(GIVEN_STRING);
@@ -119,7 +119,7 @@ public class GivenArgumentsTest {
     }
 
     @Test
-    public void should_receive_one_argument_given_a_non_void_method() {
+    void should_receive_one_argument_given_a_non_void_method() {
         // GIVEN
         givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
         expectLastCall().times(3);
@@ -144,7 +144,7 @@ public class GivenArgumentsTest {
     }
 
     @Test
-    public void should_receive_two_arguments_given_a_void_method() {
+    void should_receive_two_arguments_given_a_void_method() {
         // GIVEN
         givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
         expectLastCall().times(2);
@@ -167,7 +167,7 @@ public class GivenArgumentsTest {
     }
 
     @Test
-    public void should_receive_two_arguments_with_their_descriptions() {
+    void should_receive_two_arguments_with_their_descriptions() {
         // GIVEN
         givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
         expectLastCall().times(2);
@@ -190,7 +190,7 @@ public class GivenArgumentsTest {
     }
 
     @Test
-    public void should_receive_two_arguments_given_a_non_void_method() {
+    void should_receive_two_arguments_given_a_non_void_method() {
         // GIVEN
         givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
         expectLastCall().times(2);
@@ -217,7 +217,7 @@ public class GivenArgumentsTest {
     }
 
     @Test
-    public void should_receive_two_arguments_with_their_types_given_a_second_mutable_argument() {
+    void should_receive_two_arguments_with_their_types_given_a_second_mutable_argument() {
         //GIVEN
         givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
         expectLastCall().times(2);
@@ -243,7 +243,7 @@ public class GivenArgumentsTest {
     }
 
     @Test
-    public void should_receive_three_arguments_given_a_void_method() {
+    void should_receive_three_arguments_given_a_void_method() {
         //GIVEN
         givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
         expectLastCall().times(3);
@@ -270,7 +270,7 @@ public class GivenArgumentsTest {
     }
 
     @Test
-    public void should_receive_three_arguments_with_their_descriptions() {
+    void should_receive_three_arguments_with_their_descriptions() {
         //GIVEN
         givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
         expectLastCall().times(3);
@@ -297,7 +297,7 @@ public class GivenArgumentsTest {
     }
 
     @Test
-    public void should_receive_three_arguments_given_a_non_void_method() {
+    void should_receive_three_arguments_given_a_non_void_method() {
         //GIVEN
         givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
         expectLastCall().times(3);
@@ -328,7 +328,7 @@ public class GivenArgumentsTest {
     }
 
     @Test
-    public void should_receive_three_arguments_with_their_types_given_a_third_mutable_argument() {
+    void should_receive_three_arguments_with_their_types_given_a_third_mutable_argument() {
         //GIVEN
         givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
         expectLastCall().times(3);
@@ -353,7 +353,7 @@ public class GivenArgumentsTest {
     }
 
     @Test
-    public void should_receive_one_argument_value_given_a_void_method() {
+    void should_receive_one_argument_value_given_a_void_method() {
         //GIVEN
         systemUnderTestMock.voidMethodWithParameter(GIVEN_STRING);
         givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
@@ -367,7 +367,7 @@ public class GivenArgumentsTest {
     }
 
     @Test
-    public void should_receive_one_argument_value_given_a_void_method_and_two_preparation_steps() {
+    void should_receive_one_argument_value_given_a_void_method_and_two_preparation_steps() {
         //GIVEN
         givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
         systemUnderTestMock.voidMethodWithParameter(GIVEN_STRING);
@@ -383,7 +383,7 @@ public class GivenArgumentsTest {
     }
 
     @Test
-    public void should_receive_one_argument_value_given_a_non_void_method() {
+    void should_receive_one_argument_value_given_a_non_void_method() {
         //GIVEN
         expect(systemUnderTestMock.nonVoidMethodWithParameter(GIVEN_STRING)).andReturn(EXPECTED_RESULT);
         givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
@@ -400,7 +400,7 @@ public class GivenArgumentsTest {
     }
 
     @Test
-    public void should_receive_two_argument_values_given_a_void_method() {
+    void should_receive_two_argument_values_given_a_void_method() {
         //GIVEN
         systemUnderTestMock.voidMethodWithTwoParameters(GIVEN_STRING, GIVEN_INTEGER);
         givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
@@ -415,7 +415,7 @@ public class GivenArgumentsTest {
     }
 
     @Test
-    public void should_receive_three_argument_values_given_a_non_void_method() {
+    void should_receive_three_argument_values_given_a_non_void_method() {
         //GIVEN
         expect(systemUnderTestMock.nonVoidMethodWithThreeParameters(GIVEN_STRING, GIVEN_INTEGER,
                 GIVEN_BOOLEAN)).andReturn(EXPECTED_RESULT);
@@ -440,7 +440,7 @@ public class GivenArgumentsTest {
 
             private int forDemonstration;
 
-            public void setForDemonstration(int forDemonstration) {
+            void setForDemonstration(int forDemonstration) {
                 this.forDemonstration = forDemonstration;
             }
         }

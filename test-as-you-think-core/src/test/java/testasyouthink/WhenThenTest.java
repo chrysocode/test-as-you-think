@@ -22,9 +22,9 @@
 
 package testasyouthink;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import testasyouthink.fixture.GivenWhenThenDefinition;
 import testasyouthink.fixture.SystemUnderTest;
 
@@ -34,25 +34,25 @@ import static testasyouthink.TestAsYouThink.givenSut;
 import static testasyouthink.TestAsYouThink.givenSutClass;
 import static testasyouthink.fixture.GivenWhenThenDefinition.orderedSteps;
 
-public class WhenThenTest {
+class WhenThenTest {
 
     private static final String EXPECTED_RESULT = "expected result";
     private GivenWhenThenDefinition givenWhenThenDefinitionMock;
 
-    @Before
-    public void prepareFixtures() {
+    @BeforeEach
+    void prepareFixtures() {
         // GIVEN
         givenWhenThenDefinitionMock = orderedSteps(0, 1, 1);
     }
 
-    @After
-    public void verifyMocks() {
+    @AfterEach
+    void verifyMocks() {
         // THEN
         verify(givenWhenThenDefinitionMock);
     }
 
     @Test
-    public void should_follow_the_when_then_partial_sequence_given_a_non_void_method() {
+    void should_follow_the_when_then_partial_sequence_given_a_non_void_method() {
         // WHEN
         givenSut(new SystemUnderTest(givenWhenThenDefinitionMock))
                 .when(SystemUnderTest::nonVoidMethod)
@@ -63,7 +63,7 @@ public class WhenThenTest {
     }
 
     @Test
-    public void should_follow_the_when_then_partial_sequence_given_a_void_method() {
+    void should_follow_the_when_then_partial_sequence_given_a_void_method() {
         // WHEN
         givenSut(new SystemUnderTest(givenWhenThenDefinitionMock))
                 .when(SystemUnderTest::voidMethod)
@@ -71,7 +71,7 @@ public class WhenThenTest {
     }
 
     @Test
-    public void should_follow_the_when_then_partial_sequence_given_a_sut_class_to_be_instantiated() {
+    void should_follow_the_when_then_partial_sequence_given_a_sut_class_to_be_instantiated() {
         // WHEN
         givenSutClass(SystemUnderTest.class)
                 .when(sut -> {

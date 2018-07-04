@@ -22,9 +22,9 @@
 
 package testasyouthink;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import testasyouthink.fixture.ExpectedException;
@@ -39,7 +39,7 @@ import static org.easymock.EasyMock.strictMock;
 import static org.easymock.EasyMock.verify;
 import static testasyouthink.TestAsYouThink.givenSut;
 
-public class ThenExpectedFailuresTest {
+class ThenExpectedFailuresTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ThenExpectedFailuresTest.class);
     private static final String EXPECTED_MESSAGE = "expected message";
@@ -47,20 +47,20 @@ public class ThenExpectedFailuresTest {
     private static final String EXPECTED_CAUSE_MESSAGE = "expected cause message";
     private SystemUnderTest systemUnderTestMock;
 
-    @Before
-    public void prepareFixtures() {
+    @BeforeEach
+    void prepareFixtures() {
         // GIVEN
         systemUnderTestMock = strictMock(SystemUnderTest.class);
     }
 
-    @After
-    public void verifyMocks() {
+    @AfterEach
+    void verifyMocks() {
         // THEN
         verify(systemUnderTestMock);
     }
 
     @Test
-    public void should_verify_the_sut_fails() throws Throwable {
+    void should_verify_the_sut_fails() throws Throwable {
         // GIVEN
         expect(systemUnderTestMock.methodWithThrowsClause()).andThrow(new ExpectedException());
         replay(systemUnderTestMock);
@@ -72,7 +72,7 @@ public class ThenExpectedFailuresTest {
     }
 
     @Test
-    public void should_verify_the_sut_fails_by_raising_an_expected_exception() throws Throwable {
+    void should_verify_the_sut_fails_by_raising_an_expected_exception() throws Throwable {
         // GIVEN
         expect(systemUnderTestMock.methodWithThrowsClause()).andThrow(new ExpectedException(EXPECTED_MESSAGE));
         replay(systemUnderTestMock);
@@ -86,7 +86,7 @@ public class ThenExpectedFailuresTest {
     }
 
     @Test
-    public void should_fail_given_a_missing_failure() throws Throwable {
+    void should_fail_given_a_missing_failure() throws Throwable {
         // GIVEN
         expect(systemUnderTestMock.methodWithThrowsClause()).andReturn("ordinary result");
         replay(systemUnderTestMock);
@@ -104,7 +104,7 @@ public class ThenExpectedFailuresTest {
     }
 
     @Test
-    public void should_fail_given_an_unexpected_exception() throws Throwable {
+    void should_fail_given_an_unexpected_exception() throws Throwable {
         // GIVEN
         expect(systemUnderTestMock.methodWithThrowsClause()).andThrow(new UnexpectedException());
         replay(systemUnderTestMock);
@@ -121,7 +121,7 @@ public class ThenExpectedFailuresTest {
     }
 
     @Test
-    public void should_verify_the_sut_fails_by_raising_an_expected_exception_with_an_expected_message() throws
+    void should_verify_the_sut_fails_by_raising_an_expected_exception_with_an_expected_message() throws
             Throwable {
         // GIVEN
         expect(systemUnderTestMock.methodWithThrowsClause()).andThrow(new ExpectedException(EXPECTED_MESSAGE));
@@ -136,7 +136,7 @@ public class ThenExpectedFailuresTest {
     }
 
     @Test
-    public void should_fail_given_an_unexpected_message() throws Throwable {
+    void should_fail_given_an_unexpected_message() throws Throwable {
         // GIVEN
         expect(systemUnderTestMock.methodWithThrowsClause()).andThrow(new ExpectedException(UNEXPECTED_MESSAGE));
         replay(systemUnderTestMock);
@@ -154,7 +154,7 @@ public class ThenExpectedFailuresTest {
     }
 
     @Test
-    public void should_verify_the_cause_of_a_failure() throws Throwable {
+    void should_verify_the_cause_of_a_failure() throws Throwable {
         //GIVEN
         expect(systemUnderTestMock.methodWithThrowsClause()).andThrow(
                 new ExpectedException(EXPECTED_MESSAGE, new ExpectedException()));
@@ -170,7 +170,7 @@ public class ThenExpectedFailuresTest {
     }
 
     @Test
-    public void should_fail_to_verify_the_cause_of_a_failure_given_an_unexpected_cause() throws Throwable {
+    void should_fail_to_verify_the_cause_of_a_failure_given_an_unexpected_cause() throws Throwable {
         //GIVEN
         expect(systemUnderTestMock.methodWithThrowsClause()).andThrow(
                 new ExpectedException(EXPECTED_MESSAGE, new UnexpectedException()));
@@ -190,7 +190,7 @@ public class ThenExpectedFailuresTest {
     }
 
     @Test
-    public void should_verify_the_cause_message_of_a_failure() throws Throwable {
+    void should_verify_the_cause_message_of_a_failure() throws Throwable {
         //GIVEN
         expect(systemUnderTestMock.methodWithThrowsClause()).andThrow(
                 new ExpectedException(EXPECTED_MESSAGE, new ExpectedException(EXPECTED_CAUSE_MESSAGE)));
@@ -207,7 +207,7 @@ public class ThenExpectedFailuresTest {
     }
 
     @Test
-    public void should_fail_to_verify_the_cause_message_of_a_failure_given_an_unexpected_cause_message() throws
+    void should_fail_to_verify_the_cause_message_of_a_failure_given_an_unexpected_cause_message() throws
             Throwable {
         //GIVEN
         expect(systemUnderTestMock.methodWithThrowsClause()).andThrow(

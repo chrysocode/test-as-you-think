@@ -22,9 +22,9 @@
 
 package testasyouthink;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import testasyouthink.fixture.GivenWhenThenDefinition;
 import testasyouthink.fixture.SystemUnderTest;
 
@@ -34,23 +34,23 @@ import static org.easymock.EasyMock.verify;
 import static testasyouthink.TestAsYouThink.givenSutClass;
 import static testasyouthink.fixture.GivenWhenThenDefinition.orderedSteps;
 
-public class ThenSpecifiedExpectationsTest {
+class ThenSpecifiedExpectationsTest {
 
     private GivenWhenThenDefinition givenWhenThenDefinitionMock;
 
-    @Before
-    public void prepareFixtures() {
+    @BeforeEach
+    void prepareFixtures() {
         givenWhenThenDefinitionMock = strictMock(GivenWhenThenDefinition.class);
     }
 
-    @After
-    public void verifyMocks() {
+    @AfterEach
+    void verifyMocks() {
         // THEN
         verify(givenWhenThenDefinitionMock);
     }
 
     @Test
-    public void should_specify_a_result_expectation_given_a_non_void_method() {
+    void should_specify_a_result_expectation_given_a_non_void_method() {
         // GIVEN
         givenWhenThenDefinitionMock = orderedSteps(1, 1);
 
@@ -68,7 +68,7 @@ public class ThenSpecifiedExpectationsTest {
     }
 
     @Test
-    public void should_specify_an_expectation_given_a_void_method() {
+    void should_specify_an_expectation_given_a_void_method() {
         // GIVEN
         givenWhenThenDefinitionMock = orderedSteps(1, 1);
 
@@ -84,7 +84,7 @@ public class ThenSpecifiedExpectationsTest {
     }
 
     @Test
-    public void should_specify_separated_expectations_given_a_non_void_method() {
+    void should_specify_separated_expectations_given_a_non_void_method() {
         // GIVEN
         givenWhenThenDefinitionMock = orderedSteps(1, 3);
 
@@ -108,7 +108,7 @@ public class ThenSpecifiedExpectationsTest {
     }
 
     @Test
-    public void should_specify_separated_expectations_given_a_void_method() {
+    void should_specify_separated_expectations_given_a_void_method() {
         // GIVEN
         givenWhenThenDefinitionMock = orderedSteps(1, 3);
 
@@ -128,7 +128,7 @@ public class ThenSpecifiedExpectationsTest {
     }
 
     @Test
-    public void should_specify_separated_sut_expectations_given_a_void_method() {
+    void should_specify_separated_sut_expectations_given_a_void_method() {
         // GIVEN
         givenWhenThenDefinitionMock = orderedSteps(1, 3);
 

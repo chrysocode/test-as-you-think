@@ -22,9 +22,9 @@
 
 package testasyouthink;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import testasyouthink.fixture.GivenWhenThenDefinition;
 import testasyouthink.fixture.SystemUnderTest;
@@ -35,24 +35,24 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static testasyouthink.TestAsYouThink.givenSutClass;
 import static testasyouthink.TestAsYouThink.withReturn;
 
-public class WhenStepAsExpressionLambdaTest {
+class WhenStepAsExpressionLambdaTest {
 
     private GivenWhenThenDefinition givenWhenThenDefinitionMock;
 
-    @Before
-    public void prepareFixtures() {
+    @BeforeEach
+    void prepareFixtures() {
         givenWhenThenDefinitionMock = Mockito.mock(GivenWhenThenDefinition.class);
     }
 
-    @After
-    public void verifyMocks() {
+    @AfterEach
+    void verifyMocks() {
         // THEN
         verify(givenWhenThenDefinitionMock).thenTheActualResultIsInKeepingWithTheExpectedResult();
         verifyNoMoreInteractions(givenWhenThenDefinitionMock);
     }
 
     @Test
-    public void should_accept_a_function_as_a_lambda_without_ambiguity_by_using_an_intermediary_method() {
+    void should_accept_a_function_as_a_lambda_without_ambiguity_by_using_an_intermediary_method() {
         // WHEN
         givenSutClass(SystemUnderTest.class)
                 .when(withReturn(sut -> sut.nonVoidMethod()))
@@ -61,7 +61,7 @@ public class WhenStepAsExpressionLambdaTest {
     }
 
     @Test
-    public void should_accept_a_function_as_a_lambda_without_ambiguity_by_using_an_alternate_when_method() {
+    void should_accept_a_function_as_a_lambda_without_ambiguity_by_using_an_alternate_when_method() {
         // WHEN
         givenSutClass(SystemUnderTest.class)
                 .whenSutReturns(sut -> sut.nonVoidMethod())
@@ -70,7 +70,7 @@ public class WhenStepAsExpressionLambdaTest {
     }
 
     @Test
-    public void should_accept_a_bifunction_as_a_lambda_without_ambiguity_by_using_an_alternate_when_method() {
+    void should_accept_a_bifunction_as_a_lambda_without_ambiguity_by_using_an_alternate_when_method() {
         // WHEN
         givenSutClass(SystemUnderTest.class)
                 .givenArgument("one argument", "argument")
@@ -80,7 +80,7 @@ public class WhenStepAsExpressionLambdaTest {
     }
 
     @Test
-    public void should_accept_a_trifunction_as_a_lambda_without_ambiguity_by_using_an_alternate_when_method() {
+    void should_accept_a_trifunction_as_a_lambda_without_ambiguity_by_using_an_alternate_when_method() {
         // WHEN
         givenSutClass(SystemUnderTest.class)
                 .givenArgument("first argument", "argument")
@@ -91,7 +91,7 @@ public class WhenStepAsExpressionLambdaTest {
     }
 
     @Test
-    public void should_accept_a_quadrifunction_as_a_lambda_without_ambiguity_by_using_an_alternate_when_method() {
+    void should_accept_a_quadrifunction_as_a_lambda_without_ambiguity_by_using_an_alternate_when_method() {
         // WHEN
         givenSutClass(SystemUnderTest.class)
                 .givenArgument("first argument", "argument")
@@ -105,7 +105,7 @@ public class WhenStepAsExpressionLambdaTest {
     }
 
     @Test
-    public void should_accept_a_consumer_as_a_lambda_without_ambiguity_by_using_an_alternate_when_method() {
+    void should_accept_a_consumer_as_a_lambda_without_ambiguity_by_using_an_alternate_when_method() {
         // WHEN
         givenSutClass(SystemUnderTest.class)
                 .whenSutRuns(sut -> sut.voidMethod())
@@ -113,7 +113,7 @@ public class WhenStepAsExpressionLambdaTest {
     }
 
     @Test
-    public void should_accept_a_biconsumer_as_a_lambda_without_ambiguity_by_using_an_alternate_when_method() {
+    void should_accept_a_biconsumer_as_a_lambda_without_ambiguity_by_using_an_alternate_when_method() {
         // WHEN
         givenSutClass(SystemUnderTest.class)
                 .givenArgument("one argument", "argument")
@@ -122,7 +122,7 @@ public class WhenStepAsExpressionLambdaTest {
     }
 
     @Test
-    public void should_accept_a_triconsumer_as_a_lambda_without_ambiguity_by_using_an_alternate_when_method() {
+    void should_accept_a_triconsumer_as_a_lambda_without_ambiguity_by_using_an_alternate_when_method() {
         // WHEN
         givenSutClass(SystemUnderTest.class)
                 .givenArgument("first argument", "argument")
@@ -132,7 +132,7 @@ public class WhenStepAsExpressionLambdaTest {
     }
 
     @Test
-    public void should_accept_a_quadriconsumer_as_a_lambda_without_ambiguity_by_using_an_alternate_when_method() {
+    void should_accept_a_quadriconsumer_as_a_lambda_without_ambiguity_by_using_an_alternate_when_method() {
         // WHEN
         givenSutClass(SystemUnderTest.class)
                 .givenArgument("first argument", "argument")

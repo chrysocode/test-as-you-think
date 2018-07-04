@@ -22,9 +22,9 @@
 
 package testasyouthink;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import testasyouthink.fixture.GivenWhenThenDefinition;
 import testasyouthink.fixture.SystemUnderTest;
 
@@ -33,24 +33,24 @@ import static org.easymock.EasyMock.verify;
 import static testasyouthink.TestAsYouThink.givenSutClass;
 import static testasyouthink.fixture.GivenWhenThenDefinition.orderedSteps;
 
-public class ThenExpectationAndExpectationTest {
+class ThenExpectationAndExpectationTest {
 
     private GivenWhenThenDefinition givenWhenThenDefinitionMock;
 
-    @Before
-    public void prepareFixtures() {
+    @BeforeEach
+    void prepareFixtures() {
         // GIVEN
         givenWhenThenDefinitionMock = orderedSteps(1, 3);
     }
 
-    @After
-    public void verifyMocks() {
+    @AfterEach
+    void verifyMocks() {
         // THEN
         verify(givenWhenThenDefinitionMock);
     }
 
     @Test
-    public void should_verify_result_expectations_separately_given_a_non_void_method() {
+    void should_verify_result_expectations_separately_given_a_non_void_method() {
         // WHEN
         givenSutClass(SystemUnderTest.class)
                 .given(() -> givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem())
@@ -73,7 +73,7 @@ public class ThenExpectationAndExpectationTest {
     }
 
     @Test
-    public void should_verify_expectations_separately_given_a_void_method() {
+    void should_verify_expectations_separately_given_a_void_method() {
         // WHEN
         givenSutClass(SystemUnderTest.class)
                 .given(() -> givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem())
@@ -87,7 +87,7 @@ public class ThenExpectationAndExpectationTest {
     }
 
     @Test
-    public void should_verify_sut_expectations_separately_given_a_void_method() {
+    void should_verify_sut_expectations_separately_given_a_void_method() {
         // WHEN
         givenSutClass(SystemUnderTest.class)
                 .given(sut -> givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem())

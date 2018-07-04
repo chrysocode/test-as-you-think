@@ -22,7 +22,7 @@
 
 package testasyouthink;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import testasyouthink.fixture.SystemUnderTest;
@@ -38,12 +38,12 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 import static testasyouthink.TestAsYouThink.givenSutClass;
 import static testasyouthink.TestAsYouThink.when;
 
-public class ThenUnexpectedFailuresTest {
+class ThenUnexpectedFailuresTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ThenUnexpectedFailuresTest.class);
 
     @Test
-    public void should_fail_to_run_a_verification_step_given_a_void_target_method() {
+    void should_fail_to_run_a_verification_step_given_a_void_target_method() {
         // WHEN
         Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                 .when(sut -> {})
@@ -60,7 +60,7 @@ public class ThenUnexpectedFailuresTest {
     }
 
     @Test
-    public void should_fail_to_run_another_verification_step_given_a_void_target_method() {
+    void should_fail_to_run_another_verification_step_given_a_void_target_method() {
         // WHEN
         Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                 .when(sut -> {})
@@ -78,7 +78,7 @@ public class ThenUnexpectedFailuresTest {
     }
 
     @Test
-    public void should_fail_to_run_a_verification_step_with_its_specification_given_a_void_target_method() {
+    void should_fail_to_run_a_verification_step_with_its_specification_given_a_void_target_method() {
         // WHEN
         Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                 .when(sut -> {})
@@ -95,7 +95,7 @@ public class ThenUnexpectedFailuresTest {
     }
 
     @Test
-    public void should_fail_to_run_another_verification_step_with_its_specification_given_a_void_target_method() {
+    void should_fail_to_run_another_verification_step_with_its_specification_given_a_void_target_method() {
         // WHEN
         Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                 .when(sut -> {})
@@ -113,7 +113,7 @@ public class ThenUnexpectedFailuresTest {
     }
 
     @Test
-    public void should_fail_to_verify_a_sut_expectation_given_a_void_target_method() {
+    void should_fail_to_verify_a_sut_expectation_given_a_void_target_method() {
         // WHEN
         Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                 .when(sut -> {})
@@ -130,7 +130,7 @@ public class ThenUnexpectedFailuresTest {
     }
 
     @Test
-    public void should_fail_to_verify_another_sut_expectation_given_a_void_target_method() {
+    void should_fail_to_verify_another_sut_expectation_given_a_void_target_method() {
         // WHEN
         Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                 .when(sut -> {})
@@ -148,7 +148,7 @@ public class ThenUnexpectedFailuresTest {
     }
 
     @Test
-    public void should_fail_to_verify_a_sut_specified_expectation_given_a_void_target_method() {
+    void should_fail_to_verify_a_sut_specified_expectation_given_a_void_target_method() {
         // WHEN
         Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                 .when(sut -> {})
@@ -165,7 +165,7 @@ public class ThenUnexpectedFailuresTest {
     }
 
     @Test
-    public void should_fail_to_verify_another_sut_specified_expectation_given_a_void_target_method() {
+    void should_fail_to_verify_another_sut_specified_expectation_given_a_void_target_method() {
         // WHEN
         Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                 .when(sut -> {})
@@ -183,7 +183,7 @@ public class ThenUnexpectedFailuresTest {
     }
 
     @Test
-    public void
+    void
     should_fail_to_verify_the_result_and_sut_expectations_because_of_the_result_given_a_non_void_target_method() {
         // WHEN
         Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
@@ -200,7 +200,7 @@ public class ThenUnexpectedFailuresTest {
     }
 
     @Test
-    public void
+    void
     should_fail_to_verify_the_result_and_sut_expectations_because_of_the_sut_given_a_non_void_target_method() {
         // WHEN
         Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
@@ -217,7 +217,7 @@ public class ThenUnexpectedFailuresTest {
     }
 
     @Test
-    public void should_fail_to_apply_a_condition_given_a_void_target_method() {
+    void should_fail_to_apply_a_condition_given_a_void_target_method() {
         // WHEN
         Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                 .when(sut -> {})
@@ -234,7 +234,7 @@ public class ThenUnexpectedFailuresTest {
     }
 
     @Test
-    public void should_fail_to_apply_another_condition_given_a_void_target_method() {
+    void should_fail_to_apply_another_condition_given_a_void_target_method() {
         // WHEN
         Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                 .when(sut -> {})
@@ -252,7 +252,7 @@ public class ThenUnexpectedFailuresTest {
     }
 
     @Test
-    public void should_fail_to_verify_a_result_expectation_given_a_non_void_target_method() {
+    void should_fail_to_verify_a_result_expectation_given_a_non_void_target_method() {
         // WHEN
         Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                 .when(sut -> "result")
@@ -269,7 +269,7 @@ public class ThenUnexpectedFailuresTest {
     }
 
     @Test
-    public void should_fail_to_verify_a_result_expectation_with_its_specification_given_a_non_void_target_method() {
+    void should_fail_to_verify_a_result_expectation_with_its_specification_given_a_non_void_target_method() {
         // WHEN
         Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                 .when(sut -> "result")
@@ -286,7 +286,7 @@ public class ThenUnexpectedFailuresTest {
     }
 
     @Test
-    public void
+    void
     should_fail_to_verify_another_result_expectation_with_its_specification_given_a_non_void_target_method() {
         // WHEN
         Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
@@ -305,7 +305,7 @@ public class ThenUnexpectedFailuresTest {
     }
 
     @Test
-    public void should_fail_to_run_a_verification_step_given_a_non_void_target_method() {
+    void should_fail_to_run_a_verification_step_given_a_non_void_target_method() {
         // WHEN
         Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                 .when(sut -> "result")
@@ -322,7 +322,7 @@ public class ThenUnexpectedFailuresTest {
     }
 
     @Test
-    public void should_fail_to_run_another_verification_step_given_a_non_void_target_method() {
+    void should_fail_to_run_another_verification_step_given_a_non_void_target_method() {
         // WHEN
         Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                 .when(sut -> "result")
@@ -340,7 +340,7 @@ public class ThenUnexpectedFailuresTest {
     }
 
     @Test
-    public void should_fail_to_run_a_verification_step_with_its_specification_given_a_non_void_target_method() {
+    void should_fail_to_run_a_verification_step_with_its_specification_given_a_non_void_target_method() {
         // WHEN
         Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                 .when(sut -> "result")
@@ -357,7 +357,7 @@ public class ThenUnexpectedFailuresTest {
     }
 
     @Test
-    public void should_fail_to_run_another_verification_step_with_its_specification_given_a_non_void_target_method() {
+    void should_fail_to_run_another_verification_step_with_its_specification_given_a_non_void_target_method() {
         // WHEN
         Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                 .when(sut -> "result")
@@ -375,7 +375,7 @@ public class ThenUnexpectedFailuresTest {
     }
 
     @Test
-    public void should_fail_to_check_a_result_predicate_given_a_non_void_target_method() {
+    void should_fail_to_check_a_result_predicate_given_a_non_void_target_method() {
         // WHEN
         Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                 .when(sut -> "result")
@@ -392,7 +392,7 @@ public class ThenUnexpectedFailuresTest {
     }
 
     @Test
-    public void should_fail_to_check_another_result_predicate_given_a_non_void_target_method() {
+    void should_fail_to_check_another_result_predicate_given_a_non_void_target_method() {
         // WHEN
         Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                 .when(sut -> "result")
@@ -410,7 +410,7 @@ public class ThenUnexpectedFailuresTest {
     }
 
     @Test
-    public void should_fail_to_check_result_and_sut_predicates_because_of_the_result_given_a_non_void_target_method() {
+    void should_fail_to_check_result_and_sut_predicates_because_of_the_result_given_a_non_void_target_method() {
         // WHEN
         Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                 .when(sut -> "result")
@@ -427,7 +427,7 @@ public class ThenUnexpectedFailuresTest {
     }
 
     @Test
-    public void should_fail_to_check_result_and_sut_predicates_because_of_the_sut_given_a_non_void_target_method() {
+    void should_fail_to_check_result_and_sut_predicates_because_of_the_sut_given_a_non_void_target_method() {
         // WHEN
         Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                 .when(sut -> "result")
@@ -444,7 +444,7 @@ public class ThenUnexpectedFailuresTest {
     }
 
     @Test
-    public void should_fail_to_check_some_result_predicates_given_a_non_void_target_method() {
+    void should_fail_to_check_some_result_predicates_given_a_non_void_target_method() {
         // WHEN
         Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                 .when(sut -> "result")
@@ -461,7 +461,7 @@ public class ThenUnexpectedFailuresTest {
     }
 
     @Test
-    public void should_fail_to_verify_no_failure_happened_during_the_execution_stage() {
+    void should_fail_to_verify_no_failure_happened_during_the_execution_stage() {
         // WHEN
         Throwable thrown = catchThrowable(() -> when((CheckedRunnable) () -> {
             throw new UnexpectedException();
@@ -475,7 +475,7 @@ public class ThenUnexpectedFailuresTest {
     }
 
     @Test
-    public void should_fail_to_verify_a_stdout_expectation_given_a_void_target_method() {
+    void should_fail_to_verify_a_stdout_expectation_given_a_void_target_method() {
         // WHEN
         Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                 .when(sut -> {})

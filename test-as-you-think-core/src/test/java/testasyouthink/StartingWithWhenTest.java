@@ -22,7 +22,7 @@
 
 package testasyouthink;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
@@ -40,12 +40,12 @@ import static org.mockito.Mockito.when;
 import static testasyouthink.TestAsYouThink.when;
 import static testasyouthink.TestAsYouThink.whenOutsideOperatingConditions;
 
-public class StartingWithWhenTest {
+class StartingWithWhenTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StartingWithWhenTest.class);
 
     @Test
-    public void should_start_with_when_given_a_void_method() {
+    void should_start_with_when_given_a_void_method() {
         // GIVEN
         SystemUnderTest sut = mock(SystemUnderTest.class);
         GivenWhenThenDefinition gwtMock = mock(GivenWhenThenDefinition.class);
@@ -65,7 +65,7 @@ public class StartingWithWhenTest {
     }
 
     @Test
-    public void should_start_with_when_given_a_non_void_method() {
+    void should_start_with_when_given_a_non_void_method() {
         // GIVEN
         SystemUnderTest sut = mock(SystemUnderTest.class);
         when(sut.nonVoidMethod()).thenReturn("expected result");
@@ -89,7 +89,7 @@ public class StartingWithWhenTest {
     }
 
     @Test
-    public void should_verify_an_expected_failure_by_starting_by_the_when_step() throws Throwable {
+    void should_verify_an_expected_failure_by_starting_by_the_when_step() throws Throwable {
         //GIVEN
         SystemUnderTest systemUnderTestMock = mock(SystemUnderTest.class);
         when(systemUnderTestMock.nonVoidMethodWithThrowsClause()).thenThrow(ExpectedException.class);
@@ -103,7 +103,7 @@ public class StartingWithWhenTest {
     }
 
     @Test
-    public void should_fail_to_verify_a_failure_by_starting_by_the_when_step() throws Throwable {
+    void should_fail_to_verify_a_failure_by_starting_by_the_when_step() throws Throwable {
         //GIVEN
         SystemUnderTest systemUnderTestMock = mock(SystemUnderTest.class);
         when(systemUnderTestMock.nonVoidMethodWithThrowsClause()).thenReturn("expected result");

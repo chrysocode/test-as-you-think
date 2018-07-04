@@ -23,9 +23,9 @@
 package testasyouthink;
 
 import org.easymock.IMocksControl;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import testasyouthink.fixture.ExpectedException;
 import testasyouthink.fixture.GivenWhenThenDefinition;
 import testasyouthink.fixture.SystemUnderTest;
@@ -34,7 +34,7 @@ import static org.easymock.EasyMock.createStrictControl;
 import static org.easymock.EasyMock.expectLastCall;
 import static testasyouthink.TestAsYouThink.givenSut;
 
-public class GivenArgumentsThenFailuresTest {
+class GivenArgumentsThenFailuresTest {
 
     private static final String GIVEN_STRING = "given argument";
     private static final int GIVEN_INTEGER = 201705;
@@ -45,22 +45,22 @@ public class GivenArgumentsThenFailuresTest {
     private SystemUnderTest systemUnderTestMock;
     private GivenWhenThenDefinition givenWhenThenDefinitionMock;
 
-    @Before
-    public void prepareFixtures() {
+    @BeforeEach
+    void prepareFixtures() {
         // GIVEN
         mocksControl = createStrictControl();
         systemUnderTestMock = mocksControl.createMock(SystemUnderTest.class);
         givenWhenThenDefinitionMock = mocksControl.createMock(GivenWhenThenDefinition.class);
     }
 
-    @After
-    public void verifyMocks() {
+    @AfterEach
+    void verifyMocks() {
         // THEN
         mocksControl.verify();
     }
 
     @Test
-    public void should_verify_the_sut_fails_given_one_method_parameter() throws Throwable {
+    void should_verify_the_sut_fails_given_one_method_parameter() throws Throwable {
         // GIVEN
         givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
         systemUnderTestMock.failWithParameter(GIVEN_STRING);
@@ -80,7 +80,7 @@ public class GivenArgumentsThenFailuresTest {
     }
 
     @Test
-    public void should_verify_the_sut_fails_given_two_method_parameters() throws Throwable {
+    void should_verify_the_sut_fails_given_two_method_parameters() throws Throwable {
         // GIVEN
         givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
         expectLastCall().times(2);
@@ -105,7 +105,7 @@ public class GivenArgumentsThenFailuresTest {
     }
 
     @Test
-    public void should_verify_the_sut_fails_given_three_method_parameters() throws Throwable {
+    void should_verify_the_sut_fails_given_three_method_parameters() throws Throwable {
         // GIVEN
         givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
         expectLastCall().times(3);

@@ -23,7 +23,7 @@
 package testasyouthink;
 
 import org.assertj.core.api.SoftAssertions;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,12 +44,12 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static testasyouthink.TestAsYouThink.givenSutClass;
 
-public class ThenStdoutAsResultTest {
+class ThenStdoutAsResultTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ThenStdoutAsResultTest.class);
 
     @Test
-    public void should_verify_the_standard_output_as_a_result_given_a_void_target_method() {
+    void should_verify_the_standard_output_as_a_result_given_a_void_target_method() {
         // GIVEN
         GivenWhenThenDefinition gwtMock = mock(GivenWhenThenDefinition.class);
 
@@ -76,7 +76,7 @@ public class ThenStdoutAsResultTest {
     }
 
     @Test
-    public void should_verify_the_standard_output_in_2_times_given_a_void_target_method() {
+    void should_verify_the_standard_output_in_2_times_given_a_void_target_method() {
         // GIVEN
         GivenWhenThenDefinition gwtMock = mock(GivenWhenThenDefinition.class);
 
@@ -107,7 +107,7 @@ public class ThenStdoutAsResultTest {
     }
 
     @Test
-    public void should_verify_the_standard_output_in_2_times_by_specifying_expectations_given_a_void_target_method() {
+    void should_verify_the_standard_output_in_2_times_by_specifying_expectations_given_a_void_target_method() {
         // GIVEN
         GivenWhenThenDefinition gwtMock = mock(GivenWhenThenDefinition.class);
 
@@ -138,7 +138,7 @@ public class ThenStdoutAsResultTest {
     }
 
     @Test
-    public void should_verify_the_standard_output_as_a_result_for_multiple_threads_given_a_void_target_method()
+    void should_verify_the_standard_output_as_a_result_for_multiple_threads_given_a_void_target_method()
             throws InterruptedException, ExecutionException, TimeoutException {
         // GIVEN
         final int numberOfThreads = 10;
@@ -195,7 +195,7 @@ public class ThenStdoutAsResultTest {
     }
 
     @Test
-    public void should_verify_the_standard_error_output_as_a_result_given_a_void_target_method() {
+    void should_verify_the_standard_error_output_as_a_result_given_a_void_target_method() {
         // GIVEN
         GivenWhenThenDefinition gwtMock = mock(GivenWhenThenDefinition.class);
 
@@ -222,7 +222,7 @@ public class ThenStdoutAsResultTest {
     }
 
     @Test
-    public void should_verify_the_standard_output_as_a_result_given_a_non_void_target_method() {
+    void should_verify_the_standard_output_as_a_result_given_a_non_void_target_method() {
         // GIVEN
         GivenWhenThenDefinition gwtMock = mock(GivenWhenThenDefinition.class);
 
@@ -254,7 +254,7 @@ public class ThenStdoutAsResultTest {
     }
 
     @Test
-    public void should_verify_the_standard_output_in_2_times_given_a_non_void_target_method() {
+    void should_verify_the_standard_output_in_2_times_given_a_non_void_target_method() {
         // GIVEN
         GivenWhenThenDefinition gwtMock = mock(GivenWhenThenDefinition.class);
 
@@ -286,7 +286,7 @@ public class ThenStdoutAsResultTest {
     }
 
     @Test
-    public void
+    void
     should_verify_the_standard_output_in_2_times_by_specifying_expectations_given_a_non_void_target_method() {
         // GIVEN
         GivenWhenThenDefinition gwtMock = mock(GivenWhenThenDefinition.class);
