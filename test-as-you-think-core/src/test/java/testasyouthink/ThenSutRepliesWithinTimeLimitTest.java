@@ -23,6 +23,7 @@
 package testasyouthink;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import testasyouthink.fixture.GivenWhenThenDefinition;
 import testasyouthink.fixture.SystemUnderTest;
@@ -50,168 +51,180 @@ class ThenSutRepliesWithinTimeLimitTest {
         gwtDefinition = mock(GivenWhenThenDefinition.class);
     }
 
-    @Test
-    void should_reply_within_a_time_limit_given_a_void_method() {
-        // WHEN
-        givenSutClass(SystemUnderTest.class)
-                .given(() -> {
-                    gwtDefinition.givenAContextThatDefinesTheInitialStateOfTheSystem();
-                    sleep(50);
-                })
-                .whenSutRuns(sut -> gwtDefinition.whenAnEventHappensInRelationToAnActionOfTheConsumer())
-                .thenSutRepliesWithin(49)
-                .and(() -> gwtDefinition.thenTheActualResultIsInKeepingWithTheExpectedResult());
+    @Nested
+    class Then_replying_within_a_time_limit {
 
-        // THEN
-        verify(gwtDefinition).givenAContextThatDefinesTheInitialStateOfTheSystem();
-        verify(gwtDefinition).whenAnEventHappensInRelationToAnActionOfTheConsumer();
-        verify(gwtDefinition).thenTheActualResultIsInKeepingWithTheExpectedResult();
-        verifyNoMoreInteractions(gwtDefinition);
+        @Test
+        void should_reply_within_a_time_limit_given_a_void_method() {
+            // WHEN
+            givenSutClass(SystemUnderTest.class)
+                    .given(() -> {
+                        gwtDefinition.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                        sleep(50);
+                    })
+                    .whenSutRuns(sut -> gwtDefinition.whenAnEventHappensInRelationToAnActionOfTheConsumer())
+                    .thenSutRepliesWithin(49)
+                    .and(() -> gwtDefinition.thenTheActualResultIsInKeepingWithTheExpectedResult());
+
+            // THEN
+            verify(gwtDefinition).givenAContextThatDefinesTheInitialStateOfTheSystem();
+            verify(gwtDefinition).whenAnEventHappensInRelationToAnActionOfTheConsumer();
+            verify(gwtDefinition).thenTheActualResultIsInKeepingWithTheExpectedResult();
+            verifyNoMoreInteractions(gwtDefinition);
+        }
+
+        @Test
+        void should_reply_within_a_time_limit_given_a_method_with_a_parameter() {
+            // WHEN
+            givenSutClass(SystemUnderTest.class)
+                    .givenArgument(() -> {
+                        gwtDefinition.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                        sleep(50);
+                        return "argument";
+                    })
+                    .when((sut, argument) -> {
+                        gwtDefinition.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+                    })
+                    .thenSutRepliesWithin(49)
+                    .and(() -> gwtDefinition.thenTheActualResultIsInKeepingWithTheExpectedResult());
+
+            // THEN
+            verify(gwtDefinition).givenAContextThatDefinesTheInitialStateOfTheSystem();
+            verify(gwtDefinition).whenAnEventHappensInRelationToAnActionOfTheConsumer();
+            verify(gwtDefinition).thenTheActualResultIsInKeepingWithTheExpectedResult();
+            verifyNoMoreInteractions(gwtDefinition);
+        }
+
+        @Test
+        void should_reply_within_a_time_limit_given_a_method_with_a_mutable_parameter() {
+            // WHEN
+            givenSutClass(SystemUnderTest.class)
+                    .givenArgument(StringBuilder.class, mutable -> {
+                        gwtDefinition.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                        mutable.append("argument");
+                        sleep(50);
+                    })
+                    .when((sut, argument) -> {
+                        gwtDefinition.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+                    })
+                    .thenSutRepliesWithin(49)
+                    .and(() -> gwtDefinition.thenTheActualResultIsInKeepingWithTheExpectedResult());
+
+            // THEN
+            verify(gwtDefinition).givenAContextThatDefinesTheInitialStateOfTheSystem();
+            verify(gwtDefinition).whenAnEventHappensInRelationToAnActionOfTheConsumer();
+            verify(gwtDefinition).thenTheActualResultIsInKeepingWithTheExpectedResult();
+            verifyNoMoreInteractions(gwtDefinition);
+        }
+
+        @Test
+        void should_reply_within_a_time_limit_given_a_non_void_method() {
+            // WHEN
+            givenSutClass(SystemUnderTest.class)
+                    .given(() -> {
+                        gwtDefinition.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                        sleep(50);
+                    })
+                    .when(sut -> {
+                        gwtDefinition.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+                        return "expected result";
+                    })
+                    .thenSutRepliesWithin(49)
+                    .and(result -> {
+                        assertThat(result).isEqualTo("expected result");
+                        gwtDefinition.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                    });
+
+            // THEN
+            verify(gwtDefinition).givenAContextThatDefinesTheInitialStateOfTheSystem();
+            verify(gwtDefinition).whenAnEventHappensInRelationToAnActionOfTheConsumer();
+            verify(gwtDefinition).thenTheActualResultIsInKeepingWithTheExpectedResult();
+            verifyNoMoreInteractions(gwtDefinition);
+        }
     }
 
-    @Test
-    void should_reply_within_a_time_limit_given_a_method_with_a_parameter() {
-        // WHEN
-        givenSutClass(SystemUnderTest.class)
-                .givenArgument(() -> {
-                    gwtDefinition.givenAContextThatDefinesTheInitialStateOfTheSystem();
-                    sleep(50);
-                    return "argument";
-                })
-                .when((sut, argument) -> {
-                    gwtDefinition.whenAnEventHappensInRelationToAnActionOfTheConsumer();
-                })
-                .thenSutRepliesWithin(49)
-                .and(() -> gwtDefinition.thenTheActualResultIsInKeepingWithTheExpectedResult());
+    @Nested
+    class Then_failing_to_reply_within_a_time_limit {
 
-        // THEN
-        verify(gwtDefinition).givenAContextThatDefinesTheInitialStateOfTheSystem();
-        verify(gwtDefinition).whenAnEventHappensInRelationToAnActionOfTheConsumer();
-        verify(gwtDefinition).thenTheActualResultIsInKeepingWithTheExpectedResult();
-        verifyNoMoreInteractions(gwtDefinition);
+        @Test
+        void should_fail_to_reply_within_a_time_limit_given_a_void_method() {
+            assertThatThrownBy(() -> givenSutClass(SystemUnderTest.class)
+                    .when(sut -> {
+                        sleep(1000);
+                    })
+                    .thenSutRepliesWithin(1))
+                    .isInstanceOf(AssertionError.class)
+                    .hasMessage("test timed out after 1 milliseconds")
+                    .hasCauseInstanceOf(TimeoutException.class);
+        }
+
+        @Test
+        void should_fail_to_reply_within_a_duration_limit_given_a_void_method() {
+            assertThatThrownBy(() -> givenSutClass(SystemUnderTest.class)
+                    .when(sut -> {
+                        sleep(1000);
+                    })
+                    .thenSutRepliesWithin(Duration.ofMillis(1)))
+                    .isInstanceOf(AssertionError.class)
+                    .hasMessage("test timed out after 1 milliseconds")
+                    .hasCauseInstanceOf(TimeoutException.class);
+        }
+
+        @Test
+        void should_fail_to_reply_within_a_time_limit_given_a_non_void_method() {
+            assertThatThrownBy(() -> givenSutClass(SystemUnderTest.class)
+                    .when(sut -> {
+                        sleep(1000);
+                        return null;
+                    })
+                    .thenSutRepliesWithin(1))
+                    .isInstanceOf(AssertionError.class)
+                    .hasMessage("test timed out after 1 milliseconds")
+                    .hasCauseInstanceOf(TimeoutException.class);
+        }
+
+        @Test
+        void should_fail_to_reply_within_a_duration_limit_given_a_non_void_method() {
+            assertThatThrownBy(() -> givenSutClass(SystemUnderTest.class)
+                    .when(sut -> {
+                        sleep(1000);
+                        return null;
+                    })
+                    .thenSutRepliesWithin(Duration.ofMillis(1)))
+                    .isInstanceOf(AssertionError.class)
+                    .hasMessage("test timed out after 1 milliseconds")
+                    .hasCauseInstanceOf(TimeoutException.class);
+        }
     }
 
-    @Test
-    void should_reply_within_a_time_limit_given_a_method_with_a_mutable_parameter() {
-        // WHEN
-        givenSutClass(SystemUnderTest.class)
-                .givenArgument(StringBuilder.class, mutable -> {
-                    gwtDefinition.givenAContextThatDefinesTheInitialStateOfTheSystem();
-                    mutable.append("argument");
-                    sleep(50);
-                })
-                .when((sut, argument) -> {
-                    gwtDefinition.whenAnEventHappensInRelationToAnActionOfTheConsumer();
-                })
-                .thenSutRepliesWithin(49)
-                .and(() -> gwtDefinition.thenTheActualResultIsInKeepingWithTheExpectedResult());
+    @Nested
+    class When_a_failure_happens_during_execution {
 
-        // THEN
-        verify(gwtDefinition).givenAContextThatDefinesTheInitialStateOfTheSystem();
-        verify(gwtDefinition).whenAnEventHappensInRelationToAnActionOfTheConsumer();
-        verify(gwtDefinition).thenTheActualResultIsInKeepingWithTheExpectedResult();
-        verifyNoMoreInteractions(gwtDefinition);
-    }
+        @Test
+        void should_fail_to_execute_when_the_current_thread_was_interrupted_while_waiting_given_a_void_method() {
+            assertThatThrownBy(() -> givenSutClass(SystemUnderTest.class)
+                    .when(sut -> {
+                        currentThread()
+                                .getThreadGroup()
+                                .getParent()
+                                .interrupt();
+                    })
+                    .thenSutRepliesWithin(1000))
+                    .isInstanceOf(AssertionError.class)
+                    .hasMessage("the current thread was interrupted while waiting")
+                    .hasCauseInstanceOf(InterruptedException.class);
+        }
 
-    @Test
-    void should_reply_within_a_time_limit_given_a_non_void_method() {
-        // WHEN
-        givenSutClass(SystemUnderTest.class)
-                .given(() -> {
-                    gwtDefinition.givenAContextThatDefinesTheInitialStateOfTheSystem();
-                    sleep(50);
-                })
-                .when(sut -> {
-                    gwtDefinition.whenAnEventHappensInRelationToAnActionOfTheConsumer();
-                    return "expected result";
-                })
-                .thenSutRepliesWithin(49)
-                .and(result -> {
-                    assertThat(result).isEqualTo("expected result");
-                    gwtDefinition.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                });
-
-        // THEN
-        verify(gwtDefinition).givenAContextThatDefinesTheInitialStateOfTheSystem();
-        verify(gwtDefinition).whenAnEventHappensInRelationToAnActionOfTheConsumer();
-        verify(gwtDefinition).thenTheActualResultIsInKeepingWithTheExpectedResult();
-        verifyNoMoreInteractions(gwtDefinition);
-    }
-
-    @Test
-    void should_fail_to_reply_within_a_time_limit_given_a_void_method() {
-        assertThatThrownBy(() -> givenSutClass(SystemUnderTest.class)
-                .when(sut -> {
-                    sleep(1000);
-                })
-                .thenSutRepliesWithin(1))
-                .isInstanceOf(AssertionError.class)
-                .hasMessage("test timed out after 1 milliseconds")
-                .hasCauseInstanceOf(TimeoutException.class);
-    }
-
-    @Test
-    void should_fail_to_reply_within_a_duration_limit_given_a_void_method() {
-        assertThatThrownBy(() -> givenSutClass(SystemUnderTest.class)
-                .when(sut -> {
-                    sleep(1000);
-                })
-                .thenSutRepliesWithin(Duration.ofMillis(1)))
-                .isInstanceOf(AssertionError.class)
-                .hasMessage("test timed out after 1 milliseconds")
-                .hasCauseInstanceOf(TimeoutException.class);
-    }
-
-    @Test
-    void should_fail_to_execute_when_the_current_thread_was_interrupted_while_waiting_given_a_void_method() {
-        assertThatThrownBy(() -> givenSutClass(SystemUnderTest.class)
-                .when(sut -> {
-                    currentThread()
-                            .getThreadGroup()
-                            .getParent()
-                            .interrupt();
-                })
-                .thenSutRepliesWithin(1000))
-                .isInstanceOf(AssertionError.class)
-                .hasMessage("the current thread was interrupted while waiting")
-                .hasCauseInstanceOf(InterruptedException.class);
-    }
-
-    @Test
-    void should_fail_to_execute_when_the_computation_throws_an_exception_given_a_void_method() {
-        assertThatThrownBy(() -> givenSutClass(SystemUnderTest.class)
-                .when((CheckedConsumer<SystemUnderTest>) sut -> {
-                    throw new Exception("unexpected exception");
-                })
-                .thenSutRepliesWithin(1000))
-                .isInstanceOf(AssertionError.class)
-                .hasMessage("the computation threw an exception")
-                .hasCauseInstanceOf(ExecutionException.class);
-    }
-
-    @Test
-    void should_fail_to_reply_within_a_time_limit_given_a_non_void_method() {
-        assertThatThrownBy(() -> givenSutClass(SystemUnderTest.class)
-                .when(sut -> {
-                    sleep(1000);
-                    return null;
-                })
-                .thenSutRepliesWithin(1))
-                .isInstanceOf(AssertionError.class)
-                .hasMessage("test timed out after 1 milliseconds")
-                .hasCauseInstanceOf(TimeoutException.class);
-    }
-
-    @Test
-    void should_fail_to_reply_within_a_duration_limit_given_a_non_void_method() {
-        assertThatThrownBy(() -> givenSutClass(SystemUnderTest.class)
-                .when(sut -> {
-                    sleep(1000);
-                    return null;
-                })
-                .thenSutRepliesWithin(Duration.ofMillis(1)))
-                .isInstanceOf(AssertionError.class)
-                .hasMessage("test timed out after 1 milliseconds")
-                .hasCauseInstanceOf(TimeoutException.class);
+        @Test
+        void should_fail_to_execute_when_the_computation_throws_an_exception_given_a_void_method() {
+            assertThatThrownBy(() -> givenSutClass(SystemUnderTest.class)
+                    .when((CheckedConsumer<SystemUnderTest>) sut -> {
+                        throw new Exception("unexpected exception");
+                    })
+                    .thenSutRepliesWithin(1000))
+                    .isInstanceOf(AssertionError.class)
+                    .hasMessage("the computation threw an exception")
+                    .hasCauseInstanceOf(ExecutionException.class);
+        }
     }
 }
