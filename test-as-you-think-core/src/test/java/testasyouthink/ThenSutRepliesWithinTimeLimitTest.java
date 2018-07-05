@@ -22,6 +22,7 @@
 
 package testasyouthink;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -54,6 +55,15 @@ class ThenSutRepliesWithinTimeLimitTest {
     @Nested
     class Then_replying_within_a_time_limit {
 
+        @AfterEach
+        void thenVerifySteps() {
+            // THEN
+            verify(gwtDefinition).givenAContextThatDefinesTheInitialStateOfTheSystem();
+            verify(gwtDefinition).whenAnEventHappensInRelationToAnActionOfTheConsumer();
+            verify(gwtDefinition).thenTheActualResultIsInKeepingWithTheExpectedResult();
+            verifyNoMoreInteractions(gwtDefinition);
+        }
+
         @Test
         void should_reply_within_a_time_limit_given_a_void_method() {
             // WHEN
@@ -65,12 +75,6 @@ class ThenSutRepliesWithinTimeLimitTest {
                     .whenSutRuns(sut -> gwtDefinition.whenAnEventHappensInRelationToAnActionOfTheConsumer())
                     .thenSutRepliesWithin(49)
                     .and(() -> gwtDefinition.thenTheActualResultIsInKeepingWithTheExpectedResult());
-
-            // THEN
-            verify(gwtDefinition).givenAContextThatDefinesTheInitialStateOfTheSystem();
-            verify(gwtDefinition).whenAnEventHappensInRelationToAnActionOfTheConsumer();
-            verify(gwtDefinition).thenTheActualResultIsInKeepingWithTheExpectedResult();
-            verifyNoMoreInteractions(gwtDefinition);
         }
 
         @Test
@@ -87,12 +91,6 @@ class ThenSutRepliesWithinTimeLimitTest {
                     })
                     .thenSutRepliesWithin(49)
                     .and(() -> gwtDefinition.thenTheActualResultIsInKeepingWithTheExpectedResult());
-
-            // THEN
-            verify(gwtDefinition).givenAContextThatDefinesTheInitialStateOfTheSystem();
-            verify(gwtDefinition).whenAnEventHappensInRelationToAnActionOfTheConsumer();
-            verify(gwtDefinition).thenTheActualResultIsInKeepingWithTheExpectedResult();
-            verifyNoMoreInteractions(gwtDefinition);
         }
 
         @Test
@@ -109,12 +107,6 @@ class ThenSutRepliesWithinTimeLimitTest {
                     })
                     .thenSutRepliesWithin(49)
                     .and(() -> gwtDefinition.thenTheActualResultIsInKeepingWithTheExpectedResult());
-
-            // THEN
-            verify(gwtDefinition).givenAContextThatDefinesTheInitialStateOfTheSystem();
-            verify(gwtDefinition).whenAnEventHappensInRelationToAnActionOfTheConsumer();
-            verify(gwtDefinition).thenTheActualResultIsInKeepingWithTheExpectedResult();
-            verifyNoMoreInteractions(gwtDefinition);
         }
 
         @Test
@@ -134,12 +126,6 @@ class ThenSutRepliesWithinTimeLimitTest {
                         assertThat(result).isEqualTo("expected result");
                         gwtDefinition.thenTheActualResultIsInKeepingWithTheExpectedResult();
                     });
-
-            // THEN
-            verify(gwtDefinition).givenAContextThatDefinesTheInitialStateOfTheSystem();
-            verify(gwtDefinition).whenAnEventHappensInRelationToAnActionOfTheConsumer();
-            verify(gwtDefinition).thenTheActualResultIsInKeepingWithTheExpectedResult();
-            verifyNoMoreInteractions(gwtDefinition);
         }
     }
 
