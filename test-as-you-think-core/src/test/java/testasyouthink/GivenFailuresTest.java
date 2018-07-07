@@ -36,6 +36,8 @@ import testasyouthink.fixture.UnexpectedException;
 import testasyouthink.function.CheckedSupplier;
 import testasyouthink.preparation.PreparationError;
 
+import java.util.function.Consumer;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.Mockito.mock;
@@ -57,6 +59,15 @@ class GivenFailuresTest {
     @Nested
     class Given_a_SUT {
 
+        private final Consumer<Throwable> assertThatItFailsToPrepareSut = thrown -> {
+            LOGGER.debug("Stack trace", thrown);
+            assertThat(thrown)
+                    .isInstanceOf(PreparationError.class)
+                    .hasMessage("Fails to prepare the system under test!")
+                    .hasCauseInstanceOf(UnexpectedException.class);
+            verifyZeroInteractions(givenWhenThenDefinitionMock);
+        };
+
         @Test
         void should_fail_to_create_a_sut_instance() throws Throwable {
             // WHEN
@@ -69,7 +80,7 @@ class GivenFailuresTest {
             assertThat(thrown)
                     .isInstanceOf(PreparationError.class)
                     .hasMessage("Fails to instantiate the system under test!")
-                    .hasCauseInstanceOf(NullPointerException.class);
+                    .hasCauseInstanceOf(UnexpectedException.class);
             verifyZeroInteractions(givenWhenThenDefinitionMock);
         }
 
@@ -81,12 +92,7 @@ class GivenFailuresTest {
                     .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
 
             // THEN
-            LOGGER.debug("Stack trace", thrown);
-            assertThat(thrown)
-                    .isInstanceOf(PreparationError.class)
-                    .hasMessage("Fails to prepare the system under test!")
-                    .hasCauseInstanceOf(NullPointerException.class);
-            verifyZeroInteractions(givenWhenThenDefinitionMock);
+            assertThatItFailsToPrepareSut.accept(thrown);
         }
 
         @Test
@@ -99,12 +105,7 @@ class GivenFailuresTest {
                     .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
 
             // THEN
-            LOGGER.debug("Stack trace", thrown);
-            assertThat(thrown)
-                    .isInstanceOf(PreparationError.class)
-                    .hasMessage("Fails to prepare the system under test!")
-                    .hasCauseInstanceOf(UnexpectedException.class);
-            verifyZeroInteractions(givenWhenThenDefinitionMock);
+            assertThatItFailsToPrepareSut.accept(thrown);
         }
 
         @Test
@@ -118,12 +119,7 @@ class GivenFailuresTest {
                     .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
 
             // THEN
-            LOGGER.debug("Stack trace", thrown);
-            assertThat(thrown)
-                    .isInstanceOf(PreparationError.class)
-                    .hasMessage("Fails to prepare the system under test!")
-                    .hasCauseInstanceOf(UnexpectedException.class);
-            verifyZeroInteractions(givenWhenThenDefinitionMock);
+            assertThatItFailsToPrepareSut.accept(thrown);
         }
 
         @Test
@@ -137,12 +133,7 @@ class GivenFailuresTest {
                     .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
 
             // THEN
-            LOGGER.debug("Stack trace", thrown);
-            assertThat(thrown)
-                    .isInstanceOf(PreparationError.class)
-                    .hasMessage("Fails to prepare the system under test!")
-                    .hasCauseInstanceOf(UnexpectedException.class);
-            verifyZeroInteractions(givenWhenThenDefinitionMock);
+            assertThatItFailsToPrepareSut.accept(thrown);
         }
 
         @Test
@@ -157,17 +148,20 @@ class GivenFailuresTest {
                     .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
 
             // THEN
-            LOGGER.debug("Stack trace", thrown);
-            assertThat(thrown)
-                    .isInstanceOf(PreparationError.class)
-                    .hasMessage("Fails to prepare the system under test!")
-                    .hasCauseInstanceOf(UnexpectedException.class);
-            verifyZeroInteractions(givenWhenThenDefinitionMock);
+            assertThatItFailsToPrepareSut.accept(thrown);
         }
     }
 
     @Nested
     class Given_ordinary_fixtures {
+
+        private final Consumer<Throwable> assertThatItFailsToPrepareTestFixture = thrown -> {
+            assertThat(thrown)
+                    .isInstanceOf(PreparationError.class)
+                    .hasMessage("Fails to prepare the test fixture!")
+                    .hasCauseInstanceOf(UnexpectedException.class);
+            verifyZeroInteractions(givenWhenThenDefinitionMock);
+        };
 
         @Test
         void should_fail_to_prepare_an_ordinary_fixture() {
@@ -180,11 +174,7 @@ class GivenFailuresTest {
                     .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
 
             // THEN
-            assertThat(thrown)
-                    .isInstanceOf(PreparationError.class)
-                    .hasMessage("Fails to prepare the test fixture!")
-                    .hasCauseInstanceOf(UnexpectedException.class);
-            verifyZeroInteractions(givenWhenThenDefinitionMock);
+            assertThatItFailsToPrepareTestFixture.accept(thrown);
         }
 
         @Test
@@ -198,11 +188,7 @@ class GivenFailuresTest {
                     .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
 
             // THEN
-            assertThat(thrown)
-                    .isInstanceOf(PreparationError.class)
-                    .hasMessage("Fails to prepare the test fixture!")
-                    .hasCauseInstanceOf(UnexpectedException.class);
-            verifyZeroInteractions(givenWhenThenDefinitionMock);
+            assertThatItFailsToPrepareTestFixture.accept(thrown);
         }
 
         @Test
@@ -218,11 +204,7 @@ class GivenFailuresTest {
                     .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
 
             // THEN
-            assertThat(thrown)
-                    .isInstanceOf(PreparationError.class)
-                    .hasMessage("Fails to prepare the test fixture!")
-                    .hasCauseInstanceOf(UnexpectedException.class);
-            verifyZeroInteractions(givenWhenThenDefinitionMock);
+            assertThatItFailsToPrepareTestFixture.accept(thrown);
         }
     }
 
@@ -456,7 +438,7 @@ class GivenFailuresTest {
     public static class SystemUnderTestFailingToBeInstantiated {
 
         public SystemUnderTestFailingToBeInstantiated() throws Exception {
-            throw new NullPointerException("Impossible to instantiate it!");
+            throw new UnexpectedException("Impossible to instantiate it!");
         }
 
         void voidMethod() {}

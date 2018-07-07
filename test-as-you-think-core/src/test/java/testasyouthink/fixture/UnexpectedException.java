@@ -22,4 +22,13 @@
 
 package testasyouthink.fixture;
 
-public class UnexpectedException extends Exception {}
+public class UnexpectedException extends Exception {
+
+    public UnexpectedException() {
+        super();
+    }
+
+    public UnexpectedException(String message) {
+        super(message);
+    }
+}
