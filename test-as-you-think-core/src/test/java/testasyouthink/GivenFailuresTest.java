@@ -56,6 +56,34 @@ class GivenFailuresTest {
         givenWhenThenDefinitionMock = mock(GivenWhenThenDefinition.class);
     }
 
+    public static class SystemUnderTestFailingToBeInstantiated {
+
+        public SystemUnderTestFailingToBeInstantiated() throws Exception {
+            throw new UnexpectedException("Impossible to instantiate it!");
+        }
+
+        void voidMethod() {}
+    }
+
+    public static class Parameter {
+
+        public static class Mutable {
+
+            private int forDemonstration;
+
+            void setForDemonstration(int forDemonstration) {
+                this.forDemonstration = forDemonstration;
+            }
+        }
+
+        public static class MutableButUninstantiable {
+
+            public MutableButUninstantiable() throws InstantiationException {
+                throw new InstantiationException("Impossible to instantiate it!");
+            }
+        }
+    }
+
     @Nested
     class Given_a_SUT {
 
@@ -211,6 +239,15 @@ class GivenFailuresTest {
     @Nested
     class Given_arguments {
 
+        private final Consumer<Throwable> assertThatItFailsToPrepareArgument = thrown -> {
+            LOGGER.debug("Stack trace", thrown);
+            assertThat(thrown)
+                    .isInstanceOf(PreparationError.class)
+                    .hasMessage("Fails to prepare an argument for the target method!")
+                    .hasCauseInstanceOf(UnexpectedException.class);
+            verifyZeroInteractions(givenWhenThenDefinitionMock);
+        };
+
         @Test
         void should_fail_to_supply_one_argument() {
             // WHEN
@@ -222,12 +259,7 @@ class GivenFailuresTest {
                     .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
 
             // THEN
-            LOGGER.debug("Stack trace", thrown);
-            assertThat(thrown)
-                    .isInstanceOf(PreparationError.class)
-                    .hasMessage("Fails to prepare an argument for the target method!")
-                    .hasCauseInstanceOf(UnexpectedException.class);
-            verifyZeroInteractions(givenWhenThenDefinitionMock);
+            assertThatItFailsToPrepareArgument.accept(thrown);
         }
 
         @Test
@@ -241,12 +273,7 @@ class GivenFailuresTest {
                     .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
 
             // THEN
-            LOGGER.debug("Stack trace", thrown);
-            assertThat(thrown)
-                    .isInstanceOf(PreparationError.class)
-                    .hasMessage("Fails to prepare an argument for the target method!")
-                    .hasCauseInstanceOf(UnexpectedException.class);
-            verifyZeroInteractions(givenWhenThenDefinitionMock);
+            assertThatItFailsToPrepareArgument.accept(thrown);
         }
 
         @Test
@@ -311,12 +338,7 @@ class GivenFailuresTest {
                     .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
 
             // THEN
-            LOGGER.debug("Stack trace", thrown);
-            assertThat(thrown)
-                    .isInstanceOf(PreparationError.class)
-                    .hasMessage("Fails to prepare an argument for the target method!")
-                    .hasCauseInstanceOf(UnexpectedException.class);
-            verifyZeroInteractions(givenWhenThenDefinitionMock);
+            assertThatItFailsToPrepareArgument.accept(thrown);
         }
 
         @Test
@@ -331,12 +353,7 @@ class GivenFailuresTest {
                     .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
 
             // THEN
-            LOGGER.debug("Stack trace", thrown);
-            assertThat(thrown)
-                    .isInstanceOf(PreparationError.class)
-                    .hasMessage("Fails to prepare an argument for the target method!")
-                    .hasCauseInstanceOf(UnexpectedException.class);
-            verifyZeroInteractions(givenWhenThenDefinitionMock);
+            assertThatItFailsToPrepareArgument.accept(thrown);
         }
 
         @Test
@@ -378,12 +395,7 @@ class GivenFailuresTest {
                     .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
 
             // THEN
-            LOGGER.debug("Stack trace", thrown);
-            assertThat(thrown)
-                    .isInstanceOf(PreparationError.class)
-                    .hasMessage("Fails to prepare an argument for the target method!")
-                    .hasCauseInstanceOf(UnexpectedException.class);
-            verifyZeroInteractions(givenWhenThenDefinitionMock);
+            assertThatItFailsToPrepareArgument.accept(thrown);
         }
 
         @Test
@@ -399,12 +411,7 @@ class GivenFailuresTest {
                     .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
 
             // THEN
-            LOGGER.debug("Stack trace", thrown);
-            assertThat(thrown)
-                    .isInstanceOf(PreparationError.class)
-                    .hasMessage("Fails to prepare an argument for the target method!")
-                    .hasCauseInstanceOf(UnexpectedException.class);
-            verifyZeroInteractions(givenWhenThenDefinitionMock);
+            assertThatItFailsToPrepareArgument.accept(thrown);
         }
 
         @Test
@@ -432,34 +439,6 @@ class GivenFailuresTest {
                             + "testasyouthink.GivenFailuresTest$Parameter$Mutable type for the target method!")
                     .hasCauseInstanceOf(UnexpectedException.class);
             verifyZeroInteractions(givenWhenThenDefinitionMock);
-        }
-    }
-
-    public static class SystemUnderTestFailingToBeInstantiated {
-
-        public SystemUnderTestFailingToBeInstantiated() throws Exception {
-            throw new UnexpectedException("Impossible to instantiate it!");
-        }
-
-        void voidMethod() {}
-    }
-
-    public static class Parameter {
-
-        public static class Mutable {
-
-            private int forDemonstration;
-
-            void setForDemonstration(int forDemonstration) {
-                this.forDemonstration = forDemonstration;
-            }
-        }
-
-        public static class MutableButUninstantiable {
-
-            public MutableButUninstantiable() throws InstantiationException {
-                throw new InstantiationException("Impossible to instantiate it!");
-            }
         }
     }
 }
