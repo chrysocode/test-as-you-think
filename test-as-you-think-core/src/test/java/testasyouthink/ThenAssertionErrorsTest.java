@@ -22,6 +22,7 @@
 
 package testasyouthink;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import testasyouthink.fixture.SystemUnderTest;
@@ -34,144 +35,104 @@ import static testasyouthink.TestAsYouThink.givenSutClass;
 
 class ThenAssertionErrorsTest {
 
+    private Throwable thrown;
+
+    @AfterEach
+    void verifyError() {
+        // THEN
+        assertThat(thrown)
+                .isInstanceOf(AssertionError.class)
+                .hasNoCause();
+    }
+
     @Nested
     class Then_verifying {
 
         @Test
         void should_get_an_assertion_error_from_a_runnable_step_given_a_void_target_method() {
             // WHEN
-            Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+            thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                     .when(sut -> {})
                     .then(() -> assertThat(true).isFalse()));
-
-            // THEN
-            assertThat(thrown)
-                    .isInstanceOf(AssertionError.class)
-                    .hasNoCause();
         }
 
         @Test
         void should_get_an_assertion_error_from_another_runnable_step_given_a_void_target_method() {
             // WHEN
-            Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+            thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                     .when(sut -> {})
                     .then(() -> {})
                     .and(() -> assertThat(true).isFalse()));
-
-            // THEN
-            assertThat(thrown)
-                    .isInstanceOf(AssertionError.class)
-                    .hasNoCause();
         }
 
         @Test
         void should_get_an_assertion_error_from_a_specified_runnable_step_given_a_void_target_method() {
             // WHEN
-            Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+            thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                     .when(sut -> {})
                     .then("Expectations", () -> assertThat(true).isFalse()));
-
-            // THEN
-            assertThat(thrown)
-                    .isInstanceOf(AssertionError.class)
-                    .hasNoCause();
         }
 
         @Test
         void should_get_an_assertion_error_from_another_specified_runnable_step_given_a_void_target_method() {
             // WHEN
-            Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+            thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                     .when(sut -> {})
                     .then("An expectation", () -> {})
                     .and("Another expectation", () -> assertThat(true).isFalse()));
-
-            // THEN
-            assertThat(thrown)
-                    .isInstanceOf(AssertionError.class)
-                    .hasNoCause();
         }
 
         @Test
         void should_get_an_assertion_error_from_a_boolean_supplier_given_a_void_target_method() {
             // WHEN
-            Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+            thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                     .when(sut -> {})
                     .then(() -> false));
-
-            // THEN
-            assertThat(thrown)
-                    .isInstanceOf(AssertionError.class)
-                    .hasNoCause();
         }
 
         @Test
         void should_get_an_assertion_error_from_another_boolean_supplier_given_a_void_target_method() {
             // WHEN
-            Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+            thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                     .when(sut -> {})
                     .then(() -> true)
                     .and(() -> false));
-
-            // THEN
-            assertThat(thrown)
-                    .isInstanceOf(AssertionError.class)
-                    .hasNoCause();
         }
 
         @Test
         void should_get_an_assertion_error_from_a_runnable_step_given_a_non_void_target_method() {
             // WHEN
-            Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+            thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                     .when(sut -> "result")
                     .then(() -> assertThat(true).isFalse()));
-
-            // THEN
-            assertThat(thrown)
-                    .isInstanceOf(AssertionError.class)
-                    .hasNoCause();
         }
 
         @Test
         void should_get_an_assertion_error_from_another_runnable_step_given_a_non_void_target_method() {
             // WHEN
-            Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+            thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                     .when(sut -> "result")
                     .then(() -> {})
                     .and(() -> assertThat(true).isFalse()));
-
-            // THEN
-            assertThat(thrown)
-                    .isInstanceOf(AssertionError.class)
-                    .hasNoCause();
         }
 
         @Test
         void should_get_an_assertion_error_from_a_runnable_step_with_its_specification_given_a_non_void_target_method
                 () {
             // WHEN
-            Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+            thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                     .when(sut -> "result")
                     .then("Expectations", () -> assertThat(true).isFalse()));
-
-            // THEN
-            assertThat(thrown)
-                    .isInstanceOf(AssertionError.class)
-                    .hasNoCause();
         }
 
         @Test
         void
         should_get_an_assertion_error_from_another_runnable_step_with_its_specification_given_a_non_void_target_method() {
             // WHEN
-            Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+            thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                     .when(sut -> "result")
                     .then("Expectations", () -> {})
                     .and("Expectations", () -> assertThat(true).isFalse()));
-
-            // THEN
-            assertThat(thrown)
-                    .isInstanceOf(AssertionError.class)
-                    .hasNoCause();
         }
     }
 
@@ -181,55 +142,35 @@ class ThenAssertionErrorsTest {
         @Test
         void should_get_an_assertion_error_from_a_sut_consumer_step_given_a_void_target_method() {
             // WHEN
-            Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+            thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                     .when(sut -> {})
                     .then(sut -> assertThat(true).isFalse()));
-
-            // THEN
-            assertThat(thrown)
-                    .isInstanceOf(AssertionError.class)
-                    .hasNoCause();
         }
 
         @Test
         void should_get_an_assertion_error_from_another_sut_consumer_step_given_a_void_target_method() {
             // WHEN
-            Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+            thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                     .when(sut -> {})
                     .then(sut -> {})
                     .and(sut -> assertThat(true).isFalse()));
-
-            // THEN
-            assertThat(thrown)
-                    .isInstanceOf(AssertionError.class)
-                    .hasNoCause();
         }
 
         @Test
         void should_get_an_assertion_error_from_a_sut_consumer_specified_step_given_a_void_target_method() {
             // WHEN
-            Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+            thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                     .when(sut -> {})
                     .then("Expectations", sut -> assertThat(true).isFalse()));
-
-            // THEN
-            assertThat(thrown)
-                    .isInstanceOf(AssertionError.class)
-                    .hasNoCause();
         }
 
         @Test
         void should_get_an_assertion_error_from_another_sut_consumer_specified_step_given_a_void_target_method() {
             // WHEN
-            Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+            thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                     .when(sut -> {})
                     .then("An expectation", sut -> {})
                     .and("Another expectation", sut -> assertThat(true).isFalse()));
-
-            // THEN
-            assertThat(thrown)
-                    .isInstanceOf(AssertionError.class)
-                    .hasNoCause();
         }
     }
 
@@ -239,95 +180,60 @@ class ThenAssertionErrorsTest {
         @Test
         void should_get_an_assertion_error_from_a_result_predicate_given_a_non_void_target_method() {
             // WHEN
-            Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+            thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                     .when(sut -> "result")
                     .then(result -> false));
-
-            // THEN
-            assertThat(thrown)
-                    .isInstanceOf(AssertionError.class)
-                    .hasNoCause();
         }
 
         @Test
         void should_get_an_assertion_error_from_another_result_predicate_given_a_non_void_target_method() {
             // WHEN
-            Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+            thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                     .when(sut -> "result")
                     .then(result -> true)
                     .and(result -> false));
-
-            // THEN
-            assertThat(thrown)
-                    .isInstanceOf(AssertionError.class)
-                    .hasNoCause();
         }
 
         @Test
         void should_get_an_assertion_error_from_result_predicates_given_a_non_void_target_method() {
             // WHEN
-            Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+            thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                     .when(sut -> "result")
                     .then(asList(result -> true, result -> false)));
-
-            // THEN
-            assertThat(thrown)
-                    .isInstanceOf(AssertionError.class)
-                    .hasNoCause();
         }
 
         @Test
         void should_get_an_assertion_error_from_a_result_consumer_given_a_non_void_target_method() {
             // WHEN
-            Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+            thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                     .when(sut -> "result")
                     .then((CheckedConsumer<String>) result -> assertThat(true).isFalse()));
-
-            // THEN
-            assertThat(thrown)
-                    .isInstanceOf(AssertionError.class)
-                    .hasNoCause();
         }
 
         @Test
         void should_get_an_assertion_error_from_another_result_consumer_given_a_non_void_target_method() {
             // WHEN
-            Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+            thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                     .when(sut -> "result")
                     .then(result -> {})
                     .and((CheckedConsumer<String>) result -> assertThat(true).isFalse()));
-
-            // THEN
-            assertThat(thrown)
-                    .isInstanceOf(AssertionError.class)
-                    .hasNoCause();
         }
 
         @Test
         void should_get_an_assertion_error_from_a_specified_result_consumer_given_a_non_void_target_method() {
             // WHEN
-            Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+            thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                     .when(sut -> "result")
                     .then("Expectations", result -> assertThat(true).isFalse()));
-
-            // THEN
-            assertThat(thrown)
-                    .isInstanceOf(AssertionError.class)
-                    .hasNoCause();
         }
 
         @Test
         void should_get_an_assertion_error_from_another_specified_result_consumer_given_a_non_void_target_method() {
             // WHEN
-            Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+            thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                     .when(sut -> "result")
                     .then(result -> {})
                     .and("Expectations", result -> assertThat(true).isFalse()));
-
-            // THEN
-            assertThat(thrown)
-                    .isInstanceOf(AssertionError.class)
-                    .hasNoCause();
         }
     }
 
@@ -337,44 +243,28 @@ class ThenAssertionErrorsTest {
         @Test
         void
         should_get_an_assertion_error_from_result_and_sut_predicates_because_of_the_result_given_a_non_void_target_method() {
-
             // WHEN
-            Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+            thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                     .when(sut -> "result")
                     .then(result -> false, sut -> true));
-
-            // THEN
-            assertThat(thrown)
-                    .isInstanceOf(AssertionError.class)
-                    .hasNoCause();
         }
 
         @Test
         void
         should_get_an_assertion_error_from_result_and_sut_predicates_because_of_the_sut_given_a_non_void_target_method() {
             // WHEN
-            Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+            thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                     .when(sut -> "result")
                     .then(result -> true, sut -> false));
-
-            // THEN
-            assertThat(thrown)
-                    .isInstanceOf(AssertionError.class)
-                    .hasNoCause();
         }
 
         @Test
         void
         should_get_an_assertion_error_from_result_and_sut_consumers_because_of_the_result_given_a_non_void_target_method() {
             // WHEN
-            Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+            thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                     .when(sut -> "result")
                     .then(result -> false, sut -> true));
-
-            // THEN
-            assertThat(thrown)
-                    .isInstanceOf(AssertionError.class)
-                    .hasNoCause();
         }
 
         @Test
@@ -382,14 +272,9 @@ class ThenAssertionErrorsTest {
         should_get_an_assertion_error_from_result_and_sut_consumers_because_of_the_sut_given_a_non_void_target_method
                 () {
             // WHEN
-            Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+            thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                     .when(sut -> "result")
                     .then(result -> true, sut -> false));
-
-            // THEN
-            assertThat(thrown)
-                    .isInstanceOf(AssertionError.class)
-                    .hasNoCause();
         }
     }
 
@@ -399,14 +284,9 @@ class ThenAssertionErrorsTest {
         @Test
         void should_get_an_assertion_error_from_a_stdout_as_a_file_consumer_given_a_void_target_method() {
             // WHEN
-            Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+            thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                     .when(sut -> {})
                     .thenStandardOutput(result -> assertThat(true).isFalse()));
-
-            // THEN
-            assertThat(thrown)
-                    .isInstanceOf(AssertionError.class)
-                    .hasNoCause();
         }
     }
 }
