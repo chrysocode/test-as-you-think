@@ -23,6 +23,7 @@
 package testasyouthink;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,387 +54,403 @@ class GivenFailuresTest {
         givenWhenThenDefinitionMock = mock(GivenWhenThenDefinition.class);
     }
 
-    @Test
-    void should_fail_to_create_a_sut_instance() throws Throwable {
-        // WHEN
-        Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTestFailingToBeInstantiated.class)
-                .when(SystemUnderTestFailingToBeInstantiated::voidMethod)
-                .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
+    @Nested
+    class Given_a_SUT {
 
-        // THEN
-        LOGGER.debug("Stack trace", thrown);
-        assertThat(thrown)
-                .isInstanceOf(PreparationError.class)
-                .hasMessage("Fails to instantiate the system under test!")
-                .hasCauseInstanceOf(NullPointerException.class);
-        verifyZeroInteractions(givenWhenThenDefinitionMock);
+        @Test
+        void should_fail_to_create_a_sut_instance() throws Throwable {
+            // WHEN
+            Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTestFailingToBeInstantiated.class)
+                    .when(SystemUnderTestFailingToBeInstantiated::voidMethod)
+                    .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
+
+            // THEN
+            LOGGER.debug("Stack trace", thrown);
+            assertThat(thrown)
+                    .isInstanceOf(PreparationError.class)
+                    .hasMessage("Fails to instantiate the system under test!")
+                    .hasCauseInstanceOf(NullPointerException.class);
+            verifyZeroInteractions(givenWhenThenDefinitionMock);
+        }
+
+        @Test
+        void should_fail_to_supply_a_sut_instance() {
+            // WHEN
+            Throwable thrown = catchThrowable(() -> givenSut(() -> new SystemUnderTestFailingToBeInstantiated())
+                    .when(SystemUnderTestFailingToBeInstantiated::voidMethod)
+                    .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
+
+            // THEN
+            LOGGER.debug("Stack trace", thrown);
+            assertThat(thrown)
+                    .isInstanceOf(PreparationError.class)
+                    .hasMessage("Fails to prepare the system under test!")
+                    .hasCauseInstanceOf(NullPointerException.class);
+            verifyZeroInteractions(givenWhenThenDefinitionMock);
+        }
+
+        @Test
+        void should_fail_to_prepare_the_sut_after_instantiating_it() {
+            // WHEN
+            Throwable thrown = catchThrowable(() -> givenSut(SystemUnderTest.class, sut -> {
+                throw new UnexpectedException();
+            })
+                    .when(SystemUnderTest::voidMethod)
+                    .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
+
+            // THEN
+            LOGGER.debug("Stack trace", thrown);
+            assertThat(thrown)
+                    .isInstanceOf(PreparationError.class)
+                    .hasMessage("Fails to prepare the system under test!")
+                    .hasCauseInstanceOf(UnexpectedException.class);
+            verifyZeroInteractions(givenWhenThenDefinitionMock);
+        }
+
+        @Test
+        void should_fail_to_prepare_the_sut() {
+            // WHEN
+            Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                    .given(sut -> {
+                        throw new UnexpectedException();
+                    })
+                    .when(SystemUnderTest::voidMethod)
+                    .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
+
+            // THEN
+            LOGGER.debug("Stack trace", thrown);
+            assertThat(thrown)
+                    .isInstanceOf(PreparationError.class)
+                    .hasMessage("Fails to prepare the system under test!")
+                    .hasCauseInstanceOf(UnexpectedException.class);
+            verifyZeroInteractions(givenWhenThenDefinitionMock);
+        }
+
+        @Test
+        void should_fail_to_prepare_the_sut_with_its_specification() {
+            // WHEN
+            Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                    .given("SUT specification", sut -> {
+                        throw new UnexpectedException();
+                    })
+                    .when(SystemUnderTest::voidMethod)
+                    .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
+
+            // THEN
+            LOGGER.debug("Stack trace", thrown);
+            assertThat(thrown)
+                    .isInstanceOf(PreparationError.class)
+                    .hasMessage("Fails to prepare the system under test!")
+                    .hasCauseInstanceOf(UnexpectedException.class);
+            verifyZeroInteractions(givenWhenThenDefinitionMock);
+        }
+
+        @Test
+        void should_fail_to_prepare_the_sut_with_its_specifications() {
+            // WHEN
+            Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                    .given("SUT specification that passes", sut -> {})
+                    .and("SUT specification that fails", sut -> {
+                        throw new UnexpectedException();
+                    })
+                    .when(SystemUnderTest::voidMethod)
+                    .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
+
+            // THEN
+            LOGGER.debug("Stack trace", thrown);
+            assertThat(thrown)
+                    .isInstanceOf(PreparationError.class)
+                    .hasMessage("Fails to prepare the system under test!")
+                    .hasCauseInstanceOf(UnexpectedException.class);
+            verifyZeroInteractions(givenWhenThenDefinitionMock);
+        }
     }
 
-    @Test
-    void should_fail_to_supply_a_sut_instance() {
-        // WHEN
-        Throwable thrown = catchThrowable(() -> givenSut(() -> new SystemUnderTestFailingToBeInstantiated())
-                .when(SystemUnderTestFailingToBeInstantiated::voidMethod)
-                .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
+    @Nested
+    class Given_ordinary_fixtures {
 
-        // THEN
-        LOGGER.debug("Stack trace", thrown);
-        assertThat(thrown)
-                .isInstanceOf(PreparationError.class)
-                .hasMessage("Fails to prepare the system under test!")
-                .hasCauseInstanceOf(NullPointerException.class);
-        verifyZeroInteractions(givenWhenThenDefinitionMock);
+        @Test
+        void should_fail_to_prepare_an_ordinary_fixture() {
+            // WHEN
+            Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                    .given(() -> {
+                        throw new UnexpectedException();
+                    })
+                    .when(SystemUnderTest::voidMethod)
+                    .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
+
+            // THEN
+            assertThat(thrown)
+                    .isInstanceOf(PreparationError.class)
+                    .hasMessage("Fails to prepare the test fixture!")
+                    .hasCauseInstanceOf(UnexpectedException.class);
+            verifyZeroInteractions(givenWhenThenDefinitionMock);
+        }
+
+        @Test
+        void should_fail_to_prepare_an_ordinary_fixture_with_its_specification() {
+            // WHEN
+            Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                    .given("fixture specification that fails", () -> {
+                        throw new UnexpectedException();
+                    })
+                    .when(SystemUnderTest::voidMethod)
+                    .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
+
+            // THEN
+            assertThat(thrown)
+                    .isInstanceOf(PreparationError.class)
+                    .hasMessage("Fails to prepare the test fixture!")
+                    .hasCauseInstanceOf(UnexpectedException.class);
+            verifyZeroInteractions(givenWhenThenDefinitionMock);
+        }
+
+        @Test
+        void should_fail_to_prepare_a_second_ordinary_fixture_with_its_specification() {
+            // WHEN
+            Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                    .given("fixture specification that passes", () -> {
+                    })
+                    .and("fixture specification that fails", () -> {
+                        throw new UnexpectedException();
+                    })
+                    .when(SystemUnderTest::voidMethod)
+                    .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
+
+            // THEN
+            assertThat(thrown)
+                    .isInstanceOf(PreparationError.class)
+                    .hasMessage("Fails to prepare the test fixture!")
+                    .hasCauseInstanceOf(UnexpectedException.class);
+            verifyZeroInteractions(givenWhenThenDefinitionMock);
+        }
     }
 
-    @Test
-    void should_fail_to_prepare_the_sut_after_instantiating_it() {
-        // WHEN
-        Throwable thrown = catchThrowable(() -> givenSut(SystemUnderTest.class, sut -> {
-            throw new UnexpectedException();
-        })
-                .when(SystemUnderTest::voidMethod)
-                .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
+    @Nested
+    class Given_arguments {
 
-        // THEN
-        LOGGER.debug("Stack trace", thrown);
-        assertThat(thrown)
-                .isInstanceOf(PreparationError.class)
-                .hasMessage("Fails to prepare the system under test!")
-                .hasCauseInstanceOf(UnexpectedException.class);
-        verifyZeroInteractions(givenWhenThenDefinitionMock);
-    }
+        @Test
+        void should_fail_to_supply_one_argument() {
+            // WHEN
+            Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                    .givenArgument((CheckedSupplier<String>) () -> {
+                        throw new UnexpectedException();
+                    })
+                    .when(SystemUnderTest::voidMethodWithParameter)
+                    .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
 
-    @Test
-    void should_fail_to_prepare_the_sut() {
-        // WHEN
-        Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
-                .given(sut -> {
-                    throw new UnexpectedException();
-                })
-                .when(SystemUnderTest::voidMethod)
-                .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
+            // THEN
+            LOGGER.debug("Stack trace", thrown);
+            assertThat(thrown)
+                    .isInstanceOf(PreparationError.class)
+                    .hasMessage("Fails to prepare an argument for the target method!")
+                    .hasCauseInstanceOf(UnexpectedException.class);
+            verifyZeroInteractions(givenWhenThenDefinitionMock);
+        }
 
-        // THEN
-        LOGGER.debug("Stack trace", thrown);
-        assertThat(thrown)
-                .isInstanceOf(PreparationError.class)
-                .hasMessage("Fails to prepare the system under test!")
-                .hasCauseInstanceOf(UnexpectedException.class);
-        verifyZeroInteractions(givenWhenThenDefinitionMock);
-    }
+        @Test
+        void should_fail_to_supply_one_argument_with_its_specification() {
+            // WHEN
+            Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                    .givenArgument("argument specification", (CheckedSupplier<String>) () -> {
+                        throw new UnexpectedException();
+                    })
+                    .when(SystemUnderTest::voidMethodWithParameter)
+                    .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
 
-    @Test
-    void should_fail_to_prepare_the_sut_with_its_specification() {
-        // WHEN
-        Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
-                .given("SUT specification", sut -> {
-                    throw new UnexpectedException();
-                })
-                .when(SystemUnderTest::voidMethod)
-                .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
+            // THEN
+            LOGGER.debug("Stack trace", thrown);
+            assertThat(thrown)
+                    .isInstanceOf(PreparationError.class)
+                    .hasMessage("Fails to prepare an argument for the target method!")
+                    .hasCauseInstanceOf(UnexpectedException.class);
+            verifyZeroInteractions(givenWhenThenDefinitionMock);
+        }
 
-        // THEN
-        LOGGER.debug("Stack trace", thrown);
-        assertThat(thrown)
-                .isInstanceOf(PreparationError.class)
-                .hasMessage("Fails to prepare the system under test!")
-                .hasCauseInstanceOf(UnexpectedException.class);
-        verifyZeroInteractions(givenWhenThenDefinitionMock);
-    }
+        @Test
+        void should_fail_to_instantiate_one_argument_with_its_mutable_type() throws Throwable {
+            //GIVEN
+            class SystemUnderTestWithUninstantiableParameter extends
+                    ParameterizedSystemUnderTest<MutableButUninstantiable, Void, Void> {}
 
-    @Test
-    void should_fail_to_prepare_the_sut_with_its_specifications() {
-        // WHEN
-        Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
-                .given("SUT specification that passes", sut -> {})
-                .and("SUT specification that fails", sut -> {
-                    throw new UnexpectedException();
-                })
-                .when(SystemUnderTest::voidMethod)
-                .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
+            SystemUnderTestWithUninstantiableParameter sutWithUninstantiableParameter = mock(
+                    SystemUnderTestWithUninstantiableParameter.class);
 
-        // THEN
-        LOGGER.debug("Stack trace", thrown);
-        assertThat(thrown)
-                .isInstanceOf(PreparationError.class)
-                .hasMessage("Fails to prepare the system under test!")
-                .hasCauseInstanceOf(UnexpectedException.class);
-        verifyZeroInteractions(givenWhenThenDefinitionMock);
-    }
+            // WHEN
+            Throwable thrown = catchThrowable(() -> givenSut(sutWithUninstantiableParameter)
+                    .givenArgument(MutableButUninstantiable.class, mutableButUninstantiable -> {})
+                    .whenSutRuns(ParameterizedSystemUnderTest::voidMethodWithParameter)
+                    .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
 
-    @Test
-    void should_fail_to_prepare_an_ordinary_fixture() {
-        // WHEN
-        Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
-                .given(() -> {
-                    throw new UnexpectedException();
-                })
-                .when(SystemUnderTest::voidMethod)
-                .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
+            // THEN
+            LOGGER.debug("Stack trace", thrown);
+            assertThat(thrown)
+                    .isInstanceOf(PreparationError.class)
+                    .hasMessage("Fails to instantiate the argument of the " //
+                            + "testasyouthink.GivenFailuresTest$Parameter$MutableButUninstantiable type!")
+                    .hasCauseInstanceOf(InstantiationException.class);
+            verifyZeroInteractions(givenWhenThenDefinitionMock);
+        }
 
-        // THEN
-        assertThat(thrown)
-                .isInstanceOf(PreparationError.class)
-                .hasMessage("Fails to prepare the test fixture!")
-                .hasCauseInstanceOf(UnexpectedException.class);
-        verifyZeroInteractions(givenWhenThenDefinitionMock);
-    }
+        @Test
+        void should_fail_to_prepare_one_argument_with_its_mutable_type() throws Throwable {
+            //GIVEN
+            class SystemUnderTestWithMutableParameter extends ParameterizedSystemUnderTest<Mutable, Void, Void> {}
+            SystemUnderTestWithMutableParameter sutWithMutableParameter = mock(
+                    SystemUnderTestWithMutableParameter.class);
 
-    @Test
-    void should_fail_to_prepare_an_ordinary_fixture_with_its_specification() {
-        // WHEN
-        Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
-                .given("fixture specification that fails", () -> {
-                    throw new UnexpectedException();
-                })
-                .when(SystemUnderTest::voidMethod)
-                .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
+            // WHEN
+            Throwable thrown = catchThrowable(() -> givenSut(sutWithMutableParameter)
+                    .givenArgument(Mutable.class, mutable -> {
+                        throw new UnexpectedException();
+                    })
+                    .whenSutRuns(ParameterizedSystemUnderTest::voidMethodWithParameter)
+                    .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
 
-        // THEN
-        assertThat(thrown)
-                .isInstanceOf(PreparationError.class)
-                .hasMessage("Fails to prepare the test fixture!")
-                .hasCauseInstanceOf(UnexpectedException.class);
-        verifyZeroInteractions(givenWhenThenDefinitionMock);
-    }
+            // THEN
+            LOGGER.debug("Stack trace", thrown);
+            assertThat(thrown)
+                    .isInstanceOf(PreparationError.class)
+                    .hasMessage("Fails to prepare an argument of the " //
+                            + "testasyouthink.GivenFailuresTest$Parameter$Mutable type for the target method!")
+                    .hasCauseInstanceOf(UnexpectedException.class);
+            verifyZeroInteractions(givenWhenThenDefinitionMock);
+        }
 
-    @Test
-    void should_fail_to_prepare_a_second_ordinary_fixture_with_its_specification() {
-        // WHEN
-        Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
-                .given("fixture specification that passes", () -> {
-                })
-                .and("fixture specification that fails", () -> {
-                    throw new UnexpectedException();
-                })
-                .when(SystemUnderTest::voidMethod)
-                .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
+        @Test
+        void should_fail_to_supply_a_second_argument() {
+            // WHEN
+            Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                    .givenArgument(() -> "argument")
+                    .andArgument((CheckedSupplier<Integer>) () -> {
+                        throw new UnexpectedException();
+                    })
+                    .when(SystemUnderTest::voidMethodWithTwoParameters)
+                    .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
 
-        // THEN
-        assertThat(thrown)
-                .isInstanceOf(PreparationError.class)
-                .hasMessage("Fails to prepare the test fixture!")
-                .hasCauseInstanceOf(UnexpectedException.class);
-        verifyZeroInteractions(givenWhenThenDefinitionMock);
-    }
+            // THEN
+            LOGGER.debug("Stack trace", thrown);
+            assertThat(thrown)
+                    .isInstanceOf(PreparationError.class)
+                    .hasMessage("Fails to prepare an argument for the target method!")
+                    .hasCauseInstanceOf(UnexpectedException.class);
+            verifyZeroInteractions(givenWhenThenDefinitionMock);
+        }
 
-    @Test
-    void should_fail_to_supply_one_argument() {
-        // WHEN
-        Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
-                .givenArgument((CheckedSupplier<String>) () -> {
-                    throw new UnexpectedException();
-                })
-                .when(SystemUnderTest::voidMethodWithParameter)
-                .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
+        @Test
+        void should_fail_to_supply_a_second_argument_with_its_specification() {
+            // WHEN
+            Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                    .givenArgument(() -> "argument")
+                    .andArgument("argument specification", (CheckedSupplier<Integer>) () -> {
+                        throw new UnexpectedException();
+                    })
+                    .when(SystemUnderTest::voidMethodWithTwoParameters)
+                    .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
 
-        // THEN
-        LOGGER.debug("Stack trace", thrown);
-        assertThat(thrown)
-                .isInstanceOf(PreparationError.class)
-                .hasMessage("Fails to prepare an argument for the target method!")
-                .hasCauseInstanceOf(UnexpectedException.class);
-        verifyZeroInteractions(givenWhenThenDefinitionMock);
-    }
+            // THEN
+            LOGGER.debug("Stack trace", thrown);
+            assertThat(thrown)
+                    .isInstanceOf(PreparationError.class)
+                    .hasMessage("Fails to prepare an argument for the target method!")
+                    .hasCauseInstanceOf(UnexpectedException.class);
+            verifyZeroInteractions(givenWhenThenDefinitionMock);
+        }
 
-    @Test
-    void should_fail_to_supply_one_argument_with_its_specification() {
-        // WHEN
-        Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
-                .givenArgument("argument specification", (CheckedSupplier<String>) () -> {
-                    throw new UnexpectedException();
-                })
-                .when(SystemUnderTest::voidMethodWithParameter)
-                .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
+        @Test
+        void should_fail_to_prepare_a_second_argument_with_its_mutable_type() throws Throwable {
+            //GIVEN
+            class SystemUnderTestWithMutableParameter extends ParameterizedSystemUnderTest<Mutable, Mutable, Void> {}
+            SystemUnderTestWithMutableParameter sutWithMutableParameters = mock(
+                    SystemUnderTestWithMutableParameter.class);
 
-        // THEN
-        LOGGER.debug("Stack trace", thrown);
-        assertThat(thrown)
-                .isInstanceOf(PreparationError.class)
-                .hasMessage("Fails to prepare an argument for the target method!")
-                .hasCauseInstanceOf(UnexpectedException.class);
-        verifyZeroInteractions(givenWhenThenDefinitionMock);
-    }
+            // WHEN
+            Throwable thrown = catchThrowable(() -> givenSut(sutWithMutableParameters)
+                    .givenArgument(Mutable.class, mutable -> {})
+                    .andArgument(Mutable.class, mutable -> {
+                        throw new UnexpectedException();
+                    })
+                    .whenSutRuns(ParameterizedSystemUnderTest::voidMethodWithTwoParameters)
+                    .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
 
-    @Test
-    void should_fail_to_instantiate_one_argument_with_its_mutable_type() throws Throwable {
-        //GIVEN
-        class SystemUnderTestWithUninstantiableParameter extends
-                ParameterizedSystemUnderTest<MutableButUninstantiable, Void, Void> {}
-        SystemUnderTestWithUninstantiableParameter sutWithUninstantiableParameter = mock(
-                SystemUnderTestWithUninstantiableParameter.class);
+            // THEN
+            LOGGER.debug("Stack trace", thrown);
+            assertThat(thrown)
+                    .isInstanceOf(PreparationError.class)
+                    .hasMessage("Fails to prepare an argument of the " //
+                            + "testasyouthink.GivenFailuresTest$Parameter$Mutable type for the target method!")
+                    .hasCauseInstanceOf(UnexpectedException.class);
+            verifyZeroInteractions(givenWhenThenDefinitionMock);
+        }
 
-        // WHEN
-        Throwable thrown = catchThrowable(() -> givenSut(sutWithUninstantiableParameter)
-                .givenArgument(MutableButUninstantiable.class, mutableButUninstantiable -> {})
-                .whenSutRuns(ParameterizedSystemUnderTest::voidMethodWithParameter)
-                .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
+        @Test
+        void should_fail_to_supply_a_third_argument() {
+            // WHEN
+            Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                    .givenArgument(() -> "argument")
+                    .andArgument(() -> 2)
+                    .andArgument((CheckedSupplier<Boolean>) () -> {
+                        throw new UnexpectedException();
+                    })
+                    .when(SystemUnderTest::voidMethodWithThreeParameters)
+                    .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
 
-        // THEN
-        LOGGER.debug("Stack trace", thrown);
-        assertThat(thrown)
-                .isInstanceOf(PreparationError.class)
-                .hasMessage("Fails to instantiate the argument of the " //
-                        + "testasyouthink.GivenFailuresTest$Parameter$MutableButUninstantiable type!")
-                .hasCauseInstanceOf(InstantiationException.class);
-        verifyZeroInteractions(givenWhenThenDefinitionMock);
-    }
+            // THEN
+            LOGGER.debug("Stack trace", thrown);
+            assertThat(thrown)
+                    .isInstanceOf(PreparationError.class)
+                    .hasMessage("Fails to prepare an argument for the target method!")
+                    .hasCauseInstanceOf(UnexpectedException.class);
+            verifyZeroInteractions(givenWhenThenDefinitionMock);
+        }
 
-    @Test
-    void should_fail_to_prepare_one_argument_with_its_mutable_type() throws Throwable {
-        //GIVEN
-        class SystemUnderTestWithMutableParameter extends ParameterizedSystemUnderTest<Mutable, Void, Void> {}
-        SystemUnderTestWithMutableParameter sutWithMutableParameter = mock(SystemUnderTestWithMutableParameter.class);
+        @Test
+        void should_fail_to_supply_a_third_argument_with_its_specification() {
+            // WHEN
+            Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                    .givenArgument(() -> "argument")
+                    .andArgument(() -> 2)
+                    .andArgument("argument specification", (CheckedSupplier<Boolean>) () -> {
+                        throw new UnexpectedException();
+                    })
+                    .when(SystemUnderTest::voidMethodWithThreeParameters)
+                    .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
 
-        // WHEN
-        Throwable thrown = catchThrowable(() -> givenSut(sutWithMutableParameter)
-                .givenArgument(Mutable.class, mutable -> {
-                    throw new UnexpectedException();
-                })
-                .whenSutRuns(ParameterizedSystemUnderTest::voidMethodWithParameter)
-                .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
+            // THEN
+            LOGGER.debug("Stack trace", thrown);
+            assertThat(thrown)
+                    .isInstanceOf(PreparationError.class)
+                    .hasMessage("Fails to prepare an argument for the target method!")
+                    .hasCauseInstanceOf(UnexpectedException.class);
+            verifyZeroInteractions(givenWhenThenDefinitionMock);
+        }
 
-        // THEN
-        LOGGER.debug("Stack trace", thrown);
-        assertThat(thrown)
-                .isInstanceOf(PreparationError.class)
-                .hasMessage("Fails to prepare an argument of the " //
-                        + "testasyouthink.GivenFailuresTest$Parameter$Mutable type for the target method!")
-                .hasCauseInstanceOf(UnexpectedException.class);
-        verifyZeroInteractions(givenWhenThenDefinitionMock);
-    }
+        @Test
+        void should_fail_to_prepare_a_third_argument_with_its_mutable_type() throws Throwable {
+            //GIVEN
+            class SystemUnderTestWithMutableParameter extends ParameterizedSystemUnderTest<Mutable, Mutable, Mutable> {}
+            SystemUnderTestWithMutableParameter sutWithMutableParameters = mock(
+                    SystemUnderTestWithMutableParameter.class);
 
-    @Test
-    void should_fail_to_supply_a_second_argument() {
-        // WHEN
-        Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
-                .givenArgument(() -> "argument")
-                .andArgument((CheckedSupplier<Integer>) () -> {
-                    throw new UnexpectedException();
-                })
-                .when(SystemUnderTest::voidMethodWithTwoParameters)
-                .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
+            // WHEN
+            Throwable thrown = catchThrowable(() -> givenSut(sutWithMutableParameters)
+                    .givenArgument(Mutable.class, mutable -> {})
+                    .andArgument(Mutable.class, mutable -> {})
+                    .andArgument(Mutable.class, mutable -> {
+                        throw new UnexpectedException();
+                    })
+                    .whenSutRuns(ParameterizedSystemUnderTest::voidMethodWithThreeParameters)
+                    .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
 
-        // THEN
-        LOGGER.debug("Stack trace", thrown);
-        assertThat(thrown)
-                .isInstanceOf(PreparationError.class)
-                .hasMessage("Fails to prepare an argument for the target method!")
-                .hasCauseInstanceOf(UnexpectedException.class);
-        verifyZeroInteractions(givenWhenThenDefinitionMock);
-    }
-
-    @Test
-    void should_fail_to_supply_a_second_argument_with_its_specification() {
-        // WHEN
-        Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
-                .givenArgument(() -> "argument")
-                .andArgument("argument specification", (CheckedSupplier<Integer>) () -> {
-                    throw new UnexpectedException();
-                })
-                .when(SystemUnderTest::voidMethodWithTwoParameters)
-                .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
-
-        // THEN
-        LOGGER.debug("Stack trace", thrown);
-        assertThat(thrown)
-                .isInstanceOf(PreparationError.class)
-                .hasMessage("Fails to prepare an argument for the target method!")
-                .hasCauseInstanceOf(UnexpectedException.class);
-        verifyZeroInteractions(givenWhenThenDefinitionMock);
-    }
-
-    @Test
-    void should_fail_to_prepare_a_second_argument_with_its_mutable_type() throws Throwable {
-        //GIVEN
-        class SystemUnderTestWithMutableParameter extends ParameterizedSystemUnderTest<Mutable, Mutable, Void> {}
-        SystemUnderTestWithMutableParameter sutWithMutableParameters = mock(SystemUnderTestWithMutableParameter.class);
-
-        // WHEN
-        Throwable thrown = catchThrowable(() -> givenSut(sutWithMutableParameters)
-                .givenArgument(Mutable.class, mutable -> {})
-                .andArgument(Mutable.class, mutable -> {
-                    throw new UnexpectedException();
-                })
-                .whenSutRuns(ParameterizedSystemUnderTest::voidMethodWithTwoParameters)
-                .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
-
-        // THEN
-        LOGGER.debug("Stack trace", thrown);
-        assertThat(thrown)
-                .isInstanceOf(PreparationError.class)
-                .hasMessage("Fails to prepare an argument of the " //
-                        + "testasyouthink.GivenFailuresTest$Parameter$Mutable type for the target method!")
-                .hasCauseInstanceOf(UnexpectedException.class);
-        verifyZeroInteractions(givenWhenThenDefinitionMock);
-    }
-
-    @Test
-    void should_fail_to_supply_a_third_argument() {
-        // WHEN
-        Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
-                .givenArgument(() -> "argument")
-                .andArgument(() -> 2)
-                .andArgument((CheckedSupplier<Boolean>) () -> {
-                    throw new UnexpectedException();
-                })
-                .when(SystemUnderTest::voidMethodWithThreeParameters)
-                .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
-
-        // THEN
-        LOGGER.debug("Stack trace", thrown);
-        assertThat(thrown)
-                .isInstanceOf(PreparationError.class)
-                .hasMessage("Fails to prepare an argument for the target method!")
-                .hasCauseInstanceOf(UnexpectedException.class);
-        verifyZeroInteractions(givenWhenThenDefinitionMock);
-    }
-
-    @Test
-    void should_fail_to_supply_a_third_argument_with_its_specification() {
-        // WHEN
-        Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
-                .givenArgument(() -> "argument")
-                .andArgument(() -> 2)
-                .andArgument("argument specification", (CheckedSupplier<Boolean>) () -> {
-                    throw new UnexpectedException();
-                })
-                .when(SystemUnderTest::voidMethodWithThreeParameters)
-                .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
-
-        // THEN
-        LOGGER.debug("Stack trace", thrown);
-        assertThat(thrown)
-                .isInstanceOf(PreparationError.class)
-                .hasMessage("Fails to prepare an argument for the target method!")
-                .hasCauseInstanceOf(UnexpectedException.class);
-        verifyZeroInteractions(givenWhenThenDefinitionMock);
-    }
-
-    @Test
-    void should_fail_to_prepare_a_third_argument_with_its_mutable_type() throws Throwable {
-        //GIVEN
-        class SystemUnderTestWithMutableParameter extends ParameterizedSystemUnderTest<Mutable, Mutable, Mutable> {}
-        SystemUnderTestWithMutableParameter sutWithMutableParameters = mock(SystemUnderTestWithMutableParameter.class);
-
-        // WHEN
-        Throwable thrown = catchThrowable(() -> givenSut(sutWithMutableParameters)
-                .givenArgument(Mutable.class, mutable -> {})
-                .andArgument(Mutable.class, mutable -> {})
-                .andArgument(Mutable.class, mutable -> {
-                    throw new UnexpectedException();
-                })
-                .whenSutRuns(ParameterizedSystemUnderTest::voidMethodWithThreeParameters)
-                .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
-
-        // THEN
-        LOGGER.debug("Stack trace", thrown);
-        assertThat(thrown)
-                .isInstanceOf(PreparationError.class)
-                .hasMessage("Fails to prepare an argument of the " //
-                        + "testasyouthink.GivenFailuresTest$Parameter$Mutable type for the target method!")
-                .hasCauseInstanceOf(UnexpectedException.class);
-        verifyZeroInteractions(givenWhenThenDefinitionMock);
+            // THEN
+            LOGGER.debug("Stack trace", thrown);
+            assertThat(thrown)
+                    .isInstanceOf(PreparationError.class)
+                    .hasMessage("Fails to prepare an argument of the " //
+                            + "testasyouthink.GivenFailuresTest$Parameter$Mutable type for the target method!")
+                    .hasCauseInstanceOf(UnexpectedException.class);
+            verifyZeroInteractions(givenWhenThenDefinitionMock);
+        }
     }
 
     public static class SystemUnderTestFailingToBeInstantiated {
