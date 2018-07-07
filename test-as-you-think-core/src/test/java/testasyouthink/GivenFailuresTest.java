@@ -36,8 +36,6 @@ import testasyouthink.fixture.UnexpectedException;
 import testasyouthink.function.CheckedSupplier;
 import testasyouthink.preparation.PreparationError;
 
-import java.util.function.Consumer;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.Mockito.mock;
@@ -87,14 +85,14 @@ class GivenFailuresTest {
     @Nested
     class Given_a_SUT {
 
-        private final Consumer<Throwable> assertThatItFailsToPrepareSut = thrown -> {
+        private void assertThatItFailsToPrepareSut(Throwable thrown) {
             LOGGER.debug("Stack trace", thrown);
             assertThat(thrown)
                     .isInstanceOf(PreparationError.class)
                     .hasMessage("Fails to prepare the system under test!")
                     .hasCauseInstanceOf(UnexpectedException.class);
             verifyZeroInteractions(givenWhenThenDefinitionMock);
-        };
+        }
 
         @Test
         void should_fail_to_create_a_sut_instance() throws Throwable {
@@ -120,7 +118,7 @@ class GivenFailuresTest {
                     .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
 
             // THEN
-            assertThatItFailsToPrepareSut.accept(thrown);
+            assertThatItFailsToPrepareSut(thrown);
         }
 
         @Test
@@ -133,7 +131,7 @@ class GivenFailuresTest {
                     .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
 
             // THEN
-            assertThatItFailsToPrepareSut.accept(thrown);
+            assertThatItFailsToPrepareSut(thrown);
         }
 
         @Test
@@ -147,7 +145,7 @@ class GivenFailuresTest {
                     .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
 
             // THEN
-            assertThatItFailsToPrepareSut.accept(thrown);
+            assertThatItFailsToPrepareSut(thrown);
         }
 
         @Test
@@ -161,7 +159,7 @@ class GivenFailuresTest {
                     .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
 
             // THEN
-            assertThatItFailsToPrepareSut.accept(thrown);
+            assertThatItFailsToPrepareSut(thrown);
         }
 
         @Test
@@ -176,20 +174,21 @@ class GivenFailuresTest {
                     .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
 
             // THEN
-            assertThatItFailsToPrepareSut.accept(thrown);
+            assertThatItFailsToPrepareSut(thrown);
         }
     }
 
     @Nested
     class Given_ordinary_fixtures {
 
-        private final Consumer<Throwable> assertThatItFailsToPrepareTestFixture = thrown -> {
+        private void assertThatItFailsToPrepareTestFixture(Throwable thrown) {
+            LOGGER.debug("Stack trace", thrown);
             assertThat(thrown)
                     .isInstanceOf(PreparationError.class)
                     .hasMessage("Fails to prepare the test fixture!")
                     .hasCauseInstanceOf(UnexpectedException.class);
             verifyZeroInteractions(givenWhenThenDefinitionMock);
-        };
+        }
 
         @Test
         void should_fail_to_prepare_an_ordinary_fixture() {
@@ -202,7 +201,7 @@ class GivenFailuresTest {
                     .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
 
             // THEN
-            assertThatItFailsToPrepareTestFixture.accept(thrown);
+            assertThatItFailsToPrepareTestFixture(thrown);
         }
 
         @Test
@@ -216,7 +215,7 @@ class GivenFailuresTest {
                     .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
 
             // THEN
-            assertThatItFailsToPrepareTestFixture.accept(thrown);
+            assertThatItFailsToPrepareTestFixture(thrown);
         }
 
         @Test
@@ -232,21 +231,31 @@ class GivenFailuresTest {
                     .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
 
             // THEN
-            assertThatItFailsToPrepareTestFixture.accept(thrown);
+            assertThatItFailsToPrepareTestFixture(thrown);
         }
     }
 
     @Nested
     class Given_arguments {
 
-        private final Consumer<Throwable> assertThatItFailsToPrepareArgument = thrown -> {
+        private void assertThatItFailsToPrepareArgument(Throwable thrown) {
             LOGGER.debug("Stack trace", thrown);
             assertThat(thrown)
                     .isInstanceOf(PreparationError.class)
                     .hasMessage("Fails to prepare an argument for the target method!")
                     .hasCauseInstanceOf(UnexpectedException.class);
             verifyZeroInteractions(givenWhenThenDefinitionMock);
-        };
+        }
+
+        private void assertThatItFailsToPrepareMutableArgument(Throwable thrown) {
+            LOGGER.debug("Stack trace", thrown);
+            assertThat(thrown)
+                    .isInstanceOf(PreparationError.class)
+                    .hasMessage("Fails to prepare an argument of the " //
+                            + "testasyouthink.GivenFailuresTest$Parameter$Mutable type for the target method!")
+                    .hasCauseInstanceOf(UnexpectedException.class);
+            verifyZeroInteractions(givenWhenThenDefinitionMock);
+        }
 
         @Test
         void should_fail_to_supply_one_argument() {
@@ -259,7 +268,7 @@ class GivenFailuresTest {
                     .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
 
             // THEN
-            assertThatItFailsToPrepareArgument.accept(thrown);
+            assertThatItFailsToPrepareArgument(thrown);
         }
 
         @Test
@@ -273,7 +282,7 @@ class GivenFailuresTest {
                     .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
 
             // THEN
-            assertThatItFailsToPrepareArgument.accept(thrown);
+            assertThatItFailsToPrepareArgument(thrown);
         }
 
         @Test
@@ -317,13 +326,7 @@ class GivenFailuresTest {
                     .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
 
             // THEN
-            LOGGER.debug("Stack trace", thrown);
-            assertThat(thrown)
-                    .isInstanceOf(PreparationError.class)
-                    .hasMessage("Fails to prepare an argument of the " //
-                            + "testasyouthink.GivenFailuresTest$Parameter$Mutable type for the target method!")
-                    .hasCauseInstanceOf(UnexpectedException.class);
-            verifyZeroInteractions(givenWhenThenDefinitionMock);
+            assertThatItFailsToPrepareMutableArgument(thrown);
         }
 
         @Test
@@ -338,7 +341,7 @@ class GivenFailuresTest {
                     .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
 
             // THEN
-            assertThatItFailsToPrepareArgument.accept(thrown);
+            assertThatItFailsToPrepareArgument(thrown);
         }
 
         @Test
@@ -353,7 +356,7 @@ class GivenFailuresTest {
                     .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
 
             // THEN
-            assertThatItFailsToPrepareArgument.accept(thrown);
+            assertThatItFailsToPrepareArgument(thrown);
         }
 
         @Test
@@ -373,13 +376,7 @@ class GivenFailuresTest {
                     .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
 
             // THEN
-            LOGGER.debug("Stack trace", thrown);
-            assertThat(thrown)
-                    .isInstanceOf(PreparationError.class)
-                    .hasMessage("Fails to prepare an argument of the " //
-                            + "testasyouthink.GivenFailuresTest$Parameter$Mutable type for the target method!")
-                    .hasCauseInstanceOf(UnexpectedException.class);
-            verifyZeroInteractions(givenWhenThenDefinitionMock);
+            assertThatItFailsToPrepareMutableArgument(thrown);
         }
 
         @Test
@@ -395,7 +392,7 @@ class GivenFailuresTest {
                     .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
 
             // THEN
-            assertThatItFailsToPrepareArgument.accept(thrown);
+            assertThatItFailsToPrepareArgument(thrown);
         }
 
         @Test
@@ -411,7 +408,7 @@ class GivenFailuresTest {
                     .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
 
             // THEN
-            assertThatItFailsToPrepareArgument.accept(thrown);
+            assertThatItFailsToPrepareArgument(thrown);
         }
 
         @Test
@@ -432,13 +429,7 @@ class GivenFailuresTest {
                     .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
 
             // THEN
-            LOGGER.debug("Stack trace", thrown);
-            assertThat(thrown)
-                    .isInstanceOf(PreparationError.class)
-                    .hasMessage("Fails to prepare an argument of the " //
-                            + "testasyouthink.GivenFailuresTest$Parameter$Mutable type for the target method!")
-                    .hasCauseInstanceOf(UnexpectedException.class);
-            verifyZeroInteractions(givenWhenThenDefinitionMock);
+            assertThatItFailsToPrepareMutableArgument(thrown);
         }
     }
 }
