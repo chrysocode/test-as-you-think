@@ -76,7 +76,7 @@ class ThenExpectedFailuresTest {
         }
 
         @Test
-        void should_fail_given_a_missing_failure() throws Throwable {
+        void should_fail_to_verify_the_sut_fails_given_a_missing_failure() throws Throwable {
             // GIVEN
             expect(systemUnderTestMock.methodWithThrowsClause()).andReturn("ordinary result");
             replay(systemUnderTestMock);
@@ -94,7 +94,7 @@ class ThenExpectedFailuresTest {
         }
 
         @Test
-        void should_fail_given_an_unexpected_exception() throws Throwable {
+        void should_fail_to_verify_the_sut_fails_given_an_unexpected_exception() throws Throwable {
             // GIVEN
             expect(systemUnderTestMock.methodWithThrowsClause()).andThrow(new UnexpectedException());
             replay(systemUnderTestMock);
@@ -114,7 +114,7 @@ class ThenExpectedFailuresTest {
         class Then_verifying_the_message_of_the_failure {
 
             @Test
-            void should_verify_the_sut_fails_by_raising_an_expected_exception() throws Throwable {
+            void should_verify_the_failure_message() throws Throwable {
                 // GIVEN
                 expect(systemUnderTestMock.methodWithThrowsClause()).andThrow(new ExpectedException(EXPECTED_MESSAGE));
                 replay(systemUnderTestMock);
@@ -128,22 +128,7 @@ class ThenExpectedFailuresTest {
             }
 
             @Test
-            void should_verify_the_sut_fails_by_raising_an_expected_exception_with_an_expected_message() throws
-                    Throwable {
-                // GIVEN
-                expect(systemUnderTestMock.methodWithThrowsClause()).andThrow(new ExpectedException(EXPECTED_MESSAGE));
-                replay(systemUnderTestMock);
-
-                // WHEN
-                givenSut(systemUnderTestMock)
-                        .whenSutRunsOutsideOperatingConditions(SystemUnderTest::methodWithThrowsClause)
-                        .thenItFails()
-                        .becauseOf(ExpectedException.class)
-                        .withMessage(EXPECTED_MESSAGE);
-            }
-
-            @Test
-            void should_fail_given_an_unexpected_message() throws Throwable {
+            void should_fail_to_verify_the_failure_message_given_an_unexpected_message() throws Throwable {
                 // GIVEN
                 expect(systemUnderTestMock.methodWithThrowsClause()).andThrow(
                         new ExpectedException(UNEXPECTED_MESSAGE));
