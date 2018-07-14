@@ -171,27 +171,6 @@ class GivenSutWhenThenTest {
                                 assertThat(result).isEqualTo(EXPECTED_RESULT);
                             });
                 }
-
-                @Test
-                void should_verify_expectations_on_both_the_result_and_the_sut() {
-                    // GIVEN
-                    givenWhenThenDefinitionMock = orderedSteps(1, 2);
-
-                    // WHEN
-                    givenSutClass(SystemUnderTest.class)
-                            .given(sut -> {
-                                givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-                                sut.setGivenWhenThenDefinition(givenWhenThenDefinitionMock);
-                            })
-                            .when(SystemUnderTest::nonVoidMethod)
-                            .then(result -> {
-                                givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                                assertThat(result).isInstanceOf(String.class);
-                            }, sut -> {
-                                givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                                assertThat(sut).isInstanceOf(SystemUnderTest.class);
-                            });
-                }
             }
 
             @Nested

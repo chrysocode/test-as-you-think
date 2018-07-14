@@ -23,7 +23,6 @@
 package testasyouthink;
 
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import testasyouthink.fixture.GivenWhenThenDefinition;
@@ -38,12 +37,6 @@ class ThenExpectationsTest {
 
     private GivenWhenThenDefinition givenWhenThenDefinitionMock;
 
-    @BeforeEach
-    void prepareFixtures() {
-        // GIVEN
-        givenWhenThenDefinitionMock = orderedSteps(1, 3);
-    }
-
     @AfterEach
     void verifyMocks() {
         // THEN
@@ -54,10 +47,12 @@ class ThenExpectationsTest {
     class When_returning_a_result {
 
         @Test
-        void should_verify_result_expectations_separately_given_a_non_void_method() {
+        void should_verify_result_expectations_separately() {
+            // GIVEN
+            givenWhenThenDefinitionMock = orderedSteps(0, 3);
+
             // WHEN
             givenSutClass(SystemUnderTest.class)
-                    .given(() -> givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem())
                     .when(sut -> {
                         givenWhenThenDefinitionMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
                         return sut.nonVoidMethod();
@@ -75,16 +70,36 @@ class ThenExpectationsTest {
                         assertThat(result).endsWith("result");
                     });
         }
+
+        @Test
+        void should_verify_expectations_on_both_the_result_and_the_sut() {
+            // GIVEN
+            givenWhenThenDefinitionMock = orderedSteps(0, 2);
+
+            // WHEN
+            givenSutClass(SystemUnderTest.class)
+                    .given(sut -> sut.setGivenWhenThenDefinition(givenWhenThenDefinitionMock))
+                    .when(SystemUnderTest::nonVoidMethod)
+                    .then(result -> {
+                        givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                        assertThat(result).isInstanceOf(String.class);
+                    }, sut -> {
+                        givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                        assertThat(sut).isInstanceOf(SystemUnderTest.class);
+                    });
+        }
     }
 
     @Nested
     class When_returning_nothing {
 
         @Test
-        void should_verify_expectations_separately_given_a_void_method() {
+        void should_verify_ordinary_expectations_separately() {
+            // GIVEN
+            givenWhenThenDefinitionMock = orderedSteps(0, 3);
+
             // WHEN
             givenSutClass(SystemUnderTest.class)
-                    .given(() -> givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem())
                     .when(sut -> {
                         givenWhenThenDefinitionMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
                         sut.voidMethod();
@@ -95,10 +110,12 @@ class ThenExpectationsTest {
         }
 
         @Test
-        void should_verify_sut_expectations_separately_given_a_void_method() {
+        void should_verify_sut_expectations_separately() {
+            // GIVEN
+            givenWhenThenDefinitionMock = orderedSteps(0, 3);
+
             // WHEN
             givenSutClass(SystemUnderTest.class)
-                    .given(sut -> givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem())
                     .when(sut -> {
                         givenWhenThenDefinitionMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
                         sut.voidMethod();
