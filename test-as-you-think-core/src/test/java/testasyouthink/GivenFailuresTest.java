@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -54,15 +54,6 @@ class GivenFailuresTest {
         givenWhenThenDefinitionMock = mock(GivenWhenThenDefinition.class);
     }
 
-    public static class SystemUnderTestFailingToBeInstantiated {
-
-        public SystemUnderTestFailingToBeInstantiated() throws Exception {
-            throw new UnexpectedException("Impossible to instantiate it!");
-        }
-
-        void voidMethod() {}
-    }
-
     public static class Parameter {
 
         public static class Mutable {
@@ -79,102 +70,6 @@ class GivenFailuresTest {
             public MutableButUninstantiable() throws InstantiationException {
                 throw new InstantiationException("Impossible to instantiate it!");
             }
-        }
-    }
-
-    @Nested
-    class Given_a_SUT {
-
-        private void assertThatItFailsToPrepareSut(Throwable thrown) {
-            LOGGER.debug("Stack trace", thrown);
-            assertThat(thrown)
-                    .isInstanceOf(PreparationError.class)
-                    .hasMessage("Fails to prepare the system under test!")
-                    .hasCauseInstanceOf(UnexpectedException.class);
-            verifyZeroInteractions(givenWhenThenDefinitionMock);
-        }
-
-        @Test
-        void should_fail_to_create_a_sut_instance() throws Throwable {
-            // WHEN
-            Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTestFailingToBeInstantiated.class)
-                    .when(SystemUnderTestFailingToBeInstantiated::voidMethod)
-                    .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
-
-            // THEN
-            LOGGER.debug("Stack trace", thrown);
-            assertThat(thrown)
-                    .isInstanceOf(PreparationError.class)
-                    .hasMessage("Fails to instantiate the system under test!")
-                    .hasCauseInstanceOf(UnexpectedException.class);
-            verifyZeroInteractions(givenWhenThenDefinitionMock);
-        }
-
-        @Test
-        void should_fail_to_supply_a_sut_instance() {
-            // WHEN
-            Throwable thrown = catchThrowable(() -> givenSut(() -> new SystemUnderTestFailingToBeInstantiated())
-                    .when(SystemUnderTestFailingToBeInstantiated::voidMethod)
-                    .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
-
-            // THEN
-            assertThatItFailsToPrepareSut(thrown);
-        }
-
-        @Test
-        void should_fail_to_prepare_the_sut_after_instantiating_it() {
-            // WHEN
-            Throwable thrown = catchThrowable(() -> givenSut(SystemUnderTest.class, sut -> {
-                throw new UnexpectedException();
-            })
-                    .when(SystemUnderTest::voidMethod)
-                    .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
-
-            // THEN
-            assertThatItFailsToPrepareSut(thrown);
-        }
-
-        @Test
-        void should_fail_to_prepare_the_sut() {
-            // WHEN
-            Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
-                    .given(sut -> {
-                        throw new UnexpectedException();
-                    })
-                    .when(SystemUnderTest::voidMethod)
-                    .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
-
-            // THEN
-            assertThatItFailsToPrepareSut(thrown);
-        }
-
-        @Test
-        void should_fail_to_prepare_the_sut_with_its_specification() {
-            // WHEN
-            Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
-                    .given("SUT specification", sut -> {
-                        throw new UnexpectedException();
-                    })
-                    .when(SystemUnderTest::voidMethod)
-                    .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
-
-            // THEN
-            assertThatItFailsToPrepareSut(thrown);
-        }
-
-        @Test
-        void should_fail_to_prepare_the_sut_with_its_specifications() {
-            // WHEN
-            Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
-                    .given("SUT specification that passes", sut -> {})
-                    .and("SUT specification that fails", sut -> {
-                        throw new UnexpectedException();
-                    })
-                    .when(SystemUnderTest::voidMethod)
-                    .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
-
-            // THEN
-            assertThatItFailsToPrepareSut(thrown);
         }
     }
 

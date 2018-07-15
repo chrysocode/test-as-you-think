@@ -22,27 +22,38 @@
 
 package testasyouthink;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import testasyouthink.fixture.GivenWhenThenDefinition;
 import testasyouthink.fixture.SystemUnderTest;
+import testasyouthink.fixture.UnexpectedException;
+import testasyouthink.preparation.PreparationError;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.easymock.EasyMock.verify;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verifyZeroInteractions;
+import static testasyouthink.SutPreparationAssertions.assertThatItFailsToPrepareSut;
 import static testasyouthink.TestAsYouThink.givenSut;
 import static testasyouthink.TestAsYouThink.givenSutClass;
 import static testasyouthink.fixture.GivenWhenThenDefinition.orderedSteps;
 
 class GivenSutWhenThenTest {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(GivenSutWhenThenTest.class);
     private static final String EXPECTED_RESULT = "expected result";
     private GivenWhenThenDefinition givenWhenThenDefinitionMock;
 
-    @AfterEach
-    void verifyMocks() {
-        // THEN
-        verify(givenWhenThenDefinitionMock);
+    public static class SystemUnderTestFailingToBeInstantiated {
+
+        public SystemUnderTestFailingToBeInstantiated() throws Exception {
+            throw new UnexpectedException("Impossible to instantiate it!");
+        }
+
+        void voidMethod() {}
     }
 
     @Nested
@@ -64,6 +75,9 @@ class GivenSutWhenThenTest {
                 })
                         .when(SystemUnderTest::voidMethod)
                         .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult());
+
+                // THEN
+                verify(givenWhenThenDefinitionMock);
             }
 
             @Test
@@ -75,6 +89,9 @@ class GivenSutWhenThenTest {
                 givenSut(new SystemUnderTest(givenWhenThenDefinitionMock))
                         .when(SystemUnderTest::voidMethod)
                         .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult());
+
+                // THEN
+                verify(givenWhenThenDefinitionMock);
             }
 
             @Test
@@ -87,6 +104,9 @@ class GivenSutWhenThenTest {
                         .given(() -> givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem())
                         .when(SystemUnderTest::voidMethod)
                         .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult());
+
+                // THEN
+                verify(givenWhenThenDefinitionMock);
             }
         }
 
@@ -105,6 +125,9 @@ class GivenSutWhenThenTest {
                             givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                             assertThat(result).isEqualTo(EXPECTED_RESULT);
                         });
+
+                // THEN
+                verify(givenWhenThenDefinitionMock);
             }
 
             @Test
@@ -120,6 +143,28 @@ class GivenSutWhenThenTest {
                             givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                             assertThat(result).isEqualTo(EXPECTED_RESULT);
                         });
+
+                // THEN
+                verify(givenWhenThenDefinitionMock);
+            }
+        }
+
+        @Nested
+        class Failing_to_prepare_the_SUT {
+
+            @Test
+            void should_fail_to_supply_a_sut_instance() {
+                // GIVEN
+                givenWhenThenDefinitionMock = mock(GivenWhenThenDefinition.class);
+
+                // WHEN
+                Throwable thrown = catchThrowable(() -> givenSut(() -> new SystemUnderTestFailingToBeInstantiated())
+                        .when(SystemUnderTestFailingToBeInstantiated::voidMethod)
+                        .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
+
+                // THEN
+                assertThatItFailsToPrepareSut(thrown);
+                verifyZeroInteractions(givenWhenThenDefinitionMock);
             }
         }
     }
@@ -145,6 +190,32 @@ class GivenSutWhenThenTest {
                             givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                             assertThat(result).isEqualTo(EXPECTED_RESULT);
                         });
+
+                // THEN
+                verify(givenWhenThenDefinitionMock);
+            }
+        }
+
+        @Nested
+        class Failing_to_instantiate_the_SUT {
+
+            @Test
+            void should_fail_to_create_a_sut_instance() {
+                // GIVEN
+                givenWhenThenDefinitionMock = mock(GivenWhenThenDefinition.class);
+
+                // WHEN
+                Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTestFailingToBeInstantiated.class)
+                        .when(SystemUnderTestFailingToBeInstantiated::voidMethod)
+                        .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
+
+                // THEN
+                LOGGER.debug("Stack trace", thrown);
+                assertThat(thrown)
+                        .isInstanceOf(PreparationError.class)
+                        .hasMessage("Fails to instantiate the system under test!")
+                        .hasCauseInstanceOf(UnexpectedException.class);
+                verifyZeroInteractions(givenWhenThenDefinitionMock);
             }
         }
 
@@ -170,6 +241,9 @@ class GivenSutWhenThenTest {
                                 givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                                 assertThat(result).isEqualTo(EXPECTED_RESULT);
                             });
+
+                    // THEN
+                    verify(givenWhenThenDefinitionMock);
                 }
             }
 
@@ -192,6 +266,9 @@ class GivenSutWhenThenTest {
                                 givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                                 assertThat(sut.getState()).isNotNull();
                             });
+
+                    // THEN
+                    verify(givenWhenThenDefinitionMock);
                 }
 
                 @Test
@@ -207,8 +284,104 @@ class GivenSutWhenThenTest {
                             .when(SystemUnderTest::voidMethod)
                             .then(() -> givenWhenThenDefinitionMock
                                     .thenTheActualResultIsInKeepingWithTheExpectedResult());
+
+                    // THEN
+                    verify(givenWhenThenDefinitionMock);
+                }
+            }
+
+            @Nested
+            class Failing_to_prepare_the_SUT {
+
+                @Test
+                void should_fail_to_prepare_the_sut() {
+                    // GIVEN
+                    givenWhenThenDefinitionMock = mock(GivenWhenThenDefinition.class);
+
+                    // WHEN
+                    Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                            .given(sut -> {
+                                throw new UnexpectedException();
+                            })
+                            .when(SystemUnderTest::voidMethod)
+                            .then(() -> givenWhenThenDefinitionMock
+                                    .thenTheActualResultIsInKeepingWithTheExpectedResult()));
+
+                    // THEN
+                    assertThatItFailsToPrepareSut(thrown);
+                    verifyZeroInteractions(givenWhenThenDefinitionMock);
+                }
+
+                @Test
+                void should_fail_to_prepare_the_sut_after_instantiating_it() {
+                    // GIVEN
+                    givenWhenThenDefinitionMock = mock(GivenWhenThenDefinition.class);
+
+                    // WHEN
+                    Throwable thrown = catchThrowable(() -> givenSut(SystemUnderTest.class, sut -> {
+                        throw new UnexpectedException();
+                    })
+                            .when(SystemUnderTest::voidMethod)
+                            .then(() -> givenWhenThenDefinitionMock
+                                    .thenTheActualResultIsInKeepingWithTheExpectedResult()));
+
+                    // THEN
+                    assertThatItFailsToPrepareSut(thrown);
+                    verifyZeroInteractions(givenWhenThenDefinitionMock);
+                }
+
+                @Test
+                void should_fail_to_prepare_the_sut_with_its_specification() {
+                    // GIVEN
+                    givenWhenThenDefinitionMock = mock(GivenWhenThenDefinition.class);
+
+                    // WHEN
+                    Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                            .given("SUT specification", sut -> {
+                                throw new UnexpectedException();
+                            })
+                            .when(SystemUnderTest::voidMethod)
+                            .then(() -> givenWhenThenDefinitionMock
+                                    .thenTheActualResultIsInKeepingWithTheExpectedResult()));
+
+                    // THEN
+                    assertThatItFailsToPrepareSut(thrown);
+                    verifyZeroInteractions(givenWhenThenDefinitionMock);
+                }
+
+                @Test
+                void should_fail_to_prepare_the_sut_with_its_specifications() {
+                    // GIVEN
+                    givenWhenThenDefinitionMock = mock(GivenWhenThenDefinition.class);
+
+                    // WHEN
+                    Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                            .given("SUT specification that passes", sut -> {})
+                            .and("SUT specification that fails", sut -> {
+                                throw new UnexpectedException();
+                            })
+                            .when(SystemUnderTest::voidMethod)
+                            .then(() -> givenWhenThenDefinitionMock
+                                    .thenTheActualResultIsInKeepingWithTheExpectedResult()));
+
+                    // THEN
+                    assertThatItFailsToPrepareSut(thrown);
+                    verifyZeroInteractions(givenWhenThenDefinitionMock);
                 }
             }
         }
+    }
+}
+
+class SutPreparationAssertions {
+
+    private static Logger LOGGER = LoggerFactory.getLogger(SutPreparationAssertions.class);
+
+    static void assertThatItFailsToPrepareSut(Throwable thrown) {
+        LOGGER.debug("Stack trace", thrown);
+        assertThat(thrown)
+                .isInstanceOf(PreparationError.class)
+                .hasMessage("Fails to prepare the system under test!")
+                .hasCauseInstanceOf(UnexpectedException.class);
     }
 }
