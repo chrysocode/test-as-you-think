@@ -30,7 +30,7 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import testasyouthink.GivenArgumentsTest.Parameter.Mutable;
-import testasyouthink.GivenFailuresTest.Parameter.MutableButUninstantiable;
+import testasyouthink.GivenArgumentsTest.Parameter.MutableButUninstantiable;
 import testasyouthink.fixture.GivenWhenThenDefinition;
 import testasyouthink.fixture.ParameterizedSystemUnderTest;
 import testasyouthink.fixture.SystemUnderTest;
@@ -82,6 +82,13 @@ class GivenArgumentsTest {
 
             void setForDemonstration(int forDemonstration) {
                 this.forDemonstration = forDemonstration;
+            }
+        }
+
+        public static class MutableButUninstantiable {
+
+            public MutableButUninstantiable() throws InstantiationException {
+                throw new InstantiationException("Impossible to instantiate it!");
             }
         }
     }
@@ -232,21 +239,21 @@ class GivenArgumentsTest {
                     assertThat(thrown)
                             .isInstanceOf(PreparationError.class)
                             .hasMessage("Fails to instantiate the argument of the " //
-                                    + "testasyouthink.GivenFailuresTest$Parameter$MutableButUninstantiable type!")
+                                    + "testasyouthink.GivenArgumentsTest$Parameter$MutableButUninstantiable type!")
                             .hasCauseInstanceOf(InstantiationException.class);
                 }
 
                 @Test
                 void should_fail_to_prepare_one_argument_with_its_mutable_type() {
                     //GIVEN
-                    class SystemUnderTestWithMutableParameter extends ParameterizedSystemUnderTest<GivenFailuresTest
-                            .Parameter.Mutable, Void, Void> {}
+                    class SystemUnderTestWithMutableParameter extends ParameterizedSystemUnderTest<Parameter.Mutable,
+                            Void, Void> {}
                     SystemUnderTestWithMutableParameter sutWithMutableParameter = mock(
                             SystemUnderTestWithMutableParameter.class);
 
                     // WHEN
                     Throwable thrown = catchThrowable(() -> givenSut(sutWithMutableParameter)
-                            .givenArgument(GivenFailuresTest.Parameter.Mutable.class, mutable -> {
+                            .givenArgument(Parameter.Mutable.class, mutable -> {
                                 throw new UnexpectedException();
                             })
                             .whenSutRuns(ParameterizedSystemUnderTest::voidMethodWithParameter)
@@ -459,15 +466,15 @@ class GivenArgumentsTest {
                 @Test
                 void should_fail_to_prepare_a_second_argument_with_its_mutable_type() {
                     //GIVEN
-                    class SystemUnderTestWithMutableParameter extends ParameterizedSystemUnderTest<GivenFailuresTest
-                            .Parameter.Mutable, GivenFailuresTest.Parameter.Mutable, Void> {}
+                    class SystemUnderTestWithMutableParameter extends ParameterizedSystemUnderTest<Parameter.Mutable,
+                            Parameter.Mutable, Void> {}
                     SystemUnderTestWithMutableParameter sutWithMutableParameters = mock(
                             SystemUnderTestWithMutableParameter.class);
 
                     // WHEN
                     Throwable thrown = catchThrowable(() -> givenSut(sutWithMutableParameters)
-                            .givenArgument(GivenFailuresTest.Parameter.Mutable.class, mutable -> {})
-                            .andArgument(GivenFailuresTest.Parameter.Mutable.class, mutable -> {
+                            .givenArgument(Parameter.Mutable.class, mutable -> {})
+                            .andArgument(Parameter.Mutable.class, mutable -> {
                                 throw new UnexpectedException();
                             })
                             .whenSutRuns(ParameterizedSystemUnderTest::voidMethodWithTwoParameters)
@@ -619,6 +626,72 @@ class GivenArgumentsTest {
                         .whenSutRuns(ParameterizedSystemUnderTest::voidMethodWithThreeParameters)
                         .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult());
             }
+
+            @Nested
+            class Failing_to_build_a_third_argument {
+
+                @BeforeEach
+                void prepareMocks() {
+                    mocksControl.replay();
+                }
+
+                @Test
+                void should_fail_to_supply_a_third_argument() {
+                    // WHEN
+                    Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                            .givenArgument(() -> "argument")
+                            .andArgument(() -> 2)
+                            .andArgument((CheckedSupplier<Boolean>) () -> {
+                                throw new UnexpectedException();
+                            })
+                            .when(SystemUnderTest::voidMethodWithThreeParameters)
+                            .then(() -> givenWhenThenDefinitionMock
+                                    .thenTheActualResultIsInKeepingWithTheExpectedResult()));
+
+                    // THEN
+                    assertThatItFailsToPrepareArgument(thrown);
+                }
+
+                @Test
+                void should_fail_to_supply_a_third_argument_with_its_specification() {
+                    // WHEN
+                    Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                            .givenArgument(() -> "argument")
+                            .andArgument(() -> 2)
+                            .andArgument("argument specification", (CheckedSupplier<Boolean>) () -> {
+                                throw new UnexpectedException();
+                            })
+                            .when(SystemUnderTest::voidMethodWithThreeParameters)
+                            .then(() -> givenWhenThenDefinitionMock
+                                    .thenTheActualResultIsInKeepingWithTheExpectedResult()));
+
+                    // THEN
+                    assertThatItFailsToPrepareArgument(thrown);
+                }
+
+                @Test
+                void should_fail_to_prepare_a_third_argument_with_its_mutable_type() {
+                    //GIVEN
+                    class SystemUnderTestWithMutableParameter extends ParameterizedSystemUnderTest<Parameter.Mutable,
+                            Parameter.Mutable, Parameter.Mutable> {}
+                    SystemUnderTestWithMutableParameter sutWithMutableParameters = mock(
+                            SystemUnderTestWithMutableParameter.class);
+
+                    // WHEN
+                    Throwable thrown = catchThrowable(() -> givenSut(sutWithMutableParameters)
+                            .givenArgument(Parameter.Mutable.class, mutable -> {})
+                            .andArgument(Parameter.Mutable.class, mutable -> {})
+                            .andArgument(Parameter.Mutable.class, mutable -> {
+                                throw new UnexpectedException();
+                            })
+                            .whenSutRuns(ParameterizedSystemUnderTest::voidMethodWithThreeParameters)
+                            .then(() -> givenWhenThenDefinitionMock
+                                    .thenTheActualResultIsInKeepingWithTheExpectedResult()));
+
+                    // THEN
+                    assertThatItFailsToPrepareMutableArgument(thrown);
+                }
+            }
         }
 
         @Nested
@@ -664,7 +737,7 @@ class ArgumentPreparationAssertions {
         assertThat(thrown)
                 .isInstanceOf(PreparationError.class)
                 .hasMessage("Fails to prepare an argument of the " //
-                        + "testasyouthink.GivenFailuresTest$Parameter$Mutable type for the target method!")
+                        + "testasyouthink.GivenArgumentsTest$Parameter$Mutable type for the target method!")
                 .hasCauseInstanceOf(UnexpectedException.class);
     }
 }

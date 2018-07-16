@@ -27,19 +27,15 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import testasyouthink.GivenFailuresTest.Parameter.Mutable;
 import testasyouthink.fixture.GivenWhenThenDefinition;
-import testasyouthink.fixture.ParameterizedSystemUnderTest;
 import testasyouthink.fixture.SystemUnderTest;
 import testasyouthink.fixture.UnexpectedException;
-import testasyouthink.function.CheckedSupplier;
 import testasyouthink.preparation.PreparationError;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verifyZeroInteractions;
-import static testasyouthink.TestAsYouThink.givenSut;
 import static testasyouthink.TestAsYouThink.givenSutClass;
 
 class GivenFailuresTest {
@@ -51,25 +47,6 @@ class GivenFailuresTest {
     void prepareFixtures() {
         // GIVEN
         givenWhenThenDefinitionMock = mock(GivenWhenThenDefinition.class);
-    }
-
-    public static class Parameter {
-
-        public static class Mutable {
-
-            private int forDemonstration;
-
-            void setForDemonstration(int forDemonstration) {
-                this.forDemonstration = forDemonstration;
-            }
-        }
-
-        public static class MutableButUninstantiable {
-
-            public MutableButUninstantiable() throws InstantiationException {
-                throw new InstantiationException("Impossible to instantiate it!");
-            }
-        }
     }
 
     @Nested
@@ -126,82 +103,6 @@ class GivenFailuresTest {
 
             // THEN
             assertThatItFailsToPrepareTestFixture(thrown);
-        }
-    }
-
-    @Nested
-    class Given_arguments {
-
-        private void assertThatItFailsToPrepareArgument(Throwable thrown) {
-            LOGGER.debug("Stack trace", thrown);
-            assertThat(thrown)
-                    .isInstanceOf(PreparationError.class)
-                    .hasMessage("Fails to prepare an argument for the target method!")
-                    .hasCauseInstanceOf(UnexpectedException.class);
-            verifyZeroInteractions(givenWhenThenDefinitionMock);
-        }
-
-        private void assertThatItFailsToPrepareMutableArgument(Throwable thrown) {
-            LOGGER.debug("Stack trace", thrown);
-            assertThat(thrown)
-                    .isInstanceOf(PreparationError.class)
-                    .hasMessage("Fails to prepare an argument of the " //
-                            + "testasyouthink.GivenFailuresTest$Parameter$Mutable type for the target method!")
-                    .hasCauseInstanceOf(UnexpectedException.class);
-            verifyZeroInteractions(givenWhenThenDefinitionMock);
-        }
-
-        @Test
-        void should_fail_to_supply_a_third_argument() {
-            // WHEN
-            Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
-                    .givenArgument(() -> "argument")
-                    .andArgument(() -> 2)
-                    .andArgument((CheckedSupplier<Boolean>) () -> {
-                        throw new UnexpectedException();
-                    })
-                    .when(SystemUnderTest::voidMethodWithThreeParameters)
-                    .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
-
-            // THEN
-            assertThatItFailsToPrepareArgument(thrown);
-        }
-
-        @Test
-        void should_fail_to_supply_a_third_argument_with_its_specification() {
-            // WHEN
-            Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
-                    .givenArgument(() -> "argument")
-                    .andArgument(() -> 2)
-                    .andArgument("argument specification", (CheckedSupplier<Boolean>) () -> {
-                        throw new UnexpectedException();
-                    })
-                    .when(SystemUnderTest::voidMethodWithThreeParameters)
-                    .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
-
-            // THEN
-            assertThatItFailsToPrepareArgument(thrown);
-        }
-
-        @Test
-        void should_fail_to_prepare_a_third_argument_with_its_mutable_type() throws Throwable {
-            //GIVEN
-            class SystemUnderTestWithMutableParameter extends ParameterizedSystemUnderTest<Mutable, Mutable, Mutable> {}
-            SystemUnderTestWithMutableParameter sutWithMutableParameters = mock(
-                    SystemUnderTestWithMutableParameter.class);
-
-            // WHEN
-            Throwable thrown = catchThrowable(() -> givenSut(sutWithMutableParameters)
-                    .givenArgument(Mutable.class, mutable -> {})
-                    .andArgument(Mutable.class, mutable -> {})
-                    .andArgument(Mutable.class, mutable -> {
-                        throw new UnexpectedException();
-                    })
-                    .whenSutRuns(ParameterizedSystemUnderTest::voidMethodWithThreeParameters)
-                    .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
-
-            // THEN
-            assertThatItFailsToPrepareMutableArgument(thrown);
         }
     }
 }
