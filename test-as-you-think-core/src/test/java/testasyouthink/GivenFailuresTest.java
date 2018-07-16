@@ -28,7 +28,6 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import testasyouthink.GivenFailuresTest.Parameter.Mutable;
-import testasyouthink.GivenFailuresTest.Parameter.MutableButUninstantiable;
 import testasyouthink.fixture.GivenWhenThenDefinition;
 import testasyouthink.fixture.ParameterizedSystemUnderTest;
 import testasyouthink.fixture.SystemUnderTest;
@@ -150,78 +149,6 @@ class GivenFailuresTest {
                             + "testasyouthink.GivenFailuresTest$Parameter$Mutable type for the target method!")
                     .hasCauseInstanceOf(UnexpectedException.class);
             verifyZeroInteractions(givenWhenThenDefinitionMock);
-        }
-
-        @Test
-        void should_fail_to_supply_one_argument() {
-            // WHEN
-            Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
-                    .givenArgument((CheckedSupplier<String>) () -> {
-                        throw new UnexpectedException();
-                    })
-                    .when(SystemUnderTest::voidMethodWithParameter)
-                    .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
-
-            // THEN
-            assertThatItFailsToPrepareArgument(thrown);
-        }
-
-        @Test
-        void should_fail_to_supply_one_argument_with_its_specification() {
-            // WHEN
-            Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
-                    .givenArgument("argument specification", (CheckedSupplier<String>) () -> {
-                        throw new UnexpectedException();
-                    })
-                    .when(SystemUnderTest::voidMethodWithParameter)
-                    .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
-
-            // THEN
-            assertThatItFailsToPrepareArgument(thrown);
-        }
-
-        @Test
-        void should_fail_to_instantiate_one_argument_with_its_mutable_type() throws Throwable {
-            //GIVEN
-            class SystemUnderTestWithUninstantiableParameter extends
-                    ParameterizedSystemUnderTest<MutableButUninstantiable, Void, Void> {}
-
-            SystemUnderTestWithUninstantiableParameter sutWithUninstantiableParameter = mock(
-                    SystemUnderTestWithUninstantiableParameter.class);
-
-            // WHEN
-            Throwable thrown = catchThrowable(() -> givenSut(sutWithUninstantiableParameter)
-                    .givenArgument(MutableButUninstantiable.class, mutableButUninstantiable -> {})
-                    .whenSutRuns(ParameterizedSystemUnderTest::voidMethodWithParameter)
-                    .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
-
-            // THEN
-            LOGGER.debug("Stack trace", thrown);
-            assertThat(thrown)
-                    .isInstanceOf(PreparationError.class)
-                    .hasMessage("Fails to instantiate the argument of the " //
-                            + "testasyouthink.GivenFailuresTest$Parameter$MutableButUninstantiable type!")
-                    .hasCauseInstanceOf(InstantiationException.class);
-            verifyZeroInteractions(givenWhenThenDefinitionMock);
-        }
-
-        @Test
-        void should_fail_to_prepare_one_argument_with_its_mutable_type() throws Throwable {
-            //GIVEN
-            class SystemUnderTestWithMutableParameter extends ParameterizedSystemUnderTest<Mutable, Void, Void> {}
-            SystemUnderTestWithMutableParameter sutWithMutableParameter = mock(
-                    SystemUnderTestWithMutableParameter.class);
-
-            // WHEN
-            Throwable thrown = catchThrowable(() -> givenSut(sutWithMutableParameter)
-                    .givenArgument(Mutable.class, mutable -> {
-                        throw new UnexpectedException();
-                    })
-                    .whenSutRuns(ParameterizedSystemUnderTest::voidMethodWithParameter)
-                    .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
-
-            // THEN
-            assertThatItFailsToPrepareMutableArgument(thrown);
         }
 
         @Test

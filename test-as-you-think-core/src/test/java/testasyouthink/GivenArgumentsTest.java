@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -27,20 +27,29 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import testasyouthink.GivenArgumentsTest.Parameter.Mutable;
+import testasyouthink.GivenFailuresTest.Parameter.MutableButUninstantiable;
 import testasyouthink.fixture.GivenWhenThenDefinition;
 import testasyouthink.fixture.ParameterizedSystemUnderTest;
 import testasyouthink.fixture.SystemUnderTest;
+import testasyouthink.fixture.UnexpectedException;
+import testasyouthink.function.CheckedSupplier;
+import testasyouthink.preparation.PreparationError;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.easymock.EasyMock.anyObject;
 import static org.easymock.EasyMock.createStrictControl;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
+import static org.mockito.Mockito.mock;
 import static testasyouthink.TestAsYouThink.givenSut;
 
 class GivenArgumentsTest {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(GivenArgumentsTest.class);
     private static final String GIVEN_STRING = "given argument";
     private static final int GIVEN_INTEGER = 201705;
     private static final boolean GIVEN_BOOLEAN = false;
@@ -160,6 +169,107 @@ class GivenArgumentsTest {
                             assertThat(result).isEqualTo(EXPECTED_RESULT);
                             givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                         });
+            }
+
+            @Nested
+            class Failing_to_build_one_argument {
+
+                @BeforeEach
+                void prepareMocks() {
+                    mocksControl.replay();
+                }
+
+                private void assertThatItFailsToPrepareArgument(Throwable thrown) {
+                    LOGGER.debug("Stack trace", thrown);
+                    assertThat(thrown)
+                            .isInstanceOf(PreparationError.class)
+                            .hasMessage("Fails to prepare an argument for the target method!")
+                            .hasCauseInstanceOf(UnexpectedException.class);
+                }
+
+                private void assertThatItFailsToPrepareMutableArgument(Throwable thrown) {
+                    LOGGER.debug("Stack trace", thrown);
+                    assertThat(thrown)
+                            .isInstanceOf(PreparationError.class)
+                            .hasMessage("Fails to prepare an argument of the " //
+                                    + "testasyouthink.GivenFailuresTest$Parameter$Mutable type for the target method!")
+                            .hasCauseInstanceOf(UnexpectedException.class);
+                }
+
+                @Test
+                void should_fail_to_supply_one_argument() {
+                    // WHEN
+                    Throwable thrown = catchThrowable(() -> givenSut(systemUnderTestMock)
+                            .givenArgument((CheckedSupplier<String>) () -> {
+                                throw new UnexpectedException();
+                            })
+                            .when(SystemUnderTest::voidMethodWithParameter)
+                            .then(() -> givenWhenThenDefinitionMock
+                                    .thenTheActualResultIsInKeepingWithTheExpectedResult()));
+
+                    // THEN
+                    assertThatItFailsToPrepareArgument(thrown);
+                }
+
+                @Test
+                void should_fail_to_supply_one_argument_with_its_specification() {
+                    // WHEN
+                    Throwable thrown = catchThrowable(() -> givenSut(systemUnderTestMock)
+                            .givenArgument("argument specification", (CheckedSupplier<String>) () -> {
+                                throw new UnexpectedException();
+                            })
+                            .when(SystemUnderTest::voidMethodWithParameter)
+                            .then(() -> givenWhenThenDefinitionMock
+                                    .thenTheActualResultIsInKeepingWithTheExpectedResult()));
+
+                    // THEN
+                    assertThatItFailsToPrepareArgument(thrown);
+                }
+
+                @Test
+                void should_fail_to_instantiate_one_argument_with_its_mutable_type() {
+                    //GIVEN
+                    class SystemUnderTestWithUninstantiableParameter extends
+                            ParameterizedSystemUnderTest<MutableButUninstantiable, Void, Void> {}
+                    SystemUnderTestWithUninstantiableParameter sutWithUninstantiableParameter = mock(
+                            SystemUnderTestWithUninstantiableParameter.class);
+
+                    // WHEN
+                    Throwable thrown = catchThrowable(() -> givenSut(sutWithUninstantiableParameter)
+                            .givenArgument(MutableButUninstantiable.class, mutableButUninstantiable -> {})
+                            .whenSutRuns(ParameterizedSystemUnderTest::voidMethodWithParameter)
+                            .then(() -> givenWhenThenDefinitionMock
+                                    .thenTheActualResultIsInKeepingWithTheExpectedResult()));
+
+                    // THEN
+                    LOGGER.debug("Stack trace", thrown);
+                    assertThat(thrown)
+                            .isInstanceOf(PreparationError.class)
+                            .hasMessage("Fails to instantiate the argument of the " //
+                                    + "testasyouthink.GivenFailuresTest$Parameter$MutableButUninstantiable type!")
+                            .hasCauseInstanceOf(InstantiationException.class);
+                }
+
+                @Test
+                void should_fail_to_prepare_one_argument_with_its_mutable_type() {
+                    //GIVEN
+                    class SystemUnderTestWithMutableParameter extends ParameterizedSystemUnderTest<GivenFailuresTest
+                            .Parameter.Mutable, Void, Void> {}
+                    SystemUnderTestWithMutableParameter sutWithMutableParameter = mock(
+                            SystemUnderTestWithMutableParameter.class);
+
+                    // WHEN
+                    Throwable thrown = catchThrowable(() -> givenSut(sutWithMutableParameter)
+                            .givenArgument(GivenFailuresTest.Parameter.Mutable.class, mutable -> {
+                                throw new UnexpectedException();
+                            })
+                            .whenSutRuns(ParameterizedSystemUnderTest::voidMethodWithParameter)
+                            .then(() -> givenWhenThenDefinitionMock
+                                    .thenTheActualResultIsInKeepingWithTheExpectedResult()));
+
+                    // THEN
+                    assertThatItFailsToPrepareMutableArgument(thrown);
+                }
             }
         }
 
