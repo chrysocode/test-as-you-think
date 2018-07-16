@@ -45,7 +45,10 @@ import static org.easymock.EasyMock.createStrictControl;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
 import static org.mockito.Mockito.mock;
+import static testasyouthink.ArgumentPreparationAssertions.assertThatItFailsToPrepareArgument;
+import static testasyouthink.ArgumentPreparationAssertions.assertThatItFailsToPrepareMutableArgument;
 import static testasyouthink.TestAsYouThink.givenSut;
+import static testasyouthink.TestAsYouThink.givenSutClass;
 
 class GivenArgumentsTest {
 
@@ -177,23 +180,6 @@ class GivenArgumentsTest {
                 @BeforeEach
                 void prepareMocks() {
                     mocksControl.replay();
-                }
-
-                private void assertThatItFailsToPrepareArgument(Throwable thrown) {
-                    LOGGER.debug("Stack trace", thrown);
-                    assertThat(thrown)
-                            .isInstanceOf(PreparationError.class)
-                            .hasMessage("Fails to prepare an argument for the target method!")
-                            .hasCauseInstanceOf(UnexpectedException.class);
-                }
-
-                private void assertThatItFailsToPrepareMutableArgument(Throwable thrown) {
-                    LOGGER.debug("Stack trace", thrown);
-                    assertThat(thrown)
-                            .isInstanceOf(PreparationError.class)
-                            .hasMessage("Fails to prepare an argument of the " //
-                                    + "testasyouthink.GivenFailuresTest$Parameter$Mutable type for the target method!")
-                            .hasCauseInstanceOf(UnexpectedException.class);
                 }
 
                 @Test
@@ -429,6 +415,69 @@ class GivenArgumentsTest {
                         .whenSutRuns(ParameterizedSystemUnderTest::voidMethodWithTwoParameters)
                         .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult());
             }
+
+            @Nested
+            class Failing_to_build_a_second_argument {
+
+                @BeforeEach
+                void prepareMocks() {
+                    mocksControl.replay();
+                }
+
+                @Test
+                void should_fail_to_supply_a_second_argument() {
+                    // WHEN
+                    Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                            .givenArgument(() -> "argument")
+                            .andArgument((CheckedSupplier<Integer>) () -> {
+                                throw new UnexpectedException();
+                            })
+                            .when(SystemUnderTest::voidMethodWithTwoParameters)
+                            .then(() -> givenWhenThenDefinitionMock
+                                    .thenTheActualResultIsInKeepingWithTheExpectedResult()));
+
+                    // THEN
+                    assertThatItFailsToPrepareArgument(thrown);
+                }
+
+                @Test
+                void should_fail_to_supply_a_second_argument_with_its_specification() {
+                    // WHEN
+                    Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                            .givenArgument(() -> "argument")
+                            .andArgument("argument specification", (CheckedSupplier<Integer>) () -> {
+                                throw new UnexpectedException();
+                            })
+                            .when(SystemUnderTest::voidMethodWithTwoParameters)
+                            .then(() -> givenWhenThenDefinitionMock
+                                    .thenTheActualResultIsInKeepingWithTheExpectedResult()));
+
+                    // THEN
+                    assertThatItFailsToPrepareArgument(thrown);
+                }
+
+                @Test
+                void should_fail_to_prepare_a_second_argument_with_its_mutable_type() {
+                    //GIVEN
+                    class SystemUnderTestWithMutableParameter extends ParameterizedSystemUnderTest<GivenFailuresTest
+                            .Parameter.Mutable, GivenFailuresTest.Parameter.Mutable, Void> {}
+                    SystemUnderTestWithMutableParameter sutWithMutableParameters = mock(
+                            SystemUnderTestWithMutableParameter.class);
+
+                    // WHEN
+                    Throwable thrown = catchThrowable(() -> givenSut(sutWithMutableParameters)
+                            .givenArgument(GivenFailuresTest.Parameter.Mutable.class, mutable -> {})
+                            .andArgument(GivenFailuresTest.Parameter.Mutable.class, mutable -> {
+                                throw new UnexpectedException();
+                            })
+                            .whenSutRuns(ParameterizedSystemUnderTest::voidMethodWithTwoParameters)
+                            .then(() -> givenWhenThenDefinitionMock
+                                    .thenTheActualResultIsInKeepingWithTheExpectedResult()));
+
+                    // THEN
+                    assertThatItFailsToPrepareMutableArgument(thrown);
+                }
+            }
         }
 
         @Nested
@@ -595,5 +644,27 @@ class GivenArgumentsTest {
                         });
             }
         }
+    }
+}
+
+class ArgumentPreparationAssertions {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ArgumentPreparationAssertions.class);
+
+    static void assertThatItFailsToPrepareArgument(Throwable thrown) {
+        LOGGER.debug("Stack trace", thrown);
+        assertThat(thrown)
+                .isInstanceOf(PreparationError.class)
+                .hasMessage("Fails to prepare an argument for the target method!")
+                .hasCauseInstanceOf(UnexpectedException.class);
+    }
+
+    static void assertThatItFailsToPrepareMutableArgument(Throwable thrown) {
+        LOGGER.debug("Stack trace", thrown);
+        assertThat(thrown)
+                .isInstanceOf(PreparationError.class)
+                .hasMessage("Fails to prepare an argument of the " //
+                        + "testasyouthink.GivenFailuresTest$Parameter$Mutable type for the target method!")
+                .hasCauseInstanceOf(UnexpectedException.class);
     }
 }

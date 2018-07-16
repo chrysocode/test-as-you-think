@@ -152,56 +152,6 @@ class GivenFailuresTest {
         }
 
         @Test
-        void should_fail_to_supply_a_second_argument() {
-            // WHEN
-            Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
-                    .givenArgument(() -> "argument")
-                    .andArgument((CheckedSupplier<Integer>) () -> {
-                        throw new UnexpectedException();
-                    })
-                    .when(SystemUnderTest::voidMethodWithTwoParameters)
-                    .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
-
-            // THEN
-            assertThatItFailsToPrepareArgument(thrown);
-        }
-
-        @Test
-        void should_fail_to_supply_a_second_argument_with_its_specification() {
-            // WHEN
-            Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
-                    .givenArgument(() -> "argument")
-                    .andArgument("argument specification", (CheckedSupplier<Integer>) () -> {
-                        throw new UnexpectedException();
-                    })
-                    .when(SystemUnderTest::voidMethodWithTwoParameters)
-                    .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
-
-            // THEN
-            assertThatItFailsToPrepareArgument(thrown);
-        }
-
-        @Test
-        void should_fail_to_prepare_a_second_argument_with_its_mutable_type() throws Throwable {
-            //GIVEN
-            class SystemUnderTestWithMutableParameter extends ParameterizedSystemUnderTest<Mutable, Mutable, Void> {}
-            SystemUnderTestWithMutableParameter sutWithMutableParameters = mock(
-                    SystemUnderTestWithMutableParameter.class);
-
-            // WHEN
-            Throwable thrown = catchThrowable(() -> givenSut(sutWithMutableParameters)
-                    .givenArgument(Mutable.class, mutable -> {})
-                    .andArgument(Mutable.class, mutable -> {
-                        throw new UnexpectedException();
-                    })
-                    .whenSutRuns(ParameterizedSystemUnderTest::voidMethodWithTwoParameters)
-                    .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
-
-            // THEN
-            assertThatItFailsToPrepareMutableArgument(thrown);
-        }
-
-        @Test
         void should_fail_to_supply_a_third_argument() {
             // WHEN
             Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
