@@ -28,6 +28,7 @@ import org.junit.jupiter.api.Test;
 import testasyouthink.fixture.GivenWhenThenDefinition;
 import testasyouthink.fixture.SystemUnderTest;
 
+import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.easymock.EasyMock.verify;
 import static testasyouthink.TestAsYouThink.givenSutClass;
@@ -90,7 +91,7 @@ class ThenExpectationsTest {
         }
 
         @Test
-        void should_specify_separated_expectations_given_a_non_void_method() {
+        void should_specify_separated_result_expectations() {
             // GIVEN
             givenWhenThenDefinitionMock = orderedSteps(1, 3);
 
@@ -114,6 +115,53 @@ class ThenExpectationsTest {
         }
 
         @Test
+        void should_verify_result_predicates() {
+            // GIVEN
+            givenWhenThenDefinitionMock = orderedSteps(1, 3);
+
+            // WHEN
+            givenSutClass(SystemUnderTest.class)
+                    .given(sut -> {
+                        givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                        sut.setGivenWhenThenDefinition(givenWhenThenDefinitionMock);
+                    })
+                    .when(SystemUnderTest::nonVoidMethod)
+                    .then(result -> {
+                        givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                        return true;
+                    })
+                    .and(result -> {
+                        givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                        return true;
+                    })
+                    .and(result -> {
+                        givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                        return true;
+                    });
+        }
+
+        @Test
+        void should_receive_the_then_steps_as_predicates_on_the_result_given_a_non_void_method() {
+            // GIVEN
+            givenWhenThenDefinitionMock = orderedSteps(1, 2);
+
+            // WHEN
+            givenSutClass(SystemUnderTest.class)
+                    .given(sut -> {
+                        givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                        sut.setGivenWhenThenDefinition(givenWhenThenDefinitionMock);
+                    })
+                    .when(SystemUnderTest::nonVoidMethod)
+                    .then(asList(result -> {
+                        givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                        return true;
+                    }, result -> {
+                        givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                        return true;
+                    }));
+        }
+
+        @Test
         void should_verify_expectations_on_both_the_result_and_the_sut() {
             // GIVEN
             givenWhenThenDefinitionMock = orderedSteps(0, 2);
@@ -128,6 +176,27 @@ class ThenExpectationsTest {
                     }, sut -> {
                         givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                         assertThat(sut).isInstanceOf(SystemUnderTest.class);
+                    });
+        }
+
+        @Test
+        void should_verify_predicates_on_both_the_system_and_the_result() {
+            // GIVEN
+            givenWhenThenDefinitionMock = orderedSteps(1, 2);
+
+            // THEN
+            givenSutClass(SystemUnderTest.class)
+                    .given(sut -> {
+                        givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                        sut.setGivenWhenThenDefinition(givenWhenThenDefinitionMock);
+                    })
+                    .when(SystemUnderTest::nonVoidMethod)
+                    .then(result -> {
+                        givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                        return true;
+                    }, sut -> {
+                        givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                        return true;
                     });
         }
     }
@@ -217,6 +286,32 @@ class ThenExpectationsTest {
                             sut -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult())
                     .and("what the focus of this other expectation is",
                             sut -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult());
+        }
+
+        @Test
+        void should_verify_predicates() {
+            // GIVEN
+            givenWhenThenDefinitionMock = orderedSteps(1, 3);
+
+            // WHEN
+            givenSutClass(SystemUnderTest.class)
+                    .given(sut -> {
+                        givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                        sut.setGivenWhenThenDefinition(givenWhenThenDefinitionMock);
+                    })
+                    .when(SystemUnderTest::voidMethod)
+                    .then(() -> {
+                        givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                        return true;
+                    })
+                    .and(() -> {
+                        givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                        return true;
+                    })
+                    .and(() -> {
+                        givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                        return true;
+                    });
         }
     }
 }
