@@ -22,6 +22,7 @@
 
 package testasyouthink;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -34,23 +35,79 @@ import testasyouthink.preparation.PreparationError;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.easymock.EasyMock.verify;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static testasyouthink.TestAsYouThink.givenSutClass;
+import static testasyouthink.fixture.GivenWhenThenDefinition.orderedSteps;
 
-class GivenFailuresTest {
+class GivenOrdinaryFixturesTest {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(GivenFailuresTest.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(GivenOrdinaryFixturesTest.class);
     private GivenWhenThenDefinition givenWhenThenDefinitionMock;
 
-    @BeforeEach
-    void prepareFixtures() {
-        // GIVEN
-        givenWhenThenDefinitionMock = mock(GivenWhenThenDefinition.class);
+    @Nested
+    class Given_specified_fixtures {
+
+        private static final String EXPECTED_RESULT = "expected result";
+
+        @AfterEach
+        void verifyMocks() {
+            // THEN
+            verify(givenWhenThenDefinitionMock);
+        }
+
+        @Test
+        void should_specify_a_fixture() {
+            // GIVEN
+            givenWhenThenDefinitionMock = orderedSteps(1);
+
+            // WHEN
+            givenSutClass(SystemUnderTest.class)
+                    .given("what it makes this fixture specific to the current use case",
+                            () -> givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem())
+                    .when(sut -> {
+                        givenWhenThenDefinitionMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+                        return sut.nonVoidMethod();
+                    })
+                    .then(result -> {
+                        givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                        assertThat(result).isEqualTo(EXPECTED_RESULT);
+                    });
+        }
+
+        @Test
+        void should_specify_multiple_ordinary_fixtures() {
+            // GIVEN
+            givenWhenThenDefinitionMock = orderedSteps(3);
+
+            // WHEN
+            givenSutClass(SystemUnderTest.class)
+                    .given("what it makes the first fixture specific to the current use case",
+                            () -> givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem())
+                    .and("what it makes the second fixture specific to the current use case",
+                            () -> givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem())
+                    .and("what it makes the third fixture specific to the current use case",
+                            () -> givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem())
+                    .when(sut -> {
+                        givenWhenThenDefinitionMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+                        return sut.nonVoidMethod();
+                    })
+                    .then(result -> {
+                        assertThat(result).isEqualTo(EXPECTED_RESULT);
+                        givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                    });
+        }
     }
 
     @Nested
-    class Given_ordinary_fixtures {
+    class Failing_to_prepare_ordinary_fixtures {
+
+        @BeforeEach
+        void prepareFixtures() {
+            // GIVEN
+            givenWhenThenDefinitionMock = mock(GivenWhenThenDefinition.class);
+        }
 
         private void assertThatItFailsToPrepareTestFixture(Throwable thrown) {
             LOGGER.debug("Stack trace", thrown);

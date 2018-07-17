@@ -238,8 +238,29 @@ class GivenSutWhenThenTest {
                             })
                             .when(SystemUnderTest::nonVoidMethod)
                             .then(result -> {
-                                givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                                 assertThat(result).isEqualTo(EXPECTED_RESULT);
+                                givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                            });
+
+                    // THEN
+                    verify(givenWhenThenDefinitionMock);
+                }
+
+                @Test
+                void should_prepare_the_sut_in_a_separated_preparation_specified_step_and_verify_the_result() {
+                    // GIVEN
+                    givenWhenThenDefinitionMock = orderedSteps();
+
+                    // WHEN
+                    givenSutClass(SystemUnderTest.class)
+                            .given("what it makes this fixture specific to the current use case", sut -> {
+                                givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                                sut.setGivenWhenThenDefinition(givenWhenThenDefinitionMock);
+                            })
+                            .when(SystemUnderTest::nonVoidMethod)
+                            .then(result -> {
+                                assertThat(result).isEqualTo(EXPECTED_RESULT);
+                                givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                             });
 
                     // THEN
