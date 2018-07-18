@@ -26,7 +26,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import testasyouthink.fixture.SystemUnderTest;
-import testasyouthink.function.CheckedConsumer;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
@@ -176,48 +175,6 @@ class ThenAssertionErrorsTest {
                     .when(sut -> {})
                     .then("An expectation", sut -> {})
                     .and("Another expectation", sut -> assertThat(true).isFalse()));
-        }
-    }
-
-    @Nested
-    class Then_verifying_the_result {
-
-        @Nested
-        class Verification_step_being_a_consumer {
-
-            @Test
-            void should_get_an_assertion_error_from_a_result_consumer_given_a_non_void_target_method() {
-                // WHEN
-                thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
-                        .when(sut -> "result")
-                        .then((CheckedConsumer<String>) result -> assertThat(true).isFalse()));
-            }
-
-            @Test
-            void should_get_an_assertion_error_from_another_result_consumer_given_a_non_void_target_method() {
-                // WHEN
-                thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
-                        .when(sut -> "result")
-                        .then(result -> {})
-                        .and((CheckedConsumer<String>) result -> assertThat(true).isFalse()));
-            }
-
-            @Test
-            void should_get_an_assertion_error_from_a_specified_result_consumer_given_a_non_void_target_method() {
-                // WHEN
-                thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
-                        .when(sut -> "result")
-                        .then("Expectations", result -> assertThat(true).isFalse()));
-            }
-
-            @Test
-            void should_get_an_assertion_error_from_another_specified_result_consumer_given_a_non_void_target_method() {
-                // WHEN
-                thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
-                        .when(sut -> "result")
-                        .then(result -> {})
-                        .and("Expectations", result -> assertThat(true).isFalse()));
-            }
         }
     }
 

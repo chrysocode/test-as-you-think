@@ -27,6 +27,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import testasyouthink.fixture.GivenWhenThenDefinition;
 import testasyouthink.fixture.SystemUnderTest;
+import testasyouthink.function.CheckedConsumer;
 
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -137,6 +138,54 @@ class ThenExpectationsTest {
                             givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                             assertThat(sut).isInstanceOf(SystemUnderTest.class);
                         });
+            }
+
+            @Nested
+            class Failing_to_consume_assertions {
+
+                private Throwable thrown;
+
+                @AfterEach
+                void verifyError() {
+                    // THEN
+                    assertThat(thrown)
+                            .isInstanceOf(AssertionError.class)
+                            .hasNoCause();
+                }
+
+                @Test
+                void should_get_an_assertion_error_from_a_result_consumer() {
+                    // WHEN
+                    thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                            .when(sut -> "result")
+                            .then((CheckedConsumer<String>) result -> assertThat(true).isFalse()));
+                }
+
+                @Test
+                void should_get_an_assertion_error_from_another_result_consumer() {
+                    // WHEN
+                    thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                            .when(sut -> "result")
+                            .then(result -> {})
+                            .and((CheckedConsumer<String>) result -> assertThat(true).isFalse()));
+                }
+
+                @Test
+                void should_get_an_assertion_error_from_a_specified_result_consumer() {
+                    // WHEN
+                    thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                            .when(sut -> "result")
+                            .then("Expectations", result -> assertThat(true).isFalse()));
+                }
+
+                @Test
+                void should_get_an_assertion_error_from_another_specified_result_consumer() {
+                    // WHEN
+                    thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                            .when(sut -> "result")
+                            .then(result -> {})
+                            .and("Expectations", result -> assertThat(true).isFalse()));
+                }
             }
         }
 
