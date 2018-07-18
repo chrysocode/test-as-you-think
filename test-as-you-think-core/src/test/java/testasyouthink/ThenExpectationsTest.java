@@ -52,10 +52,10 @@ class ThenExpectationsTest {
     class When_returning_a_result {
 
         @Nested
-        class Then_verifying_assertions {
+        class Then_verifying_assertions_on_the_result {
 
             @Test
-            void should_verify_result_assertions_separately() {
+            void should_consume_result_assertions_separately() {
                 // GIVEN
                 givenWhenThenDefinitionMock = orderedSteps(0, 3);
 
@@ -80,7 +80,7 @@ class ThenExpectationsTest {
             }
 
             @Test
-            void should_specify_a_result_assertion() {
+            void should_consume_a_specified_a_result_assertion() {
                 // GIVEN
                 givenWhenThenDefinitionMock = orderedSteps(1, 1);
 
@@ -98,7 +98,7 @@ class ThenExpectationsTest {
             }
 
             @Test
-            void should_specify_separated_result_assertions() {
+            void should_consume_specified_result_assertions_separately() {
                 // GIVEN
                 givenWhenThenDefinitionMock = orderedSteps(1, 3);
 
@@ -123,7 +123,7 @@ class ThenExpectationsTest {
             }
 
             @Test
-            void should_verify_assertions_on_both_the_result_and_the_sut() {
+            void should_consume_assertions_on_both_the_result_and_the_sut() {
                 // GIVEN
                 givenWhenThenDefinitionMock = orderedSteps(0, 2);
 
@@ -141,7 +141,7 @@ class ThenExpectationsTest {
             }
 
             @Nested
-            class Failing_to_consume_assertions {
+            class Then_failing_to_consume_assertions_on_the_result {
 
                 private Throwable thrown;
 
@@ -154,7 +154,7 @@ class ThenExpectationsTest {
                 }
 
                 @Test
-                void should_get_an_assertion_error_from_a_result_consumer() {
+                void should_fail_to_consume_a_result_assertion() {
                     // WHEN
                     thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                             .when(sut -> "result")
@@ -162,7 +162,7 @@ class ThenExpectationsTest {
                 }
 
                 @Test
-                void should_get_an_assertion_error_from_another_result_consumer() {
+                void should_fail_to_consume_another_result_assertion() {
                     // WHEN
                     thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                             .when(sut -> "result")
@@ -171,7 +171,7 @@ class ThenExpectationsTest {
                 }
 
                 @Test
-                void should_get_an_assertion_error_from_a_specified_result_consumer() {
+                void should_fail_to_consume_a_specified_result_assertion() {
                     // WHEN
                     thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                             .when(sut -> "result")
@@ -179,7 +179,7 @@ class ThenExpectationsTest {
                 }
 
                 @Test
-                void should_get_an_assertion_error_from_another_specified_result_consumer() {
+                void should_fail_to_consume_another_specified_result_assertion() {
                     // WHEN
                     thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                             .when(sut -> "result")
@@ -193,7 +193,7 @@ class ThenExpectationsTest {
         class Then_verifying_predicates {
 
             @Test
-            void should_verify_result_predicates() {
+            void should_verify_result_predicates_separately() {
                 // GIVEN
                 givenWhenThenDefinitionMock = orderedSteps(1, 3);
 
@@ -219,7 +219,7 @@ class ThenExpectationsTest {
             }
 
             @Test
-            void should_verify_predicates_on_both_the_result() {
+            void should_verify_a_predicate_list_on_the_result() {
                 // GIVEN
                 givenWhenThenDefinitionMock = orderedSteps(1, 2);
 
@@ -261,7 +261,7 @@ class ThenExpectationsTest {
             }
 
             @Nested
-            class Failing_to_verify_a_predicate {
+            class Then_failing_to_verify_a_predicate {
 
                 private Throwable thrown;
 
@@ -274,7 +274,7 @@ class ThenExpectationsTest {
                 }
 
                 @Test
-                void should_get_an_assertion_error_from_a_result_predicate() {
+                void should_fail_to_verify_a_result_predicate() {
                     // WHEN
                     thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                             .when(sut -> "result")
@@ -282,7 +282,7 @@ class ThenExpectationsTest {
                 }
 
                 @Test
-                void should_get_an_assertion_error_from_another_result_predicate() {
+                void should_fail_to_verify_another_result_predicate() {
                     // WHEN
                     thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                             .when(sut -> "result")
@@ -291,11 +291,80 @@ class ThenExpectationsTest {
                 }
 
                 @Test
-                void should_get_an_assertion_error_from_result_predicates() {
+                void should_fail_to_verify_a_predicate_list_on_the_result() {
                     // WHEN
                     thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                             .when(sut -> "result")
                             .then(asList(result -> true, result -> false)));
+                }
+
+                @Test
+                void should_fail_to_verify_predicates_on_both_the_result_and_the_SUT_because_of_the_result() {
+
+                    // WHEN
+                    thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                            .when(sut -> "result")
+                            .then(result -> false, sut -> true));
+                }
+
+                @Test
+                void should_fail_to_verify_predicates_on_both_the_result_and_the_SUT_because_of_the_SUT() {
+                    // WHEN
+                    thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                            .when(sut -> "result")
+                            .then(result -> true, sut -> false));
+                }
+            }
+        }
+
+        @Nested
+        class Then_verifying_runnable_expectations {
+
+            @Nested
+            class Then_failing_to_verify_runnable_expectations {
+
+                private Throwable thrown;
+
+                @AfterEach
+                void verifyError() {
+                    // THEN
+                    assertThat(thrown)
+                            .isInstanceOf(AssertionError.class)
+                            .hasNoCause();
+                }
+
+                @Test
+                void should_fail_to_run_an_expectation() {
+                    // WHEN
+                    thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                            .when(sut -> "result")
+                            .then(() -> assertThat(true).isFalse()));
+                }
+
+                @Test
+                void should_fail_to_run_another_expectation() {
+                    // WHEN
+                    thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                            .when(sut -> "result")
+                            .then(() -> {})
+                            .and(() -> assertThat(true).isFalse()));
+                }
+
+                @Test
+                void should_fail_to_run_a_specified_expectation() {
+                    // WHEN
+                    thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                            .when(sut -> "result")
+                            .then("Expectations", () -> assertThat(true).isFalse()));
+                }
+
+                @Test
+                void should_fail_to_run_another_specified_expectation() {
+                    // WHEN
+                    thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                            .when(sut -> "result")
+                            .then("Expectations", () -> {})
+                            .and("Expectations", () -> assertThat(true).isFalse()));
                 }
             }
         }
@@ -305,10 +374,10 @@ class ThenExpectationsTest {
     class When_returning_nothing {
 
         @Nested
-        class Then_verifying_expectations {
+        class Then_verifying_runnable_expectations {
 
             @Test
-            void should_verify_ordinary_expectations_separately() {
+            void should_run_expectations_separately() {
                 // GIVEN
                 givenWhenThenDefinitionMock = orderedSteps(0, 3);
 
@@ -324,7 +393,7 @@ class ThenExpectationsTest {
             }
 
             @Test
-            void should_specify_an_expectation() {
+            void should_run_a_specified_expectation() {
                 // GIVEN
                 givenWhenThenDefinitionMock = orderedSteps(1, 1);
 
@@ -341,7 +410,7 @@ class ThenExpectationsTest {
             }
 
             @Test
-            void should_specify_separated_expectations() {
+            void should_run_specified_expectations_separately() {
                 // GIVEN
                 givenWhenThenDefinitionMock = orderedSteps(1, 3);
 
@@ -361,8 +430,60 @@ class ThenExpectationsTest {
                                         ());
             }
 
+            @Nested
+            class Then_failing_to_verify_runnable_expectations {
+
+                private Throwable thrown;
+
+                @AfterEach
+                void verifyError() {
+                    // THEN
+                    assertThat(thrown)
+                            .isInstanceOf(AssertionError.class)
+                            .hasNoCause();
+                }
+
+                @Test
+                void should_fail_to_run_an_expectation() {
+                    // WHEN
+                    thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                            .when(sut -> {})
+                            .then(() -> assertThat(true).isFalse()));
+                }
+
+                @Test
+                void should_fail_to_run_another_expectation() {
+                    // WHEN
+                    thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                            .when(sut -> {})
+                            .then(() -> {})
+                            .and(() -> assertThat(true).isFalse()));
+                }
+
+                @Test
+                void should_fail_to_run_a_specified_expectation() {
+                    // WHEN
+                    thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                            .when(sut -> {})
+                            .then("Expectations", () -> assertThat(true).isFalse()));
+                }
+
+                @Test
+                void should_fail_to_run_another_specified_expectation() {
+                    // WHEN
+                    thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                            .when(sut -> {})
+                            .then("An expectation", () -> {})
+                            .and("Another expectation", () -> assertThat(true).isFalse()));
+                }
+            }
+        }
+
+        @Nested
+        class Then_verifying_assertions_on_the_SUT {
+
             @Test
-            void should_verify_sut_assertions_separately() {
+            void should_consume_sut_assertions_separately() {
                 // GIVEN
                 givenWhenThenDefinitionMock = orderedSteps(0, 3);
 
@@ -378,7 +499,7 @@ class ThenExpectationsTest {
             }
 
             @Test
-            void should_specify_separated_sut_assertions() {
+            void should_consume_specified_sut_assertions_separately() {
                 // GIVEN
                 givenWhenThenDefinitionMock = orderedSteps(0, 0, 3);
 
@@ -395,13 +516,61 @@ class ThenExpectationsTest {
                                 sut -> givenWhenThenDefinitionMock
                                         .thenTheActualResultIsInKeepingWithTheExpectedResult());
             }
+
+            @Nested
+            class Failing_to_verify_the_SUT {
+
+                private Throwable thrown;
+
+                @AfterEach
+                void verifyError() {
+                    // THEN
+                    assertThat(thrown)
+                            .isInstanceOf(AssertionError.class)
+                            .hasNoCause();
+                }
+
+                @Test
+                void should_fail_to_consume_a_sut_assertion() {
+                    // WHEN
+                    thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                            .when(sut -> {})
+                            .then(sut -> assertThat(true).isFalse()));
+                }
+
+                @Test
+                void should_fail_to_consume_another_sut_assertion() {
+                    // WHEN
+                    thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                            .when(sut -> {})
+                            .then(sut -> {})
+                            .and(sut -> assertThat(true).isFalse()));
+                }
+
+                @Test
+                void should_fail_to_consume_a_specified_sut_assertion() {
+                    // WHEN
+                    thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                            .when(sut -> {})
+                            .then("Expectations", sut -> assertThat(true).isFalse()));
+                }
+
+                @Test
+                void should_fail_to_consume_another_specified_sut_assertion() {
+                    // WHEN
+                    thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                            .when(sut -> {})
+                            .then("An expectation", sut -> {})
+                            .and("Another expectation", sut -> assertThat(true).isFalse()));
+                }
+            }
         }
 
         @Nested
-        class Then_verifying_predicates {
+        class Then_verifying_boolean_suppliers {
 
             @Test
-            void should_verify_predicates() {
+            void should_supply_true() {
                 // GIVEN
                 givenWhenThenDefinitionMock = orderedSteps(1, 3);
 
@@ -424,6 +593,37 @@ class ThenExpectationsTest {
                             givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                             return true;
                         });
+            }
+
+            @Nested
+            class Then_failing_to_verify_boolean_suppliers {
+
+                private Throwable thrown;
+
+                @AfterEach
+                void verifyError() {
+                    // THEN
+                    assertThat(thrown)
+                            .isInstanceOf(AssertionError.class)
+                            .hasNoCause();
+                }
+
+                @Test
+                void should_fail_to_supply_true() {
+                    // WHEN
+                    thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                            .when(sut -> {})
+                            .then(() -> false));
+                }
+
+                @Test
+                void should_fail_to_supply_another_true() {
+                    // WHEN
+                    thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                            .when(sut -> {})
+                            .then(() -> true)
+                            .and(() -> false));
+                }
             }
         }
     }
