@@ -30,6 +30,7 @@ import testasyouthink.fixture.SystemUnderTest;
 
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.easymock.EasyMock.verify;
 import static testasyouthink.TestAsYouThink.givenSutClass;
 import static testasyouthink.fixture.GivenWhenThenDefinition.orderedSteps;
@@ -41,7 +42,9 @@ class ThenExpectationsTest {
     @AfterEach
     void verifyMocks() {
         // THEN
-        verify(givenWhenThenDefinitionMock);
+        if (givenWhenThenDefinitionMock != null) {
+            verify(givenWhenThenDefinitionMock);
+        }
     }
 
     @Nested
@@ -206,6 +209,45 @@ class ThenExpectationsTest {
                             givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                             return true;
                         });
+            }
+
+            @Nested
+            class Failing_to_verify_a_predicate {
+
+                private Throwable thrown;
+
+                @AfterEach
+                void verifyError() {
+                    // THEN
+                    assertThat(thrown)
+                            .isInstanceOf(AssertionError.class)
+                            .hasNoCause();
+                }
+
+                @Test
+                void should_get_an_assertion_error_from_a_result_predicate() {
+                    // WHEN
+                    thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                            .when(sut -> "result")
+                            .then(result -> false));
+                }
+
+                @Test
+                void should_get_an_assertion_error_from_another_result_predicate() {
+                    // WHEN
+                    thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                            .when(sut -> "result")
+                            .then(result -> true)
+                            .and(result -> false));
+                }
+
+                @Test
+                void should_get_an_assertion_error_from_result_predicates() {
+                    // WHEN
+                    thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                            .when(sut -> "result")
+                            .then(asList(result -> true, result -> false)));
+                }
             }
         }
     }
