@@ -23,7 +23,6 @@
 package testasyouthink;
 
 import org.assertj.core.api.SoftAssertions;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
@@ -31,6 +30,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import testasyouthink.fixture.GivenWhenThenDefinition;
 import testasyouthink.fixture.SystemUnderTest;
+import testasyouthink.fixture.UnexpectedException;
+import testasyouthink.verification.VerificationError;
 
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -142,24 +143,41 @@ class ThenStdoutAsResultTest {
             }
 
             @Nested
-            class Failing_to_verify_stdout {
+            class Then_failing_to_verify_stdout {
 
-                private Throwable thrown;
+                @Test
+                void should_fail_to_verify_the_stdout_content() {
+                    // WHEN
+                    Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                            .when(sut -> {})
+                            .thenStandardOutput(result -> assertThat(true).isFalse()));
 
-                @AfterEach
-                void verifyError() {
                     // THEN
+                    LOGGER.debug("Stack trace", thrown);
                     assertThat(thrown)
                             .isInstanceOf(AssertionError.class)
                             .hasNoCause();
                 }
+            }
+
+            @Nested
+            class Then_failing_because_of_an_unexpected_failure {
 
                 @Test
-                void should_get_an_assertion_error_from_a_stdout_as_a_file_consumer() {
+                void should_fail_to_verify_a_stdout_expectation() {
                     // WHEN
-                    thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                    Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                             .when(sut -> {})
-                            .thenStandardOutput(result -> assertThat(true).isFalse()));
+                            .thenStandardOutput(stdout -> {
+                                throw new UnexpectedException();
+                            }));
+
+                    // THEN
+                    LOGGER.debug("Stack trace", thrown);
+                    assertThat(thrown)
+                            .isInstanceOf(VerificationError.class)
+                            .hasMessage("Fails to verify the expectations of the stdout!")
+                            .hasCauseInstanceOf(UnexpectedException.class);
                 }
             }
         }
