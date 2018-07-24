@@ -22,6 +22,7 @@
 
 package testasyouthink;
 
+import org.assertj.core.api.AbstractAssert;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -36,7 +37,7 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.easymock.EasyMock.verify;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verifyZeroInteractions;
-import static testasyouthink.SutPreparationAssertions.assertThatItFailsToPrepareSut;
+import static testasyouthink.SutPreparationAssertions.assertThatFailure;
 import static testasyouthink.TestAsYouThink.givenSut;
 import static testasyouthink.TestAsYouThink.givenSutClass;
 import static testasyouthink.fixture.GivenWhenThenDefinition.orderedSteps;
@@ -163,7 +164,7 @@ class GivenSutWhenThenTest {
                         .then(() -> givenWhenThenDefinitionMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
 
                 // THEN
-                assertThatItFailsToPrepareSut(thrown);
+                assertThatFailure(thrown).happensWhilePreparingSut();
                 verifyZeroInteractions(givenWhenThenDefinitionMock);
             }
         }
@@ -329,7 +330,7 @@ class GivenSutWhenThenTest {
                                     .thenTheActualResultIsInKeepingWithTheExpectedResult()));
 
                     // THEN
-                    assertThatItFailsToPrepareSut(thrown);
+                    assertThatFailure(thrown).happensWhilePreparingSut();
                     verifyZeroInteractions(givenWhenThenDefinitionMock);
                 }
 
@@ -347,7 +348,7 @@ class GivenSutWhenThenTest {
                                     .thenTheActualResultIsInKeepingWithTheExpectedResult()));
 
                     // THEN
-                    assertThatItFailsToPrepareSut(thrown);
+                    assertThatFailure(thrown).happensWhilePreparingSut();
                     verifyZeroInteractions(givenWhenThenDefinitionMock);
                 }
 
@@ -366,7 +367,7 @@ class GivenSutWhenThenTest {
                                     .thenTheActualResultIsInKeepingWithTheExpectedResult()));
 
                     // THEN
-                    assertThatItFailsToPrepareSut(thrown);
+                    assertThatFailure(thrown).happensWhilePreparingSut();
                     verifyZeroInteractions(givenWhenThenDefinitionMock);
                 }
 
@@ -386,7 +387,7 @@ class GivenSutWhenThenTest {
                                     .thenTheActualResultIsInKeepingWithTheExpectedResult()));
 
                     // THEN
-                    assertThatItFailsToPrepareSut(thrown);
+                    assertThatFailure(thrown).happensWhilePreparingSut();
                     verifyZeroInteractions(givenWhenThenDefinitionMock);
                 }
             }
@@ -394,13 +395,21 @@ class GivenSutWhenThenTest {
     }
 }
 
-class SutPreparationAssertions {
+class SutPreparationAssertions extends AbstractAssert<SutPreparationAssertions, Throwable> {
 
     private static Logger LOGGER = LoggerFactory.getLogger(SutPreparationAssertions.class);
 
-    static void assertThatItFailsToPrepareSut(Throwable thrown) {
-        LOGGER.debug("Stack trace", thrown);
-        assertThat(thrown)
+    private SutPreparationAssertions(Throwable actual) {
+        super(actual, SutPreparationAssertions.class);
+    }
+
+    static SutPreparationAssertions assertThatFailure(Throwable actual) {
+        return new SutPreparationAssertions(actual);
+    }
+
+    void happensWhilePreparingSut() {
+        LOGGER.debug("Stack trace", actual);
+        assertThat(actual)
                 .isInstanceOf(PreparationError.class)
                 .hasMessage("Fails to prepare the system under test!")
                 .hasCauseInstanceOf(UnexpectedException.class);
