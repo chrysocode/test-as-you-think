@@ -22,6 +22,7 @@
 
 package testasyouthink;
 
+import org.assertj.core.api.AbstractAssert;
 import org.easymock.IMocksControl;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -45,8 +46,7 @@ import static org.easymock.EasyMock.createStrictControl;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
 import static org.mockito.Mockito.mock;
-import static testasyouthink.ArgumentPreparationAssertions.assertThatItFailsToPrepareArgument;
-import static testasyouthink.ArgumentPreparationAssertions.assertThatItFailsToPrepareMutableArgument;
+import static testasyouthink.ArgumentPreparationAssertions.assertThatFailure;
 import static testasyouthink.TestAsYouThink.givenSut;
 import static testasyouthink.TestAsYouThink.givenSutClass;
 
@@ -201,7 +201,7 @@ class GivenArgumentsTest {
                                     .thenTheActualResultIsInKeepingWithTheExpectedResult()));
 
                     // THEN
-                    assertThatItFailsToPrepareArgument(thrown);
+                    assertThatFailure(thrown).happensWhilePreparingArgument();
                 }
 
                 @Test
@@ -216,7 +216,7 @@ class GivenArgumentsTest {
                                     .thenTheActualResultIsInKeepingWithTheExpectedResult()));
 
                     // THEN
-                    assertThatItFailsToPrepareArgument(thrown);
+                    assertThatFailure(thrown).happensWhilePreparingArgument();
                 }
 
                 @Test
@@ -261,7 +261,7 @@ class GivenArgumentsTest {
                                     .thenTheActualResultIsInKeepingWithTheExpectedResult()));
 
                     // THEN
-                    assertThatItFailsToPrepareMutableArgument(thrown);
+                    assertThatFailure(thrown).happensWhilePreparingMutableArgument();
                 }
             }
         }
@@ -444,7 +444,7 @@ class GivenArgumentsTest {
                                     .thenTheActualResultIsInKeepingWithTheExpectedResult()));
 
                     // THEN
-                    assertThatItFailsToPrepareArgument(thrown);
+                    assertThatFailure(thrown).happensWhilePreparingArgument();
                 }
 
                 @Test
@@ -460,7 +460,7 @@ class GivenArgumentsTest {
                                     .thenTheActualResultIsInKeepingWithTheExpectedResult()));
 
                     // THEN
-                    assertThatItFailsToPrepareArgument(thrown);
+                    assertThatFailure(thrown).happensWhilePreparingArgument();
                 }
 
                 @Test
@@ -482,7 +482,7 @@ class GivenArgumentsTest {
                                     .thenTheActualResultIsInKeepingWithTheExpectedResult()));
 
                     // THEN
-                    assertThatItFailsToPrepareMutableArgument(thrown);
+                    assertThatFailure(thrown).happensWhilePreparingMutableArgument();
                 }
             }
         }
@@ -649,7 +649,7 @@ class GivenArgumentsTest {
                                     .thenTheActualResultIsInKeepingWithTheExpectedResult()));
 
                     // THEN
-                    assertThatItFailsToPrepareArgument(thrown);
+                    assertThatFailure(thrown).happensWhilePreparingArgument();
                 }
 
                 @Test
@@ -666,7 +666,7 @@ class GivenArgumentsTest {
                                     .thenTheActualResultIsInKeepingWithTheExpectedResult()));
 
                     // THEN
-                    assertThatItFailsToPrepareArgument(thrown);
+                    assertThatFailure(thrown).happensWhilePreparingArgument();
                 }
 
                 @Test
@@ -689,7 +689,7 @@ class GivenArgumentsTest {
                                     .thenTheActualResultIsInKeepingWithTheExpectedResult()));
 
                     // THEN
-                    assertThatItFailsToPrepareMutableArgument(thrown);
+                    assertThatFailure(thrown).happensWhilePreparingMutableArgument();
                 }
             }
         }
@@ -720,21 +720,29 @@ class GivenArgumentsTest {
     }
 }
 
-class ArgumentPreparationAssertions {
+class ArgumentPreparationAssertions extends AbstractAssert<ArgumentPreparationAssertions, Throwable> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ArgumentPreparationAssertions.class);
 
-    static void assertThatItFailsToPrepareArgument(Throwable thrown) {
-        LOGGER.debug("Stack trace", thrown);
-        assertThat(thrown)
+    private ArgumentPreparationAssertions(Throwable throwable) {
+        super(throwable, ArgumentPreparationAssertions.class);
+    }
+
+    static ArgumentPreparationAssertions assertThatFailure(Throwable thrown) {
+        return new ArgumentPreparationAssertions(thrown);
+    }
+
+    void happensWhilePreparingArgument() {
+        LOGGER.debug("Stack trace", actual);
+        assertThat(actual)
                 .isInstanceOf(PreparationError.class)
                 .hasMessage("Fails to prepare an argument for the target method!")
                 .hasCauseInstanceOf(UnexpectedException.class);
     }
 
-    static void assertThatItFailsToPrepareMutableArgument(Throwable thrown) {
-        LOGGER.debug("Stack trace", thrown);
-        assertThat(thrown)
+    void happensWhilePreparingMutableArgument() {
+        LOGGER.debug("Stack trace", actual);
+        assertThat(actual)
                 .isInstanceOf(PreparationError.class)
                 .hasMessage("Fails to prepare an argument of the " //
                         + "testasyouthink.GivenArgumentsTest$Parameter$Mutable type for the target method!")
