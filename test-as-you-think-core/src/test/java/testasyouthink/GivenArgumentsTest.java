@@ -32,6 +32,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import testasyouthink.GivenArgumentsTest.Parameter.Mutable;
 import testasyouthink.GivenArgumentsTest.Parameter.MutableButUninstantiable;
+import testasyouthink.execution.ExecutionError;
+import testasyouthink.fixture.ExpectedException;
 import testasyouthink.fixture.GivenWhenThenDefinition;
 import testasyouthink.fixture.ParameterizedSystemUnderTest;
 import testasyouthink.fixture.SystemUnderTest;
@@ -47,12 +49,14 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
 import static org.mockito.Mockito.mock;
 import static testasyouthink.ArgumentPreparationAssertions.assertThatFailure;
+import static testasyouthink.GivenArgumentsTest.GivenData.EXPECTED_ERROR_MESSAGE;
 import static testasyouthink.GivenArgumentsTest.GivenData.EXPECTED_RESULT;
 import static testasyouthink.GivenArgumentsTest.GivenData.GIVEN_BOOLEAN;
 import static testasyouthink.GivenArgumentsTest.GivenData.GIVEN_INTEGER;
 import static testasyouthink.GivenArgumentsTest.GivenData.GIVEN_STRING;
 import static testasyouthink.TestAsYouThink.givenSut;
 import static testasyouthink.TestAsYouThink.givenSutClass;
+import static testasyouthink.fixture.Specifications.ExpectedMessage.EXPECTED_EXECUTION_FAILURE_MESSAGE;
 
 class GivenArgumentsTest {
 
@@ -80,6 +84,7 @@ class GivenArgumentsTest {
         static final int GIVEN_INTEGER = 201705;
         static final boolean GIVEN_BOOLEAN = false;
         static final String EXPECTED_RESULT = "expected result";
+        static final String EXPECTED_ERROR_MESSAGE = "Expected error message";
     }
 
     public static class Parameter {
@@ -190,7 +195,7 @@ class GivenArgumentsTest {
             }
 
             @Nested
-            class Failing_to_build_one_argument {
+            class Given_an_unexpected_failure_happens_while_building_one_argument {
 
                 @BeforeEach
                 void prepareMocks() {
@@ -270,6 +275,90 @@ class GivenArgumentsTest {
 
                     // THEN
                     assertThatFailure(thrown).happensWhilePreparingMutableArgument();
+                }
+            }
+
+            @Nested
+            class When_a_failure_happens {
+
+                @Nested
+                class When_an_unexpected_failure_happens {
+
+                    @Test
+                    void should_fail_to_execute_a_void_target_method_with_one_parameter() throws Throwable {
+                        // GIVEN
+                        givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                        systemUnderTestMock.failWithParameter(GIVEN_STRING);
+                        expectLastCall().andThrow(new UnexpectedException());
+                        mocksControl.replay();
+
+                        // WHEN
+                        Throwable thrown = catchThrowable(() -> givenSut(systemUnderTestMock)
+                                .givenArgument(() -> {
+                                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                                    return GIVEN_STRING;
+                                })
+                                .when(SystemUnderTest::failWithParameter)
+                                .then(() -> givenWhenThenDefinitionMock
+                                        .thenTheActualResultIsInKeepingWithTheExpectedResult()));
+
+                        // THEN
+                        LOGGER.debug("Stack trace", thrown);
+                        assertThat(thrown)
+                                .isInstanceOf(ExecutionError.class)
+                                .hasMessage(EXPECTED_EXECUTION_FAILURE_MESSAGE)
+                                .hasCauseInstanceOf(UnexpectedException.class);
+                    }
+
+                    @Test
+                    void should_fail_to_execute_a_non_void_target_method_with_one_parameter() throws Throwable {
+                        // GIVEN
+                        givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                        expect(systemUnderTestMock.nonVoidFailWithParameter(GIVEN_STRING)).andThrow(
+                                new UnexpectedException());
+                        mocksControl.replay();
+
+                        // WHEN
+                        Throwable thrown = catchThrowable(() -> givenSut(systemUnderTestMock)
+                                .givenArgument(() -> {
+                                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                                    return GIVEN_STRING;
+                                })
+                                .when(SystemUnderTest::nonVoidFailWithParameter)
+                                .then(() -> givenWhenThenDefinitionMock
+                                        .thenTheActualResultIsInKeepingWithTheExpectedResult()));
+
+                        // THEN
+                        LOGGER.debug("Stack trace", thrown);
+                        assertThat(thrown)
+                                .isInstanceOf(ExecutionError.class)
+                                .hasMessage(EXPECTED_EXECUTION_FAILURE_MESSAGE)
+                                .hasCauseInstanceOf(UnexpectedException.class);
+                    }
+                }
+
+                @Nested
+                class When_an_expected_failure_happens {
+
+                    @Test
+                    void should_verify_the_sut_fails_given_one_method_parameter() throws Throwable {
+                        // GIVEN
+                        givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                        systemUnderTestMock.failWithParameter(GIVEN_STRING);
+                        expectLastCall().andThrow(new ExpectedException(EXPECTED_ERROR_MESSAGE));
+                        mocksControl.replay();
+
+                        // WHEN
+                        givenSut(systemUnderTestMock)
+                                .givenArgument(() -> {
+                                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                                    return GIVEN_STRING;
+                                })
+                                .whenSutRunsOutsideOperatingConditions(SystemUnderTest::failWithParameter)
+                                .thenItFails()
+                                .becauseOf(ExpectedException.class)
+                                .withMessage(EXPECTED_ERROR_MESSAGE);
+                    }
                 }
             }
         }
@@ -432,7 +521,7 @@ class GivenArgumentsTest {
             }
 
             @Nested
-            class Failing_to_build_a_second_argument {
+            class Given_an_unexpected_failure_happens_while_building_a_second_argument {
 
                 @BeforeEach
                 void prepareMocks() {
@@ -491,6 +580,105 @@ class GivenArgumentsTest {
 
                     // THEN
                     assertThatFailure(thrown).happensWhilePreparingMutableArgument();
+                }
+            }
+
+            @Nested
+            class When_a_failure_happens {
+
+                @Nested
+                class When_an_unexpected_failure_happens {
+
+                    @Test
+                    void should_fail_to_execute_a_void_target_method_with_two_parameters() throws Throwable {
+                        // GIVEN
+                        givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                        expectLastCall().times(2);
+                        systemUnderTestMock.failWithTwoParameters(GIVEN_STRING, GIVEN_INTEGER);
+                        expectLastCall().andThrow(new UnexpectedException());
+                        mocksControl.replay();
+
+                        // WHEN
+                        Throwable thrown = catchThrowable(() -> givenSut(systemUnderTestMock)
+                                .givenArgument(() -> {
+                                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                                    return GIVEN_STRING;
+                                })
+                                .andArgument(() -> {
+                                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                                    return GIVEN_INTEGER;
+                                })
+                                .when(SystemUnderTest::failWithTwoParameters)
+                                .then(() -> givenWhenThenDefinitionMock
+                                        .thenTheActualResultIsInKeepingWithTheExpectedResult()));
+
+                        // THEN
+                        LOGGER.debug("Stack trace", thrown);
+                        assertThat(thrown)
+                                .isInstanceOf(ExecutionError.class)
+                                .hasMessage(EXPECTED_EXECUTION_FAILURE_MESSAGE)
+                                .hasCauseInstanceOf(UnexpectedException.class);
+                    }
+
+                    @Test
+                    void should_fail_to_execute_a_non_void_target_method_with_two_parameters() throws Throwable {
+                        // GIVEN
+                        givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                        expectLastCall().times(2);
+                        expect(systemUnderTestMock.nonVoidFailWithTwoParameters(GIVEN_STRING, GIVEN_INTEGER)).andThrow(
+                                new UnexpectedException());
+                        mocksControl.replay();
+
+                        // WHEN
+                        Throwable thrown = catchThrowable(() -> givenSut(systemUnderTestMock)
+                                .givenArgument(() -> {
+                                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                                    return GIVEN_STRING;
+                                })
+                                .andArgument(() -> {
+                                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                                    return GIVEN_INTEGER;
+                                })
+                                .when(SystemUnderTest::nonVoidFailWithTwoParameters)
+                                .then(() -> givenWhenThenDefinitionMock
+                                        .thenTheActualResultIsInKeepingWithTheExpectedResult()));
+
+                        // THEN
+                        LOGGER.debug("Stack trace", thrown);
+                        assertThat(thrown)
+                                .isInstanceOf(ExecutionError.class)
+                                .hasMessage(EXPECTED_EXECUTION_FAILURE_MESSAGE)
+                                .hasCauseInstanceOf(UnexpectedException.class);
+                    }
+                }
+
+                @Nested
+                class When_an_expected_failure_happens {
+
+                    @Test
+                    void should_verify_the_sut_fails_given_two_method_parameters() throws Throwable {
+                        // GIVEN
+                        givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                        expectLastCall().times(2);
+                        systemUnderTestMock.failWithTwoParameters(GIVEN_STRING, GIVEN_INTEGER);
+                        expectLastCall().andThrow(new ExpectedException(EXPECTED_ERROR_MESSAGE));
+                        mocksControl.replay();
+
+                        // WHEN
+                        givenSut(systemUnderTestMock)
+                                .givenArgument(() -> {
+                                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                                    return GIVEN_STRING;
+                                })
+                                .andArgument(() -> {
+                                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                                    return GIVEN_INTEGER;
+                                })
+                                .whenSutRunsOutsideOperatingConditions(SystemUnderTest::failWithTwoParameters)
+                                .thenItFails()
+                                .becauseOf(ExpectedException.class)
+                                .withMessage(EXPECTED_ERROR_MESSAGE);
+                    }
                 }
             }
         }
@@ -636,7 +824,7 @@ class GivenArgumentsTest {
             }
 
             @Nested
-            class Failing_to_build_a_third_argument {
+            class Given_an_unexpected_failure_happens_while_building_a_third_argument {
 
                 @BeforeEach
                 void prepareMocks() {
@@ -698,6 +886,117 @@ class GivenArgumentsTest {
 
                     // THEN
                     assertThatFailure(thrown).happensWhilePreparingMutableArgument();
+                }
+            }
+
+            @Nested
+            class When_a_failure_happens {
+
+                @Nested
+                class When_an_unexpected_failure_happens {
+
+                    @Test
+                    void should_fail_to_execute_a_void_taget_method_with_three_parameters() throws Throwable {
+                        // GIVEN
+                        givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                        expectLastCall().times(3);
+                        systemUnderTestMock.failWithThreeParameters(GIVEN_STRING, GIVEN_INTEGER, GIVEN_BOOLEAN);
+                        expectLastCall().andThrow(new UnexpectedException());
+                        mocksControl.replay();
+
+                        // WHEN
+                        Throwable thrown = catchThrowable(() -> givenSut(systemUnderTestMock)
+                                .givenArgument(() -> {
+                                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                                    return GIVEN_STRING;
+                                })
+                                .andArgument(() -> {
+                                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                                    return GIVEN_INTEGER;
+                                })
+                                .andArgument(() -> {
+                                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                                    return GIVEN_BOOLEAN;
+                                })
+                                .when(SystemUnderTest::failWithThreeParameters)
+                                .then(sut -> givenWhenThenDefinitionMock
+                                        .thenTheActualResultIsInKeepingWithTheExpectedResult()));
+
+                        // THEN
+                        LOGGER.debug("Stack trace", thrown);
+                        assertThat(thrown)
+                                .isInstanceOf(ExecutionError.class)
+                                .hasMessage(EXPECTED_EXECUTION_FAILURE_MESSAGE)
+                                .hasCauseInstanceOf(UnexpectedException.class);
+                    }
+
+                    @Test
+                    void should_fail_to_execute_a_non_void_target_method_with_three_parameters() throws Throwable {
+                        // GIVEN
+                        givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                        expectLastCall().times(3);
+                        expect(systemUnderTestMock.nonVoidFailWithThreeParameters(GIVEN_STRING, GIVEN_INTEGER,
+                                GIVEN_BOOLEAN)).andThrow(new UnexpectedException());
+                        mocksControl.replay();
+
+                        // WHEN
+                        Throwable thrown = catchThrowable(() -> givenSut(systemUnderTestMock)
+                                .givenArgument(() -> {
+                                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                                    return GIVEN_STRING;
+                                })
+                                .andArgument(() -> {
+                                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                                    return GIVEN_INTEGER;
+                                })
+                                .andArgument(() -> {
+                                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                                    return GIVEN_BOOLEAN;
+                                })
+                                .when(SystemUnderTest::nonVoidFailWithThreeParameters)
+                                .then(() -> givenWhenThenDefinitionMock
+                                        .thenTheActualResultIsInKeepingWithTheExpectedResult()));
+
+                        // THEN
+                        LOGGER.debug("Stack trace", thrown);
+                        assertThat(thrown)
+                                .isInstanceOf(ExecutionError.class)
+                                .hasMessage(EXPECTED_EXECUTION_FAILURE_MESSAGE)
+                                .hasCauseInstanceOf(UnexpectedException.class);
+                    }
+                }
+
+                @Nested
+                class When_an_expected_failure_happens {
+
+                    @Test
+                    void should_verify_the_sut_fails_given_three_method_parameters() throws Throwable {
+                        // GIVEN
+                        givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                        expectLastCall().times(3);
+                        systemUnderTestMock.failWithThreeParameters(GIVEN_STRING, GIVEN_INTEGER, GIVEN_BOOLEAN);
+                        expectLastCall().andThrow(new ExpectedException(EXPECTED_ERROR_MESSAGE));
+                        mocksControl.replay();
+
+                        // WHEN
+                        givenSut(systemUnderTestMock)
+                                .givenArgument(() -> {
+                                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                                    return GIVEN_STRING;
+                                })
+                                .andArgument(() -> {
+                                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                                    return GIVEN_INTEGER;
+                                })
+                                .andArgument(() -> {
+                                    givenWhenThenDefinitionMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                                    return GIVEN_BOOLEAN;
+                                })
+                                .whenSutRunsOutsideOperatingConditions(SystemUnderTest::failWithThreeParameters)
+                                .thenItFails()
+                                .becauseOf(ExpectedException.class)
+                                .withMessage(EXPECTED_ERROR_MESSAGE);
+                    }
                 }
             }
         }
