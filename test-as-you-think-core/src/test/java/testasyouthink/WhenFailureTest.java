@@ -35,11 +35,8 @@ import testasyouthink.function.CheckedRunnable;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verifyZeroInteractions;
-import static org.mockito.Mockito.when;
-import static testasyouthink.TestAsYouThink.givenSut;
 import static testasyouthink.TestAsYouThink.when;
 import static testasyouthink.fixture.Specifications.ExpectedMessage.EXPECTED_EXECUTION_FAILURE_MESSAGE;
 
@@ -54,50 +51,6 @@ class WhenFailureTest {
         // GIVEN
         systemUnderTestMock = mock(SystemUnderTest.class);
         givenWhenThenDefinition = mock(GivenWhenThenDefinition.class);
-    }
-
-    @Nested
-    class Starting_a_test_with_given {
-
-        @Test
-        void should_fail_to_execute_a_non_void_target_method() throws Throwable {
-            // GIVEN
-            when(systemUnderTestMock.nonVoidMethodWithThrowsClause()).thenThrow(UnexpectedException.class);
-
-            // WHEN
-            Throwable thrown = catchThrowable(() -> givenSut(systemUnderTestMock)
-                    .when(SystemUnderTest::nonVoidMethodWithThrowsClause)
-                    .then(() -> givenWhenThenDefinition.thenTheActualResultIsInKeepingWithTheExpectedResult()));
-
-            // THEN
-            LOGGER.debug("Stack trace", thrown);
-            assertThat(thrown)
-                    .isInstanceOf(ExecutionError.class)
-                    .hasMessage(EXPECTED_EXECUTION_FAILURE_MESSAGE)
-                    .hasCauseInstanceOf(UnexpectedException.class);
-            verifyZeroInteractions(givenWhenThenDefinition);
-        }
-
-        @Test
-        void should_fail_to_execute_a_void_target_method() throws Throwable {
-            // GIVEN
-            doThrow(UnexpectedException.class)
-                    .when(systemUnderTestMock)
-                    .voidMethodWithThrowsClause();
-
-            // WHEN
-            Throwable thrown = catchThrowable(() -> givenSut(systemUnderTestMock)
-                    .when(SystemUnderTest::voidMethodWithThrowsClause)
-                    .then(() -> givenWhenThenDefinition.thenTheActualResultIsInKeepingWithTheExpectedResult()));
-
-            // THEN
-            LOGGER.debug("Stack trace", thrown);
-            assertThat(thrown)
-                    .isInstanceOf(ExecutionError.class)
-                    .hasMessage(EXPECTED_EXECUTION_FAILURE_MESSAGE)
-                    .hasCauseInstanceOf(UnexpectedException.class);
-            verifyZeroInteractions(givenWhenThenDefinition);
-        }
     }
 
     @Nested

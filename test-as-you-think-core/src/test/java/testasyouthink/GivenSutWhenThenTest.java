@@ -23,10 +23,12 @@
 package testasyouthink;
 
 import org.assertj.core.api.AbstractAssert;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import testasyouthink.execution.ExecutionError;
 import testasyouthink.fixture.GivenWhenThenDefinition;
 import testasyouthink.fixture.SystemUnderTest;
 import testasyouthink.fixture.UnexpectedException;
@@ -35,12 +37,15 @@ import testasyouthink.preparation.PreparationError;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.easymock.EasyMock.verify;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.when;
 import static testasyouthink.SutPreparationAssertions.assertThatFailure;
 import static testasyouthink.TestAsYouThink.givenSut;
 import static testasyouthink.TestAsYouThink.givenSutClass;
 import static testasyouthink.fixture.GivenWhenThenDefinition.orderedSteps;
+import static testasyouthink.fixture.Specifications.ExpectedMessage.EXPECTED_EXECUTION_FAILURE_MESSAGE;
 
 class GivenSutWhenThenTest {
 
@@ -151,7 +156,7 @@ class GivenSutWhenThenTest {
         }
 
         @Nested
-        class Failing_to_prepare_the_SUT {
+        class Given_an_unexpected_failure_happens_while_preparing_the_SUT {
 
             @Test
             void should_fail_to_supply_a_sut_instance() {
@@ -198,7 +203,7 @@ class GivenSutWhenThenTest {
         }
 
         @Nested
-        class Failing_to_instantiate_the_SUT {
+        class Given_an_unexpected_failure_happens_while_instantiating_the_SUT {
 
             @Test
             void should_fail_to_create_a_sut_instance() {
@@ -313,7 +318,7 @@ class GivenSutWhenThenTest {
             }
 
             @Nested
-            class Failing_to_prepare_the_SUT {
+            class Given_an_unexpected_failure_happens_while_preparing_the_SUT {
 
                 @Test
                 void should_fail_to_prepare_the_sut() {
@@ -391,6 +396,60 @@ class GivenSutWhenThenTest {
                     verifyZeroInteractions(givenWhenThenDefinitionMock);
                 }
             }
+        }
+    }
+
+    @Nested
+    class When_an_unexpected_failure_happens {
+
+        private SystemUnderTest systemUnderTestMock;
+        private GivenWhenThenDefinition givenWhenThenDefinition;
+
+        @BeforeEach
+        void prepareFixtures() {
+            // GIVEN
+            systemUnderTestMock = mock(SystemUnderTest.class);
+            givenWhenThenDefinition = mock(GivenWhenThenDefinition.class);
+        }
+
+        @Test
+        void should_fail_to_execute_a_non_void_target_method() throws Throwable {
+            // GIVEN
+            when(systemUnderTestMock.nonVoidMethodWithThrowsClause()).thenThrow(UnexpectedException.class);
+
+            // WHEN
+            Throwable thrown = catchThrowable(() -> givenSut(systemUnderTestMock)
+                    .when(SystemUnderTest::nonVoidMethodWithThrowsClause)
+                    .then(() -> givenWhenThenDefinition.thenTheActualResultIsInKeepingWithTheExpectedResult()));
+
+            // THEN
+            LOGGER.debug("Stack trace", thrown);
+            assertThat(thrown)
+                    .isInstanceOf(ExecutionError.class)
+                    .hasMessage(EXPECTED_EXECUTION_FAILURE_MESSAGE)
+                    .hasCauseInstanceOf(UnexpectedException.class);
+            verifyZeroInteractions(givenWhenThenDefinition);
+        }
+
+        @Test
+        void should_fail_to_execute_a_void_target_method() throws Throwable {
+            // GIVEN
+            doThrow(UnexpectedException.class)
+                    .when(systemUnderTestMock)
+                    .voidMethodWithThrowsClause();
+
+            // WHEN
+            Throwable thrown = catchThrowable(() -> givenSut(systemUnderTestMock)
+                    .when(SystemUnderTest::voidMethodWithThrowsClause)
+                    .then(() -> givenWhenThenDefinition.thenTheActualResultIsInKeepingWithTheExpectedResult()));
+
+            // THEN
+            LOGGER.debug("Stack trace", thrown);
+            assertThat(thrown)
+                    .isInstanceOf(ExecutionError.class)
+                    .hasMessage(EXPECTED_EXECUTION_FAILURE_MESSAGE)
+                    .hasCauseInstanceOf(UnexpectedException.class);
+            verifyZeroInteractions(givenWhenThenDefinition);
         }
     }
 }
