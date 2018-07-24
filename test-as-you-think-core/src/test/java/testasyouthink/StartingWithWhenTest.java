@@ -28,18 +28,23 @@ import org.mockito.InOrder;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import testasyouthink.execution.ExecutionError;
 import testasyouthink.fixture.ExpectedException;
 import testasyouthink.fixture.GivenWhenThenDefinition;
 import testasyouthink.fixture.SystemUnderTest;
+import testasyouthink.fixture.UnexpectedException;
+import testasyouthink.function.CheckedRunnable;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 import static testasyouthink.TestAsYouThink.when;
 import static testasyouthink.TestAsYouThink.whenOutsideOperatingConditions;
+import static testasyouthink.fixture.Specifications.ExpectedMessage.EXPECTED_EXECUTION_FAILURE_MESSAGE;
 
 class StartingWithWhenTest {
 
@@ -66,6 +71,29 @@ class StartingWithWhenTest {
                     .verify(gwtMock)
                     .thenTheActualResultIsInKeepingWithTheExpectedResult();
             inOrder.verifyNoMoreInteractions();
+        }
+
+        @Nested
+        class When_an_unexpected_failure_happens {
+
+            @Test
+            void should_fail_to_directly_execute_a_void_target_method() {
+                // GIVEN
+                GivenWhenThenDefinition givenWhenThenDefinition = mock(GivenWhenThenDefinition.class);
+
+                // WHEN
+                Throwable thrown = catchThrowable(() -> when((CheckedRunnable) () -> {
+                    throw new UnexpectedException();
+                }).then(() -> givenWhenThenDefinition.thenTheActualResultIsInKeepingWithTheExpectedResult()));
+
+                // THEN
+                LOGGER.debug("Stack trace", thrown);
+                assertThat(thrown)
+                        .isInstanceOf(ExecutionError.class)
+                        .hasMessage(EXPECTED_EXECUTION_FAILURE_MESSAGE)
+                        .hasCauseInstanceOf(UnexpectedException.class);
+                verifyZeroInteractions(givenWhenThenDefinition);
+            }
         }
     }
 
@@ -94,6 +122,29 @@ class StartingWithWhenTest {
                     .verify(gwtMock)
                     .thenTheActualResultIsInKeepingWithTheExpectedResult();
             inOrder.verifyNoMoreInteractions();
+        }
+
+        @Nested
+        class When_an_unexpected_failure_happens {
+
+            @Test
+            void should_fail_to_directly_execute_a_non_void_target_method() {
+                // GIVEN
+                GivenWhenThenDefinition givenWhenThenDefinition = mock(GivenWhenThenDefinition.class);
+
+                // WHEN
+                Throwable thrown = catchThrowable(() -> when(() -> {
+                    throw new UnexpectedException();
+                }).then(() -> givenWhenThenDefinition.thenTheActualResultIsInKeepingWithTheExpectedResult()));
+
+                // THEN
+                LOGGER.debug("Stack trace", thrown);
+                assertThat(thrown)
+                        .isInstanceOf(ExecutionError.class)
+                        .hasMessage(EXPECTED_EXECUTION_FAILURE_MESSAGE)
+                        .hasCauseInstanceOf(UnexpectedException.class);
+                verifyZeroInteractions(givenWhenThenDefinition);
+            }
         }
     }
 
