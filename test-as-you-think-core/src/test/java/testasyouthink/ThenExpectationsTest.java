@@ -198,56 +198,47 @@ class ThenExpectationsTest {
             @Nested
             class Then_an_unexpected_failure_happens {
 
-                @Test
-                void should_fail_to_verify_a_result_expectation() {
-                    // WHEN
-                    Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
-                            .when(sut -> "result")
-                            .then((CheckedConsumer<String>) result -> {
-                                throw new UnexpectedException();
-                            }));
+                private Throwable thrown;
 
+                @AfterEach
+                void verifyFailure() {
                     // THEN
                     LOGGER.debug("Stack trace", thrown);
                     assertThat(thrown)
                             .isInstanceOf(VerificationError.class)
                             .hasMessage("Fails to verify the result expectations!")
                             .hasCauseInstanceOf(UnexpectedException.class);
+                }
+
+                @Test
+                void should_fail_to_verify_a_result_expectation() {
+                    // WHEN
+                    thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                            .when(sut -> "result")
+                            .then((CheckedConsumer<String>) result -> {
+                                throw new UnexpectedException();
+                            }));
                 }
 
                 @Test
                 void should_fail_to_verify_a_result_specified_expectation() {
                     // WHEN
-                    Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                    thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                             .when(sut -> "result")
                             .then("Expectations", result -> {
                                 throw new UnexpectedException();
                             }));
-
-                    // THEN
-                    LOGGER.debug("Stack trace", thrown);
-                    assertThat(thrown)
-                            .isInstanceOf(VerificationError.class)
-                            .hasMessage("Fails to verify the result expectations!")
-                            .hasCauseInstanceOf(UnexpectedException.class);
                 }
 
                 @Test
                 void should_fail_to_verify_another_result_specified_expectation() {
                     // WHEN
-                    Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                    thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                             .when(sut -> "result")
                             .then(result -> {})
                             .and("Expectations", result -> {
                                 throw new UnexpectedException();
                             }));
-
-                    // THEN
-                    LOGGER.debug("Stack trace", thrown);
-                    assertThat(thrown)
-                            .isInstanceOf(VerificationError.class)
-                            .hasMessage("Fails to verify the result expectations!")
-                            .hasCauseInstanceOf(UnexpectedException.class);
                 }
             }
         }
@@ -344,56 +335,47 @@ class ThenExpectationsTest {
             @Nested
             class Then_an_unexpected_failure_happens {
 
-                @Test
-                void should_fail_to_verify_a_result_predicate() {
-                    // WHEN
-                    Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
-                            .when(sut -> "result")
-                            .then((CheckedPredicate<String>) result -> {
-                                throw new UnexpectedException();
-                            }));
+                private Throwable thrown;
 
+                @AfterEach
+                void verifyFailure() {
                     // THEN
                     LOGGER.debug("Stack trace", thrown);
                     assertThat(thrown)
                             .isInstanceOf(VerificationError.class)
                             .hasMessage("Fails to verify the result expectations!")
                             .hasCauseInstanceOf(UnexpectedException.class);
+                }
+
+                @Test
+                void should_fail_to_verify_a_result_predicate() {
+                    // WHEN
+                    thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                            .when(sut -> "result")
+                            .then((CheckedPredicate<String>) result -> {
+                                throw new UnexpectedException();
+                            }));
                 }
 
                 @Test
                 void should_fail_to_verify_another_result_predicate() {
                     // WHEN
-                    Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                    thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                             .when(sut -> "result")
                             .then(result -> true)
                             .and((CheckedPredicate<String>) result -> {
                                 throw new UnexpectedException();
                             }));
-
-                    // THEN
-                    LOGGER.debug("Stack trace", thrown);
-                    assertThat(thrown)
-                            .isInstanceOf(VerificationError.class)
-                            .hasMessage("Fails to verify the result expectations!")
-                            .hasCauseInstanceOf(UnexpectedException.class);
                 }
 
                 @Test
                 void should_fail_to_verify_some_result_predicates() {
                     // WHEN
-                    Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                    thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                             .when(sut -> "result")
                             .then(asList(result -> true, result -> {
                                 throw new UnexpectedException();
                             }, result -> true)));
-
-                    // THEN
-                    LOGGER.debug("Stack trace", thrown);
-                    assertThat(thrown)
-                            .isInstanceOf(VerificationError.class)
-                            .hasMessage("Fails to verify the result expectations!")
-                            .hasCauseInstanceOf(UnexpectedException.class);
                 }
             }
         }
@@ -546,74 +528,58 @@ class ThenExpectationsTest {
             @Nested
             class Then_an_unexpected_failure_happens {
 
-                @Test
-                void should_fail_to_run_a_verification_step() {
-                    // WHEN
-                    Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
-                            .when(sut -> "result")
-                            .then(() -> {
-                                throw new UnexpectedException();
-                            }));
+                private Throwable thrown;
 
+                @AfterEach
+                void verifyFailure() {
                     // THEN
                     LOGGER.debug("Stack trace", thrown);
                     assertThat(thrown)
                             .isInstanceOf(VerificationError.class)
                             .hasMessage("Fails to verify expectations!")
                             .hasCauseInstanceOf(UnexpectedException.class);
+                }
+
+                @Test
+                void should_fail_to_run_a_verification_step() {
+                    // WHEN
+                    thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                            .when(sut -> "result")
+                            .then(() -> {
+                                throw new UnexpectedException();
+                            }));
                 }
 
                 @Test
                 void should_fail_to_run_another_verification_step() {
                     // WHEN
-                    Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                    thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                             .when(sut -> "result")
                             .then(() -> {})
                             .and(() -> {
                                 throw new UnexpectedException();
                             }));
-
-                    // THEN
-                    LOGGER.debug("Stack trace", thrown);
-                    assertThat(thrown)
-                            .isInstanceOf(VerificationError.class)
-                            .hasMessage("Fails to verify expectations!")
-                            .hasCauseInstanceOf(UnexpectedException.class);
                 }
 
                 @Test
                 void should_fail_to_run_a_specified_verification_step() {
                     // WHEN
-                    Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                    thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                             .when(sut -> "result")
                             .then("Expectations", () -> {
                                 throw new UnexpectedException();
                             }));
-
-                    // THEN
-                    LOGGER.debug("Stack trace", thrown);
-                    assertThat(thrown)
-                            .isInstanceOf(VerificationError.class)
-                            .hasMessage("Fails to verify expectations!")
-                            .hasCauseInstanceOf(UnexpectedException.class);
                 }
 
                 @Test
                 void should_fail_to_run_another_specified_verification_step() {
                     // WHEN
-                    Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                    thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                             .when(sut -> "result")
                             .then("Expectations", () -> {})
                             .and("Expectations", () -> {
                                 throw new UnexpectedException();
                             }));
-
-                    // THEN
-                    LOGGER.debug("Stack trace", thrown);
-                    assertThat(thrown)
-                            .isInstanceOf(VerificationError.class)
-                            .hasMessage("Fails to verify expectations!")
-                            .hasCauseInstanceOf(UnexpectedException.class);
                 }
             }
         }
@@ -730,74 +696,58 @@ class ThenExpectationsTest {
             @Nested
             class Then_an_unexpected_failure_happens {
 
-                @Test
-                void should_fail_to_run_a_verification_step() {
-                    // WHEN
-                    Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
-                            .when(sut -> {})
-                            .then((CheckedRunnable) () -> {
-                                throw new UnexpectedException();
-                            }));
+                private Throwable thrown;
 
+                @AfterEach
+                void verifyFailure() {
                     // THEN
                     LOGGER.debug("Stack trace", thrown);
                     assertThat(thrown)
                             .isInstanceOf(VerificationError.class)
                             .hasMessage("Fails to verify expectations!")
                             .hasCauseInstanceOf(UnexpectedException.class);
+                }
+
+                @Test
+                void should_fail_to_run_a_verification_step() {
+                    // WHEN
+                    thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                            .when(sut -> {})
+                            .then((CheckedRunnable) () -> {
+                                throw new UnexpectedException();
+                            }));
                 }
 
                 @Test
                 void should_fail_to_run_another_verification_step() {
                     // WHEN
-                    Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                    thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                             .when(sut -> {})
                             .then(() -> {})
                             .and((CheckedRunnable) () -> {
                                 throw new UnexpectedException();
                             }));
-
-                    // THEN
-                    LOGGER.debug("Stack trace", thrown);
-                    assertThat(thrown)
-                            .isInstanceOf(VerificationError.class)
-                            .hasMessage("Fails to verify expectations!")
-                            .hasCauseInstanceOf(UnexpectedException.class);
                 }
 
                 @Test
                 void should_fail_to_run_a_specified_verification_step() {
                     // WHEN
-                    Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                    thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                             .when(sut -> {})
                             .then("Expectations", () -> {
                                 throw new UnexpectedException();
                             }));
-
-                    // THEN
-                    LOGGER.debug("Stack trace", thrown);
-                    assertThat(thrown)
-                            .isInstanceOf(VerificationError.class)
-                            .hasMessage("Fails to verify expectations!")
-                            .hasCauseInstanceOf(UnexpectedException.class);
                 }
 
                 @Test
                 void should_fail_to_run_another_specified_verification_step() {
                     // WHEN
-                    Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                    thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                             .when(sut -> {})
                             .then("An expectation", () -> {})
                             .and("Another expectation", () -> {
                                 throw new UnexpectedException();
                             }));
-
-                    // THEN
-                    LOGGER.debug("Stack trace", thrown);
-                    assertThat(thrown)
-                            .isInstanceOf(VerificationError.class)
-                            .hasMessage("Fails to verify expectations!")
-                            .hasCauseInstanceOf(UnexpectedException.class);
                 }
             }
         }
@@ -891,74 +841,58 @@ class ThenExpectationsTest {
             @Nested
             class Then_an_unexpected_failure_happends {
 
-                @Test
-                void should_fail_to_verify_a_sut_expectation() {
-                    // WHEN
-                    Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
-                            .when(sut -> {})
-                            .then(sut -> {
-                                throw new UnexpectedException();
-                            }));
+                private Throwable thrown;
 
+                @AfterEach
+                void verifyFailure() {
                     // THEN
                     LOGGER.debug("Stack trace", thrown);
                     assertThat(thrown)
                             .isInstanceOf(VerificationError.class)
                             .hasMessage("Fails to verify the expectations of the system under test!")
                             .hasCauseInstanceOf(UnexpectedException.class);
+                }
+
+                @Test
+                void should_fail_to_verify_a_sut_expectation() {
+                    // WHEN
+                    thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                            .when(sut -> {})
+                            .then(sut -> {
+                                throw new UnexpectedException();
+                            }));
                 }
 
                 @Test
                 void should_fail_to_verify_another_sut_expectation() {
                     // WHEN
-                    Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                    thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                             .when(sut -> {})
                             .then(sut -> {})
                             .and(sut -> {
                                 throw new UnexpectedException();
                             }));
-
-                    // THEN
-                    LOGGER.debug("Stack trace", thrown);
-                    assertThat(thrown)
-                            .isInstanceOf(VerificationError.class)
-                            .hasMessage("Fails to verify the expectations of the system under test!")
-                            .hasCauseInstanceOf(UnexpectedException.class);
                 }
 
                 @Test
                 void should_fail_to_verify_a_sut_specified_expectation() {
                     // WHEN
-                    Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                    thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                             .when(sut -> {})
                             .then("Expectations", sut -> {
                                 throw new UnexpectedException();
                             }));
-
-                    // THEN
-                    LOGGER.debug("Stack trace", thrown);
-                    assertThat(thrown)
-                            .isInstanceOf(VerificationError.class)
-                            .hasMessage("Fails to verify the expectations of the system under test!")
-                            .hasCauseInstanceOf(UnexpectedException.class);
                 }
 
                 @Test
                 void should_fail_to_verify_another_sut_specified_expectation() {
                     // WHEN
-                    Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                    thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                             .when(sut -> {})
                             .then("An expectation", sut -> {})
                             .and("Another expectation", sut -> {
                                 throw new UnexpectedException();
                             }));
-
-                    // THEN
-                    LOGGER.debug("Stack trace", thrown);
-                    assertThat(thrown)
-                            .isInstanceOf(VerificationError.class)
-                            .hasMessage("Fails to verify the expectations of the system under test!")
-                            .hasCauseInstanceOf(UnexpectedException.class);
                 }
             }
         }
@@ -1026,15 +960,10 @@ class ThenExpectationsTest {
             @Nested
             class Then_an_unexpected_failure_happens {
 
-                @Test
-                void should_fail_to_apply_a_condition() {
-                    // WHEN
-                    Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
-                            .when(sut -> {})
-                            .then(() -> {
-                                throw new UnexpectedException();
-                            }));
+                private Throwable thrown;
 
+                @AfterEach
+                void verifyFailure() {
                     // THEN
                     LOGGER.debug("Stack trace", thrown);
                     assertThat(thrown)
@@ -1044,21 +973,24 @@ class ThenExpectationsTest {
                 }
 
                 @Test
+                void should_fail_to_apply_a_condition() {
+                    // WHEN
+                    thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                            .when(sut -> {})
+                            .then(() -> {
+                                throw new UnexpectedException();
+                            }));
+                }
+
+                @Test
                 void should_fail_to_apply_another_condition() {
                     // WHEN
-                    Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                    thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                             .when(sut -> {})
                             .then(() -> true)
                             .and(() -> {
                                 throw new UnexpectedException();
                             }));
-
-                    // THEN
-                    LOGGER.debug("Stack trace", thrown);
-                    assertThat(thrown)
-                            .isInstanceOf(VerificationError.class)
-                            .hasMessage("Fails to verify expectations!")
-                            .hasCauseInstanceOf(UnexpectedException.class);
                 }
             }
         }
