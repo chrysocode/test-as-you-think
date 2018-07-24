@@ -47,16 +47,16 @@ import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
 import static org.mockito.Mockito.mock;
 import static testasyouthink.ArgumentPreparationAssertions.assertThatFailure;
+import static testasyouthink.GivenArgumentsTest.GivenData.EXPECTED_RESULT;
+import static testasyouthink.GivenArgumentsTest.GivenData.GIVEN_BOOLEAN;
+import static testasyouthink.GivenArgumentsTest.GivenData.GIVEN_INTEGER;
+import static testasyouthink.GivenArgumentsTest.GivenData.GIVEN_STRING;
 import static testasyouthink.TestAsYouThink.givenSut;
 import static testasyouthink.TestAsYouThink.givenSutClass;
 
 class GivenArgumentsTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GivenArgumentsTest.class);
-    private static final String GIVEN_STRING = "given argument";
-    private static final int GIVEN_INTEGER = 201705;
-    private static final boolean GIVEN_BOOLEAN = false;
-    private static final String EXPECTED_RESULT = "expected result";
     private IMocksControl mocksControl;
     private SystemUnderTest systemUnderTestMock;
     private GivenWhenThenDefinition givenWhenThenDefinitionMock;
@@ -72,6 +72,14 @@ class GivenArgumentsTest {
     void verifyMocks() {
         // THEN
         mocksControl.verify();
+    }
+
+    static class GivenData {
+
+        static final String GIVEN_STRING = "given argument";
+        static final int GIVEN_INTEGER = 201705;
+        static final boolean GIVEN_BOOLEAN = false;
+        static final String EXPECTED_RESULT = "expected result";
     }
 
     public static class Parameter {

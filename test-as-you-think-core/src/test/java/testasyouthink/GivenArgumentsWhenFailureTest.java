@@ -40,17 +40,16 @@ import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.easymock.EasyMock.createStrictControl;
 import static org.easymock.EasyMock.expect;
 import static org.easymock.EasyMock.expectLastCall;
+import static testasyouthink.GivenArgumentsWhenFailureTest.GivenData.EXPECTED_ERROR_MESSAGE;
+import static testasyouthink.GivenArgumentsWhenFailureTest.GivenData.GIVEN_BOOLEAN;
+import static testasyouthink.GivenArgumentsWhenFailureTest.GivenData.GIVEN_INTEGER;
+import static testasyouthink.GivenArgumentsWhenFailureTest.GivenData.GIVEN_STRING;
 import static testasyouthink.TestAsYouThink.givenSut;
 import static testasyouthink.fixture.Specifications.ExpectedMessage.EXPECTED_EXECUTION_FAILURE_MESSAGE;
 
 class GivenArgumentsWhenFailureTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GivenArgumentsWhenFailureTest.class);
-    private static final String GIVEN_STRING = "given argument";
-    private static final int GIVEN_INTEGER = 201705;
-    private static final boolean GIVEN_BOOLEAN = false;
-    private static final String EXPECTED_ERROR_MESSAGE = "Expected error message";
-
     private IMocksControl mocksControl;
     private SystemUnderTest systemUnderTestMock;
     private GivenWhenThenDefinition givenWhenThenDefinitionMock;
@@ -67,6 +66,14 @@ class GivenArgumentsWhenFailureTest {
     void verifyMocks() {
         // THEN
         mocksControl.verify();
+    }
+
+    static class GivenData {
+
+        static final String GIVEN_STRING = "given argument";
+        static final int GIVEN_INTEGER = 201705;
+        static final boolean GIVEN_BOOLEAN = false;
+        static final String EXPECTED_ERROR_MESSAGE = "Expected error message";
     }
 
     @Nested

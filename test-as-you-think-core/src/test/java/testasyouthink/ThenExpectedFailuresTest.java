@@ -39,13 +39,13 @@ import static org.easymock.EasyMock.replay;
 import static org.easymock.EasyMock.strictMock;
 import static org.easymock.EasyMock.verify;
 import static testasyouthink.TestAsYouThink.givenSut;
+import static testasyouthink.ThenExpectedFailuresTest.GivenData.EXPECTED_CAUSE_MESSAGE;
+import static testasyouthink.ThenExpectedFailuresTest.GivenData.EXPECTED_MESSAGE;
+import static testasyouthink.ThenExpectedFailuresTest.GivenData.UNEXPECTED_MESSAGE;
 
 class ThenExpectedFailuresTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ThenExpectedFailuresTest.class);
-    private static final String EXPECTED_MESSAGE = "expected message";
-    private static final String UNEXPECTED_MESSAGE = "unexpected message";
-    private static final String EXPECTED_CAUSE_MESSAGE = "expected cause message";
     private SystemUnderTest systemUnderTestMock;
 
     @BeforeEach
@@ -58,6 +58,13 @@ class ThenExpectedFailuresTest {
     void verifyMocks() {
         // THEN
         verify(systemUnderTestMock);
+    }
+
+    static class GivenData {
+
+        static final String EXPECTED_MESSAGE = "expected message";
+        static final String UNEXPECTED_MESSAGE = "unexpected message";
+        static final String EXPECTED_CAUSE_MESSAGE = "expected cause message";
     }
 
     @Nested
