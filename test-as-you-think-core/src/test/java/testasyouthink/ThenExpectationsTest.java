@@ -42,6 +42,9 @@ import static org.easymock.EasyMock.verify;
 import static testasyouthink.TestAsYouThink.givenSutClass;
 import static testasyouthink.fixture.GivenWhenThenDefinition.orderedSteps;
 
+/**
+ * Acceptance testing for the verification step to use various ways of verifying in a whole Given-When-Then scenario.
+ */
 class ThenExpectationsTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ThenExpectationsTest.class);

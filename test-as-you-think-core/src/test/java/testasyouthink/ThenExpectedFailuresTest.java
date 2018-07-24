@@ -43,6 +43,9 @@ import static testasyouthink.ThenExpectedFailuresTest.GivenData.EXPECTED_CAUSE_M
 import static testasyouthink.ThenExpectedFailuresTest.GivenData.EXPECTED_MESSAGE;
 import static testasyouthink.ThenExpectedFailuresTest.GivenData.UNEXPECTED_MESSAGE;
 
+/**
+ * Acceptance testing for the verification step, only to verify an expected failure in a whole Given-When-Then scenario.
+ */
 class ThenExpectedFailuresTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ThenExpectedFailuresTest.class);

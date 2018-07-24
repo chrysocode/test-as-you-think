@@ -25,7 +25,6 @@ package testasyouthink;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import testasyouthink.fixture.GivenWhenThenDefinition;
@@ -35,11 +34,15 @@ import testasyouthink.function.CheckedRunnable;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static testasyouthink.TestAsYouThink.givenSutClass;
 import static testasyouthink.TestAsYouThink.when;
 
+/**
+ * Acceptance testing for the verification step, only to verify the target method succeeds.
+ */
 class ThenNoFailureTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ThenNoFailureTest.class);
@@ -47,7 +50,7 @@ class ThenNoFailureTest {
 
     @BeforeEach
     void prepareFixtures() {
-        gwtMock = Mockito.mock(GivenWhenThenDefinition.class);
+        gwtMock = mock(GivenWhenThenDefinition.class);
     }
 
     @AfterEach

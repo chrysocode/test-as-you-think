@@ -26,23 +26,30 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import testasyouthink.fixture.GivenWhenThenDefinition;
 import testasyouthink.fixture.SystemUnderTest;
 import testasyouthink.function.CheckedConsumer;
 
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static testasyouthink.TestAsYouThink.givenSutClass;
 import static testasyouthink.TestAsYouThink.withReturn;
 
+/**
+ * Acceptance testing for the execution step to use lambda expressions without ambiguity.</br>
+ * <ul>
+ * <li>use {@code whenSutReturns} if the target methdd returns a result</li>
+ * <li>use {@code whenSutRuns} otherwise</li>
+ * </ul>
+ */
 class WhenStepAsExpressionLambdaTest {
 
     private GivenWhenThenDefinition givenWhenThenDefinitionMock;
 
     @BeforeEach
     void prepareFixtures() {
-        givenWhenThenDefinitionMock = Mockito.mock(GivenWhenThenDefinition.class);
+        givenWhenThenDefinitionMock = mock(GivenWhenThenDefinition.class);
     }
 
     @AfterEach

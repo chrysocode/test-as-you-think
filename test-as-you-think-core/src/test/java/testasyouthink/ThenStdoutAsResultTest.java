@@ -46,6 +46,9 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static testasyouthink.TestAsYouThink.givenSutClass;
 
+/**
+ * Acceptance testing for the verification step, only to verify the standard output.
+ */
 class ThenStdoutAsResultTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ThenStdoutAsResultTest.class);

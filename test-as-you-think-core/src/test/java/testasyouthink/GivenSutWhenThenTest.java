@@ -47,6 +47,9 @@ import static testasyouthink.TestAsYouThink.givenSutClass;
 import static testasyouthink.fixture.GivenWhenThenDefinition.orderedSteps;
 import static testasyouthink.fixture.Specifications.ExpectedMessage.EXPECTED_EXECUTION_FAILURE_MESSAGE;
 
+/**
+ * Acceptance testing to prepare the system under test and play a whole Given-When-Then scenario.
+ */
 class GivenSutWhenThenTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GivenSutWhenThenTest.class);

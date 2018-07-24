@@ -41,6 +41,9 @@ import static org.mockito.Mockito.verifyZeroInteractions;
 import static testasyouthink.TestAsYouThink.givenSutClass;
 import static testasyouthink.fixture.GivenWhenThenDefinition.orderedSteps;
 
+/**
+ * Acceptance testing to prepare ordinary fixtures in a whole Given-When-Then scenario.
+ */
 class GivenOrdinaryFixturesTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GivenOrdinaryFixturesTest.class);

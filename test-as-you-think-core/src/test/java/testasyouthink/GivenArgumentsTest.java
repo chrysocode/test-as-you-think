@@ -58,6 +58,9 @@ import static testasyouthink.TestAsYouThink.givenSut;
 import static testasyouthink.TestAsYouThink.givenSutClass;
 import static testasyouthink.fixture.Specifications.ExpectedMessage.EXPECTED_EXECUTION_FAILURE_MESSAGE;
 
+/**
+ * Acceptance testing to prepare arguments for the target method before playing a whole Given-When-Then scenario.
+ */
 class GivenArgumentsTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GivenArgumentsTest.class);

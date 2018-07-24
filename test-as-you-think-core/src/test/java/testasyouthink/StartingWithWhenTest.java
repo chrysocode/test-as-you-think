@@ -46,6 +46,9 @@ import static testasyouthink.TestAsYouThink.when;
 import static testasyouthink.TestAsYouThink.whenOutsideOperatingConditions;
 import static testasyouthink.fixture.Specifications.ExpectedMessage.EXPECTED_EXECUTION_FAILURE_MESSAGE;
 
+/**
+ * Acceptance testing to play a shortened When-Then scenario without a preparation step.
+ */
 class StartingWithWhenTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StartingWithWhenTest.class);
