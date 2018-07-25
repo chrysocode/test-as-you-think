@@ -103,6 +103,22 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-dependency-plugin</artifactId>
                     <version>3.0.1</version>
+                    <configuration>
+                        <failOnWarning>true</failOnWarning>
+                        <failBuild>true</failBuild>
+                        <ignoreDirect>false</ignoreDirect>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>analyze_dependencies</id>
+                            <phase>verify</phase>
+                            <goals>
+                                <goal>analyze</goal>
+                                <goal>analyze-only</goal>
+                                <goal>analyze-dep-mgt</goal>
+                            </goals>
+                        </execution>
+                    </executions>
                 </plugin>
                 <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-surefire-plugin -->
                 <plugin>
@@ -248,12 +264,13 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-enforcer-plugin</artifactId>
-                    <version>1.4.1</version>
+                    <version>3.0.0-M2</version>
                     <configuration>
                         <rules>
                             <requireMavenVersion>
                                 <version>${maven.minimalVersion}</version>
                             </requireMavenVersion>
+                            <dependencyConvergence/>
                         </rules>
                     </configuration>
                     <executions>
@@ -448,10 +465,10 @@
 
     <dependencyManagement>
         <dependencies>
-            <!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-engine -->
+            <!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api -->
             <dependency>
                 <groupId>org.junit.jupiter</groupId>
-                <artifactId>junit-jupiter-engine</artifactId>
+                <artifactId>junit-jupiter-api</artifactId>
                 <version>${junit.jupiter.version}</version>
                 <scope>test</scope>
             </dependency>
@@ -466,14 +483,14 @@
             <dependency>
                 <groupId>org.easymock</groupId>
                 <artifactId>easymock</artifactId>
-                <version>3.5</version>
+                <version>3.6</version>
                 <scope>test</scope>
             </dependency>
             <!-- https://mvnrepository.com/artifact/org.mockito/mockito-core -->
             <dependency>
                 <groupId>org.mockito</groupId>
                 <artifactId>mockito-core</artifactId>
-                <version>2.10.0</version>
+                <version>2.20.0</version>
                 <scope>test</scope>
             </dependency>
             <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
