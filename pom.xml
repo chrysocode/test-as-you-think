@@ -106,6 +106,16 @@
                     <configuration>
                         <failOnWarning>true</failOnWarning>
                     </configuration>
+                    <executions>
+                        <execution>
+                            <id>analyze_dependencies</id>
+                            <phase>verify</phase>
+                            <goals>
+                                <goal>analyze</goal>
+                                <goal>analyze-only</goal>
+                            </goals>
+                        </execution>
+                    </executions>
                 </plugin>
                 <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-surefire-plugin -->
                 <plugin>
