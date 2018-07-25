@@ -105,6 +105,8 @@
                     <version>3.0.1</version>
                     <configuration>
                         <failOnWarning>true</failOnWarning>
+                        <failBuild>true</failBuild>
+                        <ignoreDirect>false</ignoreDirect>
                     </configuration>
                     <executions>
                         <execution>
@@ -113,6 +115,7 @@
                             <goals>
                                 <goal>analyze</goal>
                                 <goal>analyze-only</goal>
+                                <goal>analyze-dep-mgt</goal>
                             </goals>
                         </execution>
                     </executions>
