@@ -2,7 +2,7 @@
  * #%L
  * Test As You Think
  * %%
- * Copyright (C) 2017 Xavier Pigeon and TestAsYouThink contributors
+ * Copyright (C) 2017 - 2018 Xavier Pigeon and TestAsYouThink contributors
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -42,6 +42,7 @@ import testasyouthink.function.CheckedSuppliers.CheckedBooleanSupplier;
 import testasyouthink.function.CheckedTriConsumer;
 import testasyouthink.function.CheckedTriFunction;
 
+import java.io.File;
 import java.time.Duration;
 import java.util.List;
 
@@ -208,6 +209,11 @@ public interface GivenWhenThenDsl {
 
             void then(CheckedPredicate<$Result> thenStepAboutResult,
                     CheckedPredicate<$SystemUnderTest> thenStepAboutSystemUnderTest);
+
+            AndThenStandardOutputCaptured<$SystemUnderTest, $Result> thenStandardOutput(CheckedConsumer<File> thenStep);
+
+            AndThenStandardOutputCaptured<$SystemUnderTest, $Result> thenStandardOutput(String expectationSpecification,
+                    CheckedConsumer<File> thenStep);
         }
 
         interface AndThen<$SystemUnderTest, $Result> {
@@ -221,6 +227,14 @@ public interface GivenWhenThenDsl {
             AndThen<$SystemUnderTest, $Result> and(String expectationSpecification, CheckedRunnable thenStep);
 
             AndThen<$SystemUnderTest, $Result> and(CheckedPredicate<$Result> thenStep);
+        }
+
+        interface AndThenStandardOutputCaptured<$SystemUnderTest, $Result> extends AndThen<$SystemUnderTest, $Result> {
+
+            AndThenStandardOutputCaptured<$SystemUnderTest, $Result> andStandardOutput(CheckedConsumer<File> thenStep);
+
+            AndThenStandardOutputCaptured<$SystemUnderTest, $Result> andStandardOutput(String expectationSpecification,
+                    CheckedConsumer<File> thenStep);
         }
 
         interface ThenWithoutResult<$SystemUnderTest> {
@@ -241,6 +255,12 @@ public interface GivenWhenThenDsl {
             AndThenWithoutResult<$SystemUnderTest> thenSutRepliesWithin(Duration durationLimit);
 
             void thenItSucceeds();
+
+            AndThenWithoutResultStandardOutputCaptured<$SystemUnderTest> thenStandardOutput(
+                    CheckedConsumer<File> thenStep);
+
+            AndThenWithoutResultStandardOutputCaptured<$SystemUnderTest> thenStandardOutput(
+                    String expectationSpecification, CheckedConsumer<File> thenStep);
         }
 
         interface AndThenWithoutResult<$SystemUnderTest> {
@@ -255,6 +275,16 @@ public interface GivenWhenThenDsl {
                     CheckedConsumer<$SystemUnderTest> thenStep);
 
             AndThenWithoutResult<$SystemUnderTest> and(CheckedBooleanSupplier thenStep);
+        }
+
+        interface AndThenWithoutResultStandardOutputCaptured<$SystemUnderTest> extends
+                AndThenWithoutResult<$SystemUnderTest> {
+
+            AndThenWithoutResultStandardOutputCaptured<$SystemUnderTest> andStandardOutput(
+                    CheckedConsumer<File> thenStep);
+
+            AndThenWithoutResultStandardOutputCaptured<$SystemUnderTest> andStandardOutput(
+                    String expectationSpecification, CheckedConsumer<File> thenStep);
         }
 
         interface ThenFailure {

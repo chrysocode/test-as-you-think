@@ -4,13 +4,15 @@ What you think is what you test... Not yet another testing API or framework!
 
 Matter | Badges
 ------ | ------
-Software factory    | [![Maven Central](https://img.shields.io/maven-central/v/com.github.xapn/test-as-you-think-project.svg)](http://search.maven.org/#search%7Cga%7C1%7Ctest-as-you-think) master: { [![Build Status for master](https://travis-ci.org/xapn/test-as-you-think.svg?branch=master)](https://travis-ci.org/xapn/test-as-you-think), [![codecov](https://codecov.io/gh/xapn/test-as-you-think/branch/master/graph/badge.svg)](https://codecov.io/gh/xapn/test-as-you-think) } develop: { [![Build Status for develop](https://travis-ci.org/xapn/test-as-you-think.svg?branch=develop)](https://travis-ci.org/xapn/test-as-you-think), [![codecov](https://codecov.io/gh/xapn/test-as-you-think/branch/develop/graph/badge.svg)](https://codecov.io/gh/xapn/test-as-you-think/branch/develop) } [![Javadocs](http://javadoc.io/badge/com.github.xapn/test-as-you-think-core.svg?color=orange)](http://javadoc.io/doc/com.github.xapn/test-as-you-think-core)
+Software factory    | [![Trello board](https://img.shields.io/badge/backlog-Trello-blue.svg)](https://trello.com/b/EVoCzyHq) [![Maven Central](https://img.shields.io/maven-central/v/com.github.xapn/test-as-you-think-project.svg)](http://search.maven.org/#search%7Cga%7C1%7Ctest-as-you-think) master: { [![Build Status for master](https://travis-ci.org/xapn/test-as-you-think.svg?branch=master)](https://travis-ci.org/xapn/test-as-you-think), [![codecov](https://codecov.io/gh/xapn/test-as-you-think/branch/master/graph/badge.svg)](https://codecov.io/gh/xapn/test-as-you-think) } develop: { [![Build Status for develop](https://travis-ci.org/xapn/test-as-you-think.svg?branch=develop)](https://travis-ci.org/xapn/test-as-you-think), [![codecov](https://codecov.io/gh/xapn/test-as-you-think/branch/develop/graph/badge.svg)](https://codecov.io/gh/xapn/test-as-you-think/branch/develop) } [![Javadocs](http://javadoc.io/badge/com.github.xapn/test-as-you-think-core.svg?color=orange)](http://javadoc.io/doc/com.github.xapn/test-as-you-think-core)
 Source code         | [![LoC](https://tokei.rs/b1/github/xapn/test-as-you-think?category=code)](https://github.com/xapn/test-as-you-think) [![Files](https://tokei.rs/b1/github/xapn/test-as-you-think?category=files)](https://github.com/xapn/test-as-you-think) [![Total lines](https://tokei.rs/b1/github/xapn/test-as-you-think?category=lines)](https://github.com/xapn/test-as-you-think) [![Comments](https://tokei.rs/b1/github/xapn/test-as-you-think?category=comments)](https://github.com/xapn/test-as-you-think) [![Blank lines](https://tokei.rs/b1/github/xapn/test-as-you-think?category=blanks)](https://github.com/xapn/test-as-you-think)
 Licensing           | [![License: GNU LGPL v3](https://img.shields.io/badge/License-LGPL%20v3-blue.svg)](http://www.gnu.org/licenses/lgpl-3.0) [![GitHub contributors](https://img.shields.io/github/contributors/xapn/test-as-you-think.svg)](https://github.com/xapn/test-as-you-think/graphs/contributors)
 Social coding       | [![Twitter URL](https://img.shields.io/twitter/url/https/github.com/xapn/test-as-you-think.svg?style=social)](https://twitter.com/intent/tweet?text=Wow:&url=https%3A%2F%2Fgoo.gl%2FXqS4Zf) [![Twitter Follow](https://img.shields.io/twitter/follow/xengineer.svg?style=social&label=Follow)](https://twitter.com/intent/follow?screen_name=xengineer) [![GitHub stars](https://img.shields.io/github/stars/xapn/test-as-you-think.svg?style=social&label=Star)](https://github.com/xapn/test-as-you-think/stargazers) [![GitHub watchers](https://img.shields.io/github/watchers/xapn/test-as-you-think.svg?style=social&label=Watch)](https://github.com/xapn/test-as-you-think/watchers) [![GitHub forks](https://img.shields.io/github/forks/xapn/test-as-you-think.svg?style=social&label=Fork)](https://github.com/xapn/test-as-you-think/network)
 
 Please use this [permalink](https://goo.gl/XqS4Zf) (goo.gl/XqS4Zf) to share this web page and to get [analytics data](https://goo.gl/#analytics/goo.gl/XqS4Zf/all_time). You can also use this [QR code](https://chart.googleapis.com/chart?cht=qr&chs=150x150&choe=UTF-8&chld=H&chl=https://goo.gl/XqS4Zf).
 ![QR code](https://chart.googleapis.com/chart?cht=qr&chs=150x150&choe=UTF-8&chld=H&chl=https://goo.gl/XqS4Zf)
+
+Let you know your tests are exemplary with this badge: [![TestAsYouThink Trello badge](https://img.shields.io/badge/tests%20as%20first--class%20citizens%20with-TestAsYouThink-brightgreen.svg)](http://testasyouthink.org)
 
 <!-- toc -->
 
@@ -36,11 +38,13 @@ Please use this [permalink](https://goo.gl/XqS4Zf) (goo.gl/XqS4Zf) to share this
       - [No failure](#no-failure)
     + [Time limit](#time-limit)
     + [Fluent assertions as a chained extension](#fluent-assertions-as-a-chained-extension)
+    + [Standard streams, standard output & standard error as a result](#standard-streams-standard-output--standard-error-as-a-result)
 - [Functional approach of testing](#functional-approach-of-testing)
 - [Code Examples](#code-examples)
 - [Releases](#releases)
   * [Versioning](#versioning)
   * [Release Notes](#release-notes)
+    + [0.8 version: Standard streams as a result](#08-version-standard-streams-as-a-result)
     + [0.7 version: All testing steps as stage by stage checked functions](#07-version-all-testing-steps-as-stage-by-stage-checked-functions)
     + [0.6 version: Fluent assertions as if you meant AssertJ](#06-version-fluent-assertions-as-if-you-meant-assertj)
     + [0.5 version: System under test as a test fixture](#05-version-system-under-test-as-a-test-fixture)
@@ -79,7 +83,7 @@ Add *TestAsYouThink* as a dependency to your project with [Maven](https://maven.
 <dependency>
     <groupId>com.github.xapn</groupId>
     <artifactId>test-as-you-think-core</artifactId>
-    <version>0.7</version>
+    <version>0.8-m1</version>
 </dependency>
 ```
 
@@ -430,16 +434,33 @@ Why use `resultOf()` rather than `assertThat()`? Here the goal is to identify th
 ```java
 /* Java only */
 assert expectedOrActual.equals(actualOrExpected); // expected or actual at first with the Java assert keyword
+
 /* JUnit */
 org.junit.Assert.assertEquals(expected, actual); // expected at first with JUnit 4
 org.junit.jupiter.api.Assertions.assertEquals(expected, actual); // expected at first with JUnit 5
 org.testng.AssertJUnit.assertEquals(expected, actual); // expected at first with TestNG
+
 /* Hamcrest */
 org.hamcrest.MatcherAssert.assertThat(actual, org.hamcrest.Matchers.is(expected)); // actual at first with Hamcrest
+
 /* AssertJ */
 org.assertj.core.api.Assertions.assertThat(actual).isEqualTo(expected); // actual at first with AssertJ
 ```
 As a consequence, if both are inverted, the error message will be wrong and will mislead developers before fixing a failing test. The *TestAsYouThink* `resultOf()` leaves no doubt about which is what by making the testing language [ubiquitous](https://martinfowler.com/bliki/UbiquitousLanguage.html).
+
+### Standard streams, standard output & standard error as a result
+
+These features are specially thought to be used in coding dojos by Software Craftsmen. Indeed most of coding dojos simplify the user interface rendering by printing outputs in the console, mainly thanks to `System.out`, and eventually to `System.err`. Thus *TestAsYouThink* can capture the standard streams for you during the test execution.
+
+Now feel free to make your assertions on the standard output streams easily.
+```java
+givenSutClass(SystemUnderTest.class)
+.when(sut -> {
+    // inside a target method that prints some text in stdout
+    System.out.println("Output in stdout");
+})
+.thenStandardOutput(stdout -> assertThat(stdout).contains("Output in stdout"));
+```
 
 # Functional approach of testing
 
@@ -461,6 +482,13 @@ You can find concrete examples of use in the following repositories.
 To understand how version numbers change, please read the [Semantic Versioning](http://semver.org/).
 
 ## Release Notes
+
+### 0.8 version: Standard streams as a result
+
+- Capture the standard streams all together (stdout and stderr) to make assertions.
+- Migrate all JUnit tests to the version 5 and build test case trees.
+- Automatically analyze dependencies to fail builds if needed.
+- Open the TestAsYouThink [backlog](https://trello.com/b/EVoCzyHq) by creating a [Trello](https://trello.com) public board.
 
 ### 0.7 version: All testing steps as stage by stage checked functions
 

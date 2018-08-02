@@ -2,7 +2,7 @@
  * #%L
  * Test As You Think
  * %%
- * Copyright (C) 2017 Xavier Pigeon and TestAsYouThink contributors
+ * Copyright (C) 2017 - 2018 Xavier Pigeon and TestAsYouThink contributors
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -24,6 +24,7 @@ package testasyouthink;
 
 import testasyouthink.GivenWhenThenDsl.VerificationStage.AndThen;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.AndThenFailure;
+import testasyouthink.GivenWhenThenDsl.VerificationStage.AndThenStandardOutputCaptured;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.Then;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.ThenFailure;
 import testasyouthink.function.CheckedConsumer;
@@ -31,11 +32,13 @@ import testasyouthink.function.CheckedPredicate;
 import testasyouthink.function.CheckedRunnable;
 import testasyouthink.verification.Verification;
 
+import java.io.File;
 import java.time.Duration;
 import java.util.List;
 
 public class ThenStep<$SystemUnderTest, $Result> implements Then<$SystemUnderTest, $Result>,
-        AndThen<$SystemUnderTest, $Result>, ThenFailure, AndThenFailure {
+        AndThen<$SystemUnderTest, $Result>, ThenFailure, AndThenFailure,
+        AndThenStandardOutputCaptured<$SystemUnderTest, $Result> {
 
     private Verification<$SystemUnderTest, $Result> verification;
 
@@ -154,5 +157,28 @@ public class ThenStep<$SystemUnderTest, $Result> implements Then<$SystemUnderTes
     public AndThen<$SystemUnderTest, $Result> thenSutRepliesWithin(Duration durationLimit) {
         verification.verify(durationLimit);
         return this;
+    }
+
+    @Override
+    public AndThenStandardOutputCaptured<$SystemUnderTest, $Result> thenStandardOutput(CheckedConsumer<File> thenStep) {
+        verification.verifyStdout(thenStep);
+        return this;
+    }
+
+    @Override
+    public AndThenStandardOutputCaptured<$SystemUnderTest, $Result> thenStandardOutput(String expectationSpecification,
+            CheckedConsumer<File> thenStep) {
+        return thenStandardOutput(thenStep);
+    }
+
+    @Override
+    public AndThenStandardOutputCaptured<$SystemUnderTest, $Result> andStandardOutput(CheckedConsumer<File> thenStep) {
+        return thenStandardOutput(thenStep);
+    }
+
+    @Override
+    public AndThenStandardOutputCaptured<$SystemUnderTest, $Result> andStandardOutput(String expectationSpecification,
+            CheckedConsumer<File> thenStep) {
+        return thenStandardOutput(thenStep);
     }
 }

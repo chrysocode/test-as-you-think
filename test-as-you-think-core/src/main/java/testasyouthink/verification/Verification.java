@@ -2,7 +2,7 @@
  * #%L
  * Test As You Think
  * %%
- * Copyright (C) 2017 Xavier Pigeon and TestAsYouThink contributors
+ * Copyright (C) 2017 - 2018 Xavier Pigeon and TestAsYouThink contributors
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -29,6 +29,7 @@ import testasyouthink.function.CheckedPredicate;
 import testasyouthink.function.CheckedRunnable;
 import testasyouthink.function.CheckedSuppliers.CheckedBooleanSupplier;
 
+import java.io.File;
 import java.time.Duration;
 import java.util.List;
 
@@ -122,6 +123,18 @@ public class Verification<$SystemUnderTest, $Result> {
         Assertions
                 .assertThat(context::returnResultOrVoid)
                 .spendsAtMost(durationLimit);
+    }
+
+    public void verifyStdout(CheckedConsumer<File> expectations) {
+        context.captureStdout();
+        context.returnResultOrVoid();
+        try {
+            expectations.accept(context.getStdoutAsFile());
+        } catch (AssertionError assertionError) {
+            throw assertionError;
+        } catch (Throwable throwable) {
+            throw new VerificationError("Fails to verify the expectations of the stdout!", throwable);
+        }
     }
 
     public void verifyFailure() {

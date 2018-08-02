@@ -2,7 +2,7 @@
  * #%L
  * Test As You Think
  * %%
- * Copyright (C) 2017 Xavier Pigeon and TestAsYouThink contributors
+ * Copyright (C) 2017 - 2018 Xavier Pigeon and TestAsYouThink contributors
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -22,4 +22,13 @@
 
 package testasyouthink.fixture;
 
-public class UnexpectedException extends Exception {}
+public class UnexpectedException extends Exception {
+
+    public UnexpectedException() {
+        super();
+    }
+
+    public UnexpectedException(String message) {
+        super(message);
+    }
+}

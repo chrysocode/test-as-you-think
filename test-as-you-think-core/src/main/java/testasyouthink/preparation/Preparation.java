@@ -2,7 +2,7 @@
  * #%L
  * Test As You Think
  * %%
- * Copyright (C) 2017 Xavier Pigeon and TestAsYouThink contributors
+ * Copyright (C) 2017 - 2018 Xavier Pigeon and TestAsYouThink contributors
  * %%
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as
@@ -27,11 +27,20 @@ import testasyouthink.function.CheckedRunnable;
 import testasyouthink.function.CheckedSupplier;
 import testasyouthink.function.Functions;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayDeque;
+import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Queue;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+
+import static java.lang.Thread.currentThread;
 
 public class Preparation<$SystemUnderTest> {
 
@@ -42,10 +51,12 @@ public class Preparation<$SystemUnderTest> {
     private Supplier<$SystemUnderTest> givenSutStep;
     private Queue<Supplier> argumentSuppliers;
     private $SystemUnderTest systemUnderTest;
+    private boolean stdoutCaptured;
 
     public Preparation() {
         givenSteps = new ArrayDeque<>();
         argumentSuppliers = new LinkedList<>();
+        stdoutCaptured = false;
     }
 
     public Preparation(Class<$SystemUnderTest> sutClass) {
@@ -113,5 +124,62 @@ public class Preparation<$SystemUnderTest> {
 
     public Supplier<$SystemUnderTest> supplySut() {
         return this::systemUnderTest;
+    }
+
+    public void captureStdout() {
+        if (!stdoutCaptured) {
+            recordGivenStep(() -> {
+                Path stdoutPath = Files.createTempFile("actual_result", ".txt");
+                stdoutPath
+                        .toFile()
+                        .deleteOnExit();
+                StandardRedirection.STDOUT_PATHS.put(currentThread().getId(), stdoutPath);
+                StandardRedirection.STREAMS_TO_FILE.put(currentThread().getId(),
+                        new PrintStream(stdoutPath.toString()));
+            });
+
+            stdoutCaptured = true;
+        }
+    }
+
+    public Path getStdoutPath() {
+        return StandardRedirection.STDOUT_PATHS.get(currentThread().getId());
+    }
+
+    private static class StandardRedirection {
+
+        private static final Map<Long, Path> STDOUT_PATHS;
+        private static final Map<Long, PrintStream> STREAMS_TO_FILE;
+        private static final PrintStream SYSTEM_OUT;
+        private static final PrintStream SYSTEM_ERR;
+
+        static {
+            SYSTEM_OUT = System.out;
+            SYSTEM_ERR = System.err;
+            STDOUT_PATHS = new HashMap<>();
+            STREAMS_TO_FILE = new HashMap<>();
+
+            commuteStandardOutputs();
+        }
+
+        private static void commuteStandardOutputs() {
+            redirectStreamOnce(SYSTEM_OUT, System::setOut);
+            redirectStreamOnce(SYSTEM_ERR, System::setErr);
+        }
+
+        private static void redirectStreamOnce(final PrintStream printStream, Consumer<PrintStream> redirectTo) {
+            PrintStream allInOne = new PrintStream(new OutputStream() {
+                @Override
+                public void write(int b) throws IOException {
+                    printStream.write(b);
+                    if (!STREAMS_TO_FILE.isEmpty()) {
+                        STREAMS_TO_FILE
+                                .get(currentThread().getId())
+                                .write(b);
+                    }
+                }
+            });
+            redirectTo.accept(allInOne);
+        }
     }
 }
