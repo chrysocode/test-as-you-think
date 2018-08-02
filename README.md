@@ -450,9 +450,9 @@ As a consequence, if both are inverted, the error message will be wrong and will
 
 ### Standard streams, standard output & standard error as a result
 
-These features are specially thought to be used in coding dojos by Software Craftsmen. Indeed most of coding dojos simplify the user interface rendering by printing outputs in the console, mainly thanks to `System.out`, and eventually to `System.err`. Thus *TestAsYouThink* can capture the standard streams for you during the test execution.
+These features are specially thought to be used in coding dojos by Software Craftsmen. Indeed most of coding dojos simplify the user interface rendering by printing outputs in the console, mainly thanks to `System.out`, and eventually to `System.err`. Thus *TestAsYouThink* can capture the standard streams for you during the test execution. Examples of coding dojo: [Minesweeper](https://codingdojo.org/kata/Minesweeper/), [Reversi](https://codingdojo.org/kata/Reversi/), [Diamond](https://github.com/emilybache/DiamondKata) and [Conway's Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life).
 
-Now feel free to make your assertions on the standard output streams easily.
+Now feel free to make your assertions on the standard output and/or error streams easily.
 ```java
 givenSutClass(SystemUnderTest.class)
 .when(sut -> {
@@ -461,6 +461,42 @@ givenSutClass(SystemUnderTest.class)
 })
 .thenStandardOutput(stdout -> assertThat(stdout).contains("Output in stdout"));
 ```
+
+```java
+givenSutClass(SystemUnderTest.class)
+.when(sut -> {
+    // inside a target method that prints some text in stderr
+    System.err.println("Error in stderr");
+})
+.thenStandardError(stderr -> assertThat(stderr).contains("Error in stderr"));
+```
+
+```java
+givenSutClass(SystemUnderTest.class)
+.when(sut -> {
+    // inside a target method that prints some text in both stdout and stderr
+    System.out.println("Output in stdout");
+    System.err.println("Error in stderr");
+})
+.thenStandardOutput(stdout -> assertThat(stdout).contains("Output in stdout))
+.andStandardError(stderr -> assertThat(stderr).contains("Error in stderr"));
+```
+
+The snippet below does not make difference between stdout and stderr.
+```java
+givenSutClass(SystemUnderTest.class)
+.when(sut -> {
+    // inside a target method that prints some text in both stdout and stderr
+    System.out.println("Output in stdout");
+    System.err.println("Error in stderr");
+})
+.thenStandardStreams(stdstr -> assertThat(stdstr).contains(
+    "Output in stdout\n"
+    + "Error in stderr"
+));
+```
+
+Be aware that capturing standard streams is thread-safe to get tests reliable. So you will observe no side-effect to your assertions and test results.
 
 # Functional approach of testing
 
@@ -474,6 +510,7 @@ You are even able to begin to code a new component behavior directly in a lambda
 You can find concrete examples of use in the following repositories.
 - [TestAsYouThink examples](https://github.com/xapn/test-as-you-think-examples), with didactic, funny examples of use: do not hesitate to add your own examples being creative.
 - [Fizz-Buzz](https://xapn.github.io/fizz-buzz), a coding dojo with many JUnit tests.
+- [Against The Clock](https://github.com/xapn/against-the-clock), a refactoring exercise with legacy code.
 
 # Releases
 
