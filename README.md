@@ -432,16 +432,33 @@ Why use `resultOf()` rather than `assertThat()`? Here the goal is to identify th
 ```java
 /* Java only */
 assert expectedOrActual.equals(actualOrExpected); // expected or actual at first with the Java assert keyword
+
 /* JUnit */
 org.junit.Assert.assertEquals(expected, actual); // expected at first with JUnit 4
 org.junit.jupiter.api.Assertions.assertEquals(expected, actual); // expected at first with JUnit 5
 org.testng.AssertJUnit.assertEquals(expected, actual); // expected at first with TestNG
+
 /* Hamcrest */
 org.hamcrest.MatcherAssert.assertThat(actual, org.hamcrest.Matchers.is(expected)); // actual at first with Hamcrest
+
 /* AssertJ */
 org.assertj.core.api.Assertions.assertThat(actual).isEqualTo(expected); // actual at first with AssertJ
 ```
 As a consequence, if both are inverted, the error message will be wrong and will mislead developers before fixing a failing test. The *TestAsYouThink* `resultOf()` leaves no doubt about which is what by making the testing language [ubiquitous](https://martinfowler.com/bliki/UbiquitousLanguage.html).
+
+### Standard streams, standard output & standard error as a result
+
+These features are specially thought to be used in coding dojos by Software Craftsmen. Indeed most of coding dojos simplify the user interface rendering by printing outputs in the console, mainly thanks to `System.out`, and eventually to `System.err`. Thus *TestAsYouThink* can capture the standard streams for you during the test execution.
+
+Now feel free to make your assertions on the standard output streams easily.
+```java
+givenSutClass(SystemUnderTest.class)
+.when(sut -> {
+    // inside a target method that prints some text in stdout
+    System.out.println("Output in stdout");
+})
+.thenStandardOutput(stdout -> assertThat(stdout).contains("Output in stdout"));
+```
 
 # Functional approach of testing
 
