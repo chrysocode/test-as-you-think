@@ -83,7 +83,7 @@ Add *TestAsYouThink* as a dependency to your project with [Maven](https://maven.
 <dependency>
     <groupId>com.github.xapn</groupId>
     <artifactId>test-as-you-think-core</artifactId>
-    <version>0.8-m1</version>
+    <version>0.8</version>
 </dependency>
 ```
 
@@ -483,9 +483,12 @@ To understand how version numbers change, please read the [Semantic Versioning](
 
 ## Release Notes
 
-### 0.8 version: Standard streams as a result
+### 0.8 version: Standard streams as test I/O
 
+- Capture the standard output stream (stdout) to make assertions.
+- Capture the standard error stream (stderr) to make assertions.
 - Capture the standard streams all together (stdout and stderr) to make assertions.
+- Prepare the standard input stream (stdin) as a fixture.
 - Migrate all JUnit tests to the version 5 and build test case trees.
 - Automatically analyze dependencies to fail builds if needed.
 - Open the TestAsYouThink [backlog](https://trello.com/b/EVoCzyHq) by creating a [Trello](https://trello.com) public board.
