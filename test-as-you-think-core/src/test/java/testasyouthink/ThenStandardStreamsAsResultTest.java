@@ -172,9 +172,9 @@ class ThenStandardStreamsAsResultTest {
                             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
                             System.err.println("Standard error stream as a result");
                         })
-                        .thenStandardOutput(stdout -> {
+                        .thenStandardError(stderr -> {
                             gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                            assertThat(stdout).hasContent("Standard error stream as a result");
+                            assertThat(stderr).hasContent("Standard error stream as a result");
                         });
 
                 // THEN
@@ -194,7 +194,6 @@ class ThenStandardStreamsAsResultTest {
 
             @Test
             void should_verify_the_stdout_for_multiple_threads() throws InterruptedException {
-
                 // GIVEN
                 final int numberOfThreads = 10;
                 List<GivenWhenThenDefinition> gwtMocks = IntStream
