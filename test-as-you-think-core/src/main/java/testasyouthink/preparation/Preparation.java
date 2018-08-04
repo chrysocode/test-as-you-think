@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -51,12 +51,12 @@ public class Preparation<$SystemUnderTest> {
     private Supplier<$SystemUnderTest> givenSutStep;
     private Queue<Supplier> argumentSuppliers;
     private $SystemUnderTest systemUnderTest;
-    private boolean stdoutCaptured;
+    private boolean standardStreamsCaptured;
 
     public Preparation() {
         givenSteps = new ArrayDeque<>();
         argumentSuppliers = new LinkedList<>();
-        stdoutCaptured = false;
+        standardStreamsCaptured = false;
     }
 
     public Preparation(Class<$SystemUnderTest> sutClass) {
@@ -126,19 +126,27 @@ public class Preparation<$SystemUnderTest> {
         return this::systemUnderTest;
     }
 
-    public void captureStdout() {
-        if (!stdoutCaptured) {
+    public void captureStandardStreamsSeparately() {
+        if (!standardStreamsCaptured) {
             recordGivenStep(() -> {
-                Path stdoutPath = Files.createTempFile("actual_result", ".txt");
+                Path stdoutPath = Files.createTempFile("stdout_as_actual_result", ".txt");
                 stdoutPath
                         .toFile()
                         .deleteOnExit();
                 StandardRedirection.STDOUT_PATHS.put(currentThread().getId(), stdoutPath);
-                StandardRedirection.STREAMS_TO_FILE.put(currentThread().getId(),
+                StandardRedirection.STDOUT_STREAMS_TO_FILE.put(currentThread().getId(),
                         new PrintStream(stdoutPath.toString()));
+
+                Path stderrPath = Files.createTempFile("stderr_as_actual_result", ".txt");
+                stderrPath
+                        .toFile()
+                        .deleteOnExit();
+                StandardRedirection.STDERR_PATHS.put(currentThread().getId(), stderrPath);
+                StandardRedirection.STDERR_STREAMS_TO_FILE.put(currentThread().getId(),
+                        new PrintStream(stderrPath.toString()));
             });
 
-            stdoutCaptured = true;
+            standardStreamsCaptured = true;
         }
     }
 
@@ -146,10 +154,16 @@ public class Preparation<$SystemUnderTest> {
         return StandardRedirection.STDOUT_PATHS.get(currentThread().getId());
     }
 
+    public Path getStderrPath() {
+        return StandardRedirection.STDERR_PATHS.get(currentThread().getId());
+    }
+
     private static class StandardRedirection {
 
         private static final Map<Long, Path> STDOUT_PATHS;
-        private static final Map<Long, PrintStream> STREAMS_TO_FILE;
+        private static final Map<Long, Path> STDERR_PATHS;
+        private static final Map<Long, PrintStream> STDOUT_STREAMS_TO_FILE;
+        private static final Map<Long, PrintStream> STDERR_STREAMS_TO_FILE;
         private static final PrintStream SYSTEM_OUT;
         private static final PrintStream SYSTEM_ERR;
 
@@ -157,29 +171,46 @@ public class Preparation<$SystemUnderTest> {
             SYSTEM_OUT = System.out;
             SYSTEM_ERR = System.err;
             STDOUT_PATHS = new HashMap<>();
-            STREAMS_TO_FILE = new HashMap<>();
+            STDERR_PATHS = new HashMap<>();
+            STDOUT_STREAMS_TO_FILE = new HashMap<>();
+            STDERR_STREAMS_TO_FILE = new HashMap<>();
 
-            commuteStandardOutputs();
+            commuteStandardStreams();
         }
 
-        private static void commuteStandardOutputs() {
+        private static void commuteStandardStreams() {
             redirectStreamOnce(SYSTEM_OUT, System::setOut);
             redirectStreamOnce(SYSTEM_ERR, System::setErr);
         }
 
         private static void redirectStreamOnce(final PrintStream printStream, Consumer<PrintStream> redirectTo) {
-            PrintStream allInOne = new PrintStream(new OutputStream() {
-                @Override
-                public void write(int b) throws IOException {
-                    printStream.write(b);
-                    if (!STREAMS_TO_FILE.isEmpty()) {
-                        STREAMS_TO_FILE
-                                .get(currentThread().getId())
-                                .write(b);
+            if (printStream == SYSTEM_OUT) {
+                PrintStream allInOne = new PrintStream(new OutputStream() {
+                    @Override
+                    public void write(int b) throws IOException {
+                        printStream.write(b);
+                        if (!STDOUT_STREAMS_TO_FILE.isEmpty()) {
+                            STDOUT_STREAMS_TO_FILE
+                                    .get(currentThread().getId())
+                                    .write(b);
+                        }
                     }
-                }
-            });
-            redirectTo.accept(allInOne);
+                });
+                redirectTo.accept(allInOne);
+            } else if (printStream == SYSTEM_ERR) {
+                PrintStream allInOne = new PrintStream(new OutputStream() {
+                    @Override
+                    public void write(int b) throws IOException {
+                        printStream.write(b);
+                        if (!STDERR_STREAMS_TO_FILE.isEmpty()) {
+                            STDERR_STREAMS_TO_FILE
+                                    .get(currentThread().getId())
+                                    .write(b);
+                        }
+                    }
+                });
+                redirectTo.accept(allInOne);
+            }
         }
     }
 }

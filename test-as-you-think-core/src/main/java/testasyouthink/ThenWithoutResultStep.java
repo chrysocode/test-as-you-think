@@ -129,7 +129,8 @@ public class ThenWithoutResultStep<$SystemUnderTest> implements ThenWithoutResul
     @Override
     public AndThenWithoutResultStandardOutputCaptured<$SystemUnderTest> thenStandardError(
             CheckedConsumer<File> thenStep) {
-        return thenStandardOutput(thenStep);
+        verification.verifyStderr(thenStep);
+        return this;
     }
 
     @Override
