@@ -129,31 +129,11 @@ public class Preparation<$SystemUnderTest> {
 
     public void captureStandardStreamsSeparately() {
         if (!standardStreamsCaptured) {
-            class Redirection {
-
-                private Path path;
-
-                Redirection() throws IOException {
-                    initializeTemporaryPath();
-                }
-
-                private void initializeTemporaryPath() throws IOException {
-                    path = Files.createTempFile("actual_result", ".txt");
-                    path
-                            .toFile()
-                            .deleteOnExit();
-                }
-
-                void storePath(Map<Long, Path> paths, Map<Long, PrintStream> streams) throws FileNotFoundException {
-                    paths.put(currentThread().getId(), path);
-                    streams.put(currentThread().getId(), new PrintStream(path.toString()));
-                }
-            }
             recordGivenStep(() -> {
                 Redirection stdoutRedirection = new Redirection();
-                stdoutRedirection.storePath(Redirections.STDOUT_PATHS, Redirections.STDOUT_STREAMS_TO_FILE);
+                stdoutRedirection.storePath(Redirections.STDOUT_TO_PATHS, Redirections.STDOUT_TO_STREAMS);
                 Redirection stderrRedirection = new Redirection();
-                stderrRedirection.storePath(Redirections.STDERR_PATHS, Redirections.STDERR_STREAMS_TO_FILE);
+                stderrRedirection.storePath(Redirections.STDERR_TO_PATHS, Redirections.STDERR_TO_STREAMS);
             });
 
             standardStreamsCaptured = true;
@@ -161,66 +141,71 @@ public class Preparation<$SystemUnderTest> {
     }
 
     public Path getStdoutPath() {
-        return Redirections.STDOUT_PATHS.get(currentThread().getId());
+        return Redirections.STDOUT_TO_PATHS.get(currentThread().getId());
     }
 
     public Path getStderrPath() {
-        return Redirections.STDERR_PATHS.get(currentThread().getId());
+        return Redirections.STDERR_TO_PATHS.get(currentThread().getId());
+    }
+
+    private static class Redirection {
+
+        private Path path;
+
+        Redirection() throws IOException {
+            initializeTemporaryPath();
+        }
+
+        private void initializeTemporaryPath() throws IOException {
+            path = Files.createTempFile("actual_result", ".txt");
+            path
+                    .toFile()
+                    .deleteOnExit();
+        }
+
+        void storePath(Map<Long, Path> paths, Map<Long, PrintStream> streams) throws FileNotFoundException {
+            paths.put(currentThread().getId(), path);
+            streams.put(currentThread().getId(), new PrintStream(path.toString()));
+        }
     }
 
     private static class Redirections {
 
-        private static final Map<Long, Path> STDOUT_PATHS;
-        private static final Map<Long, Path> STDERR_PATHS;
-        private static final Map<Long, PrintStream> STDOUT_STREAMS_TO_FILE;
-        private static final Map<Long, PrintStream> STDERR_STREAMS_TO_FILE;
+        private static final Map<Long, Path> STDOUT_TO_PATHS;
+        private static final Map<Long, Path> STDERR_TO_PATHS;
+        private static final Map<Long, PrintStream> STDOUT_TO_STREAMS;
+        private static final Map<Long, PrintStream> STDERR_TO_STREAMS;
         private static final PrintStream SYSTEM_OUT;
         private static final PrintStream SYSTEM_ERR;
 
         static {
             SYSTEM_OUT = System.out;
             SYSTEM_ERR = System.err;
-            STDOUT_PATHS = new HashMap<>();
-            STDERR_PATHS = new HashMap<>();
-            STDOUT_STREAMS_TO_FILE = new HashMap<>();
-            STDERR_STREAMS_TO_FILE = new HashMap<>();
+            STDOUT_TO_PATHS = new HashMap<>();
+            STDERR_TO_PATHS = new HashMap<>();
+            STDOUT_TO_STREAMS = new HashMap<>();
+            STDERR_TO_STREAMS = new HashMap<>();
 
-            commuteStandardStreams();
+            commuteStandardStreamsOnce();
         }
 
-        private static void commuteStandardStreams() {
-            redirectStreamOnce(SYSTEM_OUT, System::setOut);
-            redirectStreamOnce(SYSTEM_ERR, System::setErr);
+        private static void commuteStandardStreamsOnce() {
+            System.setOut(allInOne(SYSTEM_OUT, STDOUT_TO_STREAMS));
+            System.setErr(allInOne(SYSTEM_ERR, STDERR_TO_STREAMS));
         }
 
-        private static void redirectStreamOnce(final PrintStream printStream, Consumer<PrintStream> redirectTo) {
-            if (printStream == SYSTEM_OUT) {
-                PrintStream allInOne = new PrintStream(new OutputStream() {
-                    @Override
-                    public void write(int b) throws IOException {
-                        printStream.write(b);
-                        if (!STDOUT_STREAMS_TO_FILE.isEmpty()) {
-                            STDOUT_STREAMS_TO_FILE
-                                    .get(currentThread().getId())
-                                    .write(b);
-                        }
+        private static PrintStream allInOne(PrintStream printStream, Map<Long, PrintStream> threadToStreams) {
+            return new PrintStream(new OutputStream() {
+                @Override
+                public void write(int b) {
+                    printStream.write(b);
+                    if (!threadToStreams.isEmpty()) {
+                        threadToStreams
+                                .get(currentThread().getId())
+                                .write(b);
                     }
-                });
-                redirectTo.accept(allInOne);
-            } else if (printStream == SYSTEM_ERR) {
-                PrintStream allInOne = new PrintStream(new OutputStream() {
-                    @Override
-                    public void write(int b) throws IOException {
-                        printStream.write(b);
-                        if (!STDERR_STREAMS_TO_FILE.isEmpty()) {
-                            STDERR_STREAMS_TO_FILE
-                                    .get(currentThread().getId())
-                                    .write(b);
-                        }
-                    }
-                });
-                redirectTo.accept(allInOne);
-            }
+                }
+            });
         }
     }
 }
