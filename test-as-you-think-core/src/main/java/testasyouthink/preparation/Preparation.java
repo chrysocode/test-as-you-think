@@ -27,6 +27,7 @@ import testasyouthink.function.CheckedRunnable;
 import testasyouthink.function.CheckedSupplier;
 import testasyouthink.function.Functions;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -128,22 +129,31 @@ public class Preparation<$SystemUnderTest> {
 
     public void captureStandardStreamsSeparately() {
         if (!standardStreamsCaptured) {
-            recordGivenStep(() -> {
-                Path stdoutPath = Files.createTempFile("stdout_as_actual_result", ".txt");
-                stdoutPath
-                        .toFile()
-                        .deleteOnExit();
-                StandardRedirection.STDOUT_PATHS.put(currentThread().getId(), stdoutPath);
-                StandardRedirection.STDOUT_STREAMS_TO_FILE.put(currentThread().getId(),
-                        new PrintStream(stdoutPath.toString()));
+            class Redirection {
 
-                Path stderrPath = Files.createTempFile("stderr_as_actual_result", ".txt");
-                stderrPath
-                        .toFile()
-                        .deleteOnExit();
-                StandardRedirection.STDERR_PATHS.put(currentThread().getId(), stderrPath);
-                StandardRedirection.STDERR_STREAMS_TO_FILE.put(currentThread().getId(),
-                        new PrintStream(stderrPath.toString()));
+                private Path path;
+
+                Redirection() throws IOException {
+                    initializeTemporaryPath();
+                }
+
+                private void initializeTemporaryPath() throws IOException {
+                    path = Files.createTempFile("actual_result", ".txt");
+                    path
+                            .toFile()
+                            .deleteOnExit();
+                }
+
+                void storePath(Map<Long, Path> paths, Map<Long, PrintStream> streams) throws FileNotFoundException {
+                    paths.put(currentThread().getId(), path);
+                    streams.put(currentThread().getId(), new PrintStream(path.toString()));
+                }
+            }
+            recordGivenStep(() -> {
+                Redirection stdoutRedirection = new Redirection();
+                stdoutRedirection.storePath(Redirections.STDOUT_PATHS, Redirections.STDOUT_STREAMS_TO_FILE);
+                Redirection stderrRedirection = new Redirection();
+                stderrRedirection.storePath(Redirections.STDERR_PATHS, Redirections.STDERR_STREAMS_TO_FILE);
             });
 
             standardStreamsCaptured = true;
@@ -151,14 +161,14 @@ public class Preparation<$SystemUnderTest> {
     }
 
     public Path getStdoutPath() {
-        return StandardRedirection.STDOUT_PATHS.get(currentThread().getId());
+        return Redirections.STDOUT_PATHS.get(currentThread().getId());
     }
 
     public Path getStderrPath() {
-        return StandardRedirection.STDERR_PATHS.get(currentThread().getId());
+        return Redirections.STDERR_PATHS.get(currentThread().getId());
     }
 
-    private static class StandardRedirection {
+    private static class Redirections {
 
         private static final Map<Long, Path> STDOUT_PATHS;
         private static final Map<Long, Path> STDERR_PATHS;

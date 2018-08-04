@@ -169,13 +169,13 @@ class ThenStandardStreamsAsResultTest {
                 // WHEN
                 givenSutClass(SystemUnderTest.class)
                         .when(sut -> {
-                            gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
                             System.err.println("Standard error stream as a result");
                             System.out.println("Standard output stream");
+                            gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
                         })
                         .thenStandardError(stderr -> {
-                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                             assertThat(stderr).hasContent("Standard error stream as a result");
+                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                         });
 
                 // THEN
