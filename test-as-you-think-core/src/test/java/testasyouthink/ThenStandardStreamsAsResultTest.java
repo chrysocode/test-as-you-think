@@ -281,6 +281,24 @@ class ThenStandardStreamsAsResultTest {
                         .thenTheActualResultIsInKeepingWithTheExpectedResult();
                 inOrder.verifyNoMoreInteractions();
             }
+
+            @Nested
+            class Then_failing_to_verify_stderr {
+
+                @Test
+                void should_fail_to_verify_the_stderr_content() {
+                    // WHEN
+                    Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                            .when(sut -> {})
+                            .thenStandardError(result -> fail("Stderr non-compliant")));
+
+                    // THEN
+                    LOGGER.debug("Stack trace", thrown);
+                    assertThat(thrown)
+                            .isInstanceOf(AssertionError.class)
+                            .hasNoCause();
+                }
+            }
         }
 
         @Nested
