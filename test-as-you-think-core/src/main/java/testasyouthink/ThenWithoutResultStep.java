@@ -23,7 +23,7 @@
 package testasyouthink;
 
 import testasyouthink.GivenWhenThenDsl.VerificationStage.AndThenWithoutResult;
-import testasyouthink.GivenWhenThenDsl.VerificationStage.AndThenWithoutResultStandardOutputCaptured;
+import testasyouthink.GivenWhenThenDsl.VerificationStage.AndThenWithoutResultStandardStreamsCapturedSeparately;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.ThenWithoutResult;
 import testasyouthink.function.CheckedConsumer;
 import testasyouthink.function.CheckedRunnable;
@@ -34,7 +34,8 @@ import java.io.File;
 import java.time.Duration;
 
 public class ThenWithoutResultStep<$SystemUnderTest> implements ThenWithoutResult<$SystemUnderTest>,
-        AndThenWithoutResult<$SystemUnderTest>, AndThenWithoutResultStandardOutputCaptured<$SystemUnderTest> {
+        AndThenWithoutResult<$SystemUnderTest>,
+        AndThenWithoutResultStandardStreamsCapturedSeparately<$SystemUnderTest> {
 
     private final Verification<$SystemUnderTest, Void> verification;
 
@@ -114,39 +115,39 @@ public class ThenWithoutResultStep<$SystemUnderTest> implements ThenWithoutResul
     }
 
     @Override
-    public AndThenWithoutResultStandardOutputCaptured<$SystemUnderTest> thenStandardOutput(
+    public AndThenWithoutResultStandardStreamsCapturedSeparately<$SystemUnderTest> thenStandardOutput(
             CheckedConsumer<File> thenStep) {
         verification.verifyStdout(thenStep);
         return this;
     }
 
     @Override
-    public AndThenWithoutResultStandardOutputCaptured<$SystemUnderTest> thenStandardOutput(
+    public AndThenWithoutResultStandardStreamsCapturedSeparately<$SystemUnderTest> thenStandardOutput(
             String expectationSpecification, CheckedConsumer<File> thenStep) {
         return thenStandardOutput(thenStep);
     }
 
     @Override
-    public AndThenWithoutResultStandardOutputCaptured<$SystemUnderTest> thenStandardError(
+    public AndThenWithoutResultStandardStreamsCapturedSeparately<$SystemUnderTest> thenStandardError(
             CheckedConsumer<File> thenStep) {
         verification.verifyStderr(thenStep);
         return this;
     }
 
     @Override
-    public AndThenWithoutResultStandardOutputCaptured<$SystemUnderTest> andStandardOutput(
+    public AndThenWithoutResultStandardStreamsCapturedSeparately<$SystemUnderTest> andStandardOutput(
             CheckedConsumer<File> thenStep) {
         return thenStandardOutput(thenStep);
     }
 
     @Override
-    public AndThenWithoutResultStandardOutputCaptured<$SystemUnderTest> andStandardError(
+    public AndThenWithoutResultStandardStreamsCapturedSeparately<$SystemUnderTest> andStandardError(
             CheckedConsumer<File> thenStep) {
         return thenStandardError(thenStep);
     }
 
     @Override
-    public AndThenWithoutResultStandardOutputCaptured<$SystemUnderTest> andStandardOutput(
+    public AndThenWithoutResultStandardStreamsCapturedSeparately<$SystemUnderTest> andStandardOutput(
             String expectationSpecification, CheckedConsumer<File> thenStep) {
         return thenStandardOutput(thenStep);
     }

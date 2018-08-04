@@ -256,13 +256,13 @@ public interface GivenWhenThenDsl {
 
             void thenItSucceeds();
 
-            AndThenWithoutResultStandardOutputCaptured<$SystemUnderTest> thenStandardOutput(
+            AndThenWithoutResultStandardStreamsCapturedSeparately<$SystemUnderTest> thenStandardOutput(
                     CheckedConsumer<File> thenStep);
 
-            AndThenWithoutResultStandardOutputCaptured<$SystemUnderTest> thenStandardOutput(
+            AndThenWithoutResultStandardStreamsCapturedSeparately<$SystemUnderTest> thenStandardOutput(
                     String expectationSpecification, CheckedConsumer<File> thenStep);
 
-            AndThenWithoutResultStandardOutputCaptured<$SystemUnderTest> thenStandardError(
+            AndThenWithoutResultStandardStreamsCapturedSeparately<$SystemUnderTest> thenStandardError(
                     CheckedConsumer<File> thenStep);
         }
 
@@ -280,16 +280,16 @@ public interface GivenWhenThenDsl {
             AndThenWithoutResult<$SystemUnderTest> and(CheckedBooleanSupplier thenStep);
         }
 
-        interface AndThenWithoutResultStandardOutputCaptured<$SystemUnderTest> extends
+        interface AndThenWithoutResultStandardStreamsCapturedSeparately<$SystemUnderTest> extends
                 AndThenWithoutResult<$SystemUnderTest> {
 
-            AndThenWithoutResultStandardOutputCaptured<$SystemUnderTest> andStandardOutput(
+            AndThenWithoutResultStandardStreamsCapturedSeparately<$SystemUnderTest> andStandardOutput(
                     CheckedConsumer<File> thenStep);
 
-            AndThenWithoutResultStandardOutputCaptured<$SystemUnderTest> andStandardOutput(
+            AndThenWithoutResultStandardStreamsCapturedSeparately<$SystemUnderTest> andStandardOutput(
                     String expectationSpecification, CheckedConsumer<File> thenStep);
 
-            AndThenWithoutResultStandardOutputCaptured<$SystemUnderTest> andStandardError(
+            AndThenWithoutResultStandardStreamsCapturedSeparately<$SystemUnderTest> andStandardError(
                     CheckedConsumer<File> thenStep);
         }
 

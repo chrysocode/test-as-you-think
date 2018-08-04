@@ -40,6 +40,7 @@ import java.util.stream.IntStream;
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.assertj.core.api.Assertions.fail;
 import static org.assertj.core.api.Assertions.linesOf;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
@@ -67,12 +68,12 @@ class ThenStandardStreamsAsResultTest {
                 // WHEN
                 givenSutClass(SystemUnderTest.class)
                         .when(sut -> {
-                            gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
                             System.out.println("Stdout as a result");
+                            gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
                         })
                         .thenStandardOutput(stdout -> {
-                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                             assertThat(stdout).hasContent("Stdout as a result");
+                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                         });
 
                 // THEN
@@ -94,17 +95,47 @@ class ThenStandardStreamsAsResultTest {
                 // WHEN
                 givenSutClass(SystemUnderTest.class)
                         .when(sut -> {
-                            gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
                             System.out.println("Stdout as a result\nwith 2 lines");
-                            return "expected result";
+                            gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
                         })
                         .thenStandardOutput(stdout -> {
-                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                             assertThat(linesOf(stdout)).hasSize(2);
+                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                         })
                         .andStandardOutput(stdout -> {
-                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                             assertThat(stdout).hasContent("Stdout as a result\nwith 2 lines");
+                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                        });
+
+                // THEN
+                InOrder inOrder = inOrder(gwtMock);
+                inOrder
+                        .verify(gwtMock)
+                        .whenAnEventHappensInRelationToAnActionOfTheConsumer();
+                inOrder
+                        .verify(gwtMock, times(2))
+                        .thenTheActualResultIsInKeepingWithTheExpectedResult();
+                inOrder.verifyNoMoreInteractions();
+            }
+
+            @Test
+            void should_verify_the_stdout_in_2_times_by_specifying_expectations() {
+                // GIVEN
+                GivenWhenThenDefinition gwtMock = mock(GivenWhenThenDefinition.class);
+
+                // WHEN
+                givenSutClass(SystemUnderTest.class)
+                        .when(sut -> {
+                            System.out.println("Stdout as a result\nwith 2 lines");
+                            gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+                        })
+                        .thenStandardOutput("number of lines", stdout -> {
+                            assertThat(linesOf(stdout)).hasSize(2);
+                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                        })
+                        .andStandardOutput("content", stdout -> {
+                            assertThat(stdout).hasContent("Stdout as a result\nwith 2 lines");
+                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                         });
 
                 // THEN
@@ -126,7 +157,7 @@ class ThenStandardStreamsAsResultTest {
                     // WHEN
                     Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                             .when(sut -> {})
-                            .thenStandardOutput(result -> assertThat(true).isFalse()));
+                            .thenStandardOutput(result -> fail("Stdout non-compliant")));
 
                     // THEN
                     LOGGER.debug("Stack trace", thrown);
@@ -362,6 +393,7 @@ class ThenStandardStreamsAsResultTest {
                         .when(sut -> {
                             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
                             System.out.println("Stdout as a result\nwith 2 lines");
+                            return "expected result";
                         })
                         .thenStandardOutput(stdout -> {
                             gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
