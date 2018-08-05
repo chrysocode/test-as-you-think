@@ -389,6 +389,39 @@ class ThenStandardStreamsAsResultTest {
                         .thenTheActualResultIsInKeepingWithTheExpectedResult();
                 inOrder.verifyNoMoreInteractions();
             }
+
+            @Test
+            void should_verify_standard_streams_in_2_times_by_specifying_expectations() {
+                // GIVEN
+                GivenWhenThenDefinition gwtMock = mock(GivenWhenThenDefinition.class);
+
+                // WHEN
+                givenSutClass(SystemUnderTest.class)
+                        .when(sut -> {
+                            System.out.println("Stdout as a result");
+                            System.err.println("Stderr as a result");
+                            gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+                        })
+                        .thenStandardStreams("number of lines", stdstr -> {
+                            assertThat(linesOf(stdstr)).hasSize(2);
+                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                        })
+                        .andStandardStreams("content", stdstr -> {
+                            assertThat(stdstr).hasContent("Stdout as a result\n" //
+                                    + "Stderr as a result");
+                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                        });
+
+                // THEN
+                InOrder inOrder = inOrder(gwtMock);
+                inOrder
+                        .verify(gwtMock)
+                        .whenAnEventHappensInRelationToAnActionOfTheConsumer();
+                inOrder
+                        .verify(gwtMock, times(2))
+                        .thenTheActualResultIsInKeepingWithTheExpectedResult();
+                inOrder.verifyNoMoreInteractions();
+            }
         }
 
         @Nested

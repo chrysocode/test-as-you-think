@@ -150,6 +150,12 @@ public class ThenWithoutResultStep<$SystemUnderTest> implements ThenWithoutResul
     }
 
     @Override
+    public AndThenWithoutResultStandardStreamsCapturedTogether<$SystemUnderTest> thenStandardStreams(
+            String expectationSpecification, CheckedConsumer<File> thenStep) {
+        return thenStandardStreams(thenStep);
+    }
+
+    @Override
     public AndThenWithoutResultStandardStreamsCapturedSeparately<$SystemUnderTest> andStandardOutput(
             CheckedConsumer<File> thenStep) {
         return thenStandardOutput(thenStep);
@@ -177,5 +183,11 @@ public class ThenWithoutResultStep<$SystemUnderTest> implements ThenWithoutResul
     public AndThenWithoutResultStandardStreamsCapturedTogether<$SystemUnderTest> andStandardStreams(
             CheckedConsumer<File> thenStep) {
         return thenStandardStreams(thenStep);
+    }
+
+    @Override
+    public AndThenWithoutResultStandardStreamsCapturedTogether<$SystemUnderTest> andStandardStreams(
+            String expectationSpecification, CheckedConsumer<File> thenStep) {
+        return thenStandardStreams(expectationSpecification, thenStep);
     }
 }
