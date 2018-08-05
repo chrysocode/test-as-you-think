@@ -24,6 +24,7 @@ package testasyouthink;
 
 import testasyouthink.GivenWhenThenDsl.VerificationStage.AndThenWithoutResult;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.AndThenWithoutResultStandardStreamsCapturedSeparately;
+import testasyouthink.GivenWhenThenDsl.VerificationStage.AndThenWithoutResultStandardStreamsCapturedTogether;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.ThenWithoutResult;
 import testasyouthink.function.CheckedConsumer;
 import testasyouthink.function.CheckedRunnable;
@@ -35,7 +36,8 @@ import java.time.Duration;
 
 public class ThenWithoutResultStep<$SystemUnderTest> implements ThenWithoutResult<$SystemUnderTest>,
         AndThenWithoutResult<$SystemUnderTest>,
-        AndThenWithoutResultStandardStreamsCapturedSeparately<$SystemUnderTest> {
+        AndThenWithoutResultStandardStreamsCapturedSeparately<$SystemUnderTest>,
+        AndThenWithoutResultStandardStreamsCapturedTogether<$SystemUnderTest> {
 
     private final Verification<$SystemUnderTest, Void> verification;
 
@@ -141,8 +143,10 @@ public class ThenWithoutResultStep<$SystemUnderTest> implements ThenWithoutResul
     }
 
     @Override
-    public void thenStandardStreams(CheckedConsumer<File> thenStep) {
+    public AndThenWithoutResultStandardStreamsCapturedTogether<$SystemUnderTest> thenStandardStreams(
+            CheckedConsumer<File> thenStep) {
         verification.verifyStandardStreams(thenStep);
+        return this;
     }
 
     @Override
@@ -167,5 +171,11 @@ public class ThenWithoutResultStep<$SystemUnderTest> implements ThenWithoutResul
     public AndThenWithoutResultStandardStreamsCapturedSeparately<$SystemUnderTest> andStandardError(
             String expectationSpecification, CheckedConsumer<File> thenStep) {
         return thenStandardError(expectationSpecification, thenStep);
+    }
+
+    @Override
+    public AndThenWithoutResultStandardStreamsCapturedTogether<$SystemUnderTest> andStandardStreams(
+            CheckedConsumer<File> thenStep) {
+        return thenStandardStreams(thenStep);
     }
 }
