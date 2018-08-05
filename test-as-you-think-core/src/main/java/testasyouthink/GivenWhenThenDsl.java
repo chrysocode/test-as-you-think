@@ -214,6 +214,8 @@ public interface GivenWhenThenDsl {
 
             AndThenStandardOutputCaptured<$SystemUnderTest, $Result> thenStandardOutput(String expectationSpecification,
                     CheckedConsumer<File> thenStep);
+
+            AndThenStandardOutputCaptured<$SystemUnderTest, $Result> thenStandardError(CheckedConsumer<File> thenStep);
         }
 
         interface AndThen<$SystemUnderTest, $Result> {
