@@ -24,7 +24,7 @@ package testasyouthink;
 
 import testasyouthink.GivenWhenThenDsl.VerificationStage.AndThen;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.AndThenFailure;
-import testasyouthink.GivenWhenThenDsl.VerificationStage.AndThenStandardOutputCaptured;
+import testasyouthink.GivenWhenThenDsl.VerificationStage.AndThenStandardStreamsCapturedSeparately;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.Then;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.ThenFailure;
 import testasyouthink.function.CheckedConsumer;
@@ -38,7 +38,7 @@ import java.util.List;
 
 public class ThenStep<$SystemUnderTest, $Result> implements Then<$SystemUnderTest, $Result>,
         AndThen<$SystemUnderTest, $Result>, ThenFailure, AndThenFailure,
-        AndThenStandardOutputCaptured<$SystemUnderTest, $Result> {
+        AndThenStandardStreamsCapturedSeparately<$SystemUnderTest, $Result> {
 
     private Verification<$SystemUnderTest, $Result> verification;
 
@@ -160,48 +160,52 @@ public class ThenStep<$SystemUnderTest, $Result> implements Then<$SystemUnderTes
     }
 
     @Override
-    public AndThenStandardOutputCaptured<$SystemUnderTest, $Result> thenStandardOutput(CheckedConsumer<File> thenStep) {
+    public AndThenStandardStreamsCapturedSeparately<$SystemUnderTest, $Result> thenStandardOutput(
+            CheckedConsumer<File> thenStep) {
         verification.verifyStdout(thenStep);
         return this;
     }
 
     @Override
-    public AndThenStandardOutputCaptured<$SystemUnderTest, $Result> thenStandardOutput(String expectationSpecification,
-            CheckedConsumer<File> thenStep) {
+    public AndThenStandardStreamsCapturedSeparately<$SystemUnderTest, $Result> thenStandardOutput(
+            String expectationSpecification, CheckedConsumer<File> thenStep) {
         return thenStandardOutput(thenStep);
     }
 
     @Override
-    public AndThenStandardOutputCaptured<$SystemUnderTest, $Result> thenStandardError(CheckedConsumer<File> thenStep) {
+    public AndThenStandardStreamsCapturedSeparately<$SystemUnderTest, $Result> thenStandardError(
+            CheckedConsumer<File> thenStep) {
         verification.verifyStderr(thenStep);
         return this;
     }
 
     @Override
-    public AndThenStandardOutputCaptured<$SystemUnderTest, $Result> thenStandardError(String expectationSpecification,
-            CheckedConsumer<File> thenStep) {
+    public AndThenStandardStreamsCapturedSeparately<$SystemUnderTest, $Result> thenStandardError(
+            String expectationSpecification, CheckedConsumer<File> thenStep) {
         return thenStandardError(thenStep);
     }
 
     @Override
-    public AndThenStandardOutputCaptured<$SystemUnderTest, $Result> andStandardOutput(CheckedConsumer<File> thenStep) {
-        return thenStandardOutput(thenStep);
-    }
-
-    @Override
-    public AndThenStandardOutputCaptured<$SystemUnderTest, $Result> andStandardOutput(String expectationSpecification,
+    public AndThenStandardStreamsCapturedSeparately<$SystemUnderTest, $Result> andStandardOutput(
             CheckedConsumer<File> thenStep) {
         return thenStandardOutput(thenStep);
     }
 
     @Override
-    public AndThenStandardOutputCaptured<$SystemUnderTest, $Result> andStandardError(CheckedConsumer<File> thenStep) {
+    public AndThenStandardStreamsCapturedSeparately<$SystemUnderTest, $Result> andStandardOutput(
+            String expectationSpecification, CheckedConsumer<File> thenStep) {
+        return thenStandardOutput(thenStep);
+    }
+
+    @Override
+    public AndThenStandardStreamsCapturedSeparately<$SystemUnderTest, $Result> andStandardError(
+            CheckedConsumer<File> thenStep) {
         return thenStandardError(thenStep);
     }
 
     @Override
-    public AndThenStandardOutputCaptured<$SystemUnderTest, $Result> andStandardError(String expectationSpecification,
-            CheckedConsumer<File> thenStep) {
+    public AndThenStandardStreamsCapturedSeparately<$SystemUnderTest, $Result> andStandardError(
+            String expectationSpecification, CheckedConsumer<File> thenStep) {
         return thenStandardError(expectationSpecification, thenStep);
     }
 }

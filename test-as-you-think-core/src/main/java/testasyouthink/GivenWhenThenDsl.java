@@ -210,15 +210,17 @@ public interface GivenWhenThenDsl {
             void then(CheckedPredicate<$Result> thenStepAboutResult,
                     CheckedPredicate<$SystemUnderTest> thenStepAboutSystemUnderTest);
 
-            AndThenStandardOutputCaptured<$SystemUnderTest, $Result> thenStandardOutput(CheckedConsumer<File> thenStep);
-
-            AndThenStandardOutputCaptured<$SystemUnderTest, $Result> thenStandardOutput(String expectationSpecification,
+            AndThenStandardStreamsCapturedSeparately<$SystemUnderTest, $Result> thenStandardOutput(
                     CheckedConsumer<File> thenStep);
 
-            AndThenStandardOutputCaptured<$SystemUnderTest, $Result> thenStandardError(CheckedConsumer<File> thenStep);
+            AndThenStandardStreamsCapturedSeparately<$SystemUnderTest, $Result> thenStandardOutput(
+                    String expectationSpecification, CheckedConsumer<File> thenStep);
 
-            AndThenStandardOutputCaptured<$SystemUnderTest, $Result> thenStandardError(String expectationSpecification,
+            AndThenStandardStreamsCapturedSeparately<$SystemUnderTest, $Result> thenStandardError(
                     CheckedConsumer<File> thenStep);
+
+            AndThenStandardStreamsCapturedSeparately<$SystemUnderTest, $Result> thenStandardError(
+                    String expectationSpecification, CheckedConsumer<File> thenStep);
         }
 
         interface AndThen<$SystemUnderTest, $Result> {
@@ -234,17 +236,20 @@ public interface GivenWhenThenDsl {
             AndThen<$SystemUnderTest, $Result> and(CheckedPredicate<$Result> thenStep);
         }
 
-        interface AndThenStandardOutputCaptured<$SystemUnderTest, $Result> extends AndThen<$SystemUnderTest, $Result> {
+        interface AndThenStandardStreamsCapturedSeparately<$SystemUnderTest, $Result> extends
+                AndThen<$SystemUnderTest, $Result> {
 
-            AndThenStandardOutputCaptured<$SystemUnderTest, $Result> andStandardOutput(CheckedConsumer<File> thenStep);
-
-            AndThenStandardOutputCaptured<$SystemUnderTest, $Result> andStandardOutput(String expectationSpecification,
+            AndThenStandardStreamsCapturedSeparately<$SystemUnderTest, $Result> andStandardOutput(
                     CheckedConsumer<File> thenStep);
 
-            AndThenStandardOutputCaptured<$SystemUnderTest, $Result> andStandardError(CheckedConsumer<File> thenStep);
+            AndThenStandardStreamsCapturedSeparately<$SystemUnderTest, $Result> andStandardOutput(
+                    String expectationSpecification, CheckedConsumer<File> thenStep);
 
-            AndThenStandardOutputCaptured<$SystemUnderTest, $Result> andStandardError(String expectationSpecification,
+            AndThenStandardStreamsCapturedSeparately<$SystemUnderTest, $Result> andStandardError(
                     CheckedConsumer<File> thenStep);
+
+            AndThenStandardStreamsCapturedSeparately<$SystemUnderTest, $Result> andStandardError(
+                    String expectationSpecification, CheckedConsumer<File> thenStep);
         }
 
         interface ThenWithoutResult<$SystemUnderTest> {
