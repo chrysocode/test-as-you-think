@@ -178,6 +178,12 @@ public class ThenStep<$SystemUnderTest, $Result> implements Then<$SystemUnderTes
     }
 
     @Override
+    public AndThenStandardOutputCaptured<$SystemUnderTest, $Result> thenStandardError(String expectationSpecification,
+            CheckedConsumer<File> thenStep) {
+        return thenStandardError(thenStep);
+    }
+
+    @Override
     public AndThenStandardOutputCaptured<$SystemUnderTest, $Result> andStandardOutput(CheckedConsumer<File> thenStep) {
         return thenStandardOutput(thenStep);
     }
@@ -191,5 +197,11 @@ public class ThenStep<$SystemUnderTest, $Result> implements Then<$SystemUnderTes
     @Override
     public AndThenStandardOutputCaptured<$SystemUnderTest, $Result> andStandardError(CheckedConsumer<File> thenStep) {
         return thenStandardError(thenStep);
+    }
+
+    @Override
+    public AndThenStandardOutputCaptured<$SystemUnderTest, $Result> andStandardError(String expectationSpecification,
+            CheckedConsumer<File> thenStep) {
+        return thenStandardError(expectationSpecification, thenStep);
     }
 }

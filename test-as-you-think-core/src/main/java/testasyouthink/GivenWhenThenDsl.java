@@ -216,6 +216,9 @@ public interface GivenWhenThenDsl {
                     CheckedConsumer<File> thenStep);
 
             AndThenStandardOutputCaptured<$SystemUnderTest, $Result> thenStandardError(CheckedConsumer<File> thenStep);
+
+            AndThenStandardOutputCaptured<$SystemUnderTest, $Result> thenStandardError(String expectationSpecification,
+                    CheckedConsumer<File> thenStep);
         }
 
         interface AndThen<$SystemUnderTest, $Result> {
@@ -239,6 +242,9 @@ public interface GivenWhenThenDsl {
                     CheckedConsumer<File> thenStep);
 
             AndThenStandardOutputCaptured<$SystemUnderTest, $Result> andStandardError(CheckedConsumer<File> thenStep);
+
+            AndThenStandardOutputCaptured<$SystemUnderTest, $Result> andStandardError(String expectationSpecification,
+                    CheckedConsumer<File> thenStep);
         }
 
         interface ThenWithoutResult<$SystemUnderTest> {
