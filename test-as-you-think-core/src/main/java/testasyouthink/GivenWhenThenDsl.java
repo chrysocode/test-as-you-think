@@ -282,6 +282,8 @@ public interface GivenWhenThenDsl {
 
             AndThenWithoutResultStandardStreamsCapturedSeparately<$SystemUnderTest> thenStandardError(
                     String expectationSpecification, CheckedConsumer<File> thenStep);
+
+            void thenStandardStreams(CheckedConsumer<File> thenStep);
         }
 
         interface AndThenWithoutResult<$SystemUnderTest> {

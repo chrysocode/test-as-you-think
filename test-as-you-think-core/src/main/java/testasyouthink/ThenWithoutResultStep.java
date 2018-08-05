@@ -141,6 +141,11 @@ public class ThenWithoutResultStep<$SystemUnderTest> implements ThenWithoutResul
     }
 
     @Override
+    public void thenStandardStreams(CheckedConsumer<File> thenStep) {
+        verification.verifyStandardStreams(thenStep);
+    }
+
+    @Override
     public AndThenWithoutResultStandardStreamsCapturedSeparately<$SystemUnderTest> andStandardOutput(
             CheckedConsumer<File> thenStep) {
         return thenStandardOutput(thenStep);

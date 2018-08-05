@@ -47,6 +47,10 @@ public class GivenWhenContext<$SystemUnderTest, $Result> {
         preparation.captureStandardStreamsSeparately();
     }
 
+    public void captureStandardStreamsTogether() {
+        preparation.captureStandardStreamsTogether();
+    }
+
     public $Result returnResultOrVoid() {
         if (result == null) {
             preparation.prepareFixtures();
@@ -70,6 +74,12 @@ public class GivenWhenContext<$SystemUnderTest, $Result> {
     public File getStderrAsFile() {
         return preparation
                 .getStderrPath()
+                .toFile();
+    }
+
+    public File getStdStreamsAsFile() {
+        return preparation
+                .getStdStreamsPath()
                 .toFile();
     }
 }

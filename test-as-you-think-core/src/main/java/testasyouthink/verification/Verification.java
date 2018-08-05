@@ -149,6 +149,16 @@ public class Verification<$SystemUnderTest, $Result> {
         }
     }
 
+    public void verifyStandardStreams(CheckedConsumer<File> expectations) {
+        context.captureStandardStreamsTogether();
+        context.returnResultOrVoid();
+        try {
+            expectations.accept(context.getStdStreamsAsFile());
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }
+    }
+
     public void verifyFailure() {
         Object result = context.returnResultOrVoid();
         if (result == null) {

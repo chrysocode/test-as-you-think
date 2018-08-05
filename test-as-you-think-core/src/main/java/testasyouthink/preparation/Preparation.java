@@ -140,12 +140,24 @@ public class Preparation<$SystemUnderTest> {
         }
     }
 
+    public void captureStandardStreamsTogether() {
+        recordGivenStep(() -> {
+            Redirection standardStreamsRedirection = new Redirection();
+            standardStreamsRedirection.storePath(Redirections2.STD_STREAMS_TO_PATHS,
+                    Redirections2.STD_STREAMS_TO_STREAMS);
+        });
+    }
+
     public Path getStdoutPath() {
         return Redirections.STDOUT_TO_PATHS.get(currentThread().getId());
     }
 
     public Path getStderrPath() {
         return Redirections.STDERR_TO_PATHS.get(currentThread().getId());
+    }
+
+    public Path getStdStreamsPath() {
+        return Redirections2.STD_STREAMS_TO_PATHS.get(currentThread().getId());
     }
 
     private static class Redirection {
@@ -206,6 +218,48 @@ public class Preparation<$SystemUnderTest> {
                     }
                 }
             });
+        }
+    }
+
+    private static class Redirections2 {
+
+        private static final Map<Long, Path> STD_STREAMS_TO_PATHS;
+        private static final Map<Long, PrintStream> STD_STREAMS_TO_STREAMS;
+        private static final PrintStream SYSTEM_OUT;
+        private static final PrintStream SYSTEM_ERR;
+
+        static {
+            SYSTEM_OUT = System.out;
+            SYSTEM_ERR = System.err;
+            STD_STREAMS_TO_PATHS = new HashMap<>();
+            STD_STREAMS_TO_STREAMS = new HashMap<>();
+
+            commuteStandardStreamsOnce();
+        }
+
+        private static void commuteStandardStreamsOnce() {
+            System.setOut(new PrintStream(new OutputStream() {
+                @Override
+                public void write(int b) {
+                    SYSTEM_OUT.write(b);
+                    if (!STD_STREAMS_TO_STREAMS.isEmpty()) {
+                        STD_STREAMS_TO_STREAMS
+                                .get(currentThread().getId())
+                                .write(b);
+                    }
+                }
+            }));
+            System.setErr(new PrintStream(new OutputStream() {
+                @Override
+                public void write(int b) {
+                    SYSTEM_ERR.write(b);
+                    if (!STD_STREAMS_TO_STREAMS.isEmpty()) {
+                        STD_STREAMS_TO_STREAMS
+                                .get(currentThread().getId())
+                                .write(b);
+                    }
+                }
+            }));
         }
     }
 }
