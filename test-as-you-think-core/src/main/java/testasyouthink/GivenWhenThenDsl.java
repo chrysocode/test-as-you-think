@@ -317,7 +317,8 @@ public interface GivenWhenThenDsl {
                     String expectationSpecification, CheckedConsumer<File> thenStep);
         }
 
-        interface AndThenWithoutResultStandardStreamsCapturedTogether<$SystemUnderTest> {
+        interface AndThenWithoutResultStandardStreamsCapturedTogether<$SystemUnderTest> extends
+                AndThenWithoutResult<$SystemUnderTest> {
 
             AndThenWithoutResultStandardStreamsCapturedTogether<$SystemUnderTest> andStandardStreams(
                     CheckedConsumer<File> thenStep);

@@ -341,7 +341,8 @@ class ThenStandardStreamsAsResultTest {
                             assertThat(stdstr).hasContent("Stdout as a result\n" //
                                     + "Stderr as a result");
                             gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                        });
+                        })
+                        .and(gwtMock::thenTheActualResultIsInKeepingWithTheExpectedResult);
 
                 // THEN
                 InOrder inOrder = inOrder(gwtMock);
@@ -349,7 +350,7 @@ class ThenStandardStreamsAsResultTest {
                         .verify(gwtMock)
                         .whenAnEventHappensInRelationToAnActionOfTheConsumer();
                 inOrder
-                        .verify(gwtMock)
+                        .verify(gwtMock, times(2))
                         .thenTheActualResultIsInKeepingWithTheExpectedResult();
                 inOrder.verifyNoMoreInteractions();
             }
