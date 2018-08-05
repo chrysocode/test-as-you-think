@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -210,10 +210,17 @@ public interface GivenWhenThenDsl {
             void then(CheckedPredicate<$Result> thenStepAboutResult,
                     CheckedPredicate<$SystemUnderTest> thenStepAboutSystemUnderTest);
 
-            AndThenStandardOutputCaptured<$SystemUnderTest, $Result> thenStandardOutput(CheckedConsumer<File> thenStep);
-
-            AndThenStandardOutputCaptured<$SystemUnderTest, $Result> thenStandardOutput(String expectationSpecification,
+            AndThenStandardStreamsCapturedSeparately<$SystemUnderTest, $Result> thenStandardOutput(
                     CheckedConsumer<File> thenStep);
+
+            AndThenStandardStreamsCapturedSeparately<$SystemUnderTest, $Result> thenStandardOutput(
+                    String expectationSpecification, CheckedConsumer<File> thenStep);
+
+            AndThenStandardStreamsCapturedSeparately<$SystemUnderTest, $Result> thenStandardError(
+                    CheckedConsumer<File> thenStep);
+
+            AndThenStandardStreamsCapturedSeparately<$SystemUnderTest, $Result> thenStandardError(
+                    String expectationSpecification, CheckedConsumer<File> thenStep);
         }
 
         interface AndThen<$SystemUnderTest, $Result> {
@@ -229,12 +236,20 @@ public interface GivenWhenThenDsl {
             AndThen<$SystemUnderTest, $Result> and(CheckedPredicate<$Result> thenStep);
         }
 
-        interface AndThenStandardOutputCaptured<$SystemUnderTest, $Result> extends AndThen<$SystemUnderTest, $Result> {
+        interface AndThenStandardStreamsCapturedSeparately<$SystemUnderTest, $Result> extends
+                AndThen<$SystemUnderTest, $Result> {
 
-            AndThenStandardOutputCaptured<$SystemUnderTest, $Result> andStandardOutput(CheckedConsumer<File> thenStep);
-
-            AndThenStandardOutputCaptured<$SystemUnderTest, $Result> andStandardOutput(String expectationSpecification,
+            AndThenStandardStreamsCapturedSeparately<$SystemUnderTest, $Result> andStandardOutput(
                     CheckedConsumer<File> thenStep);
+
+            AndThenStandardStreamsCapturedSeparately<$SystemUnderTest, $Result> andStandardOutput(
+                    String expectationSpecification, CheckedConsumer<File> thenStep);
+
+            AndThenStandardStreamsCapturedSeparately<$SystemUnderTest, $Result> andStandardError(
+                    CheckedConsumer<File> thenStep);
+
+            AndThenStandardStreamsCapturedSeparately<$SystemUnderTest, $Result> andStandardError(
+                    String expectationSpecification, CheckedConsumer<File> thenStep);
         }
 
         interface ThenWithoutResult<$SystemUnderTest> {
@@ -256,10 +271,16 @@ public interface GivenWhenThenDsl {
 
             void thenItSucceeds();
 
-            AndThenWithoutResultStandardOutputCaptured<$SystemUnderTest> thenStandardOutput(
+            AndThenWithoutResultStandardStreamsCapturedSeparately<$SystemUnderTest> thenStandardOutput(
                     CheckedConsumer<File> thenStep);
 
-            AndThenWithoutResultStandardOutputCaptured<$SystemUnderTest> thenStandardOutput(
+            AndThenWithoutResultStandardStreamsCapturedSeparately<$SystemUnderTest> thenStandardOutput(
+                    String expectationSpecification, CheckedConsumer<File> thenStep);
+
+            AndThenWithoutResultStandardStreamsCapturedSeparately<$SystemUnderTest> thenStandardError(
+                    CheckedConsumer<File> thenStep);
+
+            AndThenWithoutResultStandardStreamsCapturedSeparately<$SystemUnderTest> thenStandardError(
                     String expectationSpecification, CheckedConsumer<File> thenStep);
         }
 
@@ -277,13 +298,19 @@ public interface GivenWhenThenDsl {
             AndThenWithoutResult<$SystemUnderTest> and(CheckedBooleanSupplier thenStep);
         }
 
-        interface AndThenWithoutResultStandardOutputCaptured<$SystemUnderTest> extends
+        interface AndThenWithoutResultStandardStreamsCapturedSeparately<$SystemUnderTest> extends
                 AndThenWithoutResult<$SystemUnderTest> {
 
-            AndThenWithoutResultStandardOutputCaptured<$SystemUnderTest> andStandardOutput(
+            AndThenWithoutResultStandardStreamsCapturedSeparately<$SystemUnderTest> andStandardOutput(
                     CheckedConsumer<File> thenStep);
 
-            AndThenWithoutResultStandardOutputCaptured<$SystemUnderTest> andStandardOutput(
+            AndThenWithoutResultStandardStreamsCapturedSeparately<$SystemUnderTest> andStandardOutput(
+                    String expectationSpecification, CheckedConsumer<File> thenStep);
+
+            AndThenWithoutResultStandardStreamsCapturedSeparately<$SystemUnderTest> andStandardError(
+                    CheckedConsumer<File> thenStep);
+
+            AndThenWithoutResultStandardStreamsCapturedSeparately<$SystemUnderTest> andStandardError(
                     String expectationSpecification, CheckedConsumer<File> thenStep);
         }
 

@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -126,7 +126,7 @@ public class Verification<$SystemUnderTest, $Result> {
     }
 
     public void verifyStdout(CheckedConsumer<File> expectations) {
-        context.captureStdout();
+        context.captureStandardStreamsSeparately();
         context.returnResultOrVoid();
         try {
             expectations.accept(context.getStdoutAsFile());
@@ -134,6 +134,18 @@ public class Verification<$SystemUnderTest, $Result> {
             throw assertionError;
         } catch (Throwable throwable) {
             throw new VerificationError("Fails to verify the expectations of the stdout!", throwable);
+        }
+    }
+
+    public void verifyStderr(CheckedConsumer<File> expectations) {
+        context.captureStandardStreamsSeparately();
+        context.returnResultOrVoid();
+        try {
+            expectations.accept(context.getStderrAsFile());
+        } catch (AssertionError assertionError) {
+            throw assertionError;
+        } catch (Throwable throwable) {
+            throw new VerificationError("Fails to verify the expectations of the stderr!", throwable);
         }
     }
 

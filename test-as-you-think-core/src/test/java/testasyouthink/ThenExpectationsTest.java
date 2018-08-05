@@ -38,6 +38,7 @@ import testasyouthink.verification.VerificationError;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.assertj.core.api.Assertions.fail;
 import static org.easymock.EasyMock.verify;
 import static testasyouthink.TestAsYouThink.givenSutClass;
 import static testasyouthink.fixture.GivenWhenThenDefinition.orderedSteps;
@@ -168,7 +169,7 @@ class ThenExpectationsTest {
                     // WHEN
                     thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                             .when(sut -> "result")
-                            .then((CheckedConsumer<String>) result -> assertThat(true).isFalse()));
+                            .then((CheckedConsumer<String>) result -> fail("Wrong result")));
                 }
 
                 @Test
@@ -177,7 +178,7 @@ class ThenExpectationsTest {
                     thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                             .when(sut -> "result")
                             .then(result -> {})
-                            .and((CheckedConsumer<String>) result -> assertThat(true).isFalse()));
+                            .and((CheckedConsumer<String>) result -> fail("Wrong result")));
                 }
 
                 @Test
@@ -185,7 +186,7 @@ class ThenExpectationsTest {
                     // WHEN
                     thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                             .when(sut -> "result")
-                            .then("Expectations", result -> assertThat(true).isFalse()));
+                            .then("Expectations", result -> fail("Wrong result")));
                 }
 
                 @Test
@@ -194,7 +195,7 @@ class ThenExpectationsTest {
                     thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                             .when(sut -> "result")
                             .then(result -> {})
-                            .and("Expectations", result -> assertThat(true).isFalse()));
+                            .and("Expectations", result -> fail("Wrong result")));
                 }
             }
 
@@ -498,7 +499,7 @@ class ThenExpectationsTest {
                     // WHEN
                     thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                             .when(sut -> "result")
-                            .then(() -> assertThat(true).isFalse()));
+                            .then(() -> fail("Wrong result")));
                 }
 
                 @Test
@@ -507,7 +508,7 @@ class ThenExpectationsTest {
                     thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                             .when(sut -> "result")
                             .then(() -> {})
-                            .and(() -> assertThat(true).isFalse()));
+                            .and(() -> fail("Wrong result")));
                 }
 
                 @Test
@@ -515,7 +516,7 @@ class ThenExpectationsTest {
                     // WHEN
                     thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                             .when(sut -> "result")
-                            .then("Expectations", () -> assertThat(true).isFalse()));
+                            .then("Expectations", () -> fail("Wrong result")));
                 }
 
                 @Test
@@ -524,7 +525,7 @@ class ThenExpectationsTest {
                     thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                             .when(sut -> "result")
                             .then("Expectations", () -> {})
-                            .and("Expectations", () -> assertThat(true).isFalse()));
+                            .and("Expectations", () -> fail("Wrong result")));
                 }
             }
 
@@ -666,7 +667,7 @@ class ThenExpectationsTest {
                     // WHEN
                     thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                             .when(sut -> {})
-                            .then(() -> assertThat(true).isFalse()));
+                            .then(() -> fail("Wrong result")));
                 }
 
                 @Test
@@ -675,7 +676,7 @@ class ThenExpectationsTest {
                     thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                             .when(sut -> {})
                             .then(() -> {})
-                            .and(() -> assertThat(true).isFalse()));
+                            .and(() -> fail("Wrong result")));
                 }
 
                 @Test
@@ -683,7 +684,7 @@ class ThenExpectationsTest {
                     // WHEN
                     thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                             .when(sut -> {})
-                            .then("Expectations", () -> assertThat(true).isFalse()));
+                            .then("Expectations", () -> fail("Wrong result")));
                 }
 
                 @Test
@@ -692,7 +693,7 @@ class ThenExpectationsTest {
                     thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                             .when(sut -> {})
                             .then("An expectation", () -> {})
-                            .and("Another expectation", () -> assertThat(true).isFalse()));
+                            .and("Another expectation", () -> fail("Wrong result")));
                 }
             }
 
@@ -811,7 +812,7 @@ class ThenExpectationsTest {
                     // WHEN
                     thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                             .when(sut -> {})
-                            .then(sut -> assertThat(true).isFalse()));
+                            .then(sut -> fail("Wrong result")));
                 }
 
                 @Test
@@ -820,7 +821,7 @@ class ThenExpectationsTest {
                     thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                             .when(sut -> {})
                             .then(sut -> {})
-                            .and(sut -> assertThat(true).isFalse()));
+                            .and(sut -> fail("Wrong result")));
                 }
 
                 @Test
@@ -828,7 +829,7 @@ class ThenExpectationsTest {
                     // WHEN
                     thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                             .when(sut -> {})
-                            .then("Expectations", sut -> assertThat(true).isFalse()));
+                            .then("Expectations", sut -> fail("Wrong result")));
                 }
 
                 @Test
@@ -837,7 +838,7 @@ class ThenExpectationsTest {
                     thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                             .when(sut -> {})
                             .then("An expectation", sut -> {})
-                            .and("Another expectation", sut -> assertThat(true).isFalse()));
+                            .and("Another expectation", sut -> fail("Wrong result")));
                 }
             }
 

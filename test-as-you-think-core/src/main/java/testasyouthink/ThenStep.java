@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -24,7 +24,7 @@ package testasyouthink;
 
 import testasyouthink.GivenWhenThenDsl.VerificationStage.AndThen;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.AndThenFailure;
-import testasyouthink.GivenWhenThenDsl.VerificationStage.AndThenStandardOutputCaptured;
+import testasyouthink.GivenWhenThenDsl.VerificationStage.AndThenStandardStreamsCapturedSeparately;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.Then;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.ThenFailure;
 import testasyouthink.function.CheckedConsumer;
@@ -38,7 +38,7 @@ import java.util.List;
 
 public class ThenStep<$SystemUnderTest, $Result> implements Then<$SystemUnderTest, $Result>,
         AndThen<$SystemUnderTest, $Result>, ThenFailure, AndThenFailure,
-        AndThenStandardOutputCaptured<$SystemUnderTest, $Result> {
+        AndThenStandardStreamsCapturedSeparately<$SystemUnderTest, $Result> {
 
     private Verification<$SystemUnderTest, $Result> verification;
 
@@ -160,25 +160,52 @@ public class ThenStep<$SystemUnderTest, $Result> implements Then<$SystemUnderTes
     }
 
     @Override
-    public AndThenStandardOutputCaptured<$SystemUnderTest, $Result> thenStandardOutput(CheckedConsumer<File> thenStep) {
+    public AndThenStandardStreamsCapturedSeparately<$SystemUnderTest, $Result> thenStandardOutput(
+            CheckedConsumer<File> thenStep) {
         verification.verifyStdout(thenStep);
         return this;
     }
 
     @Override
-    public AndThenStandardOutputCaptured<$SystemUnderTest, $Result> thenStandardOutput(String expectationSpecification,
+    public AndThenStandardStreamsCapturedSeparately<$SystemUnderTest, $Result> thenStandardOutput(
+            String expectationSpecification, CheckedConsumer<File> thenStep) {
+        return thenStandardOutput(thenStep);
+    }
+
+    @Override
+    public AndThenStandardStreamsCapturedSeparately<$SystemUnderTest, $Result> thenStandardError(
+            CheckedConsumer<File> thenStep) {
+        verification.verifyStderr(thenStep);
+        return this;
+    }
+
+    @Override
+    public AndThenStandardStreamsCapturedSeparately<$SystemUnderTest, $Result> thenStandardError(
+            String expectationSpecification, CheckedConsumer<File> thenStep) {
+        return thenStandardError(thenStep);
+    }
+
+    @Override
+    public AndThenStandardStreamsCapturedSeparately<$SystemUnderTest, $Result> andStandardOutput(
             CheckedConsumer<File> thenStep) {
         return thenStandardOutput(thenStep);
     }
 
     @Override
-    public AndThenStandardOutputCaptured<$SystemUnderTest, $Result> andStandardOutput(CheckedConsumer<File> thenStep) {
+    public AndThenStandardStreamsCapturedSeparately<$SystemUnderTest, $Result> andStandardOutput(
+            String expectationSpecification, CheckedConsumer<File> thenStep) {
         return thenStandardOutput(thenStep);
     }
 
     @Override
-    public AndThenStandardOutputCaptured<$SystemUnderTest, $Result> andStandardOutput(String expectationSpecification,
+    public AndThenStandardStreamsCapturedSeparately<$SystemUnderTest, $Result> andStandardError(
             CheckedConsumer<File> thenStep) {
-        return thenStandardOutput(thenStep);
+        return thenStandardError(thenStep);
+    }
+
+    @Override
+    public AndThenStandardStreamsCapturedSeparately<$SystemUnderTest, $Result> andStandardError(
+            String expectationSpecification, CheckedConsumer<File> thenStep) {
+        return thenStandardError(expectationSpecification, thenStep);
     }
 }

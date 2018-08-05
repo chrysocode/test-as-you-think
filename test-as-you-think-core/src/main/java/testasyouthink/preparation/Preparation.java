@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -27,6 +27,7 @@ import testasyouthink.function.CheckedRunnable;
 import testasyouthink.function.CheckedSupplier;
 import testasyouthink.function.Functions;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -51,12 +52,12 @@ public class Preparation<$SystemUnderTest> {
     private Supplier<$SystemUnderTest> givenSutStep;
     private Queue<Supplier> argumentSuppliers;
     private $SystemUnderTest systemUnderTest;
-    private boolean stdoutCaptured;
+    private boolean standardStreamsCaptured;
 
     public Preparation() {
         givenSteps = new ArrayDeque<>();
         argumentSuppliers = new LinkedList<>();
-        stdoutCaptured = false;
+        standardStreamsCaptured = false;
     }
 
     public Preparation(Class<$SystemUnderTest> sutClass) {
@@ -126,60 +127,85 @@ public class Preparation<$SystemUnderTest> {
         return this::systemUnderTest;
     }
 
-    public void captureStdout() {
-        if (!stdoutCaptured) {
+    public void captureStandardStreamsSeparately() {
+        if (!standardStreamsCaptured) {
             recordGivenStep(() -> {
-                Path stdoutPath = Files.createTempFile("actual_result", ".txt");
-                stdoutPath
-                        .toFile()
-                        .deleteOnExit();
-                StandardRedirection.STDOUT_PATHS.put(currentThread().getId(), stdoutPath);
-                StandardRedirection.STREAMS_TO_FILE.put(currentThread().getId(),
-                        new PrintStream(stdoutPath.toString()));
+                Redirection stdoutRedirection = new Redirection();
+                stdoutRedirection.storePath(Redirections.STDOUT_TO_PATHS, Redirections.STDOUT_TO_STREAMS);
+                Redirection stderrRedirection = new Redirection();
+                stderrRedirection.storePath(Redirections.STDERR_TO_PATHS, Redirections.STDERR_TO_STREAMS);
             });
 
-            stdoutCaptured = true;
+            standardStreamsCaptured = true;
         }
     }
 
     public Path getStdoutPath() {
-        return StandardRedirection.STDOUT_PATHS.get(currentThread().getId());
+        return Redirections.STDOUT_TO_PATHS.get(currentThread().getId());
     }
 
-    private static class StandardRedirection {
+    public Path getStderrPath() {
+        return Redirections.STDERR_TO_PATHS.get(currentThread().getId());
+    }
 
-        private static final Map<Long, Path> STDOUT_PATHS;
-        private static final Map<Long, PrintStream> STREAMS_TO_FILE;
+    private static class Redirection {
+
+        private Path path;
+
+        Redirection() throws IOException {
+            initializeTemporaryPath();
+        }
+
+        private void initializeTemporaryPath() throws IOException {
+            path = Files.createTempFile("actual_result", ".txt");
+            path
+                    .toFile()
+                    .deleteOnExit();
+        }
+
+        void storePath(Map<Long, Path> paths, Map<Long, PrintStream> streams) throws FileNotFoundException {
+            paths.put(currentThread().getId(), path);
+            streams.put(currentThread().getId(), new PrintStream(path.toString()));
+        }
+    }
+
+    private static class Redirections {
+
+        private static final Map<Long, Path> STDOUT_TO_PATHS;
+        private static final Map<Long, Path> STDERR_TO_PATHS;
+        private static final Map<Long, PrintStream> STDOUT_TO_STREAMS;
+        private static final Map<Long, PrintStream> STDERR_TO_STREAMS;
         private static final PrintStream SYSTEM_OUT;
         private static final PrintStream SYSTEM_ERR;
 
         static {
             SYSTEM_OUT = System.out;
             SYSTEM_ERR = System.err;
-            STDOUT_PATHS = new HashMap<>();
-            STREAMS_TO_FILE = new HashMap<>();
+            STDOUT_TO_PATHS = new HashMap<>();
+            STDERR_TO_PATHS = new HashMap<>();
+            STDOUT_TO_STREAMS = new HashMap<>();
+            STDERR_TO_STREAMS = new HashMap<>();
 
-            commuteStandardOutputs();
+            commuteStandardStreamsOnce();
         }
 
-        private static void commuteStandardOutputs() {
-            redirectStreamOnce(SYSTEM_OUT, System::setOut);
-            redirectStreamOnce(SYSTEM_ERR, System::setErr);
+        private static void commuteStandardStreamsOnce() {
+            System.setOut(allInOne(SYSTEM_OUT, STDOUT_TO_STREAMS));
+            System.setErr(allInOne(SYSTEM_ERR, STDERR_TO_STREAMS));
         }
 
-        private static void redirectStreamOnce(final PrintStream printStream, Consumer<PrintStream> redirectTo) {
-            PrintStream allInOne = new PrintStream(new OutputStream() {
+        private static PrintStream allInOne(PrintStream printStream, Map<Long, PrintStream> threadToStreams) {
+            return new PrintStream(new OutputStream() {
                 @Override
-                public void write(int b) throws IOException {
+                public void write(int b) {
                     printStream.write(b);
-                    if (!STREAMS_TO_FILE.isEmpty()) {
-                        STREAMS_TO_FILE
+                    if (!threadToStreams.isEmpty()) {
+                        threadToStreams
                                 .get(currentThread().getId())
                                 .write(b);
                     }
                 }
             });
-            redirectTo.accept(allInOne);
         }
     }
 }

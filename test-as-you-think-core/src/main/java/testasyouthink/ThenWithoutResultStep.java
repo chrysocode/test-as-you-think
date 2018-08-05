@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -23,7 +23,7 @@
 package testasyouthink;
 
 import testasyouthink.GivenWhenThenDsl.VerificationStage.AndThenWithoutResult;
-import testasyouthink.GivenWhenThenDsl.VerificationStage.AndThenWithoutResultStandardOutputCaptured;
+import testasyouthink.GivenWhenThenDsl.VerificationStage.AndThenWithoutResultStandardStreamsCapturedSeparately;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.ThenWithoutResult;
 import testasyouthink.function.CheckedConsumer;
 import testasyouthink.function.CheckedRunnable;
@@ -34,7 +34,8 @@ import java.io.File;
 import java.time.Duration;
 
 public class ThenWithoutResultStep<$SystemUnderTest> implements ThenWithoutResult<$SystemUnderTest>,
-        AndThenWithoutResult<$SystemUnderTest>, AndThenWithoutResultStandardOutputCaptured<$SystemUnderTest> {
+        AndThenWithoutResult<$SystemUnderTest>,
+        AndThenWithoutResultStandardStreamsCapturedSeparately<$SystemUnderTest> {
 
     private final Verification<$SystemUnderTest, Void> verification;
 
@@ -114,27 +115,52 @@ public class ThenWithoutResultStep<$SystemUnderTest> implements ThenWithoutResul
     }
 
     @Override
-    public AndThenWithoutResultStandardOutputCaptured<$SystemUnderTest> thenStandardOutput(
+    public AndThenWithoutResultStandardStreamsCapturedSeparately<$SystemUnderTest> thenStandardOutput(
             CheckedConsumer<File> thenStep) {
         verification.verifyStdout(thenStep);
         return this;
     }
 
     @Override
-    public AndThenWithoutResultStandardOutputCaptured<$SystemUnderTest> thenStandardOutput(
+    public AndThenWithoutResultStandardStreamsCapturedSeparately<$SystemUnderTest> thenStandardOutput(
             String expectationSpecification, CheckedConsumer<File> thenStep) {
         return thenStandardOutput(thenStep);
     }
 
     @Override
-    public AndThenWithoutResultStandardOutputCaptured<$SystemUnderTest> andStandardOutput(
+    public AndThenWithoutResultStandardStreamsCapturedSeparately<$SystemUnderTest> thenStandardError(
+            CheckedConsumer<File> thenStep) {
+        verification.verifyStderr(thenStep);
+        return this;
+    }
+
+    @Override
+    public AndThenWithoutResultStandardStreamsCapturedSeparately<$SystemUnderTest> thenStandardError(
+            String expectationSpecification, CheckedConsumer<File> thenStep) {
+        return thenStandardError(thenStep);
+    }
+
+    @Override
+    public AndThenWithoutResultStandardStreamsCapturedSeparately<$SystemUnderTest> andStandardOutput(
             CheckedConsumer<File> thenStep) {
         return thenStandardOutput(thenStep);
     }
 
     @Override
-    public AndThenWithoutResultStandardOutputCaptured<$SystemUnderTest> andStandardOutput(
+    public AndThenWithoutResultStandardStreamsCapturedSeparately<$SystemUnderTest> andStandardOutput(
             String expectationSpecification, CheckedConsumer<File> thenStep) {
         return thenStandardOutput(thenStep);
+    }
+
+    @Override
+    public AndThenWithoutResultStandardStreamsCapturedSeparately<$SystemUnderTest> andStandardError(
+            CheckedConsumer<File> thenStep) {
+        return thenStandardError(thenStep);
+    }
+
+    @Override
+    public AndThenWithoutResultStandardStreamsCapturedSeparately<$SystemUnderTest> andStandardError(
+            String expectationSpecification, CheckedConsumer<File> thenStep) {
+        return thenStandardError(expectationSpecification, thenStep);
     }
 }
