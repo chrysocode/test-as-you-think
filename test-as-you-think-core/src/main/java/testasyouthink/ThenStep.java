@@ -187,4 +187,9 @@ public class ThenStep<$SystemUnderTest, $Result> implements Then<$SystemUnderTes
             CheckedConsumer<File> thenStep) {
         return thenStandardOutput(thenStep);
     }
+
+    @Override
+    public AndThenStandardOutputCaptured<$SystemUnderTest, $Result> andStandardError(CheckedConsumer<File> thenStep) {
+        return thenStandardError(thenStep);
+    }
 }

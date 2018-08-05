@@ -520,6 +520,38 @@ class ThenStandardStreamsAsResultTest {
                         .thenTheActualResultIsInKeepingWithTheExpectedResult();
                 inOrder.verifyNoMoreInteractions();
             }
+
+            @Test
+            void should_verify_the_stderr_in_2_times() {
+                // GIVEN
+                GivenWhenThenDefinition gwtMock = mock(GivenWhenThenDefinition.class);
+
+                // WHEN
+                givenSutClass(SystemUnderTest.class)
+                        .when(sut -> {
+                            System.err.println("Stderr as a result\nwith 2 lines");
+                            gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+                            return "expected result";
+                        })
+                        .thenStandardError(stderr -> {
+                            assertThat(linesOf(stderr)).hasSize(2);
+                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                        })
+                        .andStandardError(stderr -> {
+                            assertThat(stderr).hasContent("Stderr as a result\nwith 2 lines");
+                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                        });
+
+                // THEN
+                InOrder inOrder = inOrder(gwtMock);
+                inOrder
+                        .verify(gwtMock)
+                        .whenAnEventHappensInRelationToAnActionOfTheConsumer();
+                inOrder
+                        .verify(gwtMock, times(2))
+                        .thenTheActualResultIsInKeepingWithTheExpectedResult();
+                inOrder.verifyNoMoreInteractions();
+            }
         }
     }
 }
