@@ -23,20 +23,24 @@
 package testasyouthink;
 
 import testasyouthink.execution.Execution;
+import testasyouthink.function.Memoized;
 import testasyouthink.preparation.Preparation;
 
 import java.io.File;
-import java.util.Optional;
+import java.util.function.Supplier;
 
 public class GivenWhenContext<$SystemUnderTest, $Result> {
 
     private final Preparation<$SystemUnderTest> preparation;
-    private final Execution<$SystemUnderTest, $Result> execution;
-    private Optional<$Result> result;
+    private Supplier<$Result> result;
 
-    GivenWhenContext(Preparation<$SystemUnderTest> preparation, Execution<$SystemUnderTest, $Result> execution) {
+    GivenWhenContext(final Preparation<$SystemUnderTest> preparation,
+            final Execution<$SystemUnderTest, $Result> execution) {
         this.preparation = preparation;
-        this.execution = execution;
+        result = Memoized.of(() -> {
+            preparation.prepareFixtures();
+            return execution.run();
+        });
     }
 
     public void prepareFixturesSeparately() {
@@ -52,11 +56,7 @@ public class GivenWhenContext<$SystemUnderTest, $Result> {
     }
 
     public $Result returnResultOrVoid() {
-        if (result == null) {
-            preparation.prepareFixtures();
-            result = execution.run();
-        }
-        return result.orElse(null);
+        return result.get();
     }
 
     public $SystemUnderTest getSystemUnderTest() {
