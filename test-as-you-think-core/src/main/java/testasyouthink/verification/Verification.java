@@ -32,6 +32,8 @@ import testasyouthink.function.CheckedSuppliers.CheckedBooleanSupplier;
 import java.io.File;
 import java.time.Duration;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Supplier;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -126,15 +128,10 @@ public class Verification<$SystemUnderTest, $Result> {
     }
 
     public void verifyStdout(CheckedConsumer<File> expectations) {
-        context.captureStandardStreamsSeparately();
-        context.returnResultOrVoid();
-        try {
-            expectations.accept(context.getStdoutAsFile());
-        } catch (AssertionError assertionError) {
-            throw assertionError;
-        } catch (Throwable throwable) {
-            throw new VerificationError("Fails to verify the expectations of the stdout!", throwable);
-        }
+        result(context::getStdoutAsFile)
+                .doBefore(context::captureStandardStreamsSeparately)
+                .toVerify(expectations)
+                .orFail("Fails to verify the expectations of the stdout!");
     }
 
     public void verifyStderr(CheckedConsumer<File> expectations) {
@@ -193,6 +190,45 @@ public class Verification<$SystemUnderTest, $Result> {
             assertThatThrownBy(() -> {
                 throw executionError.getCause();
             }).doesNotThrowAnyException();
+        }
+    }
+
+    private <$ActualResult> VerificationBuilder<$ActualResult> result(Supplier<$ActualResult> resultSupplier) {
+        return new VerificationBuilder<>(resultSupplier);
+    }
+
+    private class VerificationBuilder<$ActualResult> {
+
+        private Supplier<$ActualResult> resultSupplier;
+        private Optional<Runnable> beforeVerification;
+        private CheckedConsumer<$ActualResult> expectation;
+
+        private VerificationBuilder(Supplier<$ActualResult> resultSupplier) {
+            this.resultSupplier = resultSupplier;
+            beforeVerification = Optional.empty();
+        }
+
+        VerificationBuilder<$ActualResult> doBefore(Runnable beforeVerification) {
+            this.beforeVerification = Optional.of(beforeVerification);
+            return this;
+        }
+
+        VerificationBuilder<$ActualResult> toVerify(CheckedConsumer<$ActualResult> expectation) {
+            this.expectation = expectation;
+            return this;
+        }
+
+        void orFail(String verificationErrorMessage) {
+            beforeVerification.ifPresent(Runnable::run);
+            context.returnResultOrVoid();
+            $ActualResult result = resultSupplier.get();
+            try {
+                expectation.accept(result);
+            } catch (AssertionError assertionError) {
+                throw assertionError;
+            } catch (Throwable throwable) {
+                throw new VerificationError(verificationErrorMessage, throwable);
+            }
         }
     }
 }
