@@ -119,28 +119,27 @@ public class Verification<$SystemUnderTest, $Result> {
     }
 
     public void verifyFailure() {
-        Object result = context.returnResultOrVoid();
-        if (result == null) {
+        if (actualFailure() == null) {
             throw new AssertionError(MISSING_EXCEPTION);
         } else {
-            assertThat(context.returnResultOrVoid()).isInstanceOf(Throwable.class);
+            assertThat(actualFailure()).isInstanceOf(Throwable.class);
         }
     }
 
     public void verifyFailure(Class<? extends Throwable> expectedFailureClass) {
-        assertThat(context.returnResultOrVoid()).isInstanceOf(expectedFailureClass);
+        assertThat(actualFailure()).isInstanceOf(expectedFailureClass);
     }
 
     public void verifyFailureMessage(String expectedMessage) {
-        assertThat((Throwable) context.returnResultOrVoid()).hasMessage(expectedMessage);
+        assertThat(actualFailure()).hasMessage(expectedMessage);
     }
 
     public void verifyFailureCause(Class<? extends Throwable> expectedCauseClass) {
-        assertThat((Throwable) context.returnResultOrVoid()).hasCauseInstanceOf(expectedCauseClass);
+        assertThat(actualFailure()).hasCauseInstanceOf(expectedCauseClass);
     }
 
     public void verifyFailureCauseMessage(String expectedMessage) {
-        assertThat(((Throwable) context.returnResultOrVoid()).getCause()).hasMessage(expectedMessage);
+        assertThat(actualFailure().getCause()).hasMessage(expectedMessage);
     }
 
     public void verifyNoFailure() {
@@ -159,6 +158,10 @@ public class Verification<$SystemUnderTest, $Result> {
 
     private <$ActualResult> VerificationBuilder<$ActualResult> actualResult(Supplier<$ActualResult> resultSupplier) {
         return new VerificationBuilder<>(resultSupplier);
+    }
+
+    private Throwable actualFailure() {
+        return (Throwable) context.returnResultOrVoid();
     }
 
     private class VerificationBuilder<$ActualResult> {
