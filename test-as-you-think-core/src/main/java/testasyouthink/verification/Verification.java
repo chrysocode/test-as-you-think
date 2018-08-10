@@ -157,7 +157,7 @@ public class Verification<$SystemUnderTest, $Result> {
         } catch (AssertionError assertionError) {
             throw assertionError;
         } catch (Throwable throwable) {
-            throwable.printStackTrace();
+            throw new VerificationError("Fails to verify the expectations of the standard streams!", throwable);
         }
     }
 

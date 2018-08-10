@@ -440,6 +440,27 @@ class ThenStandardStreamsAsResultTest {
                             .hasNoCause();
                 }
             }
+
+            @Nested
+            class Then_failing_because_of_an_unexpected_failure {
+
+                @Test
+                void should_fail_to_verify_the_standard_streams_expectation() {
+                    // WHEN
+                    Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                            .when(sut -> {})
+                            .thenStandardStreams(stdstr -> {
+                                throw new UnexpectedException();
+                            }));
+
+                    // THEN
+                    LOGGER.debug("Stack trace", thrown);
+                    assertThat(thrown)
+                            .isInstanceOf(VerificationError.class)
+                            .hasMessage("Fails to verify the expectations of the standard streams!")
+                            .hasCauseInstanceOf(UnexpectedException.class);
+                }
+            }
         }
 
         @Nested
