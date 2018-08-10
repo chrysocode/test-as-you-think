@@ -31,8 +31,10 @@ import org.slf4j.LoggerFactory;
 import testasyouthink.fixture.GivenWhenThenDefinition;
 import testasyouthink.fixture.SystemUnderTest;
 import testasyouthink.fixture.UnexpectedException;
+import testasyouthink.function.CheckedConsumer;
 import testasyouthink.verification.VerificationError;
 
+import java.io.File;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.stream.IntStream;
@@ -53,6 +55,10 @@ import static testasyouthink.TestAsYouThink.givenSutClass;
 class ThenStandardStreamsAsResultTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ThenStandardStreamsAsResultTest.class);
+
+    private final CheckedConsumer<File> failBecauseOfUnexpectedException = stream -> {
+        throw new UnexpectedException();
+    };
 
     @Nested
     class When_returning_nothing {
@@ -176,9 +182,7 @@ class ThenStandardStreamsAsResultTest {
                     // WHEN
                     Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                             .when(sut -> {})
-                            .thenStandardOutput(stdout -> {
-                                throw new UnexpectedException();
-                            }));
+                            .thenStandardOutput(failBecauseOfUnexpectedException));
 
                     // THEN
                     LOGGER.debug("Stack trace", thrown);
@@ -310,9 +314,7 @@ class ThenStandardStreamsAsResultTest {
                     // WHEN
                     Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                             .when(sut -> {})
-                            .thenStandardError(stderr -> {
-                                throw new UnexpectedException();
-                            }));
+                            .thenStandardError(failBecauseOfUnexpectedException));
 
                     // THEN
                     LOGGER.debug("Stack trace", thrown);
@@ -449,9 +451,7 @@ class ThenStandardStreamsAsResultTest {
                     // WHEN
                     Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                             .when(sut -> {})
-                            .thenStandardStreams(stdstr -> {
-                                throw new UnexpectedException();
-                            }));
+                            .thenStandardStreams(failBecauseOfUnexpectedException));
 
                     // THEN
                     LOGGER.debug("Stack trace", thrown);
