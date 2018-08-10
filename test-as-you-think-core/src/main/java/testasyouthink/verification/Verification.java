@@ -47,70 +47,40 @@ public class Verification<$SystemUnderTest, $Result> {
         this.context = context;
     }
 
-    public void verifyResult(CheckedConsumer<$Result> expectation) {
-        $Result result = context.returnResultOrVoid();
-        try {
-            expectation.accept(result);
-        } catch (AssertionError assertionError) {
-            throw assertionError;
-        } catch (Throwable throwable) {
-            throw new VerificationError("Fails to verify the result expectations!", throwable);
-        }
+    public void verifyResult(final CheckedConsumer<$Result> expectation) {
+        defaultResult()
+                .toVerify(expectation)
+                .orFail("Fails to verify the result expectations!");
     }
 
-    public void verify(CheckedRunnable expectation) {
-        context.returnResultOrVoid();
-        try {
-            expectation.run();
-        } catch (AssertionError assertionError) {
-            throw assertionError;
-        } catch (Throwable throwable) {
-            throw new VerificationError("Fails to verify expectations!", throwable);
-        }
+    public void verify(final CheckedRunnable expectation) {
+        defaultResult()
+                .toVerify(result -> expectation.run())
+                .orFail("Fails to verify expectations!");
     }
 
-    public void verifyResult(CheckedPredicate<$Result> expectation) {
-        $Result result = context.returnResultOrVoid();
-        try {
-            assertThat(expectation.test(result)).isTrue();
-        } catch (AssertionError assertionError) {
-            throw assertionError;
-        } catch (Throwable throwable) {
-            throw new VerificationError("Fails to verify the result expectations!", throwable);
-        }
+    public void verifyResult(final CheckedPredicate<$Result> expectation) {
+        defaultResult()
+                .toVerify(result -> assertThat(expectation.test(result)).isTrue())
+                .orFail("Fails to verify the result expectations!");
     }
 
-    public void verifySut(CheckedPredicate<$SystemUnderTest> expectation) {
-        context.returnResultOrVoid();
-        try {
-            assertThat(expectation.test(context.getSystemUnderTest())).isTrue();
-        } catch (AssertionError assertionError) {
-            throw assertionError;
-        } catch (Throwable throwable) {
-            throw new VerificationError("Fails to verify the expectations of the system under test!", throwable);
-        }
+    public void verifySut(final CheckedPredicate<$SystemUnderTest> expectation) {
+        actualResult(context::getSystemUnderTest)
+                .toVerify(result -> assertThat(expectation.test(context.getSystemUnderTest())).isTrue())
+                .orFail("Fails to verify the expectations of the system under test!");
     }
 
-    public void verifySut(CheckedConsumer<$SystemUnderTest> expectation) {
-        context.returnResultOrVoid();
-        try {
-            expectation.accept(context.getSystemUnderTest());
-        } catch (AssertionError assertionError) {
-            throw assertionError;
-        } catch (Throwable throwable) {
-            throw new VerificationError("Fails to verify the expectations of the system under test!", throwable);
-        }
+    public void verifySut(final CheckedConsumer<$SystemUnderTest> expectation) {
+        actualResult(context::getSystemUnderTest)
+                .toVerify(expectation)
+                .orFail("Fails to verify the expectations of the system under test!");
     }
 
-    public void verify(CheckedBooleanSupplier expectation) {
-        context.returnResultOrVoid();
-        try {
-            assertThat(expectation.get()).isTrue();
-        } catch (AssertionError assertionError) {
-            throw assertionError;
-        } catch (Throwable throwable) {
-            throw new VerificationError("Fails to verify expectations!", throwable);
-        }
+    public void verify(final CheckedBooleanSupplier expectation) {
+        defaultResult()
+                .toVerify(result -> assertThat(expectation.get()).isTrue())
+                .orFail("Fails to verify expectations!");
     }
 
     public void verifyResult(List<CheckedPredicate<$Result>> expectations) {
@@ -127,35 +97,25 @@ public class Verification<$SystemUnderTest, $Result> {
                 .spendsAtMost(durationLimit);
     }
 
-    public void verifyStdout(CheckedConsumer<File> expectations) {
-        result(context::getStdoutAsFile)
+    public void verifyStdout(final CheckedConsumer<File> expectation) {
+        actualResult(context::getStdoutAsFile)
                 .doBefore(context::captureStandardStreamsSeparately)
-                .toVerify(expectations)
+                .toVerify(expectation)
                 .orFail("Fails to verify the expectations of the stdout!");
     }
 
-    public void verifyStderr(CheckedConsumer<File> expectations) {
-        context.captureStandardStreamsSeparately();
-        context.returnResultOrVoid();
-        try {
-            expectations.accept(context.getStderrAsFile());
-        } catch (AssertionError assertionError) {
-            throw assertionError;
-        } catch (Throwable throwable) {
-            throw new VerificationError("Fails to verify the expectations of the stderr!", throwable);
-        }
+    public void verifyStderr(final CheckedConsumer<File> expectation) {
+        actualResult(context::getStderrAsFile)
+                .doBefore(context::captureStandardStreamsSeparately)
+                .toVerify(expectation)
+                .orFail("Fails to verify the expectations of the stderr!");
     }
 
-    public void verifyStandardStreams(CheckedConsumer<File> expectations) {
-        context.captureStandardStreamsTogether();
-        context.returnResultOrVoid();
-        try {
-            expectations.accept(context.getStdStreamsAsFile());
-        } catch (AssertionError assertionError) {
-            throw assertionError;
-        } catch (Throwable throwable) {
-            throw new VerificationError("Fails to verify the expectations of the standard streams!", throwable);
-        }
+    public void verifyStandardStreams(final CheckedConsumer<File> expectation) {
+        actualResult(context::getStdStreamsAsFile)
+                .doBefore(context::captureStandardStreamsTogether)
+                .toVerify(expectation)
+                .orFail("Fails to verify the expectations of the standard streams!");
     }
 
     public void verifyFailure() {
@@ -193,13 +153,17 @@ public class Verification<$SystemUnderTest, $Result> {
         }
     }
 
-    private <$ActualResult> VerificationBuilder<$ActualResult> result(Supplier<$ActualResult> resultSupplier) {
+    private VerificationBuilder<$Result> defaultResult() {
+        return new VerificationBuilder<>(context::returnResultOrVoid);
+    }
+
+    private <$ActualResult> VerificationBuilder<$ActualResult> actualResult(Supplier<$ActualResult> resultSupplier) {
         return new VerificationBuilder<>(resultSupplier);
     }
 
     private class VerificationBuilder<$ActualResult> {
 
-        private Supplier<$ActualResult> resultSupplier;
+        private final Supplier<$ActualResult> resultSupplier;
         private Optional<Runnable> beforeVerification;
         private CheckedConsumer<$ActualResult> expectation;
 
