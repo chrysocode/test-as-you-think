@@ -221,6 +221,9 @@ public interface GivenWhenThenDsl {
 
             AndThenStandardStreamsCapturedSeparately<$SystemUnderTest, $Result> thenStandardError(
                     String expectationSpecification, CheckedConsumer<File> thenStep);
+
+            AndThenStandardStreamsCapturedTogether<$SystemUnderTest, $Result> thenStandardStreams(
+                    CheckedConsumer<File> thenStep);
         }
 
         interface AndThen<$SystemUnderTest, $Result> {
@@ -251,6 +254,9 @@ public interface GivenWhenThenDsl {
             AndThenStandardStreamsCapturedSeparately<$SystemUnderTest, $Result> andStandardError(
                     String expectationSpecification, CheckedConsumer<File> thenStep);
         }
+
+        interface AndThenStandardStreamsCapturedTogether<$SystemUnderTest, $Result> extends AndThen<$SystemUnderTest,
+                $Result> {}
 
         interface ThenWithoutResult<$SystemUnderTest> {
 

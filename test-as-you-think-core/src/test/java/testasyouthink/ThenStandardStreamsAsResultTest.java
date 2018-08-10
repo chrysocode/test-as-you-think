@@ -726,5 +726,42 @@ class ThenStandardStreamsAsResultTest {
                 inOrder.verifyNoMoreInteractions();
             }
         }
+
+        @Nested
+        class Then_verifying_standard_streams_together {
+
+            @Test
+            void should_verify_standard_streams() {
+                // GIVEN
+                GivenWhenThenDefinition gwtMock = mock(GivenWhenThenDefinition.class);
+
+                // WHEN
+                givenSutClass(SystemUnderTest.class)
+                        .when(sut -> {
+                            System.out.println("Stdout as a result");
+                            System.err.println("Stderr as a result");
+                            gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+                            return "expected result";
+                        })
+                        .thenStandardStreams(stdstr -> {
+                            assertThat(stdstr).hasContent("Stdout as a result\n" //
+                                    + "Stderr as a result");
+                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                        })
+                        .and(result -> {
+                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                        });
+
+                // THEN
+                InOrder inOrder = inOrder(gwtMock);
+                inOrder
+                        .verify(gwtMock)
+                        .whenAnEventHappensInRelationToAnActionOfTheConsumer();
+                inOrder
+                        .verify(gwtMock, times(2))
+                        .thenTheActualResultIsInKeepingWithTheExpectedResult();
+                inOrder.verifyNoMoreInteractions();
+            }
+        }
     }
 }
