@@ -40,7 +40,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class Verification<$SystemUnderTest, $Result> {
 
-    private static final String MISSING_EXCEPTION = "Expecting a failure, but it was missing.";
     private final GivenWhenContext<$SystemUnderTest, $Result> context;
 
     public Verification(GivenWhenContext<$SystemUnderTest, $Result> context) {
@@ -49,37 +48,37 @@ public class Verification<$SystemUnderTest, $Result> {
 
     public void verifyResult(final CheckedConsumer<$Result> expectation) {
         defaultResult()
-                .toVerify(expectation)
+                .expectToSatisfy(expectation)
                 .orFail("Fails to verify the result expectations!");
     }
 
     public void verify(final CheckedRunnable expectation) {
         defaultResult()
-                .toVerify(result -> expectation.run())
+                .expectToSatisfy(result -> expectation.run())
                 .orFail("Fails to verify expectations!");
     }
 
     public void verifyResult(final CheckedPredicate<$Result> expectation) {
         defaultResult()
-                .toVerify(result -> assertThat(expectation.test(result)).isTrue())
+                .expectToSatisfy(result -> assertThat(expectation.test(result)).isTrue())
                 .orFail("Fails to verify the result expectations!");
     }
 
     public void verifySut(final CheckedPredicate<$SystemUnderTest> expectation) {
         actualResult(context::getSystemUnderTest)
-                .toVerify(result -> assertThat(expectation.test(context.getSystemUnderTest())).isTrue())
+                .expectToSatisfy(result -> assertThat(expectation.test(context.getSystemUnderTest())).isTrue())
                 .orFail("Fails to verify the expectations of the system under test!");
     }
 
     public void verifySut(final CheckedConsumer<$SystemUnderTest> expectation) {
         actualResult(context::getSystemUnderTest)
-                .toVerify(expectation)
+                .expectToSatisfy(expectation)
                 .orFail("Fails to verify the expectations of the system under test!");
     }
 
     public void verify(final CheckedBooleanSupplier expectation) {
         defaultResult()
-                .toVerify(result -> assertThat(expectation.get()).isTrue())
+                .expectToSatisfy(result -> assertThat(expectation.get()).isTrue())
                 .orFail("Fails to verify expectations!");
     }
 
@@ -99,28 +98,28 @@ public class Verification<$SystemUnderTest, $Result> {
 
     public void verifyStdout(final CheckedConsumer<File> expectation) {
         actualResult(context::getStdoutAsFile)
-                .doBefore(context::captureStandardStreamsSeparately)
-                .toVerify(expectation)
+                .toDoBefore(context::captureStandardStreamsSeparately)
+                .expectToSatisfy(expectation)
                 .orFail("Fails to verify the expectations of the stdout!");
     }
 
     public void verifyStderr(final CheckedConsumer<File> expectation) {
         actualResult(context::getStderrAsFile)
-                .doBefore(context::captureStandardStreamsSeparately)
-                .toVerify(expectation)
+                .toDoBefore(context::captureStandardStreamsSeparately)
+                .expectToSatisfy(expectation)
                 .orFail("Fails to verify the expectations of the stderr!");
     }
 
     public void verifyStandardStreams(final CheckedConsumer<File> expectation) {
         actualResult(context::getStdStreamsAsFile)
-                .doBefore(context::captureStandardStreamsTogether)
-                .toVerify(expectation)
+                .toDoBefore(context::captureStandardStreamsTogether)
+                .expectToSatisfy(expectation)
                 .orFail("Fails to verify the expectations of the standard streams!");
     }
 
     public void verifyFailure() {
         if (actualFailure() == null) {
-            throw new AssertionError(MISSING_EXCEPTION);
+            throw new AssertionError("Expecting a failure, but it was missing.");
         } else {
             assertThat(actualFailure()).isInstanceOf(Throwable.class);
         }
@@ -169,23 +168,29 @@ public class Verification<$SystemUnderTest, $Result> {
         private final Supplier<$ActualResult> resultSupplier;
         private Optional<Runnable> beforeVerification;
         private CheckedConsumer<$ActualResult> expectation;
+        private String verificationErrorMessage;
 
         private VerificationBuilder(Supplier<$ActualResult> resultSupplier) {
             this.resultSupplier = resultSupplier;
             beforeVerification = Optional.empty();
         }
 
-        VerificationBuilder<$ActualResult> doBefore(Runnable beforeVerification) {
+        VerificationBuilder<$ActualResult> toDoBefore(Runnable beforeVerification) {
             this.beforeVerification = Optional.of(beforeVerification);
             return this;
         }
 
-        VerificationBuilder<$ActualResult> toVerify(CheckedConsumer<$ActualResult> expectation) {
+        VerificationBuilder<$ActualResult> expectToSatisfy(CheckedConsumer<$ActualResult> expectation) {
             this.expectation = expectation;
             return this;
         }
 
         void orFail(String verificationErrorMessage) {
+            this.verificationErrorMessage = verificationErrorMessage;
+            verify();
+        }
+
+        private void verify() {
             beforeVerification.ifPresent(Runnable::run);
             context.returnResultOrVoid();
             $ActualResult result = resultSupplier.get();
