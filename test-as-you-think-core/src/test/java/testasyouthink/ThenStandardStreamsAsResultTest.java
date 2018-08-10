@@ -422,6 +422,24 @@ class ThenStandardStreamsAsResultTest {
                         .thenTheActualResultIsInKeepingWithTheExpectedResult();
                 inOrder.verifyNoMoreInteractions();
             }
+
+            @Nested
+            class Then_failing_to_verify_stdout {
+
+                @Test
+                void should_fail_to_verify_the_standard_streams_content() {
+                    // WHEN
+                    Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                            .when(sut -> {})
+                            .thenStandardStreams(stdstr -> fail("Standard streams non-compliant")));
+
+                    // THEN
+                    LOGGER.debug("Stack trace", thrown);
+                    assertThat(thrown)
+                            .isInstanceOf(AssertionError.class)
+                            .hasNoCause();
+                }
+            }
         }
 
         @Nested

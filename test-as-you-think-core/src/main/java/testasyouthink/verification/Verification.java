@@ -154,6 +154,8 @@ public class Verification<$SystemUnderTest, $Result> {
         context.returnResultOrVoid();
         try {
             expectations.accept(context.getStdStreamsAsFile());
+        } catch (AssertionError assertionError) {
+            throw assertionError;
         } catch (Throwable throwable) {
             throwable.printStackTrace();
         }
