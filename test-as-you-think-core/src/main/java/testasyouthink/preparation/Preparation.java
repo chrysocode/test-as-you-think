@@ -27,7 +27,6 @@ import testasyouthink.function.CheckedRunnable;
 import testasyouthink.function.CheckedSupplier;
 import testasyouthink.function.Functions;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -42,6 +41,9 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import static java.lang.Thread.currentThread;
+import static testasyouthink.preparation.Preparation.Redirections.THREAD_TO_REDIRECTIONS;
+import static testasyouthink.preparation.Preparation.Redirections.redirectionsCapturingStandardStreamsSeparately;
+import static testasyouthink.preparation.Preparation.Redirections.redirectionsCapturingStandardStreamsTogether;
 
 public class Preparation<$SystemUnderTest> {
 
@@ -129,40 +131,82 @@ public class Preparation<$SystemUnderTest> {
 
     public void captureStandardStreamsSeparately() {
         if (!standardStreamsCaptured) {
-            recordGivenStep(() -> {
-                Redirection stdoutRedirection = new Redirection();
-                stdoutRedirection.storePath(Redirections.STDOUT_TO_PATHS, Redirections.STDOUT_TO_STREAMS);
-                Redirection stderrRedirection = new Redirection();
-                stderrRedirection.storePath(Redirections.STDERR_TO_PATHS, Redirections.STDERR_TO_STREAMS);
-            });
-
+            recordGivenStep(() -> redirectionsCapturingStandardStreamsSeparately().storeIn(THREAD_TO_REDIRECTIONS));
             standardStreamsCaptured = true;
         }
     }
 
     public void captureStandardStreamsTogether() {
-        recordGivenStep(() -> {
-            Redirection standardStreamsRedirection = new Redirection();
-            standardStreamsRedirection.storePath(Redirections2.STD_STREAMS_TO_PATHS,
-                    Redirections2.STD_STREAMS_TO_STREAMS);
-        });
+        if (!standardStreamsCaptured) {
+            recordGivenStep(() -> redirectionsCapturingStandardStreamsTogether().storeIn(THREAD_TO_REDIRECTIONS));
+            standardStreamsCaptured = true;
+        }
     }
 
     public Path getStdoutPath() {
-        return Redirections.STDOUT_TO_PATHS.get(currentThread().getId());
+        return THREAD_TO_REDIRECTIONS.get(currentThread().getId()).stdoutRedirection.path;
     }
 
     public Path getStderrPath() {
-        return Redirections.STDERR_TO_PATHS.get(currentThread().getId());
+        return THREAD_TO_REDIRECTIONS.get(currentThread().getId()).stderrRedirection.path;
     }
 
     public Path getStdStreamsPath() {
-        return Redirections2.STD_STREAMS_TO_PATHS.get(currentThread().getId());
+        return THREAD_TO_REDIRECTIONS
+                .get(currentThread().getId())
+                .oneRedirection().path;
+    }
+
+    static class Redirections {
+
+        static final Map<Long, DoubleRedirection> THREAD_TO_REDIRECTIONS;
+        private static final PrintStream SYSTEM_OUT;
+        private static final PrintStream SYSTEM_ERR;
+
+        static {
+            SYSTEM_OUT = System.out;
+            SYSTEM_ERR = System.err;
+            THREAD_TO_REDIRECTIONS = new HashMap<>();
+
+            commuteStandardStreamsOnce();
+        }
+
+        private static void commuteStandardStreamsOnce() {
+            System.setOut(new PrintStream(new OutputStream() {
+                @Override
+                public void write(int b) {
+                    SYSTEM_OUT.write(b);
+                    if (!THREAD_TO_REDIRECTIONS.isEmpty()) {
+                        THREAD_TO_REDIRECTIONS.get(currentThread().getId()).stdoutRedirection.write(b);
+                    }
+                }
+            }));
+            System.setErr(new PrintStream(new OutputStream() {
+                @Override
+                public void write(int b) {
+                    SYSTEM_ERR.write(b);
+                    if (!THREAD_TO_REDIRECTIONS.isEmpty()) {
+                        THREAD_TO_REDIRECTIONS.get(currentThread().getId()).stderrRedirection.write(b);
+                    }
+                }
+            }));
+        }
+
+        static DoubleRedirection redirectionsCapturingStandardStreamsSeparately() throws IOException {
+            Redirection stdoutRedirection = new Redirection();
+            Redirection stderrRedirection = new Redirection();
+            return new DoubleRedirection(stdoutRedirection, stderrRedirection);
+        }
+
+        static DoubleRedirection redirectionsCapturingStandardStreamsTogether() throws IOException {
+            return new DoubleRedirection(new Redirection());
+        }
     }
 
     private static class Redirection {
 
         private Path path;
+        private PrintStream stream;
 
         Redirection() throws IOException {
             initializeTemporaryPath();
@@ -173,93 +217,34 @@ public class Preparation<$SystemUnderTest> {
             path
                     .toFile()
                     .deleteOnExit();
+            stream = new PrintStream(path.toString());
         }
 
-        void storePath(Map<Long, Path> paths, Map<Long, PrintStream> streams) throws FileNotFoundException {
-            paths.put(currentThread().getId(), path);
-            streams.put(currentThread().getId(), new PrintStream(path.toString()));
-        }
-    }
-
-    private static class Redirections {
-
-        private static final Map<Long, Path> STDOUT_TO_PATHS;
-        private static final Map<Long, Path> STDERR_TO_PATHS;
-        private static final Map<Long, PrintStream> STDOUT_TO_STREAMS;
-        private static final Map<Long, PrintStream> STDERR_TO_STREAMS;
-        private static final PrintStream SYSTEM_OUT;
-        private static final PrintStream SYSTEM_ERR;
-
-        static {
-            SYSTEM_OUT = System.out;
-            SYSTEM_ERR = System.err;
-            STDOUT_TO_PATHS = new HashMap<>();
-            STDERR_TO_PATHS = new HashMap<>();
-            STDOUT_TO_STREAMS = new HashMap<>();
-            STDERR_TO_STREAMS = new HashMap<>();
-
-            commuteStandardStreamsOnce();
-        }
-
-        private static void commuteStandardStreamsOnce() {
-            System.setOut(allInOne(SYSTEM_OUT, STDOUT_TO_STREAMS));
-            System.setErr(allInOne(SYSTEM_ERR, STDERR_TO_STREAMS));
-        }
-
-        private static PrintStream allInOne(PrintStream printStream, Map<Long, PrintStream> threadToStreams) {
-            return new PrintStream(new OutputStream() {
-                @Override
-                public void write(int b) {
-                    printStream.write(b);
-                    if (!threadToStreams.isEmpty()) {
-                        threadToStreams
-                                .get(currentThread().getId())
-                                .write(b);
-                    }
-                }
-            });
+        void write(int b) {
+            stream.write(b);
         }
     }
 
-    private static class Redirections2 {
+    private static class DoubleRedirection {
 
-        private static final Map<Long, Path> STD_STREAMS_TO_PATHS;
-        private static final Map<Long, PrintStream> STD_STREAMS_TO_STREAMS;
-        private static final PrintStream SYSTEM_OUT;
-        private static final PrintStream SYSTEM_ERR;
+        private Redirection stdoutRedirection;
+        private Redirection stderrRedirection;
 
-        static {
-            SYSTEM_OUT = System.out;
-            SYSTEM_ERR = System.err;
-            STD_STREAMS_TO_PATHS = new HashMap<>();
-            STD_STREAMS_TO_STREAMS = new HashMap<>();
-
-            commuteStandardStreamsOnce();
+        DoubleRedirection(Redirection stdoutRedirection, Redirection stderrRedirection) {
+            this.stdoutRedirection = stdoutRedirection;
+            this.stderrRedirection = stderrRedirection;
         }
 
-        private static void commuteStandardStreamsOnce() {
-            System.setOut(new PrintStream(new OutputStream() {
-                @Override
-                public void write(int b) {
-                    SYSTEM_OUT.write(b);
-                    if (!STD_STREAMS_TO_STREAMS.isEmpty()) {
-                        STD_STREAMS_TO_STREAMS
-                                .get(currentThread().getId())
-                                .write(b);
-                    }
-                }
-            }));
-            System.setErr(new PrintStream(new OutputStream() {
-                @Override
-                public void write(int b) {
-                    SYSTEM_ERR.write(b);
-                    if (!STD_STREAMS_TO_STREAMS.isEmpty()) {
-                        STD_STREAMS_TO_STREAMS
-                                .get(currentThread().getId())
-                                .write(b);
-                    }
-                }
-            }));
+        DoubleRedirection(Redirection sameRedirectionForBoth) {
+            this(sameRedirectionForBoth, sameRedirectionForBoth);
+        }
+
+        void storeIn(Map<Long, DoubleRedirection> threadToRedirections) {
+            threadToRedirections.put(currentThread().getId(), this);
+        }
+
+        Redirection oneRedirection() {
+            return stdoutRedirection;
         }
     }
 }
