@@ -256,7 +256,11 @@ public interface GivenWhenThenDsl {
         }
 
         interface AndThenStandardStreamsCapturedTogether<$SystemUnderTest, $Result> extends AndThen<$SystemUnderTest,
-                $Result> {}
+                $Result> {
+
+            AndThenStandardStreamsCapturedTogether<$SystemUnderTest, $Result> andStandardStreams(
+                    CheckedConsumer<File> thenStep);
+        }
 
         interface ThenWithoutResult<$SystemUnderTest> {
 

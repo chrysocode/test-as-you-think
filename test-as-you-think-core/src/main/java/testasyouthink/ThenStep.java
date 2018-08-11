@@ -217,4 +217,10 @@ public class ThenStep<$SystemUnderTest, $Result> implements Then<$SystemUnderTes
             String expectationSpecification, CheckedConsumer<File> thenStep) {
         return thenStandardError(expectationSpecification, thenStep);
     }
+
+    @Override
+    public AndThenStandardStreamsCapturedTogether<$SystemUnderTest, $Result> andStandardStreams(
+            CheckedConsumer<File> thenStep) {
+        return thenStandardStreams(thenStep);
+    }
 }
