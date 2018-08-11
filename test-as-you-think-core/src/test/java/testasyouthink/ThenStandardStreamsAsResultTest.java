@@ -363,7 +363,7 @@ class ThenStandardStreamsAsResultTest {
             }
 
             @Nested
-            class Then_failing_to_verify_stdout {
+            class Then_failing_to_verify_standard_streams {
 
                 @Test
                 void should_fail_to_verify_the_standard_streams_content() {
@@ -663,6 +663,43 @@ class ThenStandardStreamsAsResultTest {
 
                 // THEN
                 whenOnceThenTwice();
+            }
+
+            @Nested
+            class Then_failing_to_verify_standard_streams {
+
+                @Test
+                void should_fail_to_verify_the_standard_streams_content() {
+                    // WHEN
+                    Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                            .when(sut -> EXPECTED_RESULT)
+                            .thenStandardStreams(steps.failingBecauseOfAssertion));
+
+                    // THEN
+                    LOGGER.debug("Stack trace", thrown);
+                    assertThat(thrown)
+                            .isInstanceOf(AssertionError.class)
+                            .hasNoCause();
+                }
+            }
+
+            @Nested
+            class Then_failing_because_of_an_unexpected_failure {
+
+                @Test
+                void should_fail_to_verify_the_standard_streams_expectation() {
+                    // WHEN
+                    Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                            .when(sut -> EXPECTED_RESULT)
+                            .thenStandardStreams(steps.failingBecauseOfUnexpectedException));
+
+                    // THEN
+                    LOGGER.debug("Stack trace", thrown);
+                    assertThat(thrown)
+                            .isInstanceOf(VerificationError.class)
+                            .hasMessage("Fails to verify the expectations of the standard streams!")
+                            .hasCauseInstanceOf(UnexpectedException.class);
+                }
             }
         }
     }
