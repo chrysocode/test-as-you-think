@@ -400,6 +400,46 @@ class ThenStandardStreamsAsResultTest {
         }
 
         @Nested
+        class Then_verifying_standard_stream_separately {
+
+            @Test
+            void should_verify_stdout_then_stderr() {
+                // WHEN
+                givenSutClass(SystemUnderTest.class)
+                        .when(printingOnBoth)
+                        .thenStandardOutput(stdout -> {
+                            assertThat(stdout).hasContent(PRINTED_ON_STDOUT);
+                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                        })
+                        .andStandardError(stderr -> {
+                            assertThat(stderr).hasContent(PRINTED_ON_STDERR);
+                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                        });
+
+                // THEN
+                whenOnceThenTwice();
+            }
+
+            @Test
+            void should_verify_stderr_then_stdout() {
+                // WHEN
+                givenSutClass(SystemUnderTest.class)
+                        .when(printingOnBoth)
+                        .thenStandardError(stderr -> {
+                            assertThat(stderr).hasContent(PRINTED_ON_STDERR);
+                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                        })
+                        .andStandardOutput(stdout -> {
+                            assertThat(stdout).hasContent(PRINTED_ON_STDOUT);
+                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                        });
+
+                // THEN
+                whenOnceThenTwice();
+            }
+        }
+
+        @Nested
         class Given_multiple_threads {
 
             @Test
@@ -689,6 +729,46 @@ class ThenStandardStreamsAsResultTest {
                             .hasMessage("Fails to verify the expectations of the standard streams!")
                             .hasCauseInstanceOf(UnexpectedException.class);
                 }
+            }
+        }
+
+        @Nested
+        class Then_verifying_standard_stream_separately {
+
+            @Test
+            void should_verify_stdout_then_stderr() {
+                // WHEN
+                givenSutClass(SystemUnderTest.class)
+                        .when(printingOnBoth)
+                        .thenStandardOutput(stdout -> {
+                            assertThat(stdout).hasContent(PRINTED_ON_STDOUT);
+                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                        })
+                        .andStandardError(stderr -> {
+                            assertThat(stderr).hasContent(PRINTED_ON_STDERR);
+                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                        });
+
+                // THEN
+                whenOnceThenTwice();
+            }
+
+            @Test
+            void should_verify_stderr_then_stdout() {
+                // WHEN
+                givenSutClass(SystemUnderTest.class)
+                        .when(printingOnBoth)
+                        .thenStandardError(stderr -> {
+                            assertThat(stderr).hasContent(PRINTED_ON_STDERR);
+                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                        })
+                        .andStandardOutput(stdout -> {
+                            assertThat(stdout).hasContent(PRINTED_ON_STDOUT);
+                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                        });
+
+                // THEN
+                whenOnceThenTwice();
             }
         }
     }
