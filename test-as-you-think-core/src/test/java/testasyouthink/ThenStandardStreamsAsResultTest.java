@@ -39,7 +39,6 @@ import testasyouthink.verification.VerificationError;
 import java.io.File;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.IntStream;
 
@@ -97,9 +96,19 @@ class ThenStandardStreamsAsResultTest {
 
     class Steps {
 
-        final CheckedConsumer<File> failingBecauseOfAssertion = stream -> fail("Standard stream non-compliant");
+        final Function<String, CheckedConsumer<File>> succeedingAtVerifyingStream = printed -> file -> {
+            assertThat(file).hasContent(printed);
+            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+        };
 
-        final CheckedConsumer<File> failingBecauseOfUnexpectedException = stream -> {
+        final CheckedConsumer<File> succeedingAtVerifyingNumberOfLines = stdout -> {
+            assertThat(linesOf(stdout)).hasSize(2);
+            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+        };
+
+        final CheckedConsumer<File> failingBecauseOfAssertion = file -> fail("Standard stream non-compliant");
+
+        final CheckedConsumer<File> failingBecauseOfUnexpectedException = file -> {
             throw new UnexpectedException();
         };
     }
@@ -107,12 +116,12 @@ class ThenStandardStreamsAsResultTest {
     @Nested
     class When_returning_nothing {
 
-        final Consumer<String> printingOnStdout = toPrintOnStdout -> {
+        final Function<String, CheckedConsumer<SystemUnderTest>> printingOnStdout = toPrintOnStdout -> sut -> {
             System.out.println(toPrintOnStdout);
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
         };
 
-        final Consumer<String> printingOnStderr = toPrintOnStderr -> {
+        final Function<String, CheckedConsumer<SystemUnderTest>> printingOnStderr = toPrintOnStderr -> sut -> {
             System.err.println(toPrintOnStderr);
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
         };
@@ -130,11 +139,8 @@ class ThenStandardStreamsAsResultTest {
             void should_verify_the_stdout() {
                 // WHEN
                 givenSutClass(SystemUnderTest.class)
-                        .whenSutRuns(sut -> printingOnStdout.accept(PRINTED_ON_STDOUT))
-                        .thenStandardOutput(stdout -> {
-                            assertThat(stdout).hasContent(PRINTED_ON_STDOUT);
-                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                        })
+                        .when(printingOnStdout.apply(PRINTED_ON_STDOUT))
+                        .thenStandardOutput(steps.succeedingAtVerifyingStream.apply(PRINTED_ON_STDOUT))
                         .and(gwtMock::thenTheActualResultIsInKeepingWithTheExpectedResult);
 
                 // THEN
@@ -145,15 +151,9 @@ class ThenStandardStreamsAsResultTest {
             void should_verify_the_stdout_in_2_times() {
                 // WHEN
                 givenSutClass(SystemUnderTest.class)
-                        .whenSutRuns(sut -> printingOnStdout.accept(PRINTED_ON_STDOUT_WITH_2_LINES))
-                        .thenStandardOutput(stdout -> {
-                            assertThat(linesOf(stdout)).hasSize(2);
-                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                        })
-                        .andStandardOutput(stdout -> {
-                            assertThat(stdout).hasContent(PRINTED_ON_STDOUT_WITH_2_LINES);
-                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                        });
+                        .when(printingOnStdout.apply(PRINTED_ON_STDOUT_WITH_2_LINES))
+                        .thenStandardOutput(steps.succeedingAtVerifyingNumberOfLines)
+                        .andStandardOutput(steps.succeedingAtVerifyingStream.apply(PRINTED_ON_STDOUT_WITH_2_LINES));
 
                 // THEN
                 whenOnceThenTwice();
@@ -163,11 +163,8 @@ class ThenStandardStreamsAsResultTest {
             void should_verify_the_stdout_in_2_times_by_specifying_expectations() {
                 // WHEN
                 givenSutClass(SystemUnderTest.class)
-                        .whenSutRuns(sut -> printingOnStdout.accept(PRINTED_ON_STDOUT_WITH_2_LINES))
-                        .thenStandardOutput("number of lines", stdout -> {
-                            assertThat(linesOf(stdout)).hasSize(2);
-                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                        })
+                        .when(printingOnStdout.apply(PRINTED_ON_STDOUT_WITH_2_LINES))
+                        .thenStandardOutput("number of lines", steps.succeedingAtVerifyingNumberOfLines)
                         .andStandardOutput("content", stdout -> {
                             assertThat(stdout).hasContent(PRINTED_ON_STDOUT_WITH_2_LINES);
                             gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
@@ -222,11 +219,8 @@ class ThenStandardStreamsAsResultTest {
             void should_verify_the_stderr() {
                 // WHEN
                 givenSutClass(SystemUnderTest.class)
-                        .whenSutRuns(sut -> printingOnStderr.accept(PRINTED_ON_STDERR))
-                        .thenStandardError(stderr -> {
-                            assertThat(stderr).hasContent(PRINTED_ON_STDERR);
-                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                        })
+                        .when(printingOnStderr.apply(PRINTED_ON_STDERR))
+                        .thenStandardError(steps.succeedingAtVerifyingStream.apply(PRINTED_ON_STDERR))
                         .and(gwtMock::thenTheActualResultIsInKeepingWithTheExpectedResult);
 
                 // THEN
@@ -237,15 +231,9 @@ class ThenStandardStreamsAsResultTest {
             void should_verify_the_stderr_in_2_times() {
                 // WHEN
                 givenSutClass(SystemUnderTest.class)
-                        .whenSutRuns(sut -> printingOnStderr.accept(PRINTED_ON_STDERR_WITH_2_LINES))
-                        .thenStandardError(stderr -> {
-                            assertThat(linesOf(stderr)).hasSize(2);
-                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                        })
-                        .andStandardError(stderr -> {
-                            assertThat(stderr).hasContent(PRINTED_ON_STDERR_WITH_2_LINES);
-                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                        });
+                        .when(printingOnStderr.apply(PRINTED_ON_STDERR_WITH_2_LINES))
+                        .thenStandardError(steps.succeedingAtVerifyingNumberOfLines)
+                        .andStandardError(steps.succeedingAtVerifyingStream.apply(PRINTED_ON_STDERR_WITH_2_LINES));
 
                 // THEN
                 whenOnceThenTwice();
@@ -255,15 +243,10 @@ class ThenStandardStreamsAsResultTest {
             void should_verify_the_stderr_in_2_times_by_specifying_expectations() {
                 // WHEN
                 givenSutClass(SystemUnderTest.class)
-                        .whenSutRuns(sut -> printingOnStderr.accept(PRINTED_ON_STDERR_WITH_2_LINES))
-                        .thenStandardError("number of lines", stderr -> {
-                            assertThat(linesOf(stderr)).hasSize(2);
-                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                        })
-                        .andStandardError("content", stderr -> {
-                            assertThat(stderr).hasContent(PRINTED_ON_STDERR_WITH_2_LINES);
-                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                        });
+                        .when(printingOnStderr.apply(PRINTED_ON_STDERR_WITH_2_LINES))
+                        .thenStandardError("number of lines", steps.succeedingAtVerifyingNumberOfLines)
+                        .andStandardError("content",
+                                steps.succeedingAtVerifyingStream.apply(PRINTED_ON_STDERR_WITH_2_LINES));
 
                 // THEN
                 whenOnceThenTwice();
@@ -315,10 +298,7 @@ class ThenStandardStreamsAsResultTest {
                 // WHEN
                 givenSutClass(SystemUnderTest.class)
                         .when(printingOnBoth)
-                        .thenStandardStreams(stdstr -> {
-                            assertThat(stdstr).hasContent(PRINTED_ON_BOTH);
-                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                        })
+                        .thenStandardStreams(steps.succeedingAtVerifyingStream.apply(PRINTED_ON_BOTH))
                         .and(gwtMock::thenTheActualResultIsInKeepingWithTheExpectedResult);
 
                 // THEN
@@ -330,14 +310,8 @@ class ThenStandardStreamsAsResultTest {
                 // WHEN
                 givenSutClass(SystemUnderTest.class)
                         .when(printingOnBoth)
-                        .thenStandardStreams(stdstr -> {
-                            assertThat(linesOf(stdstr)).hasSize(2);
-                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                        })
-                        .andStandardStreams(stdstr -> {
-                            assertThat(stdstr).hasContent(PRINTED_ON_BOTH);
-                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                        });
+                        .thenStandardStreams(steps.succeedingAtVerifyingNumberOfLines)
+                        .andStandardStreams(steps.succeedingAtVerifyingStream.apply(PRINTED_ON_BOTH));
 
                 // THEN
                 whenOnceThenTwice();
@@ -348,14 +322,8 @@ class ThenStandardStreamsAsResultTest {
                 // WHEN
                 givenSutClass(SystemUnderTest.class)
                         .when(printingOnBoth)
-                        .thenStandardStreams("number of lines", stdstr -> {
-                            assertThat(linesOf(stdstr)).hasSize(2);
-                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                        })
-                        .andStandardStreams("content", stdstr -> {
-                            assertThat(stdstr).hasContent(PRINTED_ON_BOTH);
-                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                        });
+                        .thenStandardStreams("number of lines", steps.succeedingAtVerifyingNumberOfLines)
+                        .andStandardStreams("content", steps.succeedingAtVerifyingStream.apply(PRINTED_ON_BOTH));
 
                 // THEN
                 whenOnceThenTwice();
@@ -407,14 +375,8 @@ class ThenStandardStreamsAsResultTest {
                 // WHEN
                 givenSutClass(SystemUnderTest.class)
                         .when(printingOnBoth)
-                        .thenStandardOutput(stdout -> {
-                            assertThat(stdout).hasContent(PRINTED_ON_STDOUT);
-                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                        })
-                        .andStandardError(stderr -> {
-                            assertThat(stderr).hasContent(PRINTED_ON_STDERR);
-                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                        });
+                        .thenStandardOutput(steps.succeedingAtVerifyingStream.apply(PRINTED_ON_STDOUT))
+                        .andStandardError(steps.succeedingAtVerifyingStream.apply(PRINTED_ON_STDERR));
 
                 // THEN
                 whenOnceThenTwice();
@@ -425,14 +387,8 @@ class ThenStandardStreamsAsResultTest {
                 // WHEN
                 givenSutClass(SystemUnderTest.class)
                         .when(printingOnBoth)
-                        .thenStandardError(stderr -> {
-                            assertThat(stderr).hasContent(PRINTED_ON_STDERR);
-                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                        })
-                        .andStandardOutput(stdout -> {
-                            assertThat(stdout).hasContent(PRINTED_ON_STDOUT);
-                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                        });
+                        .thenStandardError(steps.succeedingAtVerifyingStream.apply(PRINTED_ON_STDERR))
+                        .andStandardOutput(steps.succeedingAtVerifyingStream.apply(PRINTED_ON_STDOUT));
 
                 // THEN
                 whenOnceThenTwice();
@@ -503,13 +459,13 @@ class ThenStandardStreamsAsResultTest {
     @Nested
     class When_returning_a_result {
 
-        final Function<String, String> printingOnStdout = toPrintOnStdout -> {
+        final Function<String, CheckedFunction<SystemUnderTest, String>> printingOnStdout = toPrintOnStdout -> sut -> {
             System.out.println(toPrintOnStdout);
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
             return EXPECTED_RESULT;
         };
 
-        final Function<String, String> printingOnStderr = toPrintOnStderr -> {
+        final Function<String, CheckedFunction<SystemUnderTest, String>> printingOnStderr = toPrintOnStderr -> sut -> {
             System.err.println(toPrintOnStderr);
             gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
             return EXPECTED_RESULT;
@@ -522,6 +478,11 @@ class ThenStandardStreamsAsResultTest {
             return EXPECTED_RESULT;
         };
 
+        CheckedConsumer<String> succeedingAtVerifyingResult = result -> {
+            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+            assertThat(result).isEqualTo(EXPECTED_RESULT);
+        };
+
         @Nested
         class Then_verifying_the_stdout {
 
@@ -529,15 +490,9 @@ class ThenStandardStreamsAsResultTest {
             void should_verify_the_stdout_and_the_result() {
                 // WHEN
                 givenSutClass(SystemUnderTest.class)
-                        .whenSutReturns(sut -> printingOnStdout.apply(PRINTED_ON_STDOUT))
-                        .thenStandardOutput(stdout -> {
-                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                            assertThat(stdout).hasContent(PRINTED_ON_STDOUT);
-                        })
-                        .and(result -> {
-                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                            assertThat(result).isEqualTo(EXPECTED_RESULT);
-                        });
+                        .when(printingOnStdout.apply(PRINTED_ON_STDOUT))
+                        .thenStandardOutput(steps.succeedingAtVerifyingStream.apply(PRINTED_ON_STDOUT))
+                        .and(succeedingAtVerifyingResult);
 
                 // THEN
                 whenOnceThenTwice();
@@ -547,15 +502,10 @@ class ThenStandardStreamsAsResultTest {
             void should_verify_the_stdout_in_2_times_by_specifying_expectations() {
                 // WHEN
                 givenSutClass(SystemUnderTest.class)
-                        .whenSutReturns(sut -> printingOnStdout.apply(PRINTED_ON_STDOUT_WITH_2_LINES))
-                        .thenStandardOutput("number of lines", stdout -> {
-                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                            assertThat(linesOf(stdout)).hasSize(2);
-                        })
-                        .andStandardOutput("content", stdout -> {
-                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                            assertThat(stdout).hasContent(PRINTED_ON_STDOUT_WITH_2_LINES);
-                        });
+                        .when(printingOnStdout.apply(PRINTED_ON_STDOUT_WITH_2_LINES))
+                        .thenStandardOutput("number of lines", steps.succeedingAtVerifyingNumberOfLines)
+                        .andStandardOutput("content",
+                                steps.succeedingAtVerifyingStream.apply(PRINTED_ON_STDOUT_WITH_2_LINES));
 
                 // THEN
                 whenOnceThenTwice();
@@ -565,15 +515,9 @@ class ThenStandardStreamsAsResultTest {
             void should_verify_the_stdout_in_2_times() {
                 // WHEN
                 givenSutClass(SystemUnderTest.class)
-                        .whenSutReturns(sut -> printingOnStdout.apply(PRINTED_ON_STDOUT_WITH_2_LINES))
-                        .thenStandardOutput(stdout -> {
-                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                            assertThat(linesOf(stdout)).hasSize(2);
-                        })
-                        .andStandardOutput(stdout -> {
-                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                            assertThat(stdout).hasContent(PRINTED_ON_STDOUT_WITH_2_LINES);
-                        });
+                        .when(printingOnStdout.apply(PRINTED_ON_STDOUT_WITH_2_LINES))
+                        .thenStandardOutput(steps.succeedingAtVerifyingNumberOfLines)
+                        .andStandardOutput(steps.succeedingAtVerifyingStream.apply(PRINTED_ON_STDOUT_WITH_2_LINES));
 
                 // THEN
                 whenOnceThenTwice();
@@ -587,15 +531,9 @@ class ThenStandardStreamsAsResultTest {
             void should_verify_the_stderr_and_the_result() {
                 // WHEN
                 givenSutClass(SystemUnderTest.class)
-                        .whenSutReturns(sut -> printingOnStderr.apply(PRINTED_ON_STDERR))
-                        .thenStandardError(stderr -> {
-                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                            assertThat(stderr).hasContent(PRINTED_ON_STDERR);
-                        })
-                        .and(result -> {
-                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                            assertThat(result).isEqualTo(EXPECTED_RESULT);
-                        });
+                        .when(printingOnStderr.apply(PRINTED_ON_STDERR))
+                        .thenStandardError(steps.succeedingAtVerifyingStream.apply(PRINTED_ON_STDERR))
+                        .and(succeedingAtVerifyingResult);
 
                 // THEN
                 whenOnceThenTwice();
@@ -605,15 +543,9 @@ class ThenStandardStreamsAsResultTest {
             void should_verify_the_stderr_in_2_times() {
                 // WHEN
                 givenSutClass(SystemUnderTest.class)
-                        .whenSutReturns(sut -> printingOnStderr.apply(PRINTED_ON_STDERR_WITH_2_LINES))
-                        .thenStandardError(stderr -> {
-                            assertThat(linesOf(stderr)).hasSize(2);
-                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                        })
-                        .andStandardError(stderr -> {
-                            assertThat(stderr).hasContent(PRINTED_ON_STDERR_WITH_2_LINES);
-                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                        });
+                        .when(printingOnStderr.apply(PRINTED_ON_STDERR_WITH_2_LINES))
+                        .thenStandardError(steps.succeedingAtVerifyingNumberOfLines)
+                        .andStandardError(steps.succeedingAtVerifyingStream.apply(PRINTED_ON_STDERR_WITH_2_LINES));
 
                 // THEN
                 whenOnceThenTwice();
@@ -623,15 +555,10 @@ class ThenStandardStreamsAsResultTest {
             void should_verify_the_stderr_in_2_times_by_specifying_expectations() {
                 // WHEN
                 givenSutClass(SystemUnderTest.class)
-                        .whenSutReturns(sut -> printingOnStderr.apply(PRINTED_ON_STDERR_WITH_2_LINES))
-                        .thenStandardError("number of lines", stderr -> {
-                            assertThat(linesOf(stderr)).hasSize(2);
-                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                        })
-                        .andStandardError("content", stderr -> {
-                            assertThat(stderr).hasContent(PRINTED_ON_STDERR_WITH_2_LINES);
-                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                        });
+                        .when(printingOnStderr.apply(PRINTED_ON_STDERR_WITH_2_LINES))
+                        .thenStandardError("number of lines", steps.succeedingAtVerifyingNumberOfLines)
+                        .andStandardError("content",
+                                steps.succeedingAtVerifyingStream.apply(PRINTED_ON_STDERR_WITH_2_LINES));
 
                 // THEN
                 whenOnceThenTwice();
@@ -646,13 +573,8 @@ class ThenStandardStreamsAsResultTest {
                 // WHEN
                 givenSutClass(SystemUnderTest.class)
                         .when(printingOnBoth)
-                        .thenStandardStreams(stdstr -> {
-                            assertThat(stdstr).hasContent(PRINTED_ON_BOTH);
-                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                        })
-                        .and(result -> {
-                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                        });
+                        .thenStandardStreams(steps.succeedingAtVerifyingStream.apply(PRINTED_ON_BOTH))
+                        .and(succeedingAtVerifyingResult);
 
                 // THEN
                 whenOnceThenTwice();
@@ -663,14 +585,8 @@ class ThenStandardStreamsAsResultTest {
                 // WHEN
                 givenSutClass(SystemUnderTest.class)
                         .when(printingOnBoth)
-                        .thenStandardStreams(stdstr -> {
-                            assertThat(linesOf(stdstr)).hasSize(2);
-                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                        })
-                        .andStandardStreams(stdstr -> {
-                            assertThat(stdstr).hasContent(PRINTED_ON_BOTH);
-                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                        });
+                        .thenStandardStreams(steps.succeedingAtVerifyingNumberOfLines)
+                        .andStandardStreams(steps.succeedingAtVerifyingStream.apply(PRINTED_ON_BOTH));
 
                 // THEN
                 whenOnceThenTwice();
@@ -681,14 +597,8 @@ class ThenStandardStreamsAsResultTest {
                 // WHEN
                 givenSutClass(SystemUnderTest.class)
                         .when(printingOnBoth)
-                        .thenStandardStreams("number of lines", stdstr -> {
-                            assertThat(linesOf(stdstr)).hasSize(2);
-                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                        })
-                        .andStandardStreams("content", stdstr -> {
-                            assertThat(stdstr).hasContent(PRINTED_ON_BOTH);
-                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                        });
+                        .thenStandardStreams("number of lines", steps.succeedingAtVerifyingNumberOfLines)
+                        .andStandardStreams("content", steps.succeedingAtVerifyingStream.apply(PRINTED_ON_BOTH));
 
                 // THEN
                 whenOnceThenTwice();
@@ -740,14 +650,8 @@ class ThenStandardStreamsAsResultTest {
                 // WHEN
                 givenSutClass(SystemUnderTest.class)
                         .when(printingOnBoth)
-                        .thenStandardOutput(stdout -> {
-                            assertThat(stdout).hasContent(PRINTED_ON_STDOUT);
-                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                        })
-                        .andStandardError(stderr -> {
-                            assertThat(stderr).hasContent(PRINTED_ON_STDERR);
-                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                        });
+                        .thenStandardOutput(steps.succeedingAtVerifyingStream.apply(PRINTED_ON_STDOUT))
+                        .andStandardError(steps.succeedingAtVerifyingStream.apply(PRINTED_ON_STDERR));
 
                 // THEN
                 whenOnceThenTwice();
@@ -758,14 +662,8 @@ class ThenStandardStreamsAsResultTest {
                 // WHEN
                 givenSutClass(SystemUnderTest.class)
                         .when(printingOnBoth)
-                        .thenStandardError(stderr -> {
-                            assertThat(stderr).hasContent(PRINTED_ON_STDERR);
-                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                        })
-                        .andStandardOutput(stdout -> {
-                            assertThat(stdout).hasContent(PRINTED_ON_STDOUT);
-                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                        });
+                        .thenStandardError(steps.succeedingAtVerifyingStream.apply(PRINTED_ON_STDERR))
+                        .andStandardOutput(steps.succeedingAtVerifyingStream.apply(PRINTED_ON_STDOUT));
 
                 // THEN
                 whenOnceThenTwice();
