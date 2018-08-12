@@ -23,6 +23,7 @@
 package testasyouthink;
 
 import org.assertj.core.api.SoftAssertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
@@ -31,10 +32,14 @@ import org.slf4j.LoggerFactory;
 import testasyouthink.fixture.GivenWhenThenDefinition;
 import testasyouthink.fixture.SystemUnderTest;
 import testasyouthink.fixture.UnexpectedException;
+import testasyouthink.function.CheckedConsumer;
+import testasyouthink.function.CheckedFunction;
 import testasyouthink.verification.VerificationError;
 
+import java.io.File;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
+import java.util.function.Function;
 import java.util.stream.IntStream;
 
 import static java.util.stream.Collectors.toList;
@@ -46,6 +51,12 @@ import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static testasyouthink.TestAsYouThink.givenSutClass;
+import static testasyouthink.ThenStandardStreamsAsResultTest.GivenData.EXPECTED_RESULT;
+import static testasyouthink.ThenStandardStreamsAsResultTest.GivenData.PRINTED_ON_BOTH;
+import static testasyouthink.ThenStandardStreamsAsResultTest.GivenData.PRINTED_ON_STDERR;
+import static testasyouthink.ThenStandardStreamsAsResultTest.GivenData.PRINTED_ON_STDERR_WITH_2_LINES;
+import static testasyouthink.ThenStandardStreamsAsResultTest.GivenData.PRINTED_ON_STDOUT;
+import static testasyouthink.ThenStandardStreamsAsResultTest.GivenData.PRINTED_ON_STDOUT_WITH_2_LINES;
 
 /**
  * Acceptance testing for the verification step, only to verify the standard streams.
@@ -53,100 +64,114 @@ import static testasyouthink.TestAsYouThink.givenSutClass;
 class ThenStandardStreamsAsResultTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ThenStandardStreamsAsResultTest.class);
+    private GivenWhenThenDefinition gwtMock;
+    private Steps steps;
+
+    @BeforeEach
+    void prepareFixtures() {
+        gwtMock = mock(GivenWhenThenDefinition.class);
+        steps = new Steps();
+    }
+
+    void whenOnceThenTwice() {
+        InOrder inOrder = inOrder(gwtMock);
+        inOrder
+                .verify(gwtMock)
+                .whenAnEventHappensInRelationToAnActionOfTheConsumer();
+        inOrder
+                .verify(gwtMock, times(2))
+                .thenTheActualResultIsInKeepingWithTheExpectedResult();
+        inOrder.verifyNoMoreInteractions();
+    }
+
+    static class GivenData {
+
+        static final String PRINTED_ON_STDOUT = "Printed on stdout";
+        static final String PRINTED_ON_STDERR = "Printed on stderr";
+        static final String PRINTED_ON_STDOUT_WITH_2_LINES = "Printed on stdout\nwith 2 lines";
+        static final String PRINTED_ON_STDERR_WITH_2_LINES = "Printed on stderr\nwith 2 lines";
+        static final String PRINTED_ON_BOTH = PRINTED_ON_STDOUT + "\n" + PRINTED_ON_STDERR;
+        static final String EXPECTED_RESULT = "expected result";
+    }
+
+    class Steps {
+
+        final Function<String, CheckedConsumer<File>> succeedingAtVerifyingStream = printed -> file -> {
+            assertThat(file).hasContent(printed);
+            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+        };
+
+        final CheckedConsumer<File> succeedingAtVerifyingNumberOfLines = stdout -> {
+            assertThat(linesOf(stdout)).hasSize(2);
+            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+        };
+
+        final CheckedConsumer<File> failingBecauseOfAssertion = file -> fail("Standard stream non-compliant");
+
+        final CheckedConsumer<File> failingBecauseOfUnexpectedException = file -> {
+            throw new UnexpectedException();
+        };
+    }
 
     @Nested
     class When_returning_nothing {
+
+        final Function<String, CheckedConsumer<SystemUnderTest>> printingOnStdout = toPrintOnStdout -> sut -> {
+            System.out.println(toPrintOnStdout);
+            gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+        };
+
+        final Function<String, CheckedConsumer<SystemUnderTest>> printingOnStderr = toPrintOnStderr -> sut -> {
+            System.err.println(toPrintOnStderr);
+            gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+        };
+
+        final CheckedConsumer<SystemUnderTest> printingOnBoth = sut -> {
+            System.out.println(PRINTED_ON_STDOUT);
+            System.err.println(PRINTED_ON_STDERR);
+            gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+        };
 
         @Nested
         class Then_verifying_the_stdout {
 
             @Test
             void should_verify_the_stdout() {
-                // GIVEN
-                GivenWhenThenDefinition gwtMock = mock(GivenWhenThenDefinition.class);
-
                 // WHEN
                 givenSutClass(SystemUnderTest.class)
-                        .when(sut -> {
-                            System.out.println("Stdout as a result");
-                            gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
-                        })
-                        .thenStandardOutput(stdout -> {
-                            assertThat(stdout).hasContent("Stdout as a result");
-                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                        });
+                        .when(printingOnStdout.apply(PRINTED_ON_STDOUT))
+                        .thenStandardOutput(steps.succeedingAtVerifyingStream.apply(PRINTED_ON_STDOUT))
+                        .and(gwtMock::thenTheActualResultIsInKeepingWithTheExpectedResult);
 
                 // THEN
-                InOrder inOrder = inOrder(gwtMock);
-                inOrder
-                        .verify(gwtMock)
-                        .whenAnEventHappensInRelationToAnActionOfTheConsumer();
-                inOrder
-                        .verify(gwtMock)
-                        .thenTheActualResultIsInKeepingWithTheExpectedResult();
-                inOrder.verifyNoMoreInteractions();
+                whenOnceThenTwice();
             }
 
             @Test
             void should_verify_the_stdout_in_2_times() {
-                // GIVEN
-                GivenWhenThenDefinition gwtMock = mock(GivenWhenThenDefinition.class);
-
                 // WHEN
                 givenSutClass(SystemUnderTest.class)
-                        .when(sut -> {
-                            System.out.println("Stdout as a result\nwith 2 lines");
-                            gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
-                        })
-                        .thenStandardOutput(stdout -> {
-                            assertThat(linesOf(stdout)).hasSize(2);
-                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                        })
-                        .andStandardOutput(stdout -> {
-                            assertThat(stdout).hasContent("Stdout as a result\nwith 2 lines");
-                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                        });
+                        .when(printingOnStdout.apply(PRINTED_ON_STDOUT_WITH_2_LINES))
+                        .thenStandardOutput(steps.succeedingAtVerifyingNumberOfLines)
+                        .andStandardOutput(steps.succeedingAtVerifyingStream.apply(PRINTED_ON_STDOUT_WITH_2_LINES));
 
                 // THEN
-                InOrder inOrder = inOrder(gwtMock);
-                inOrder
-                        .verify(gwtMock)
-                        .whenAnEventHappensInRelationToAnActionOfTheConsumer();
-                inOrder
-                        .verify(gwtMock, times(2))
-                        .thenTheActualResultIsInKeepingWithTheExpectedResult();
-                inOrder.verifyNoMoreInteractions();
+                whenOnceThenTwice();
             }
 
             @Test
             void should_verify_the_stdout_in_2_times_by_specifying_expectations() {
-                // GIVEN
-                GivenWhenThenDefinition gwtMock = mock(GivenWhenThenDefinition.class);
-
                 // WHEN
                 givenSutClass(SystemUnderTest.class)
-                        .when(sut -> {
-                            System.out.println("Stdout as a result\nwith 2 lines");
-                            gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
-                        })
-                        .thenStandardOutput("number of lines", stdout -> {
-                            assertThat(linesOf(stdout)).hasSize(2);
-                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                        })
+                        .when(printingOnStdout.apply(PRINTED_ON_STDOUT_WITH_2_LINES))
+                        .thenStandardOutput("number of lines", steps.succeedingAtVerifyingNumberOfLines)
                         .andStandardOutput("content", stdout -> {
-                            assertThat(stdout).hasContent("Stdout as a result\nwith 2 lines");
+                            assertThat(stdout).hasContent(PRINTED_ON_STDOUT_WITH_2_LINES);
                             gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                         });
 
                 // THEN
-                InOrder inOrder = inOrder(gwtMock);
-                inOrder
-                        .verify(gwtMock)
-                        .whenAnEventHappensInRelationToAnActionOfTheConsumer();
-                inOrder
-                        .verify(gwtMock, times(2))
-                        .thenTheActualResultIsInKeepingWithTheExpectedResult();
-                inOrder.verifyNoMoreInteractions();
+                whenOnceThenTwice();
             }
 
             @Nested
@@ -157,7 +182,7 @@ class ThenStandardStreamsAsResultTest {
                     // WHEN
                     Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                             .when(sut -> {})
-                            .thenStandardOutput(result -> fail("Stdout non-compliant")));
+                            .thenStandardOutput(steps.failingBecauseOfAssertion));
 
                     // THEN
                     LOGGER.debug("Stack trace", thrown);
@@ -175,9 +200,7 @@ class ThenStandardStreamsAsResultTest {
                     // WHEN
                     Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                             .when(sut -> {})
-                            .thenStandardOutput(stdout -> {
-                                throw new UnexpectedException();
-                            }));
+                            .thenStandardOutput(steps.failingBecauseOfUnexpectedException));
 
                     // THEN
                     LOGGER.debug("Stack trace", thrown);
@@ -194,92 +217,39 @@ class ThenStandardStreamsAsResultTest {
 
             @Test
             void should_verify_the_stderr() {
-                // GIVEN
-                GivenWhenThenDefinition gwtMock = mock(GivenWhenThenDefinition.class);
-
                 // WHEN
                 givenSutClass(SystemUnderTest.class)
-                        .when(sut -> {
-                            System.err.println("Standard error stream as a result");
-                            System.out.println("Standard output stream");
-                            gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
-                        })
-                        .thenStandardError(stderr -> {
-                            assertThat(stderr).hasContent("Standard error stream as a result");
-                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                        });
+                        .when(printingOnStderr.apply(PRINTED_ON_STDERR))
+                        .thenStandardError(steps.succeedingAtVerifyingStream.apply(PRINTED_ON_STDERR))
+                        .and(gwtMock::thenTheActualResultIsInKeepingWithTheExpectedResult);
 
                 // THEN
-                InOrder inOrder = inOrder(gwtMock);
-                inOrder
-                        .verify(gwtMock)
-                        .whenAnEventHappensInRelationToAnActionOfTheConsumer();
-                inOrder
-                        .verify(gwtMock)
-                        .thenTheActualResultIsInKeepingWithTheExpectedResult();
-                inOrder.verifyNoMoreInteractions();
+                whenOnceThenTwice();
             }
 
             @Test
             void should_verify_the_stderr_in_2_times() {
-                // GIVEN
-                GivenWhenThenDefinition gwtMock = mock(GivenWhenThenDefinition.class);
-
                 // WHEN
                 givenSutClass(SystemUnderTest.class)
-                        .when(sut -> {
-                            System.err.println("Stderr as a result\nwith 2 lines");
-                            gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
-                        })
-                        .thenStandardError(stderr -> {
-                            assertThat(linesOf(stderr)).hasSize(2);
-                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                        })
-                        .andStandardError(stderr -> {
-                            assertThat(stderr).hasContent("Stderr as a result\nwith 2 lines");
-                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                        });
+                        .when(printingOnStderr.apply(PRINTED_ON_STDERR_WITH_2_LINES))
+                        .thenStandardError(steps.succeedingAtVerifyingNumberOfLines)
+                        .andStandardError(steps.succeedingAtVerifyingStream.apply(PRINTED_ON_STDERR_WITH_2_LINES));
 
                 // THEN
-                InOrder inOrder = inOrder(gwtMock);
-                inOrder
-                        .verify(gwtMock)
-                        .whenAnEventHappensInRelationToAnActionOfTheConsumer();
-                inOrder
-                        .verify(gwtMock, times(2))
-                        .thenTheActualResultIsInKeepingWithTheExpectedResult();
-                inOrder.verifyNoMoreInteractions();
+                whenOnceThenTwice();
             }
 
             @Test
             void should_verify_the_stderr_in_2_times_by_specifying_expectations() {
-                // GIVEN
-                GivenWhenThenDefinition gwtMock = mock(GivenWhenThenDefinition.class);
-
                 // WHEN
                 givenSutClass(SystemUnderTest.class)
-                        .when(sut -> {
-                            System.err.println("Stderr as a result\nwith 2 lines");
-                            gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
-                        })
-                        .thenStandardError("number of lines", stderr -> {
-                            assertThat(linesOf(stderr)).hasSize(2);
-                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                        })
-                        .andStandardError("content", stderr -> {
-                            assertThat(stderr).hasContent("Stderr as a result\nwith 2 lines");
-                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                        });
+                        .when(printingOnStderr.apply(PRINTED_ON_STDERR_WITH_2_LINES))
+                        .thenStandardError("number of lines", steps.succeedingAtVerifyingNumberOfLines)
+                        .andStandardError("content",
+                                steps.succeedingAtVerifyingStream.apply(PRINTED_ON_STDERR_WITH_2_LINES));
 
                 // THEN
-                InOrder inOrder = inOrder(gwtMock);
-                inOrder
-                        .verify(gwtMock)
-                        .whenAnEventHappensInRelationToAnActionOfTheConsumer();
-                inOrder
-                        .verify(gwtMock, times(2))
-                        .thenTheActualResultIsInKeepingWithTheExpectedResult();
-                inOrder.verifyNoMoreInteractions();
+                whenOnceThenTwice();
             }
 
             @Nested
@@ -290,7 +260,7 @@ class ThenStandardStreamsAsResultTest {
                     // WHEN
                     Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                             .when(sut -> {})
-                            .thenStandardError(result -> fail("Stderr non-compliant")));
+                            .thenStandardError(steps.failingBecauseOfAssertion));
 
                     // THEN
                     LOGGER.debug("Stack trace", thrown);
@@ -308,9 +278,7 @@ class ThenStandardStreamsAsResultTest {
                     // WHEN
                     Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                             .when(sut -> {})
-                            .thenStandardError(stderr -> {
-                                throw new UnexpectedException();
-                            }));
+                            .thenStandardError(steps.failingBecauseOfUnexpectedException));
 
                     // THEN
                     LOGGER.debug("Stack trace", thrown);
@@ -319,6 +287,111 @@ class ThenStandardStreamsAsResultTest {
                             .hasMessage("Fails to verify the expectations of the stderr!")
                             .hasCauseInstanceOf(UnexpectedException.class);
                 }
+            }
+        }
+
+        @Nested
+        class Then_verifying_standard_streams_together {
+
+            @Test
+            void should_verify_standard_streams() {
+                // WHEN
+                givenSutClass(SystemUnderTest.class)
+                        .when(printingOnBoth)
+                        .thenStandardStreams(steps.succeedingAtVerifyingStream.apply(PRINTED_ON_BOTH))
+                        .and(gwtMock::thenTheActualResultIsInKeepingWithTheExpectedResult);
+
+                // THEN
+                whenOnceThenTwice();
+            }
+
+            @Test
+            void should_verify_standard_streams_in_2_times() {
+                // WHEN
+                givenSutClass(SystemUnderTest.class)
+                        .when(printingOnBoth)
+                        .thenStandardStreams(steps.succeedingAtVerifyingNumberOfLines)
+                        .andStandardStreams(steps.succeedingAtVerifyingStream.apply(PRINTED_ON_BOTH));
+
+                // THEN
+                whenOnceThenTwice();
+            }
+
+            @Test
+            void should_verify_standard_streams_in_2_times_by_specifying_expectations() {
+                // WHEN
+                givenSutClass(SystemUnderTest.class)
+                        .when(printingOnBoth)
+                        .thenStandardStreams("number of lines", steps.succeedingAtVerifyingNumberOfLines)
+                        .andStandardStreams("content", steps.succeedingAtVerifyingStream.apply(PRINTED_ON_BOTH));
+
+                // THEN
+                whenOnceThenTwice();
+            }
+
+            @Nested
+            class Then_failing_to_verify_standard_streams {
+
+                @Test
+                void should_fail_to_verify_the_standard_streams_content() {
+                    // WHEN
+                    Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                            .when(sut -> {})
+                            .thenStandardStreams(steps.failingBecauseOfAssertion));
+
+                    // THEN
+                    LOGGER.debug("Stack trace", thrown);
+                    assertThat(thrown)
+                            .isInstanceOf(AssertionError.class)
+                            .hasNoCause();
+                }
+            }
+
+            @Nested
+            class Then_failing_because_of_an_unexpected_failure {
+
+                @Test
+                void should_fail_to_verify_the_standard_streams_expectation() {
+                    // WHEN
+                    Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                            .when(sut -> {})
+                            .thenStandardStreams(steps.failingBecauseOfUnexpectedException));
+
+                    // THEN
+                    LOGGER.debug("Stack trace", thrown);
+                    assertThat(thrown)
+                            .isInstanceOf(VerificationError.class)
+                            .hasMessage("Fails to verify the expectations of the standard streams!")
+                            .hasCauseInstanceOf(UnexpectedException.class);
+                }
+            }
+        }
+
+        @Nested
+        class Then_verifying_standard_stream_separately {
+
+            @Test
+            void should_verify_stdout_then_stderr() {
+                // WHEN
+                givenSutClass(SystemUnderTest.class)
+                        .when(printingOnBoth)
+                        .thenStandardOutput(steps.succeedingAtVerifyingStream.apply(PRINTED_ON_STDOUT))
+                        .andStandardError(steps.succeedingAtVerifyingStream.apply(PRINTED_ON_STDERR));
+
+                // THEN
+                whenOnceThenTwice();
+            }
+
+            @Test
+            void should_verify_stderr_then_stdout() {
+                // WHEN
+                givenSutClass(SystemUnderTest.class)
+                        .when(printingOnBoth)
+                        .thenStandardError(steps.succeedingAtVerifyingStream.apply(PRINTED_ON_STDERR))
+                        .andStandardOutput(steps.succeedingAtVerifyingStream.apply(PRINTED_ON_STDOUT));
+
+                // THEN
+                whenOnceThenTwice();
             }
         }
 
@@ -348,12 +421,12 @@ class ThenStandardStreamsAsResultTest {
                                     gwtMocks
                                             .get(count)
                                             .whenAnEventHappensInRelationToAnActionOfTheConsumer();
-                                    System.out.println("Stdout as a result of thread #" + count);
+                                    System.out.println(PRINTED_ON_STDOUT + " by thread #" + count);
                                 })
                                 .thenStandardOutput(stdout -> {
                                     softly
                                             .assertThat(stdout)
-                                            .hasContent("Stdout as a result of thread #" + count);
+                                            .hasContent(PRINTED_ON_STDOUT + " by thread #" + count);
                                     gwtMocks
                                             .get(count)
                                             .thenTheActualResultIsInKeepingWithTheExpectedResult();
@@ -386,103 +459,68 @@ class ThenStandardStreamsAsResultTest {
     @Nested
     class When_returning_a_result {
 
+        final Function<String, CheckedFunction<SystemUnderTest, String>> printingOnStdout = toPrintOnStdout -> sut -> {
+            System.out.println(toPrintOnStdout);
+            gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+            return EXPECTED_RESULT;
+        };
+
+        final Function<String, CheckedFunction<SystemUnderTest, String>> printingOnStderr = toPrintOnStderr -> sut -> {
+            System.err.println(toPrintOnStderr);
+            gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+            return EXPECTED_RESULT;
+        };
+
+        final CheckedFunction<SystemUnderTest, String> printingOnBoth = sut -> {
+            System.out.println(PRINTED_ON_STDOUT);
+            System.err.println(PRINTED_ON_STDERR);
+            gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+            return EXPECTED_RESULT;
+        };
+
+        CheckedConsumer<String> succeedingAtVerifyingResult = result -> {
+            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+            assertThat(result).isEqualTo(EXPECTED_RESULT);
+        };
+
         @Nested
         class Then_verifying_the_stdout {
 
             @Test
             void should_verify_the_stdout_and_the_result() {
-                // GIVEN
-                GivenWhenThenDefinition gwtMock = mock(GivenWhenThenDefinition.class);
-
                 // WHEN
                 givenSutClass(SystemUnderTest.class)
-                        .when(sut -> {
-                            gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
-                            System.out.println("Stdout as a result");
-                            return "expected result";
-                        })
-                        .thenStandardOutput(stdout -> {
-                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                            assertThat(stdout).hasContent("Stdout as a result");
-                        })
-                        .and(result -> {
-                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                            assertThat(result).isEqualTo("expected result");
-                        });
+                        .when(printingOnStdout.apply(PRINTED_ON_STDOUT))
+                        .thenStandardOutput(steps.succeedingAtVerifyingStream.apply(PRINTED_ON_STDOUT))
+                        .and(succeedingAtVerifyingResult);
 
                 // THEN
-                InOrder inOrder = inOrder(gwtMock);
-                inOrder
-                        .verify(gwtMock)
-                        .whenAnEventHappensInRelationToAnActionOfTheConsumer();
-                inOrder
-                        .verify(gwtMock, times(2))
-                        .thenTheActualResultIsInKeepingWithTheExpectedResult();
-                inOrder.verifyNoMoreInteractions();
+                whenOnceThenTwice();
             }
 
             @Test
             void should_verify_the_stdout_in_2_times_by_specifying_expectations() {
-                // GIVEN
-                GivenWhenThenDefinition gwtMock = mock(GivenWhenThenDefinition.class);
-
                 // WHEN
                 givenSutClass(SystemUnderTest.class)
-                        .when(sut -> {
-                            gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
-                            System.out.println("Stdout as a result\nwith 2 lines");
-                            return "expected result";
-                        })
-                        .thenStandardOutput("number of lines", stdout -> {
-                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                            assertThat(linesOf(stdout)).hasSize(2);
-                        })
-                        .andStandardOutput("content", stdout -> {
-                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                            assertThat(stdout).hasContent("Stdout as a result\nwith 2 lines");
-                        });
+                        .when(printingOnStdout.apply(PRINTED_ON_STDOUT_WITH_2_LINES))
+                        .thenStandardOutput("number of lines", steps.succeedingAtVerifyingNumberOfLines)
+                        .andStandardOutput("content",
+                                steps.succeedingAtVerifyingStream.apply(PRINTED_ON_STDOUT_WITH_2_LINES));
 
                 // THEN
-                InOrder inOrder = inOrder(gwtMock);
-                inOrder
-                        .verify(gwtMock)
-                        .whenAnEventHappensInRelationToAnActionOfTheConsumer();
-                inOrder
-                        .verify(gwtMock, times(2))
-                        .thenTheActualResultIsInKeepingWithTheExpectedResult();
-                inOrder.verifyNoMoreInteractions();
+                whenOnceThenTwice();
             }
 
             @Test
             void should_verify_the_stdout_in_2_times() {
-                // GIVEN
-                GivenWhenThenDefinition gwtMock = mock(GivenWhenThenDefinition.class);
-
                 // WHEN
                 givenSutClass(SystemUnderTest.class)
-                        .when(sut -> {
-                            gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
-                            System.out.println("Stdout as a result\nwith 2 lines");
-                            return "expected result";
-                        })
-                        .thenStandardOutput(stdout -> {
-                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                            assertThat(linesOf(stdout)).hasSize(2);
-                        })
-                        .andStandardOutput(stdout -> {
-                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                            assertThat(stdout).hasContent("Stdout as a result\nwith 2 lines");
-                        });
+                        .when(printingOnStdout.apply(PRINTED_ON_STDOUT_WITH_2_LINES))
+                        .thenStandardOutput(steps.succeedingAtVerifyingNumberOfLines)
+                        .andStandardOutput(steps.succeedingAtVerifyingStream.apply(PRINTED_ON_STDOUT_WITH_2_LINES));
 
                 // THEN
-                InOrder inOrder = inOrder(gwtMock);
-                inOrder
-                        .verify(gwtMock)
-                        .whenAnEventHappensInRelationToAnActionOfTheConsumer();
-                inOrder
-                        .verify(gwtMock, times(2))
-                        .thenTheActualResultIsInKeepingWithTheExpectedResult();
-                inOrder.verifyNoMoreInteractions();
+                whenOnceThenTwice();
             }
         }
 
@@ -491,98 +529,144 @@ class ThenStandardStreamsAsResultTest {
 
             @Test
             void should_verify_the_stderr_and_the_result() {
-                // GIVEN
-                GivenWhenThenDefinition gwtMock = mock(GivenWhenThenDefinition.class);
-
                 // WHEN
                 givenSutClass(SystemUnderTest.class)
-                        .when(sut -> {
-                            gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
-                            System.err.println("Stderr as a result");
-                            return "expected result";
-                        })
-                        .thenStandardError(stderr -> {
-                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                            assertThat(stderr).hasContent("Stderr as a result");
-                        })
-                        .and(result -> {
-                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                            assertThat(result).isEqualTo("expected result");
-                        });
+                        .when(printingOnStderr.apply(PRINTED_ON_STDERR))
+                        .thenStandardError(steps.succeedingAtVerifyingStream.apply(PRINTED_ON_STDERR))
+                        .and(succeedingAtVerifyingResult);
 
                 // THEN
-                InOrder inOrder = inOrder(gwtMock);
-                inOrder
-                        .verify(gwtMock)
-                        .whenAnEventHappensInRelationToAnActionOfTheConsumer();
-                inOrder
-                        .verify(gwtMock, times(2))
-                        .thenTheActualResultIsInKeepingWithTheExpectedResult();
-                inOrder.verifyNoMoreInteractions();
+                whenOnceThenTwice();
             }
 
             @Test
             void should_verify_the_stderr_in_2_times() {
-                // GIVEN
-                GivenWhenThenDefinition gwtMock = mock(GivenWhenThenDefinition.class);
-
                 // WHEN
                 givenSutClass(SystemUnderTest.class)
-                        .when(sut -> {
-                            System.err.println("Stderr as a result\nwith 2 lines");
-                            gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
-                            return "expected result";
-                        })
-                        .thenStandardError(stderr -> {
-                            assertThat(linesOf(stderr)).hasSize(2);
-                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                        })
-                        .andStandardError(stderr -> {
-                            assertThat(stderr).hasContent("Stderr as a result\nwith 2 lines");
-                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                        });
+                        .when(printingOnStderr.apply(PRINTED_ON_STDERR_WITH_2_LINES))
+                        .thenStandardError(steps.succeedingAtVerifyingNumberOfLines)
+                        .andStandardError(steps.succeedingAtVerifyingStream.apply(PRINTED_ON_STDERR_WITH_2_LINES));
 
                 // THEN
-                InOrder inOrder = inOrder(gwtMock);
-                inOrder
-                        .verify(gwtMock)
-                        .whenAnEventHappensInRelationToAnActionOfTheConsumer();
-                inOrder
-                        .verify(gwtMock, times(2))
-                        .thenTheActualResultIsInKeepingWithTheExpectedResult();
-                inOrder.verifyNoMoreInteractions();
+                whenOnceThenTwice();
             }
 
             @Test
             void should_verify_the_stderr_in_2_times_by_specifying_expectations() {
-                // GIVEN
-                GivenWhenThenDefinition gwtMock = mock(GivenWhenThenDefinition.class);
-
                 // WHEN
                 givenSutClass(SystemUnderTest.class)
-                        .when(sut -> {
-                            System.err.println("Stderr as a result\nwith 2 lines");
-                            gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
-                            return "expected result";
-                        })
-                        .thenStandardError("number of lines", stderr -> {
-                            assertThat(linesOf(stderr)).hasSize(2);
-                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                        })
-                        .andStandardError("content", stderr -> {
-                            assertThat(stderr).hasContent("Stderr as a result\nwith 2 lines");
-                            gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                        });
+                        .when(printingOnStderr.apply(PRINTED_ON_STDERR_WITH_2_LINES))
+                        .thenStandardError("number of lines", steps.succeedingAtVerifyingNumberOfLines)
+                        .andStandardError("content",
+                                steps.succeedingAtVerifyingStream.apply(PRINTED_ON_STDERR_WITH_2_LINES));
 
                 // THEN
-                InOrder inOrder = inOrder(gwtMock);
-                inOrder
-                        .verify(gwtMock)
-                        .whenAnEventHappensInRelationToAnActionOfTheConsumer();
-                inOrder
-                        .verify(gwtMock, times(2))
-                        .thenTheActualResultIsInKeepingWithTheExpectedResult();
-                inOrder.verifyNoMoreInteractions();
+                whenOnceThenTwice();
+            }
+        }
+
+        @Nested
+        class Then_verifying_standard_streams_together {
+
+            @Test
+            void should_verify_standard_streams() {
+                // WHEN
+                givenSutClass(SystemUnderTest.class)
+                        .when(printingOnBoth)
+                        .thenStandardStreams(steps.succeedingAtVerifyingStream.apply(PRINTED_ON_BOTH))
+                        .and(succeedingAtVerifyingResult);
+
+                // THEN
+                whenOnceThenTwice();
+            }
+
+            @Test
+            void should_verify_standard_streams_in_2_times() {
+                // WHEN
+                givenSutClass(SystemUnderTest.class)
+                        .when(printingOnBoth)
+                        .thenStandardStreams(steps.succeedingAtVerifyingNumberOfLines)
+                        .andStandardStreams(steps.succeedingAtVerifyingStream.apply(PRINTED_ON_BOTH));
+
+                // THEN
+                whenOnceThenTwice();
+            }
+
+            @Test
+            void should_verify_standard_streams_in_2_times_by_specifying_expectations() {
+                // WHEN
+                givenSutClass(SystemUnderTest.class)
+                        .when(printingOnBoth)
+                        .thenStandardStreams("number of lines", steps.succeedingAtVerifyingNumberOfLines)
+                        .andStandardStreams("content", steps.succeedingAtVerifyingStream.apply(PRINTED_ON_BOTH));
+
+                // THEN
+                whenOnceThenTwice();
+            }
+
+            @Nested
+            class Then_failing_to_verify_standard_streams {
+
+                @Test
+                void should_fail_to_verify_the_standard_streams_content() {
+                    // WHEN
+                    Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                            .when(sut -> EXPECTED_RESULT)
+                            .thenStandardStreams(steps.failingBecauseOfAssertion));
+
+                    // THEN
+                    LOGGER.debug("Stack trace", thrown);
+                    assertThat(thrown)
+                            .isInstanceOf(AssertionError.class)
+                            .hasNoCause();
+                }
+            }
+
+            @Nested
+            class Then_failing_because_of_an_unexpected_failure {
+
+                @Test
+                void should_fail_to_verify_the_standard_streams_expectation() {
+                    // WHEN
+                    Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                            .when(sut -> EXPECTED_RESULT)
+                            .thenStandardStreams(steps.failingBecauseOfUnexpectedException));
+
+                    // THEN
+                    LOGGER.debug("Stack trace", thrown);
+                    assertThat(thrown)
+                            .isInstanceOf(VerificationError.class)
+                            .hasMessage("Fails to verify the expectations of the standard streams!")
+                            .hasCauseInstanceOf(UnexpectedException.class);
+                }
+            }
+        }
+
+        @Nested
+        class Then_verifying_standard_stream_separately {
+
+            @Test
+            void should_verify_stdout_then_stderr() {
+                // WHEN
+                givenSutClass(SystemUnderTest.class)
+                        .when(printingOnBoth)
+                        .thenStandardOutput(steps.succeedingAtVerifyingStream.apply(PRINTED_ON_STDOUT))
+                        .andStandardError(steps.succeedingAtVerifyingStream.apply(PRINTED_ON_STDERR));
+
+                // THEN
+                whenOnceThenTwice();
+            }
+
+            @Test
+            void should_verify_stderr_then_stdout() {
+                // WHEN
+                givenSutClass(SystemUnderTest.class)
+                        .when(printingOnBoth)
+                        .thenStandardError(steps.succeedingAtVerifyingStream.apply(PRINTED_ON_STDERR))
+                        .andStandardOutput(steps.succeedingAtVerifyingStream.apply(PRINTED_ON_STDOUT));
+
+                // THEN
+                whenOnceThenTwice();
             }
         }
     }

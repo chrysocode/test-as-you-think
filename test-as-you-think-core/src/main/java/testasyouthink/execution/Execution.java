@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -29,7 +29,6 @@ import testasyouthink.function.CheckedSuppliers.CheckedArraySupplier;
 import testasyouthink.function.Functions;
 import testasyouthink.preparation.PreparationError;
 
-import java.util.Optional;
 import java.util.function.Supplier;
 
 public class Execution<$SystemUnderTest, $Result> {
@@ -59,9 +58,9 @@ public class Execution<$SystemUnderTest, $Result> {
         return () -> null;
     }
 
-    public Optional<$Result> run() {
+    public $Result run() {
         try {
-            return Optional.ofNullable(event.happen());
+            return event.happen();
         } catch (PreparationError preparationError) {
             throw preparationError;
         } catch (Throwable throwable) {

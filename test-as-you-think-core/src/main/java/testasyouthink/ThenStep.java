@@ -25,6 +25,7 @@ package testasyouthink;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.AndThen;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.AndThenFailure;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.AndThenStandardStreamsCapturedSeparately;
+import testasyouthink.GivenWhenThenDsl.VerificationStage.AndThenStandardStreamsCapturedTogether;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.Then;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.ThenFailure;
 import testasyouthink.function.CheckedConsumer;
@@ -38,7 +39,8 @@ import java.util.List;
 
 public class ThenStep<$SystemUnderTest, $Result> implements Then<$SystemUnderTest, $Result>,
         AndThen<$SystemUnderTest, $Result>, ThenFailure, AndThenFailure,
-        AndThenStandardStreamsCapturedSeparately<$SystemUnderTest, $Result> {
+        AndThenStandardStreamsCapturedSeparately<$SystemUnderTest, $Result>,
+        AndThenStandardStreamsCapturedTogether<$SystemUnderTest, $Result> {
 
     private Verification<$SystemUnderTest, $Result> verification;
 
@@ -186,6 +188,19 @@ public class ThenStep<$SystemUnderTest, $Result> implements Then<$SystemUnderTes
     }
 
     @Override
+    public AndThenStandardStreamsCapturedTogether<$SystemUnderTest, $Result> thenStandardStreams(
+            CheckedConsumer<File> thenStep) {
+        verification.verifyStandardStreams(thenStep);
+        return this;
+    }
+
+    @Override
+    public AndThenStandardStreamsCapturedTogether<$SystemUnderTest, $Result> thenStandardStreams(
+            String expectationSpecification, CheckedConsumer<File> thenStep) {
+        return thenStandardStreams(thenStep);
+    }
+
+    @Override
     public AndThenStandardStreamsCapturedSeparately<$SystemUnderTest, $Result> andStandardOutput(
             CheckedConsumer<File> thenStep) {
         return thenStandardOutput(thenStep);
@@ -207,5 +222,17 @@ public class ThenStep<$SystemUnderTest, $Result> implements Then<$SystemUnderTes
     public AndThenStandardStreamsCapturedSeparately<$SystemUnderTest, $Result> andStandardError(
             String expectationSpecification, CheckedConsumer<File> thenStep) {
         return thenStandardError(expectationSpecification, thenStep);
+    }
+
+    @Override
+    public AndThenStandardStreamsCapturedTogether<$SystemUnderTest, $Result> andStandardStreams(
+            CheckedConsumer<File> thenStep) {
+        return thenStandardStreams(thenStep);
+    }
+
+    @Override
+    public AndThenStandardStreamsCapturedTogether<$SystemUnderTest, $Result> andStandardStreams(
+            String expectationSpecification, CheckedConsumer<File> thenStep) {
+        return thenStandardStreams(expectationSpecification, thenStep);
     }
 }
