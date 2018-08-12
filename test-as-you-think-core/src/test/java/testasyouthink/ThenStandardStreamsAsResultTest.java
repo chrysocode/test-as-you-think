@@ -39,6 +39,8 @@ import testasyouthink.verification.VerificationError;
 import java.io.File;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.IntStream;
 
 import static java.util.stream.Collectors.toList;
@@ -89,7 +91,7 @@ class ThenStandardStreamsAsResultTest {
         static final String PRINTED_ON_STDERR = "Printed on stderr";
         static final String PRINTED_ON_STDOUT_WITH_2_LINES = "Printed on stdout\nwith 2 lines";
         static final String PRINTED_ON_STDERR_WITH_2_LINES = "Printed on stderr\nwith 2 lines";
-        static final String PRINTED_ON_BOTH = "Printed on stdout\nPrinted on stderr";
+        static final String PRINTED_ON_BOTH = PRINTED_ON_STDOUT + "\n" + PRINTED_ON_STDERR;
         static final String EXPECTED_RESULT = "expected result";
     }
 
@@ -105,6 +107,16 @@ class ThenStandardStreamsAsResultTest {
     @Nested
     class When_returning_nothing {
 
+        final Consumer<String> printingOnStdout = toPrintOnStdout -> {
+            System.out.println(toPrintOnStdout);
+            gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+        };
+
+        final Consumer<String> printingOnStderr = toPrintOnStderr -> {
+            System.err.println(toPrintOnStderr);
+            gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+        };
+
         final CheckedConsumer<SystemUnderTest> printingOnBoth = sut -> {
             System.out.println(PRINTED_ON_STDOUT);
             System.err.println(PRINTED_ON_STDERR);
@@ -114,19 +126,11 @@ class ThenStandardStreamsAsResultTest {
         @Nested
         class Then_verifying_the_stdout {
 
-            final CheckedConsumer<SystemUnderTest> printingOnStdoutWithTwoLines = sut -> {
-                System.out.println(PRINTED_ON_STDOUT_WITH_2_LINES);
-                gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
-            };
-
             @Test
             void should_verify_the_stdout() {
                 // WHEN
                 givenSutClass(SystemUnderTest.class)
-                        .when(sut -> {
-                            System.out.println(PRINTED_ON_STDOUT);
-                            gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
-                        })
+                        .whenSutRuns(sut -> printingOnStdout.accept(PRINTED_ON_STDOUT))
                         .thenStandardOutput(stdout -> {
                             assertThat(stdout).hasContent(PRINTED_ON_STDOUT);
                             gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
@@ -141,7 +145,7 @@ class ThenStandardStreamsAsResultTest {
             void should_verify_the_stdout_in_2_times() {
                 // WHEN
                 givenSutClass(SystemUnderTest.class)
-                        .when(printingOnStdoutWithTwoLines)
+                        .whenSutRuns(sut -> printingOnStdout.accept(PRINTED_ON_STDOUT_WITH_2_LINES))
                         .thenStandardOutput(stdout -> {
                             assertThat(linesOf(stdout)).hasSize(2);
                             gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
@@ -159,7 +163,7 @@ class ThenStandardStreamsAsResultTest {
             void should_verify_the_stdout_in_2_times_by_specifying_expectations() {
                 // WHEN
                 givenSutClass(SystemUnderTest.class)
-                        .when(printingOnStdoutWithTwoLines)
+                        .whenSutRuns(sut -> printingOnStdout.accept(PRINTED_ON_STDOUT_WITH_2_LINES))
                         .thenStandardOutput("number of lines", stdout -> {
                             assertThat(linesOf(stdout)).hasSize(2);
                             gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
@@ -214,16 +218,11 @@ class ThenStandardStreamsAsResultTest {
         @Nested
         class Then_verifying_the_stderr {
 
-            private CheckedConsumer<SystemUnderTest> printingOnStderrWith2Lines = sut -> {
-                System.err.println(PRINTED_ON_STDERR_WITH_2_LINES);
-                gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
-            };
-
             @Test
             void should_verify_the_stderr() {
                 // WHEN
                 givenSutClass(SystemUnderTest.class)
-                        .when(printingOnBoth)
+                        .whenSutRuns(sut -> printingOnStderr.accept(PRINTED_ON_STDERR))
                         .thenStandardError(stderr -> {
                             assertThat(stderr).hasContent(PRINTED_ON_STDERR);
                             gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
@@ -238,7 +237,7 @@ class ThenStandardStreamsAsResultTest {
             void should_verify_the_stderr_in_2_times() {
                 // WHEN
                 givenSutClass(SystemUnderTest.class)
-                        .when(printingOnStderrWith2Lines)
+                        .whenSutRuns(sut -> printingOnStderr.accept(PRINTED_ON_STDERR_WITH_2_LINES))
                         .thenStandardError(stderr -> {
                             assertThat(linesOf(stderr)).hasSize(2);
                             gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
@@ -256,7 +255,7 @@ class ThenStandardStreamsAsResultTest {
             void should_verify_the_stderr_in_2_times_by_specifying_expectations() {
                 // WHEN
                 givenSutClass(SystemUnderTest.class)
-                        .when(printingOnStderrWith2Lines)
+                        .whenSutRuns(sut -> printingOnStderr.accept(PRINTED_ON_STDERR_WITH_2_LINES))
                         .thenStandardError("number of lines", stderr -> {
                             assertThat(linesOf(stderr)).hasSize(2);
                             gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
@@ -464,26 +463,33 @@ class ThenStandardStreamsAsResultTest {
     @Nested
     class When_returning_a_result {
 
+        final Function<String, String> printingOnStdout = toPrintOnStdout -> {
+            System.out.println(toPrintOnStdout);
+            gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+            return EXPECTED_RESULT;
+        };
+
+        final Function<String, String> printingOnStderr = toPrintOnStderr -> {
+            System.err.println(toPrintOnStderr);
+            gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+            return EXPECTED_RESULT;
+        };
+
+        final CheckedFunction<SystemUnderTest, String> printingOnBoth = sut -> {
+            System.out.println(PRINTED_ON_STDOUT);
+            System.err.println(PRINTED_ON_STDERR);
+            gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+            return EXPECTED_RESULT;
+        };
+
         @Nested
         class Then_verifying_the_stdout {
-
-            final CheckedFunction<SystemUnderTest, String> printedOnStdout = sut -> {
-                System.out.println(PRINTED_ON_STDOUT);
-                gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
-                return EXPECTED_RESULT;
-            };
-
-            final CheckedFunction<SystemUnderTest, String> printingOnStdoutWithTwoLines = sut -> {
-                System.out.println(PRINTED_ON_STDOUT_WITH_2_LINES);
-                gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
-                return EXPECTED_RESULT;
-            };
 
             @Test
             void should_verify_the_stdout_and_the_result() {
                 // WHEN
                 givenSutClass(SystemUnderTest.class)
-                        .when(printedOnStdout)
+                        .whenSutReturns(sut -> printingOnStdout.apply(PRINTED_ON_STDOUT))
                         .thenStandardOutput(stdout -> {
                             gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                             assertThat(stdout).hasContent(PRINTED_ON_STDOUT);
@@ -501,7 +507,7 @@ class ThenStandardStreamsAsResultTest {
             void should_verify_the_stdout_in_2_times_by_specifying_expectations() {
                 // WHEN
                 givenSutClass(SystemUnderTest.class)
-                        .when(printingOnStdoutWithTwoLines)
+                        .whenSutReturns(sut -> printingOnStdout.apply(PRINTED_ON_STDOUT_WITH_2_LINES))
                         .thenStandardOutput("number of lines", stdout -> {
                             gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                             assertThat(linesOf(stdout)).hasSize(2);
@@ -519,7 +525,7 @@ class ThenStandardStreamsAsResultTest {
             void should_verify_the_stdout_in_2_times() {
                 // WHEN
                 givenSutClass(SystemUnderTest.class)
-                        .when(printingOnStdoutWithTwoLines)
+                        .whenSutReturns(sut -> printingOnStdout.apply(PRINTED_ON_STDOUT_WITH_2_LINES))
                         .thenStandardOutput(stdout -> {
                             gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                             assertThat(linesOf(stdout)).hasSize(2);
@@ -537,21 +543,11 @@ class ThenStandardStreamsAsResultTest {
         @Nested
         class Then_verifying_the_stderr {
 
-            final CheckedFunction<SystemUnderTest, String> printingOnStderrWithTwoLines = sut -> {
-                System.err.println(PRINTED_ON_STDERR_WITH_2_LINES);
-                gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
-                return EXPECTED_RESULT;
-            };
-
             @Test
             void should_verify_the_stderr_and_the_result() {
                 // WHEN
                 givenSutClass(SystemUnderTest.class)
-                        .when(sut -> {
-                            System.err.println(PRINTED_ON_STDERR);
-                            gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
-                            return EXPECTED_RESULT;
-                        })
+                        .whenSutReturns(sut -> printingOnStderr.apply(PRINTED_ON_STDERR))
                         .thenStandardError(stderr -> {
                             gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                             assertThat(stderr).hasContent(PRINTED_ON_STDERR);
@@ -569,7 +565,7 @@ class ThenStandardStreamsAsResultTest {
             void should_verify_the_stderr_in_2_times() {
                 // WHEN
                 givenSutClass(SystemUnderTest.class)
-                        .when(printingOnStderrWithTwoLines)
+                        .whenSutReturns(sut -> printingOnStderr.apply(PRINTED_ON_STDERR_WITH_2_LINES))
                         .thenStandardError(stderr -> {
                             assertThat(linesOf(stderr)).hasSize(2);
                             gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
@@ -587,7 +583,7 @@ class ThenStandardStreamsAsResultTest {
             void should_verify_the_stderr_in_2_times_by_specifying_expectations() {
                 // WHEN
                 givenSutClass(SystemUnderTest.class)
-                        .when(printingOnStderrWithTwoLines)
+                        .whenSutReturns(sut -> printingOnStderr.apply(PRINTED_ON_STDERR_WITH_2_LINES))
                         .thenStandardError("number of lines", stderr -> {
                             assertThat(linesOf(stderr)).hasSize(2);
                             gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
@@ -604,13 +600,6 @@ class ThenStandardStreamsAsResultTest {
 
         @Nested
         class Then_verifying_standard_streams_together {
-
-            final CheckedFunction<SystemUnderTest, String> printingOnBoth = sut -> {
-                System.out.println(PRINTED_ON_STDOUT);
-                System.err.println(PRINTED_ON_STDERR);
-                gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
-                return EXPECTED_RESULT;
-            };
 
             @Test
             void should_verify_standard_streams() {
