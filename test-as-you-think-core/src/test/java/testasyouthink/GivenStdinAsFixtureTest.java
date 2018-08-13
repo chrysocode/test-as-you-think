@@ -1,6 +1,8 @@
 package testasyouthink;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InOrder;
 import org.mockito.Mockito;
 import testasyouthink.fixture.GivenWhenThenDefinition;
@@ -59,15 +61,15 @@ class GivenStdinAsFixtureTest {
         inOrder.verifyNoMoreInteractions();
     }
 
-    @Test
-    void should_prepare_stdin_to_read_a_number() {
+    @ParameterizedTest
+    @ValueSource(ints = {123, Integer.MIN_VALUE, Integer.MAX_VALUE})
+    void should_prepare_stdin_to_read_a_number(final int givenInputNumber) {
         // GIVEN
         GivenWhenThenDefinition gwtMock = Mockito.mock(GivenWhenThenDefinition.class);
 
         // WHEN
         givenSutClass(SystemUnderTest.class)
                 .given(() -> {
-                    Integer givenInputNumber = 123;
                     InputStream stdinFake = new ByteArrayInputStream(BigInteger
                             .valueOf(givenInputNumber)
                             .toByteArray());
@@ -86,7 +88,7 @@ class GivenStdinAsFixtureTest {
                     return actualNumber;
                 })
                 .then(result -> {
-                    assertThat(result).isEqualTo(123);
+                    assertThat(result).isEqualTo(givenInputNumber);
                     gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                 });
 
