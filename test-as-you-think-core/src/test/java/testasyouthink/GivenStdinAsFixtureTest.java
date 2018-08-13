@@ -65,7 +65,7 @@ class GivenStdinAsFixtureTest {
 
     @ParameterizedTest
     @ValueSource(ints = {0, 123, -1, Integer.MIN_VALUE, Integer.MAX_VALUE})
-    void should_prepare_stdin_to_read_a_number(final int givenInputNumber) {
+    void should_prepare_stdin_to_read_a_number_using_a_scanner(final int givenInputNumber) {
         // GIVEN
         GivenWhenThenDefinition gwtMock = Mockito.mock(GivenWhenThenDefinition.class);
 
@@ -81,8 +81,50 @@ class GivenStdinAsFixtureTest {
                     System.out.print("Type: ");
                     Scanner scanner = new Scanner(System.in);
                     Integer actualNumber = scanner.nextInt();
-                    System.out.println(String.format("Number: %d", actualNumber));
+                    System.out.println(String.format("\nNumber: %d", actualNumber));
                     scanner.close();
+                    gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+                    return actualNumber;
+                })
+                .then(result -> {
+                    assertThat(result).isEqualTo(givenInputNumber);
+                    gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                });
+
+        // THEN
+        InOrder inOrder = inOrder(gwtMock);
+        inOrder
+                .verify(gwtMock)
+                .givenAContextThatDefinesTheInitialStateOfTheSystem();
+        inOrder
+                .verify(gwtMock)
+                .whenAnEventHappensInRelationToAnActionOfTheConsumer();
+        inOrder
+                .verify(gwtMock)
+                .thenTheActualResultIsInKeepingWithTheExpectedResult();
+        inOrder.verifyNoMoreInteractions();
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {0, 123, -1, Integer.MIN_VALUE, Integer.MAX_VALUE})
+    void should_prepare_stdin_to_read_a_number_using_a_buffered_reader(final int givenInputNumber) {
+        // GIVEN
+        GivenWhenThenDefinition gwtMock = Mockito.mock(GivenWhenThenDefinition.class);
+
+        // WHEN
+        givenSutClass(SystemUnderTest.class)
+                .given(() -> {
+                    String message = String.valueOf(givenInputNumber);
+                    InputStream stdinFake = new ByteArrayInputStream(message.getBytes());
+                    System.setIn(stdinFake);
+                    gwtMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                })
+                .when(sut -> {
+                    System.out.print("Type: ");
+                    BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
+                    Integer actualNumber = Integer.parseInt(stdin.readLine());
+                    System.out.println(String.format("\nNumber: %d", actualNumber));
+                    stdin.close();
                     gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
                     return actualNumber;
                 })
