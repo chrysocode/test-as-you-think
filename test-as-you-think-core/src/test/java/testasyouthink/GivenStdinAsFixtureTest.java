@@ -10,6 +10,7 @@ import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.math.BigInteger;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.inOrder;
@@ -41,6 +42,51 @@ class GivenStdinAsFixtureTest {
                 })
                 .then(result -> {
                     assertThat(result).isEqualTo("expected");
+                    gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                });
+
+        // THEN
+        InOrder inOrder = inOrder(gwtMock);
+        inOrder
+                .verify(gwtMock)
+                .givenAContextThatDefinesTheInitialStateOfTheSystem();
+        inOrder
+                .verify(gwtMock)
+                .whenAnEventHappensInRelationToAnActionOfTheConsumer();
+        inOrder
+                .verify(gwtMock)
+                .thenTheActualResultIsInKeepingWithTheExpectedResult();
+        inOrder.verifyNoMoreInteractions();
+    }
+
+    @Test
+    void should_prepare_stdin_to_read_a_number() {
+        // GIVEN
+        GivenWhenThenDefinition gwtMock = Mockito.mock(GivenWhenThenDefinition.class);
+
+        // WHEN
+        givenSutClass(SystemUnderTest.class)
+                .given(() -> {
+                    Integer givenInputNumber = 123;
+                    InputStream stdinFake = new ByteArrayInputStream(BigInteger
+                            .valueOf(givenInputNumber)
+                            .toByteArray());
+                    System.setIn(stdinFake);
+                    gwtMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                })
+                .when(sut -> {
+                    System.out.print("Type: ");
+                    BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
+                    String message = stdin.readLine();
+                    System.out.println(String.format("\nMessage: %s", message));
+                    stdin.close();
+                    Integer actualNumber = new BigInteger(message.getBytes()).intValue();
+                    System.out.println(String.format("Number: %d", actualNumber));
+                    gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+                    return actualNumber;
+                })
+                .then(result -> {
+                    assertThat(result).isEqualTo(123);
                     gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                 });
 
