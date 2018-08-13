@@ -1,5 +1,6 @@
 package testasyouthink;
 
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -12,7 +13,8 @@ import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.math.BigInteger;
+import java.nio.ByteBuffer;
+import java.util.Scanner;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.inOrder;
@@ -62,7 +64,7 @@ class GivenStdinAsFixtureTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {123, Integer.MIN_VALUE, Integer.MAX_VALUE})
+    @ValueSource(ints = {0, 123, -1, Integer.MIN_VALUE, Integer.MAX_VALUE})
     void should_prepare_stdin_to_read_a_number(final int givenInputNumber) {
         // GIVEN
         GivenWhenThenDefinition gwtMock = Mockito.mock(GivenWhenThenDefinition.class);
@@ -70,20 +72,17 @@ class GivenStdinAsFixtureTest {
         // WHEN
         givenSutClass(SystemUnderTest.class)
                 .given(() -> {
-                    InputStream stdinFake = new ByteArrayInputStream(BigInteger
-                            .valueOf(givenInputNumber)
-                            .toByteArray());
+                    String message = String.valueOf(givenInputNumber);
+                    InputStream stdinFake = new ByteArrayInputStream(message.getBytes());
                     System.setIn(stdinFake);
                     gwtMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
                 })
                 .when(sut -> {
                     System.out.print("Type: ");
-                    BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
-                    String message = stdin.readLine();
-                    System.out.println(String.format("\nMessage: %s", message));
-                    stdin.close();
-                    Integer actualNumber = new BigInteger(message.getBytes()).intValue();
+                    Scanner scanner = new Scanner(System.in);
+                    Integer actualNumber = scanner.nextInt();
                     System.out.println(String.format("Number: %d", actualNumber));
+                    scanner.close();
                     gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
                     return actualNumber;
                 })
@@ -104,5 +103,50 @@ class GivenStdinAsFixtureTest {
                 .verify(gwtMock)
                 .thenTheActualResultIsInKeepingWithTheExpectedResult();
         inOrder.verifyNoMoreInteractions();
+    }
+
+    @Nested
+    class Conversions {
+
+        @Nested
+        class ConversionWithRightAndLeftShiftOperators {
+
+            byte[] toByteArray(int value) {
+                return new byte[]{(byte) (value >> 24), (byte) (value >> 16), (byte) (value >> 8), (byte) value};
+            }
+
+            int fromByteArray(byte[] bytes) {
+                return bytes[0] << 24 | (bytes[1] & 0xFF) << 16 | (bytes[2] & 0xFF) << 8 | (bytes[3] & 0xFF);
+            }
+
+            @ParameterizedTest
+            @ValueSource(ints = {0, 123, -1, Integer.MIN_VALUE, Integer.MAX_VALUE})
+            void should_convert(final int givenInputNumber) {
+                assertThat(fromByteArray(toByteArray(givenInputNumber))).isEqualTo(givenInputNumber);
+            }
+        }
+
+        @Nested
+        class ConversionWithByteBuffer {
+
+            byte[] toByteArray(int value) {
+                return ByteBuffer
+                        .allocate(4)
+                        .putInt(value)
+                        .array();
+            }
+
+            int fromByteArray(byte[] bytes) {
+                return ByteBuffer
+                        .wrap(bytes)
+                        .getInt();
+            }
+
+            @ParameterizedTest
+            @ValueSource(ints = {0, 123, -1, Integer.MIN_VALUE, Integer.MAX_VALUE})
+            void should_convert(final int givenInputNumber) {
+                assertThat(fromByteArray(toByteArray(givenInputNumber))).isEqualTo(givenInputNumber);
+            }
+        }
     }
 }
