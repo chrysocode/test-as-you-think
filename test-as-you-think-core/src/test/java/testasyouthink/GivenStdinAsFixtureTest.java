@@ -51,9 +51,11 @@ class GivenStdinAsFixtureTest {
         inOrder.verifyNoMoreInteractions();
     }
 
-    private CheckedRunnable prepareStdin(final String input) {
+    private CheckedRunnable prepareStdin(final Object input) {
         return () -> {
-            InputStream stdinFake = new ByteArrayInputStream(input.getBytes());
+            InputStream stdinFake = new ByteArrayInputStream(String
+                    .valueOf(input)
+                    .getBytes());
             System.setIn(stdinFake);
             gwtMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
         };
@@ -115,7 +117,7 @@ class GivenStdinAsFixtureTest {
     void should_prepare_stdin_to_read_a_number_using_a_scanner(final int givenInputNumber) {
         // WHEN
         givenSutClass(SystemUnderTest.class)
-                .given(prepareStdin(String.valueOf(givenInputNumber)))
+                .given(prepareStdin(givenInputNumber))
                 .when(sut -> {
                     System.out.print("Type: ");
                     Scanner scanner = new Scanner(System.in);
@@ -136,7 +138,7 @@ class GivenStdinAsFixtureTest {
     void should_prepare_stdin_to_read_a_number_using_a_buffered_reader(final int givenInputNumber) {
         // WHEN
         givenSutClass(SystemUnderTest.class)
-                .given(prepareStdin(String.valueOf(givenInputNumber)))
+                .given(prepareStdin(givenInputNumber))
                 .when(sut -> {
                     System.out.print("Type: ");
                     BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
