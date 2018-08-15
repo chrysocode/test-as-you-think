@@ -8,12 +8,14 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InOrder;
 import testasyouthink.fixture.GivenWhenThenDefinition;
 import testasyouthink.fixture.SystemUnderTest;
+import testasyouthink.function.CheckedRunnable;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
@@ -49,16 +51,31 @@ class GivenStdinAsFixtureTest {
         inOrder.verifyNoMoreInteractions();
     }
 
+    private CheckedRunnable prepareStdin(final String input) {
+        return () -> {
+            InputStream stdinFake = new ByteArrayInputStream(input.getBytes());
+            System.setIn(stdinFake);
+            gwtMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+        };
+    }
+
+    private CheckedRunnable prepareStdin(final Collection<?> inputs) {
+        return () -> {
+            InputStream stdinFake = new ByteArrayInputStream(inputs
+                    .stream()
+                    .map(String::valueOf)
+                    .collect(Collectors.joining("\n"))
+                    .getBytes());
+            System.setIn(stdinFake);
+            gwtMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+        };
+    }
+
     @Test
     void should_prepare_stdin_to_read_a_message() {
         // WHEN
         givenSutClass(SystemUnderTest.class)
-                .given(() -> {
-                    String givenInputMessage = "expected";
-                    InputStream stdinFake = new ByteArrayInputStream(givenInputMessage.getBytes());
-                    System.setIn(stdinFake);
-                    gwtMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-                })
+                .given(prepareStdin("expected"))
                 .when(sut -> {
                     System.out.print("Type: ");
                     BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
@@ -78,15 +95,7 @@ class GivenStdinAsFixtureTest {
     void should_prepare_stdin_to_read_messages() {
         // WHEN
         givenSutClass(SystemUnderTest.class)
-                .given(() -> {
-                    List<String> givenInputMessages = asList("intput #1", "intput #2", "intput #3");
-                    InputStream stdinFake = new ByteArrayInputStream(givenInputMessages
-                            .stream()
-                            .collect(Collectors.joining("\n"))
-                            .getBytes());
-                    System.setIn(stdinFake);
-                    gwtMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-                })
+                .given(prepareStdin(asList("intput #1", "intput #2", "intput #3")))
                 .when(sut -> {
                     System.out.print("Type: ");
                     BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
@@ -111,12 +120,7 @@ class GivenStdinAsFixtureTest {
     void should_prepare_stdin_to_read_a_number_using_a_scanner(final int givenInputNumber) {
         // WHEN
         givenSutClass(SystemUnderTest.class)
-                .given(() -> {
-                    String message = String.valueOf(givenInputNumber);
-                    InputStream stdinFake = new ByteArrayInputStream(message.getBytes());
-                    System.setIn(stdinFake);
-                    gwtMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-                })
+                .given(prepareStdin(String.valueOf(givenInputNumber)))
                 .when(sut -> {
                     System.out.print("Type: ");
                     Scanner scanner = new Scanner(System.in);
@@ -137,12 +141,7 @@ class GivenStdinAsFixtureTest {
     void should_prepare_stdin_to_read_a_number_using_a_buffered_reader(final int givenInputNumber) {
         // WHEN
         givenSutClass(SystemUnderTest.class)
-                .given(() -> {
-                    String message = String.valueOf(givenInputNumber);
-                    InputStream stdinFake = new ByteArrayInputStream(message.getBytes());
-                    System.setIn(stdinFake);
-                    gwtMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-                })
+                .given(prepareStdin(String.valueOf(givenInputNumber)))
                 .when(sut -> {
                     System.out.print("Type: ");
                     BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
@@ -162,16 +161,7 @@ class GivenStdinAsFixtureTest {
     void should_prepare_stdin_to_read_different_kinds_of_data() {
         // WHEN
         givenSutClass(SystemUnderTest.class)
-                .given(() -> {
-                    List<Object> givenInputs = asList("input", 123, true);
-                    InputStream stdinFake = new ByteArrayInputStream(givenInputs
-                            .stream()
-                            .map(String::valueOf)
-                            .collect(Collectors.joining("\n"))
-                            .getBytes());
-                    System.setIn(stdinFake);
-                    gwtMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-                })
+                .given(prepareStdin(asList("input", 123, true)))
                 .when(sut -> {
                     System.out.print("Type: ");
                     Scanner scanner = new Scanner(System.in);
