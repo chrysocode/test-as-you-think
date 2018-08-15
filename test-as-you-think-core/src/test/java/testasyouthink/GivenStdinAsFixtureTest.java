@@ -60,15 +60,10 @@ class GivenStdinAsFixtureTest {
     }
 
     private CheckedRunnable prepareStdin(final Collection<?> inputs) {
-        return () -> {
-            InputStream stdinFake = new ByteArrayInputStream(inputs
-                    .stream()
-                    .map(String::valueOf)
-                    .collect(Collectors.joining("\n"))
-                    .getBytes());
-            System.setIn(stdinFake);
-            gwtMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-        };
+        return prepareStdin(inputs
+                .stream()
+                .map(String::valueOf)
+                .collect(Collectors.joining("\n")));
     }
 
     @Test
