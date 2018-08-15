@@ -199,6 +199,53 @@ class GivenStdinAsFixtureTest {
         inOrder.verifyNoMoreInteractions();
     }
 
+    @Test
+    void should_prepare_stdin_to_read_different_kinds_of_data() {
+        // GIVEN
+        GivenWhenThenDefinition gwtMock = Mockito.mock(GivenWhenThenDefinition.class);
+
+        // WHEN
+        givenSutClass(SystemUnderTest.class)
+                .given(() -> {
+                    List<Object> givenInputs = asList("input", 123, true);
+                    InputStream stdinFake = new ByteArrayInputStream(givenInputs
+                            .stream()
+                            .map(String::valueOf)
+                            .collect(Collectors.joining("\n"))
+                            .getBytes());
+                    System.setIn(stdinFake);
+                    gwtMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                })
+                .when(sut -> {
+                    System.out.print("Type: ");
+                    Scanner scanner = new Scanner(System.in);
+                    List<Object> actualData = new ArrayList<>();
+                    actualData.add(scanner.next());
+                    actualData.add(scanner.nextInt());
+                    actualData.add(scanner.nextBoolean());
+                    scanner.close();
+                    gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+                    return actualData;
+                })
+                .then(result -> {
+                    assertThat(result).containsExactly("input", 123, true);
+                    gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                });
+
+        // THEN
+        InOrder inOrder = inOrder(gwtMock);
+        inOrder
+                .verify(gwtMock)
+                .givenAContextThatDefinesTheInitialStateOfTheSystem();
+        inOrder
+                .verify(gwtMock)
+                .whenAnEventHappensInRelationToAnActionOfTheConsumer();
+        inOrder
+                .verify(gwtMock)
+                .thenTheActualResultIsInKeepingWithTheExpectedResult();
+        inOrder.verifyNoMoreInteractions();
+    }
+
     @Nested
     class Conversions {
 
