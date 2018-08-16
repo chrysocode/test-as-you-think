@@ -190,6 +190,32 @@ class GivenStdinAsFixtureTest {
     }
 
     @Test
+    void should_prepare_stdin_in_several_times_to_read_different_kinds_of_data() {
+        // WHEN
+        givenSutClass(SystemUnderTest.class)
+                .givenStandardInputStream(stdin -> {
+                    stdin.expectToRead("input");
+                    stdin.expectToRead(123);
+                    stdin.expectToRead(true);
+                    gwtMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                })
+                .when(sut -> {
+                    Scanner scanner = new Scanner(System.in);
+                    List<Object> actualData = new ArrayList<>();
+                    actualData.add(scanner.next());
+                    actualData.add(scanner.nextInt());
+                    actualData.add(scanner.nextBoolean());
+                    scanner.close();
+                    gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+                    return actualData;
+                })
+                .then(result -> {
+                    assertThat(result).containsExactly("input", 123, true);
+                    gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                });
+    }
+
+    @Test
     void should_prepare_stdin_to_read_a_file() throws IOException {
         // GIVEN
         final File givenInputFile = Files

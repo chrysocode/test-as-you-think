@@ -29,35 +29,47 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Collection;
 
 import static java.nio.file.Files.lines;
 import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
 
 public class StdinPreparation implements Stdin {
 
     private static final String END_OF_LINE = "\n";
+    private Collection<String> inputsToBeRead;
 
-    @Override
-    public void expectToRead(Object input) {
-        InputStream stdinFake = new ByteArrayInputStream(String
-                .valueOf(input)
+    StdinPreparation() {
+        inputsToBeRead = new ArrayList<>();
+    }
+
+    void redirectStdin() {
+        InputStream stdinFake = new ByteArrayInputStream(inputsToBeRead
+                .stream()
+                .collect(joining(END_OF_LINE))
                 .getBytes());
         System.setIn(stdinFake);
     }
 
     @Override
+    public void expectToRead(Object input) {
+        inputsToBeRead.add(String.valueOf(input));
+    }
+
+    @Override
     public void expectToRead(Collection<?> inputs) {
-        expectToRead(inputs
+        inputsToBeRead.addAll(inputs
                 .stream()
                 .map(String::valueOf)
-                .collect(joining(END_OF_LINE)));
+                .collect(toList()));
     }
 
     @Override
     public void expectToRead(File input) {
         try {
-            expectToRead(lines(input.toPath()).collect(joining(END_OF_LINE)));
+            inputsToBeRead.addAll(lines(input.toPath()).collect(toList()));
         } catch (IOException e) {
             throw new RuntimeException("Not yet implemented!");
         }
@@ -66,7 +78,7 @@ public class StdinPreparation implements Stdin {
     @Override
     public void expectToRead(Path input) {
         try {
-            expectToRead(lines(input).collect(joining(END_OF_LINE)));
+            inputsToBeRead.addAll(lines(input).collect(toList()));
         } catch (IOException e) {
             throw new RuntimeException("Not yet implemented!");
         }
