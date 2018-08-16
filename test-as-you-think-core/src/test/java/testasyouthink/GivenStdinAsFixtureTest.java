@@ -22,14 +22,17 @@
 
 package testasyouthink;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InOrder;
+import org.mockito.Mockito;
+import org.powermock.api.mockito.PowerMockito;
 import testasyouthink.fixture.GivenWhenThenDefinition;
 import testasyouthink.fixture.SystemUnderTest;
+import testasyouthink.preparation.PreparationError;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -46,8 +49,11 @@ import java.util.Scanner;
 import static java.util.Arrays.asList;
 import static java.util.stream.IntStream.rangeClosed;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static testasyouthink.TestAsYouThink.givenSutClass;
 
 class GivenStdinAsFixtureTest {
@@ -59,7 +65,6 @@ class GivenStdinAsFixtureTest {
         gwtMock = mock(GivenWhenThenDefinition.class);
     }
 
-    @AfterEach
     void verifyMocks() {
         // THEN
         InOrder inOrder = inOrder(gwtMock);
@@ -94,6 +99,9 @@ class GivenStdinAsFixtureTest {
                     assertThat(result).isEqualTo("expected");
                     gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                 });
+
+        // THEN
+        verifyMocks();
     }
 
     @ParameterizedTest
@@ -116,6 +124,9 @@ class GivenStdinAsFixtureTest {
                     assertThat(result).isEqualTo(givenInputNumber);
                     gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                 });
+
+        // THEN
+        verifyMocks();
     }
 
     @ParameterizedTest
@@ -138,6 +149,9 @@ class GivenStdinAsFixtureTest {
                     assertThat(result).isEqualTo(givenInputNumber);
                     gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                 });
+
+        // THEN
+        verifyMocks();
     }
 
     @Test
@@ -163,6 +177,9 @@ class GivenStdinAsFixtureTest {
                     assertThat(result).containsExactly("intput #1", "intput #2", "intput #3");
                     gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                 });
+
+        // THEN
+        verifyMocks();
     }
 
     @Test
@@ -187,6 +204,9 @@ class GivenStdinAsFixtureTest {
                     assertThat(result).containsExactly("input", 123, true);
                     gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                 });
+
+        // THEN
+        verifyMocks();
     }
 
     @Test
@@ -213,41 +233,9 @@ class GivenStdinAsFixtureTest {
                     assertThat(result).containsExactly("input", 123, true);
                     gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                 });
-    }
 
-    @Test
-    void should_prepare_stdin_to_read_a_file() throws IOException {
-        // GIVEN
-        final File givenInputFile = Files
-                .createTempFile("inputs", ".txt")
-                .toFile();
-        PrintWriter writer = new PrintWriter(new FileWriter(givenInputFile));
-        rangeClosed(1, 5)
-                .mapToObj(count -> "line #" + count + "\n")
-                .forEach(writer::write);
-        writer.flush();
-
-        // WHEN
-        givenSutClass(SystemUnderTest.class)
-                .givenStandardInputStream(stdin -> {
-                    stdin.expectToRead(givenInputFile);
-                    gwtMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-                })
-                .when(sut -> {
-                    Scanner scanner = new Scanner(System.in);
-                    List<String> actualMessages = new ArrayList<>();
-                    while (scanner.hasNext()) {
-                        String actualMessage = scanner.nextLine();
-                        actualMessages.add(actualMessage);
-                    }
-                    scanner.close();
-                    gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
-                    return actualMessages;
-                })
-                .then(result -> {
-                    assertThat(result).containsExactly("line #1", "line #2", "line #3", "line #4", "line #5");
-                    gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                });
+        // THEN
+        verifyMocks();
     }
 
     @Test
@@ -281,5 +269,79 @@ class GivenStdinAsFixtureTest {
                     assertThat(result).containsExactly("line #1", "line #2", "line #3", "line #4", "line #5");
                     gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                 });
+
+        // THEN
+        verifyMocks();
+    }
+
+    @Nested
+    class Given_an_input_file {
+
+        @Test
+        void should_prepare_stdin_to_read_a_file() throws IOException {
+            // GIVEN
+            final File givenInputFile = Files
+                    .createTempFile("inputs", ".txt")
+                    .toFile();
+            PrintWriter writer = new PrintWriter(new FileWriter(givenInputFile));
+            rangeClosed(1, 5)
+                    .mapToObj(count -> "line #" + count + "\n")
+                    .forEach(writer::write);
+            writer.flush();
+
+            // WHEN
+            givenSutClass(SystemUnderTest.class)
+                    .givenStandardInputStream(stdin -> {
+                        stdin.expectToRead(givenInputFile);
+                        gwtMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                    })
+                    .when(sut -> {
+                        Scanner scanner = new Scanner(System.in);
+                        List<String> actualMessages = new ArrayList<>();
+                        while (scanner.hasNext()) {
+                            String actualMessage = scanner.nextLine();
+                            actualMessages.add(actualMessage);
+                        }
+                        scanner.close();
+                        gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+                        return actualMessages;
+                    })
+                    .then(result -> {
+                        assertThat(result).containsExactly("line #1", "line #2", "line #3", "line #4", "line #5");
+                        gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                    });
+
+            // THEN
+            verifyMocks();
+        }
+
+        @Test
+        void should_fail_to_prepare_stdin_to_read_a_file() throws IOException {
+            // GIVEN
+            File givenInputFile = Files
+                    .createTempFile("empty", ".txt")
+                    .toFile();
+            PowerMockito.mockStatic(Files.class);
+            PowerMockito
+                    .when(Files.lines(Mockito.any(Path.class)))
+                    .thenThrow(IOException.class);
+
+            // WHEN
+            Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                    .givenStandardInputStream(stdin -> {
+                        gwtMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                        stdin.expectToRead(givenInputFile);
+                    })
+                    .whenSutRuns(sut -> gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer())
+                    .then(() -> gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
+
+            // THEN
+            assertThat(thrown)
+                    .isInstanceOf(PreparationError.class)
+                    .hasMessage("Fails to prepare the standard input stream!")
+                    .hasCauseInstanceOf(IOException.class);
+            verify(gwtMock).givenAContextThatDefinesTheInitialStateOfTheSystem();
+            verifyNoMoreInteractions(gwtMock);
+        }
     }
 }
