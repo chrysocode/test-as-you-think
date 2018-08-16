@@ -12,8 +12,13 @@ import testasyouthink.function.CheckedRunnable;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -21,6 +26,7 @@ import java.util.Scanner;
 import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
+import static java.util.stream.IntStream.rangeClosed;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
@@ -65,6 +71,12 @@ class GivenStdinAsFixtureTest {
         return prepareStdin(inputs
                 .stream()
                 .map(String::valueOf)
+                .collect(Collectors.joining("\n")));
+    }
+
+    private CheckedRunnable prepareStdin(final File input) throws IOException {
+        return prepareStdin(Files
+                .lines(input.toPath())
                 .collect(Collectors.joining("\n")));
     }
 
@@ -163,6 +175,38 @@ class GivenStdinAsFixtureTest {
                 })
                 .then(result -> {
                     assertThat(result).containsExactly("input", 123, true);
+                    gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                });
+    }
+
+    @Test
+    void should_prepare_stdin_to_read_a_file() throws IOException {
+        // GIVEN
+        final File givenInputFile = Files
+                .createTempFile("inputs", ".txt")
+                .toFile();
+        PrintWriter writer = new PrintWriter(new FileWriter(givenInputFile));
+        rangeClosed(1, 5)
+                .mapToObj(count -> "line #" + count + "\n")
+                .forEach(writer::write);
+        writer.flush();
+
+        // WHEN
+        givenSutClass(SystemUnderTest.class)
+                .given(prepareStdin(givenInputFile))
+                .when(sut -> {
+                    Scanner scanner = new Scanner(System.in);
+                    List<String> actualMessages = new ArrayList<>();
+                    while (scanner.hasNext()) {
+                        String actualMessage = scanner.nextLine();
+                        actualMessages.add(actualMessage);
+                    }
+                    scanner.close();
+                    gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+                    return actualMessages;
+                })
+                .then(result -> {
+                    assertThat(result).containsExactly("line #1", "line #2", "line #3", "line #4", "line #5");
                     gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                 });
     }
