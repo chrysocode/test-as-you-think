@@ -30,23 +30,18 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InOrder;
 import testasyouthink.fixture.GivenWhenThenDefinition;
 import testasyouthink.fixture.SystemUnderTest;
-import testasyouthink.function.CheckedRunnable;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Scanner;
-import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
 import static java.util.stream.IntStream.rangeClosed;
@@ -78,35 +73,6 @@ class GivenStdinAsFixtureTest {
                 .verify(gwtMock)
                 .thenTheActualResultIsInKeepingWithTheExpectedResult();
         inOrder.verifyNoMoreInteractions();
-    }
-
-    private CheckedRunnable prepareStdin(final Object input) {
-        return () -> {
-            InputStream stdinFake = new ByteArrayInputStream(String
-                    .valueOf(input)
-                    .getBytes());
-            System.setIn(stdinFake);
-            gwtMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-        };
-    }
-
-    private CheckedRunnable prepareStdin(final Collection<?> inputs) {
-        return prepareStdin(inputs
-                .stream()
-                .map(String::valueOf)
-                .collect(Collectors.joining("\n")));
-    }
-
-    private CheckedRunnable prepareStdin(final File input) throws IOException {
-        return prepareStdin(Files
-                .lines(input.toPath())
-                .collect(Collectors.joining("\n")));
-    }
-
-    private CheckedRunnable prepareStdin(final Path input) throws IOException {
-        return prepareStdin(Files
-                .lines(input)
-                .collect(Collectors.joining("\n")));
     }
 
     @Test
@@ -270,7 +236,10 @@ class GivenStdinAsFixtureTest {
 
         // WHEN
         givenSutClass(SystemUnderTest.class)
-                .given(prepareStdin(givenInputPath))
+                .givenStandardInputStream(stdin -> {
+                    stdin.expectToRead(givenInputPath);
+                    gwtMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                })
                 .when(sut -> {
                     Scanner scanner = new Scanner(System.in);
                     List<String> actualMessages = new ArrayList<>();

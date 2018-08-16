@@ -28,6 +28,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
 import java.util.Collection;
 
 import static java.nio.file.Files.lines;
@@ -57,6 +58,15 @@ public class StdinPreparation implements Stdin {
     public void expectToRead(File input) {
         try {
             expectToRead(lines(input.toPath()).collect(joining(END_OF_LINE)));
+        } catch (IOException e) {
+            throw new RuntimeException("Not yet implemented!");
+        }
+    }
+
+    @Override
+    public void expectToRead(Path input) {
+        try {
+            expectToRead(lines(input).collect(joining(END_OF_LINE)));
         } catch (IOException e) {
             throw new RuntimeException("Not yet implemented!");
         }
