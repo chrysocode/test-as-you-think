@@ -19,6 +19,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -77,6 +78,12 @@ class GivenStdinAsFixtureTest {
     private CheckedRunnable prepareStdin(final File input) throws IOException {
         return prepareStdin(Files
                 .lines(input.toPath())
+                .collect(Collectors.joining("\n")));
+    }
+
+    private CheckedRunnable prepareStdin(final Path input) throws IOException {
+        return prepareStdin(Files
+                .lines(input)
                 .collect(Collectors.joining("\n")));
     }
 
@@ -194,6 +201,36 @@ class GivenStdinAsFixtureTest {
         // WHEN
         givenSutClass(SystemUnderTest.class)
                 .given(prepareStdin(givenInputFile))
+                .when(sut -> {
+                    Scanner scanner = new Scanner(System.in);
+                    List<String> actualMessages = new ArrayList<>();
+                    while (scanner.hasNext()) {
+                        String actualMessage = scanner.nextLine();
+                        actualMessages.add(actualMessage);
+                    }
+                    scanner.close();
+                    gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+                    return actualMessages;
+                })
+                .then(result -> {
+                    assertThat(result).containsExactly("line #1", "line #2", "line #3", "line #4", "line #5");
+                    gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                });
+    }
+
+    @Test
+    void should_prepare_stdin_to_read_a_file_path() throws IOException {
+        // GIVEN
+        final Path givenInputPath = Files.createTempFile("inputs", ".txt");
+        PrintWriter writer = new PrintWriter(new FileWriter(givenInputPath.toFile()));
+        rangeClosed(1, 5)
+                .mapToObj(count -> "line #" + count + "\n")
+                .forEach(writer::write);
+        writer.flush();
+
+        // WHEN
+        givenSutClass(SystemUnderTest.class)
+                .given(prepareStdin(givenInputPath))
                 .when(sut -> {
                     Scanner scanner = new Scanner(System.in);
                     List<String> actualMessages = new ArrayList<>();
