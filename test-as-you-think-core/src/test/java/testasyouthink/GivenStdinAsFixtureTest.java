@@ -22,14 +22,15 @@
 
 package testasyouthink;
 
+import net.bytebuddy.ByteBuddy;
+import net.bytebuddy.dynamic.loading.ClassReloadingStrategy;
+import net.bytebuddy.implementation.MethodDelegation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InOrder;
-import org.mockito.Mockito;
-import org.powermock.api.mockito.PowerMockito;
 import testasyouthink.fixture.GivenWhenThenDefinition;
 import testasyouthink.fixture.SystemUnderTest;
 import testasyouthink.preparation.PreparationError;
@@ -45,9 +46,15 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Stream;
 
 import static java.util.Arrays.asList;
 import static java.util.stream.IntStream.rangeClosed;
+import static net.bytebuddy.matcher.ElementMatchers.canThrow;
+import static net.bytebuddy.matcher.ElementMatchers.isStatic;
+import static net.bytebuddy.matcher.ElementMatchers.named;
+import static net.bytebuddy.matcher.ElementMatchers.returns;
+import static net.bytebuddy.matcher.ElementMatchers.takesArguments;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.Mockito.inOrder;
@@ -274,6 +281,13 @@ class GivenStdinAsFixtureTest {
         verifyMocks();
     }
 
+    public static class FilesForTesting {
+
+        public static Stream<String> lines(Path path) throws IOException {
+            throw new IOException();
+        }
+    }
+
     @Nested
     class Given_an_input_file {
 
@@ -321,16 +335,22 @@ class GivenStdinAsFixtureTest {
             File givenInputFile = Files
                     .createTempFile("empty", ".txt")
                     .toFile();
-            PowerMockito.mockStatic(Files.class);
-            PowerMockito
-                    .when(Files.lines(Mockito.any(Path.class)))
-                    .thenThrow(IOException.class);
+            new ByteBuddy()
+                    .redefine(Files.class)
+                    .method(named("lines")
+                            .and(takesArguments(Path.class))
+                            .and(returns(Stream.class))
+                            .and(canThrow(IOException.class).and(isStatic())))
+                    .intercept(MethodDelegation.to(FilesForTesting.class))
+                    .make()
+                    .load(FilesForTesting.class.getClassLoader(), ClassReloadingStrategy.fromInstalledAgent())
+                    .getLoaded();
 
             // WHEN
             Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                     .givenStandardInputStream(stdin -> {
-                        gwtMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
                         stdin.expectToRead(givenInputFile);
+                        gwtMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
                     })
                     .whenSutRuns(sut -> gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer())
                     .then(() -> gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));

@@ -500,12 +500,11 @@
                 <version>2.21.0</version>
                 <scope>test</scope>
             </dependency>
-            <!-- https://mvnrepository.com/artifact/org.powermock/powermock-api-mockito -->
+            <!-- https://mvnrepository.com/artifact/net.bytebuddy/byte-buddy -->
             <dependency>
-                <groupId>org.powermock</groupId>
-                <artifactId>powermock-api-mockito2</artifactId>
-                <version>1.7.4</version>
-                <scope>test</scope>
+                <groupId>net.bytebuddy</groupId>
+                <artifactId>byte-buddy</artifactId>
+                <version>1.8.17</version>
             </dependency>
             <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
             <dependency>
