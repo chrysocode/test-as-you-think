@@ -74,40 +74,14 @@ class GivenStdinAsFixtureTest {
         givenSutClass(SystemUnderTest.class)
                 .given(prepareStdin("expected"))
                 .when(sut -> {
-                    System.out.print("Type: ");
                     BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
                     String actualMessage = stdin.readLine();
                     stdin.close();
-                    System.out.println(String.format("\nMessage: %s", actualMessage));
                     gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
                     return actualMessage;
                 })
                 .then(result -> {
                     assertThat(result).isEqualTo("expected");
-                    gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                });
-    }
-
-    @Test
-    void should_prepare_stdin_to_read_messages() {
-        // WHEN
-        givenSutClass(SystemUnderTest.class)
-                .given(prepareStdin(asList("intput #1", "intput #2", "intput #3")))
-                .when(sut -> {
-                    System.out.print("Type: ");
-                    BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
-                    List<String> actualMessages = new ArrayList<>();
-                    while (stdin.ready()) {
-                        String actualMessage = stdin.readLine();
-                        System.out.println(String.format("\nMessage: %s", actualMessage));
-                        actualMessages.add(actualMessage);
-                    }
-                    stdin.close();
-                    gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
-                    return actualMessages;
-                })
-                .then(result -> {
-                    assertThat(result).containsExactly("intput #1", "intput #2", "intput #3");
                     gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                 });
     }
@@ -119,10 +93,8 @@ class GivenStdinAsFixtureTest {
         givenSutClass(SystemUnderTest.class)
                 .given(prepareStdin(givenInputNumber))
                 .when(sut -> {
-                    System.out.print("Type: ");
                     Scanner scanner = new Scanner(System.in);
                     Integer actualNumber = scanner.nextInt();
-                    System.out.println(String.format("\nNumber: %d", actualNumber));
                     scanner.close();
                     gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
                     return actualNumber;
@@ -140,10 +112,8 @@ class GivenStdinAsFixtureTest {
         givenSutClass(SystemUnderTest.class)
                 .given(prepareStdin(givenInputNumber))
                 .when(sut -> {
-                    System.out.print("Type: ");
                     BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
                     Integer actualNumber = Integer.parseInt(stdin.readLine());
-                    System.out.println(String.format("\nNumber: %d", actualNumber));
                     stdin.close();
                     gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
                     return actualNumber;
@@ -155,12 +125,33 @@ class GivenStdinAsFixtureTest {
     }
 
     @Test
+    void should_prepare_stdin_to_read_messages() {
+        // WHEN
+        givenSutClass(SystemUnderTest.class)
+                .given(prepareStdin(asList("intput #1", "intput #2", "intput #3")))
+                .when(sut -> {
+                    BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
+                    List<String> actualMessages = new ArrayList<>();
+                    while (stdin.ready()) {
+                        String actualMessage = stdin.readLine();
+                        actualMessages.add(actualMessage);
+                    }
+                    stdin.close();
+                    gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+                    return actualMessages;
+                })
+                .then(result -> {
+                    assertThat(result).containsExactly("intput #1", "intput #2", "intput #3");
+                    gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                });
+    }
+
+    @Test
     void should_prepare_stdin_to_read_different_kinds_of_data() {
         // WHEN
         givenSutClass(SystemUnderTest.class)
                 .given(prepareStdin(asList("input", 123, true)))
                 .when(sut -> {
-                    System.out.print("Type: ");
                     Scanner scanner = new Scanner(System.in);
                     List<Object> actualData = new ArrayList<>();
                     actualData.add(scanner.next());
