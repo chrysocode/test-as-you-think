@@ -23,6 +23,7 @@
 package testasyouthink;
 
 import net.bytebuddy.ByteBuddy;
+import net.bytebuddy.agent.ByteBuddyAgent;
 import net.bytebuddy.dynamic.loading.ClassReloadingStrategy;
 import net.bytebuddy.implementation.MethodDelegation;
 import org.junit.jupiter.api.BeforeEach;
@@ -56,6 +57,7 @@ import static net.bytebuddy.matcher.ElementMatchers.named;
 import static net.bytebuddy.matcher.ElementMatchers.returns;
 import static net.bytebuddy.matcher.ElementMatchers.takesArguments;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
@@ -335,16 +337,19 @@ class GivenStdinAsFixtureTest {
             File givenInputFile = Files
                     .createTempFile("empty", ".txt")
                     .toFile();
+            ByteBuddyAgent.install();
             new ByteBuddy()
-                    .redefine(Files.class)
+                    .redefine(FilesForTesting.class)
+                    .name(Files.class.getName())
                     .method(named("lines")
                             .and(takesArguments(Path.class))
                             .and(returns(Stream.class))
                             .and(canThrow(IOException.class).and(isStatic())))
                     .intercept(MethodDelegation.to(FilesForTesting.class))
                     .make()
-                    .load(FilesForTesting.class.getClassLoader(), ClassReloadingStrategy.fromInstalledAgent())
+                    .load(Files.class.getClassLoader(), ClassReloadingStrategy.fromInstalledAgent())
                     .getLoaded();
+            assertThatThrownBy(() -> Files.lines(givenInputFile.toPath())).isInstanceOf(IOException.class);
 
             // WHEN
             Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
