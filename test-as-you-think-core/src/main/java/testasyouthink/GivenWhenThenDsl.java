@@ -58,6 +58,8 @@ public interface GivenWhenThenDsl {
             void expectToRead(Object input);
 
             void expectToRead(Collection<?> inputs);
+
+            void expectToRead(File input);
         }
     }
 

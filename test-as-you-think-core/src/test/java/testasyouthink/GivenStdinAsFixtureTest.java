@@ -237,7 +237,10 @@ class GivenStdinAsFixtureTest {
 
         // WHEN
         givenSutClass(SystemUnderTest.class)
-                .given(prepareStdin(givenInputFile))
+                .givenStandardInputStream(stdin -> {
+                    stdin.expectToRead(givenInputFile);
+                    gwtMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                })
                 .when(sut -> {
                     Scanner scanner = new Scanner(System.in);
                     List<String> actualMessages = new ArrayList<>();

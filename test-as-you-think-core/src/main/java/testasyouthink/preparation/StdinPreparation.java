@@ -25,12 +25,17 @@ package testasyouthink.preparation;
 import testasyouthink.GivenWhenThenDsl.Fixture.Stdin;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
 
+import static java.nio.file.Files.lines;
 import static java.util.stream.Collectors.joining;
 
 public class StdinPreparation implements Stdin {
+
+    private static final String END_OF_LINE = "\n";
 
     @Override
     public void expectToRead(Object input) {
@@ -45,6 +50,15 @@ public class StdinPreparation implements Stdin {
         expectToRead(inputs
                 .stream()
                 .map(String::valueOf)
-                .collect(joining("\n")));
+                .collect(joining(END_OF_LINE)));
+    }
+
+    @Override
+    public void expectToRead(File input) {
+        try {
+            expectToRead(lines(input.toPath()).collect(joining(END_OF_LINE)));
+        } catch (IOException e) {
+            throw new RuntimeException("Not yet implemented!");
+        }
     }
 }
