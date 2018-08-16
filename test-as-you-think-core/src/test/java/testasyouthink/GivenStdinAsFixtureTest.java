@@ -1,3 +1,25 @@
+/*-
+ * #%L
+ * Test As You Think
+ * %%
+ * Copyright (C) 2017 - 2018 Xavier Pigeon and TestAsYouThink contributors
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Lesser Public License for more details.
+ *
+ * You should have received a copy of the GNU General Lesser Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/lgpl-3.0.html>.
+ * #L%
+ */
+
 package testasyouthink;
 
 import org.junit.jupiter.api.AfterEach;
@@ -91,7 +113,10 @@ class GivenStdinAsFixtureTest {
     void should_prepare_stdin_to_read_a_message() {
         // WHEN
         givenSutClass(SystemUnderTest.class)
-                .given(prepareStdin("expected"))
+                .givenStandardInputStream(stdin -> {
+                    stdin.expectToRead("expected");
+                    gwtMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                })
                 .when(sut -> {
                     BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
                     String actualMessage = stdin.readLine();
@@ -110,7 +135,10 @@ class GivenStdinAsFixtureTest {
     void should_prepare_stdin_to_read_a_number_using_a_scanner(final int givenInputNumber) {
         // WHEN
         givenSutClass(SystemUnderTest.class)
-                .given(prepareStdin(givenInputNumber))
+                .givenStandardInputStream(stdin -> {
+                    stdin.expectToRead(givenInputNumber);
+                    gwtMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                })
                 .when(sut -> {
                     Scanner scanner = new Scanner(System.in);
                     Integer actualNumber = scanner.nextInt();
@@ -129,7 +157,10 @@ class GivenStdinAsFixtureTest {
     void should_prepare_stdin_to_read_a_number_using_a_buffered_reader(final int givenInputNumber) {
         // WHEN
         givenSutClass(SystemUnderTest.class)
-                .given(prepareStdin(givenInputNumber))
+                .givenStandardInputStream(stdin -> {
+                    stdin.expectToRead(givenInputNumber);
+                    gwtMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                })
                 .when(sut -> {
                     BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
                     Integer actualNumber = Integer.parseInt(stdin.readLine());

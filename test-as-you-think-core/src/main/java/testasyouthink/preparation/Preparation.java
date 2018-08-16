@@ -22,6 +22,7 @@
 
 package testasyouthink.preparation;
 
+import testasyouthink.GivenWhenThenDsl.Fixture.Stdin;
 import testasyouthink.function.CheckedConsumer;
 import testasyouthink.function.CheckedRunnable;
 import testasyouthink.function.CheckedSupplier;
@@ -89,6 +90,10 @@ public class Preparation<$SystemUnderTest> {
 
     public void recordGivenStep(CheckedConsumer<$SystemUnderTest> givenStep) {
         givenSteps.add(sutPreparation.buildSutSupplier(givenStep));
+    }
+
+    public void recordGivenStep(Consumer<Stdin> givenStep) {
+        givenSteps.add(functions.toConsumer(() -> givenStep.accept(new StdinPreparation())));
     }
 
     public <$Argument> void recordGivenStep(CheckedSupplier<$Argument> givenStep) {

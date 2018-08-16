@@ -26,6 +26,7 @@ import testasyouthink.GivenWhenThenDsl.ExecutionStage.When;
 import testasyouthink.GivenWhenThenDsl.ExecutionStage.WhenApplyingOneArgument;
 import testasyouthink.GivenWhenThenDsl.ExecutionStage.WhenApplyingThreeArguments;
 import testasyouthink.GivenWhenThenDsl.ExecutionStage.WhenApplyingTwoArguments;
+import testasyouthink.GivenWhenThenDsl.Fixture.Stdin;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.Then;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.ThenFailure;
 import testasyouthink.GivenWhenThenDsl.VerificationStage.ThenWithoutResult;
@@ -45,8 +46,17 @@ import testasyouthink.function.CheckedTriFunction;
 import java.io.File;
 import java.time.Duration;
 import java.util.List;
+import java.util.function.Consumer;
 
 public interface GivenWhenThenDsl {
+
+    interface Fixture {
+
+        interface Stdin {
+
+            void expectToRead(Object input);
+        }
+    }
 
     interface PreparationStage {
 
@@ -59,6 +69,8 @@ public interface GivenWhenThenDsl {
             AndGiven<$SystemUnderTest> given(String fixtureSpecification, CheckedRunnable givenStep);
 
             AndGiven<$SystemUnderTest> given(String fixtureSpecification, CheckedConsumer<$SystemUnderTest> givenStep);
+
+            AndGiven<$SystemUnderTest> givenStandardInputStream(Consumer<Stdin> givenStep);
         }
 
         interface AndGiven<$SystemUnderTest> extends GivenArgument<$SystemUnderTest>, When<$SystemUnderTest> {

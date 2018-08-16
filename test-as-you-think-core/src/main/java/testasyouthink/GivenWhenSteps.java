@@ -8,12 +8,12 @@
  * it under the terms of the GNU Lesser General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Lesser Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Lesser Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/lgpl-3.0.html>.
@@ -22,6 +22,7 @@
 
 package testasyouthink;
 
+import testasyouthink.GivenWhenThenDsl.Fixture.Stdin;
 import testasyouthink.GivenWhenThenDsl.PreparationStage.AndGiven;
 import testasyouthink.GivenWhenThenDsl.PreparationStage.AndGivenArgument;
 import testasyouthink.GivenWhenThenDsl.PreparationStage.Given;
@@ -34,6 +35,8 @@ import testasyouthink.function.CheckedRunnable;
 import testasyouthink.function.CheckedSupplier;
 import testasyouthink.function.Functions;
 import testasyouthink.preparation.Preparation;
+
+import java.util.function.Consumer;
 
 public class GivenWhenSteps<$SystemUnderTest> implements Given<$SystemUnderTest>, AndGiven<$SystemUnderTest> {
 
@@ -85,6 +88,12 @@ public class GivenWhenSteps<$SystemUnderTest> implements Given<$SystemUnderTest>
     @Override
     public AndGiven<$SystemUnderTest> and(String fixtureSpecification, CheckedConsumer<$SystemUnderTest> givenStep) {
         return given(fixtureSpecification, givenStep);
+    }
+
+    @Override
+    public AndGiven<$SystemUnderTest> givenStandardInputStream(Consumer<Stdin> givenStep) {
+        preparation.recordGivenStep(givenStep);
+        return this;
     }
 
     private <$Argument> AndGivenArgument<$SystemUnderTest, $Argument> prepareArgument(
