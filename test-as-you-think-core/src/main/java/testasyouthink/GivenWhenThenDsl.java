@@ -45,6 +45,7 @@ import testasyouthink.function.CheckedTriFunction;
 
 import java.io.File;
 import java.time.Duration;
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -55,6 +56,8 @@ public interface GivenWhenThenDsl {
         interface Stdin {
 
             void expectToRead(Object input);
+
+            void expectToRead(Collection<?> inputs);
         }
     }
 

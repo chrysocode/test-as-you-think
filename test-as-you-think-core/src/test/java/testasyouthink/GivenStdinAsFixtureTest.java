@@ -178,7 +178,10 @@ class GivenStdinAsFixtureTest {
     void should_prepare_stdin_to_read_messages() {
         // WHEN
         givenSutClass(SystemUnderTest.class)
-                .given(prepareStdin(asList("intput #1", "intput #2", "intput #3")))
+                .givenStandardInputStream(stdin -> {
+                    stdin.expectToRead(asList("intput #1", "intput #2", "intput #3"));
+                    gwtMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                })
                 .when(sut -> {
                     BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
                     List<String> actualMessages = new ArrayList<>();
@@ -200,7 +203,10 @@ class GivenStdinAsFixtureTest {
     void should_prepare_stdin_to_read_different_kinds_of_data() {
         // WHEN
         givenSutClass(SystemUnderTest.class)
-                .given(prepareStdin(asList("input", 123, true)))
+                .givenStandardInputStream(stdin -> {
+                    stdin.expectToRead(asList("input", 123, true));
+                    gwtMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                })
                 .when(sut -> {
                     Scanner scanner = new Scanner(System.in);
                     List<Object> actualData = new ArrayList<>();
