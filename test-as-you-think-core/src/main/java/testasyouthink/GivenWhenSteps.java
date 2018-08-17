@@ -36,6 +36,8 @@ import testasyouthink.function.CheckedSupplier;
 import testasyouthink.function.Functions;
 import testasyouthink.preparation.Preparation;
 
+import static java.util.Arrays.asList;
+
 public class GivenWhenSteps<$SystemUnderTest> implements Given<$SystemUnderTest>, AndGiven<$SystemUnderTest> {
 
     private final Functions functions = Functions.INSTANCE;
@@ -95,8 +97,8 @@ public class GivenWhenSteps<$SystemUnderTest> implements Given<$SystemUnderTest>
     }
 
     @Override
-    public AndGiven<$SystemUnderTest> givenStandardInputReading(final Object input) {
-        preparation.recordGivenStepForStdin(stdin -> stdin.expectToRead(input));
+    public AndGiven<$SystemUnderTest> givenStandardInputReading(final Object... inputs) {
+        preparation.recordGivenStepForStdin(stdin -> stdin.expectToRead(asList(inputs)));
         return this;
     }
 

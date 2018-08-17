@@ -357,7 +357,26 @@ class GivenStdinAsFixtureTest {
                         assertThat(result).isEqualTo(123);
                         gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                     });
+        }
 
+        @Test
+        void should_prepare_stdin_to_read_inputs_as_primitive_types() {
+            // WHEN
+            givenSutClass(SystemUnderTest.class)
+                    .givenStandardInputReading("input", 123, true)
+                    .when(sut -> {
+                        Scanner scanner = new Scanner(System.in);
+                        List<Object> actualInputs = new ArrayList<>();
+                        actualInputs.add(scanner.next());
+                        actualInputs.add(scanner.nextInt());
+                        actualInputs.add(scanner.nextBoolean());
+                        gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+                        return actualInputs;
+                    })
+                    .then(result -> {
+                        assertThat(result).containsExactly("input", 123, true);
+                        gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                    });
         }
     }
 
