@@ -25,6 +25,7 @@ package testasyouthink;
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.agent.ByteBuddyAgent;
 import net.bytebuddy.dynamic.loading.ClassReloadingStrategy;
+import net.bytebuddy.implementation.FixedValue;
 import net.bytebuddy.implementation.MethodDelegation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -32,6 +33,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InOrder;
+import testasyouthink.GivenStdinAsFixtureTest.ToPlayWithByteBuddy.WithClassMethod;
+import testasyouthink.GivenStdinAsFixtureTest.ToPlayWithByteBuddy.WithInstanceMethod;
 import testasyouthink.fixture.GivenWhenThenDefinition;
 import testasyouthink.fixture.SystemUnderTest;
 import testasyouthink.preparation.PreparationError;
@@ -283,10 +286,47 @@ class GivenStdinAsFixtureTest {
         verifyMocks();
     }
 
-    public static class FilesForTesting {
+    public static final class FilesForTesting {
 
         public static Stream<String> lines(Path path) throws IOException {
             throw new IOException();
+        }
+    }
+
+    static class ToPlayWithByteBuddy {
+
+        static class WithClassMethod {
+
+            static class Source {
+
+                static String sayHello() {
+                    return "Hello";
+                }
+            }
+
+            static class Target {
+
+                static String sayHello() {
+                    return "Hello redefined";
+                }
+            }
+        }
+
+        static class WithInstanceMethod {
+
+            static class Source {
+
+                String sayHello() {
+                    return "Hello";
+                }
+            }
+
+            static class Target {
+
+                String sayHello() {
+                    return "Hello redefined";
+                }
+            }
         }
     }
 
@@ -334,9 +374,6 @@ class GivenStdinAsFixtureTest {
         @Test
         void should_fail_to_prepare_stdin_to_read_a_file() throws IOException {
             // GIVEN
-            File givenInputFile = Files
-                    .createTempFile("empty", ".txt")
-                    .toFile();
             ByteBuddyAgent.install();
             new ByteBuddy()
                     .redefine(FilesForTesting.class)
@@ -347,8 +384,10 @@ class GivenStdinAsFixtureTest {
                             .and(canThrow(IOException.class).and(isStatic())))
                     .intercept(MethodDelegation.to(FilesForTesting.class))
                     .make()
-                    .load(Files.class.getClassLoader(), ClassReloadingStrategy.fromInstalledAgent())
-                    .getLoaded();
+                    .load(Files.class.getClassLoader(), ClassReloadingStrategy.fromInstalledAgent());
+            File givenInputFile = Files
+                    .createTempFile("empty", ".txt")
+                    .toFile();
             assertThatThrownBy(() -> Files.lines(givenInputFile.toPath())).isInstanceOf(IOException.class);
 
             // WHEN
@@ -367,6 +406,122 @@ class GivenStdinAsFixtureTest {
                     .hasCauseInstanceOf(IOException.class);
             verify(gwtMock).givenAContextThatDefinesTheInitialStateOfTheSystem();
             verifyNoMoreInteractions(gwtMock);
+        }
+    }
+
+    @Nested
+    class Playing_with_Byte_Buddy {
+
+        @Nested
+        class How_to_intercept_an_instance_method {
+
+            @Test
+            void should_replace_an_instance_method_with_a_fixed_value() {
+                // GIVEN
+                WithInstanceMethod.Source source = new WithInstanceMethod.Source();
+
+                // WHEN
+                ByteBuddyAgent.install();
+                new ByteBuddy()
+                        .redefine(WithInstanceMethod.Source.class)
+                        .method(named("sayHello"))
+                        .intercept(FixedValue.value("Hello redefined"))
+                        .make()
+                        .load(WithInstanceMethod.Source.class.getClassLoader(),
+                                ClassReloadingStrategy.fromInstalledAgent());
+
+                // THEN
+                assertThat(source.sayHello()).isEqualTo("Hello redefined");
+            }
+
+            @Test
+            void should_replace_an_instance_method_with_another_class_method() {
+                // GIVEN
+                WithInstanceMethod.Source source = new WithInstanceMethod.Source();
+
+                // WHEN
+                ByteBuddyAgent.install();
+                new ByteBuddy()
+                        .redefine(WithInstanceMethod.Source.class)
+                        .method(named("sayHello"))
+                        .intercept(MethodDelegation.to(ToPlayWithByteBuddy.WithClassMethod.Target.class))
+                        .make()
+                        .load(WithInstanceMethod.Source.class.getClassLoader(),
+                                ClassReloadingStrategy.fromInstalledAgent());
+
+                // THEN
+                assertThat(source.sayHello()).isEqualTo("Hello redefined");
+            }
+
+            @Test
+            void should_replace_an_instance_method_with_another_instance_method() {
+                // GIVEN
+                WithInstanceMethod.Source foo = new WithInstanceMethod.Source();
+
+                // WHEN
+                ByteBuddyAgent.install();
+                new ByteBuddy()
+                        .redefine(WithInstanceMethod.Target.class)
+                        .name(WithInstanceMethod.Source.class.getName())
+                        .make()
+                        .load(WithInstanceMethod.Source.class.getClassLoader(),
+                                ClassReloadingStrategy.fromInstalledAgent());
+
+                // THEN
+                assertThat(foo.sayHello()).isEqualTo("Hello redefined");
+            }
+        }
+
+        @Nested
+        class How_to_intercept_a_class_method {
+
+            @Test
+            void should_replace_a_class_method_with_a_fixed_value() {
+                // WHEN
+                ByteBuddyAgent.install();
+                new ByteBuddy()
+                        .redefine(WithClassMethod.Source.class)
+                        .method(named("sayHello"))
+                        .intercept(FixedValue.value("Hello redefined"))
+                        .make()
+                        .load(WithClassMethod.Source.class.getClassLoader(),
+                                ClassReloadingStrategy.fromInstalledAgent());
+
+                // THEN
+                assertThat(ToPlayWithByteBuddy.WithClassMethod.Source.sayHello()).isEqualTo("Hello redefined");
+            }
+
+            @Test
+            void should_replace_a_class_method_with_another_class_method() {
+                // WHEN
+                ByteBuddyAgent.install();
+                new ByteBuddy()
+                        .redefine(WithClassMethod.Source.class)
+                        .method(named("sayHello"))
+                        .intercept(MethodDelegation.to(WithClassMethod.Target.class))
+                        .make()
+                        .load(WithClassMethod.Source.class.getClassLoader(),
+                                ClassReloadingStrategy.fromInstalledAgent());
+
+                // THEN
+                assertThat(WithClassMethod.Source.sayHello()).isEqualTo("Hello redefined");
+            }
+
+            @Test
+            void should_replace_a_class_method_with_another_instance_method() {
+                // WHEN
+                ByteBuddyAgent.install();
+                new ByteBuddy()
+                        .redefine(WithClassMethod.Source.class)
+                        .method(named("sayHello"))
+                        .intercept(MethodDelegation.to(new WithInstanceMethod.Target()))
+                        .make()
+                        .load(WithClassMethod.Source.class.getClassLoader(),
+                                ClassReloadingStrategy.fromInstalledAgent());
+
+                // THEN
+                assertThat(WithClassMethod.Source.sayHello()).isEqualTo("Hello redefined");
+            }
         }
     }
 }

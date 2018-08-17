@@ -120,7 +120,7 @@
         <dependency>
             <groupId>net.bytebuddy</groupId>
             <artifactId>byte-buddy-agent</artifactId>
-            <scope>test</scope>
+            <scope>runtime</scope>
         </dependency>
 
         <dependency>

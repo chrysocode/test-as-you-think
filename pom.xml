@@ -24,6 +24,7 @@
         <maven.compiler.target>${java.version}</maven.compiler.target>
         <maven.minimalVersion>3.5.0</maven.minimalVersion>
         <junit.jupiter.version>5.2.0</junit.jupiter.version>
+        <byte-buddy.version>1.8.10</byte-buddy.version>
     </properties>
 
     <modules>
@@ -504,13 +505,13 @@
             <dependency>
                 <groupId>net.bytebuddy</groupId>
                 <artifactId>byte-buddy</artifactId>
-                <version>1.8.17</version>
+                <version>${byte-buddy.version}</version>
             </dependency>
             <!-- https://mvnrepository.com/artifact/net.bytebuddy/byte-buddy-agent -->
             <dependency>
                 <groupId>net.bytebuddy</groupId>
                 <artifactId>byte-buddy-agent</artifactId>
-                <version>1.8.17</version>
+                <version>${byte-buddy.version}</version>
             </dependency>
             <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
             <dependency>
