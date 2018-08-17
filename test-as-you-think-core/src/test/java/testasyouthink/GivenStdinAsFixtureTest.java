@@ -388,8 +388,8 @@ class GivenStdinAsFixtureTest {
             // WHEN
             Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                     .givenStandardInputStream(stdin -> {
-                        stdin.expectToRead(givenInputFile);
                         gwtMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                        stdin.expectToRead(givenInputFile);
                     })
                     .whenSutRuns(sut -> gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer())
                     .then(() -> gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
