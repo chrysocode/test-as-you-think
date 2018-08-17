@@ -30,19 +30,19 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.function.Consumer;
-import java.util.stream.Stream;
 
+import static java.nio.file.Files.lines;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
 public class StdinPreparation implements Stdin {
 
     private static final String END_OF_LINE = "\n";
+    private static final String PREPARATION_FAILS = "Fails to prepare the standard input stream!";
     private final Functions functions = Functions.INSTANCE;
     private Collection<String> inputsToBeRead;
 
@@ -54,10 +54,8 @@ public class StdinPreparation implements Stdin {
         return functions.toConsumer(() -> {
             try {
                 givenStep.accept(this);
-            } catch (PreparationError preparationError) {
-                throw preparationError;
             } catch (Throwable throwable) {
-                throw new PreparationError("Fails to prepare the standard input stream!", throwable);
+                throw new PreparationError(PREPARATION_FAILS, throwable);
             }
             redirectStdin();
         });
@@ -85,20 +83,12 @@ public class StdinPreparation implements Stdin {
     }
 
     @Override
-    public void expectToRead(File input) {
+    public void expectToRead(File input) throws IOException {
         inputsToBeRead.addAll(lines(input.toPath()).collect(toList()));
     }
 
     @Override
-    public void expectToRead(Path input) {
+    public void expectToRead(Path input) throws IOException {
         inputsToBeRead.addAll(lines(input).collect(toList()));
-    }
-
-    private Stream<String> lines(Path input) {
-        try {
-            return Files.lines(input);
-        } catch (IOException ioException) {
-            throw new PreparationError("Fails to prepare the standard input stream!", ioException);
-        }
     }
 }

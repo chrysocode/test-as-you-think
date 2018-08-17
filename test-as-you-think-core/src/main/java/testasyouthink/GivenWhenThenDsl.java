@@ -44,6 +44,7 @@ import testasyouthink.function.CheckedTriConsumer;
 import testasyouthink.function.CheckedTriFunction;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.util.Collection;
@@ -59,9 +60,9 @@ public interface GivenWhenThenDsl {
 
             void expectToRead(Collection<?> inputs);
 
-            void expectToRead(File input);
+            void expectToRead(File input) throws IOException;
 
-            void expectToRead(Path input);
+            void expectToRead(Path input) throws IOException;
         }
     }
 
