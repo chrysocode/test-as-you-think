@@ -29,12 +29,13 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 
-import static java.nio.file.Files.lines;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
@@ -78,17 +79,17 @@ public class StdinPreparation implements Stdin {
 
     @Override
     public void expectToRead(File input) {
-        try {
-            inputsToBeRead.addAll(lines(input.toPath()).collect(toList()));
-        } catch (IOException ioException) {
-            throw new PreparationError("Fails to prepare the standard input stream!", ioException);
-        }
+        inputsToBeRead.addAll(lines(input.toPath()).collect(toList()));
     }
 
     @Override
     public void expectToRead(Path input) {
+        inputsToBeRead.addAll(lines(input).collect(toList()));
+    }
+
+    private Stream<String> lines(Path input) {
         try {
-            inputsToBeRead.addAll(lines(input).collect(toList()));
+            return Files.lines(input);
         } catch (IOException ioException) {
             throw new PreparationError("Fails to prepare the standard input stream!", ioException);
         }
