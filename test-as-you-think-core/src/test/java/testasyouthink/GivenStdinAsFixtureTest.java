@@ -338,6 +338,33 @@ class GivenStdinAsFixtureTest {
                     .thenTheActualResultIsInKeepingWithTheExpectedResult();
             inOrder.verifyNoMoreInteractions();
         }
+
+        @Test
+        void should_prepare_stdin_to_read_an_number_as_a_primitive_type() {
+            // WHEN
+            givenSutClass(SystemUnderTest.class)
+                    .givenStandardInputReading(123)
+                    .when(sut -> {
+                        Scanner scanner = new Scanner(System.in);
+                        Integer actualNumber = scanner.nextInt();
+                        gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+                        return actualNumber;
+                    })
+                    .then(result -> {
+                        assertThat(result).isEqualTo(123);
+                        gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                    });
+
+            // THEN
+            InOrder inOrder = inOrder(gwtMock);
+            inOrder
+                    .verify(gwtMock)
+                    .whenAnEventHappensInRelationToAnActionOfTheConsumer();
+            inOrder
+                    .verify(gwtMock)
+                    .thenTheActualResultIsInKeepingWithTheExpectedResult();
+            inOrder.verifyNoMoreInteractions();
+        }
     }
 
     @Nested

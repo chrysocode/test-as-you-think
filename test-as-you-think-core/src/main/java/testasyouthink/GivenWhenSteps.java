@@ -95,7 +95,7 @@ public class GivenWhenSteps<$SystemUnderTest> implements Given<$SystemUnderTest>
     }
 
     @Override
-    public AndGiven<$SystemUnderTest> givenStandardInputReading(final String input) {
+    public AndGiven<$SystemUnderTest> givenStandardInputReading(final Object input) {
         preparation.recordGivenStepForStdin(stdin -> stdin.expectToRead(input));
         return this;
     }
