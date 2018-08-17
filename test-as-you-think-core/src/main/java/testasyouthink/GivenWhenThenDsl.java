@@ -81,6 +81,8 @@ public interface GivenWhenThenDsl {
             AndGiven<$SystemUnderTest> givenStandardInputStream(CheckedConsumer<Stdin> givenStep);
 
             AndGiven<$SystemUnderTest> givenStandardInputReading(Object... inputs);
+
+            AndGiven<$SystemUnderTest> givenStandardInputReading(File input);
         }
 
         interface AndGiven<$SystemUnderTest> extends GivenArgument<$SystemUnderTest>, When<$SystemUnderTest> {

@@ -429,6 +429,45 @@ class GivenStdinAsFixtureTest {
         }
 
         @Test
+        void should_prepare_stdin_to_read_a_file_only() throws IOException {
+            // GIVEN
+            PrintWriter writer = new PrintWriter(new FileWriter(givenInput.toFile()));
+            rangeClosed(1, 5)
+                    .mapToObj(count -> "line #" + count + "\n")
+                    .forEach(writer::write);
+            writer.flush();
+
+            // WHEN
+            givenSutClass(SystemUnderTest.class)
+                    .givenStandardInputReading(givenInput.toFile())
+                    .when(sut -> {
+                        Scanner scanner = new Scanner(System.in);
+                        List<String> actualMessages = new ArrayList<>();
+                        while (scanner.hasNext()) {
+                            String actualMessage = scanner.nextLine();
+                            actualMessages.add(actualMessage);
+                        }
+                        scanner.close();
+                        gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+                        return actualMessages;
+                    })
+                    .then(result -> {
+                        assertThat(result).containsExactly("line #1", "line #2", "line #3", "line #4", "line #5");
+                        gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                    });
+
+            // THEN
+            InOrder inOrder = inOrder(gwtMock);
+            inOrder
+                    .verify(gwtMock)
+                    .whenAnEventHappensInRelationToAnActionOfTheConsumer();
+            inOrder
+                    .verify(gwtMock)
+                    .thenTheActualResultIsInKeepingWithTheExpectedResult();
+            inOrder.verifyNoMoreInteractions();
+        }
+
+        @Test
         void should_prepare_stdin_to_read_a_file_path() throws IOException {
             // GIVEN
             PrintWriter writer = new PrintWriter(new FileWriter(givenInput.toFile()));
