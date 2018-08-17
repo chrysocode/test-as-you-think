@@ -310,6 +310,37 @@ class GivenStdinAsFixtureTest {
     }
 
     @Nested
+    class Given_only_primitive_types_to_be_read_by_stdin {
+
+        @Test
+        void should_prepare_stdin_to_read_a_message_as_a_primitive_type() {
+            // WHEN
+            givenSutClass(SystemUnderTest.class)
+                    .givenStandardInputReading("input")
+                    .when(sut -> {
+                        Scanner scanner = new Scanner(System.in);
+                        String actualMessage = scanner.nextLine();
+                        gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+                        return actualMessage;
+                    })
+                    .then(result -> {
+                        assertThat(result).isEqualTo("input");
+                        gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                    });
+
+            // THEN
+            InOrder inOrder = inOrder(gwtMock);
+            inOrder
+                    .verify(gwtMock)
+                    .whenAnEventHappensInRelationToAnActionOfTheConsumer();
+            inOrder
+                    .verify(gwtMock)
+                    .thenTheActualResultIsInKeepingWithTheExpectedResult();
+            inOrder.verifyNoMoreInteractions();
+        }
+    }
+
+    @Nested
     class Given_an_input_file_or_path {
 
         private Path givenInput;
