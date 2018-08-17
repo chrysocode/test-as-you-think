@@ -79,8 +79,8 @@ public class StdinPreparation implements Stdin {
     public void expectToRead(Path input) {
         try {
             inputsToBeRead.addAll(lines(input).collect(toList()));
-        } catch (IOException e) {
-            throw new RuntimeException("Not yet implemented!");
+        } catch (IOException ioException) {
+            throw new PreparationError("Fails to prepare the standard input stream!", ioException);
         }
     }
 }

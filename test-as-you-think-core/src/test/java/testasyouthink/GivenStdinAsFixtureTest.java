@@ -63,7 +63,6 @@ import static net.bytebuddy.matcher.ElementMatchers.named;
 import static net.bytebuddy.matcher.ElementMatchers.returns;
 import static net.bytebuddy.matcher.ElementMatchers.takesArguments;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
@@ -383,13 +382,47 @@ class GivenStdinAsFixtureTest {
             File givenInputFile = Files
                     .createTempFile("empty", ".txt")
                     .toFile();
-            assertThatThrownBy(() -> Files.lines(givenInputFile.toPath())).isInstanceOf(IOException.class);
 
             // WHEN
             Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
                     .givenStandardInputStream(stdin -> {
                         gwtMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
                         stdin.expectToRead(givenInputFile);
+                    })
+                    .whenSutRuns(sut -> gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer())
+                    .then(() -> gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
+
+            // THEN
+            assertThat(thrown)
+                    .isInstanceOf(PreparationError.class)
+                    .hasMessage("Fails to prepare the standard input stream!")
+                    .hasCauseInstanceOf(IOException.class);
+            verify(gwtMock).givenAContextThatDefinesTheInitialStateOfTheSystem();
+            verifyNoMoreInteractions(gwtMock);
+        }
+
+        @Test
+        void should_fail_to_prepare_stdin_to_read_a_file_path() throws IOException {
+            // GIVEN
+            ByteBuddyAgent.install();
+            new ByteBuddy()
+                    .redefine(Files.class)
+                    .method(named("lines")
+                            .and(takesArguments(Path.class))
+                            .and(returns(Stream.class))
+                            .and(canThrow(IOException.class).and(isStatic())))
+                    .intercept(ExceptionMethod.throwing(IOException.class))
+                    .make()
+                    .load(Files.class.getClassLoader(), ClassReloadingStrategy.fromInstalledAgent());
+            File givenInputFile = Files
+                    .createTempFile("empty", ".txt")
+                    .toFile();
+
+            // WHEN
+            Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                    .givenStandardInputStream(stdin -> {
+                        gwtMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                        stdin.expectToRead(givenInputFile.toPath());
                     })
                     .whenSutRuns(sut -> gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer())
                     .then(() -> gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
