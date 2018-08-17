@@ -43,7 +43,6 @@ import testasyouthink.fixture.SystemUnderTest;
 import testasyouthink.preparation.PreparationError;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -252,42 +251,6 @@ class GivenStdinAsFixtureTest {
         verifyMocks();
     }
 
-    @Test
-    void should_prepare_stdin_to_read_a_file_path() throws IOException {
-        // GIVEN
-        final Path givenInputPath = Files.createTempFile("inputs", ".txt");
-        PrintWriter writer = new PrintWriter(new FileWriter(givenInputPath.toFile()));
-        rangeClosed(1, 5)
-                .mapToObj(count -> "line #" + count + "\n")
-                .forEach(writer::write);
-        writer.flush();
-
-        // WHEN
-        givenSutClass(SystemUnderTest.class)
-                .givenStandardInputStream(stdin -> {
-                    stdin.expectToRead(givenInputPath);
-                    gwtMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-                })
-                .when(sut -> {
-                    Scanner scanner = new Scanner(System.in);
-                    List<String> actualMessages = new ArrayList<>();
-                    while (scanner.hasNext()) {
-                        String actualMessage = scanner.nextLine();
-                        actualMessages.add(actualMessage);
-                    }
-                    scanner.close();
-                    gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
-                    return actualMessages;
-                })
-                .then(result -> {
-                    assertThat(result).containsExactly("line #1", "line #2", "line #3", "line #4", "line #5");
-                    gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
-                });
-
-        // THEN
-        verifyMocks();
-    }
-
     static class ToPlayWithByteBuddy {
 
         static class WithClassMethod {
@@ -326,15 +289,22 @@ class GivenStdinAsFixtureTest {
     }
 
     @Nested
-    class Given_an_input_file {
+    class Given_an_input_file_or_path {
+
+        private Path givenInput;
+
+        @BeforeEach
+        void prepareInputFile() throws IOException {
+            givenInput = Files.createTempFile("inputs", ".txt");
+            givenInput
+                    .toFile()
+                    .deleteOnExit();
+        }
 
         @Test
         void should_prepare_stdin_to_read_a_file() throws IOException {
             // GIVEN
-            final File givenInputFile = Files
-                    .createTempFile("inputs", ".txt")
-                    .toFile();
-            PrintWriter writer = new PrintWriter(new FileWriter(givenInputFile));
+            PrintWriter writer = new PrintWriter(new FileWriter(givenInput.toFile()));
             rangeClosed(1, 5)
                     .mapToObj(count -> "line #" + count + "\n")
                     .forEach(writer::write);
@@ -343,7 +313,7 @@ class GivenStdinAsFixtureTest {
             // WHEN
             givenSutClass(SystemUnderTest.class)
                     .givenStandardInputStream(stdin -> {
-                        stdin.expectToRead(givenInputFile);
+                        stdin.expectToRead(givenInput.toFile());
                         gwtMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
                     })
                     .when(sut -> {
@@ -367,73 +337,104 @@ class GivenStdinAsFixtureTest {
         }
 
         @Test
-        void should_fail_to_prepare_stdin_to_read_a_file() throws IOException {
+        void should_prepare_stdin_to_read_a_file_path() throws IOException {
             // GIVEN
-            ByteBuddyAgent.install();
-            new ByteBuddy()
-                    .redefine(Files.class)
-                    .method(named("lines")
-                            .and(takesArguments(Path.class))
-                            .and(returns(Stream.class))
-                            .and(canThrow(IOException.class).and(isStatic())))
-                    .intercept(ExceptionMethod.throwing(IOException.class))
-                    .make()
-                    .load(Files.class.getClassLoader(), ClassReloadingStrategy.fromInstalledAgent());
-            File givenInputFile = Files
-                    .createTempFile("empty", ".txt")
-                    .toFile();
+            PrintWriter writer = new PrintWriter(new FileWriter(givenInput.toFile()));
+            rangeClosed(1, 5)
+                    .mapToObj(count -> "line #" + count + "\n")
+                    .forEach(writer::write);
+            writer.flush();
 
             // WHEN
-            Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+            givenSutClass(SystemUnderTest.class)
                     .givenStandardInputStream(stdin -> {
+                        stdin.expectToRead(givenInput);
                         gwtMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-                        stdin.expectToRead(givenInputFile);
                     })
-                    .whenSutRuns(sut -> gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer())
-                    .then(() -> gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
+                    .when(sut -> {
+                        Scanner scanner = new Scanner(System.in);
+                        List<String> actualMessages = new ArrayList<>();
+                        while (scanner.hasNext()) {
+                            String actualMessage = scanner.nextLine();
+                            actualMessages.add(actualMessage);
+                        }
+                        scanner.close();
+                        gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+                        return actualMessages;
+                    })
+                    .then(result -> {
+                        assertThat(result).containsExactly("line #1", "line #2", "line #3", "line #4", "line #5");
+                        gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                    });
 
             // THEN
-            assertThat(thrown)
-                    .isInstanceOf(PreparationError.class)
-                    .hasMessage("Fails to prepare the standard input stream!")
-                    .hasCauseInstanceOf(IOException.class);
-            verify(gwtMock).givenAContextThatDefinesTheInitialStateOfTheSystem();
-            verifyNoMoreInteractions(gwtMock);
+            verifyMocks();
         }
 
-        @Test
-        void should_fail_to_prepare_stdin_to_read_a_file_path() throws IOException {
-            // GIVEN
-            ByteBuddyAgent.install();
-            new ByteBuddy()
-                    .redefine(Files.class)
-                    .method(named("lines")
-                            .and(takesArguments(Path.class))
-                            .and(returns(Stream.class))
-                            .and(canThrow(IOException.class).and(isStatic())))
-                    .intercept(ExceptionMethod.throwing(IOException.class))
-                    .make()
-                    .load(Files.class.getClassLoader(), ClassReloadingStrategy.fromInstalledAgent());
-            File givenInputFile = Files
-                    .createTempFile("empty", ".txt")
-                    .toFile();
+        @Nested
+        class Given_the_stdin_preparation_fails {
 
-            // WHEN
-            Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
-                    .givenStandardInputStream(stdin -> {
-                        gwtMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
-                        stdin.expectToRead(givenInputFile.toPath());
-                    })
-                    .whenSutRuns(sut -> gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer())
-                    .then(() -> gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
+            @BeforeEach
+            void changeFilesDotLinesMethodBehaviour() {
+                // GIVEN
+                ByteBuddyAgent.install();
+                new ByteBuddy()
+                        .redefine(Files.class)
+                        .method(named("lines")
+                                .and(takesArguments(Path.class))
+                                .and(returns(Stream.class))
+                                .and(canThrow(IOException.class).and(isStatic())))
+                        .intercept(ExceptionMethod.throwing(IOException.class))
+                        .make()
+                        .load(Files.class.getClassLoader(), ClassReloadingStrategy.fromInstalledAgent());
+            }
 
-            // THEN
-            assertThat(thrown)
-                    .isInstanceOf(PreparationError.class)
-                    .hasMessage("Fails to prepare the standard input stream!")
-                    .hasCauseInstanceOf(IOException.class);
-            verify(gwtMock).givenAContextThatDefinesTheInitialStateOfTheSystem();
-            verifyNoMoreInteractions(gwtMock);
+            @AfterEach
+            void reloadChangedClass() throws IOException {
+                ClassReloadingStrategy
+                        .fromInstalledAgent()
+                        .reset(Files.class);
+            }
+
+            @Test
+            void should_fail_to_prepare_stdin_to_read_a_file() {
+                // WHEN
+                Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                        .givenStandardInputStream(stdin -> {
+                            gwtMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                            stdin.expectToRead(givenInput.toFile());
+                        })
+                        .whenSutRuns(sut -> gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer())
+                        .then(() -> gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
+
+                // THEN
+                assertThat(thrown)
+                        .isInstanceOf(PreparationError.class)
+                        .hasMessage("Fails to prepare the standard input stream!")
+                        .hasCauseInstanceOf(IOException.class);
+                verify(gwtMock).givenAContextThatDefinesTheInitialStateOfTheSystem();
+                verifyNoMoreInteractions(gwtMock);
+            }
+
+            @Test
+            void should_fail_to_prepare_stdin_to_read_a_file_path() {
+                // WHEN
+                Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                        .givenStandardInputStream(stdin -> {
+                            gwtMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                            stdin.expectToRead(givenInput);
+                        })
+                        .whenSutRuns(sut -> gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer())
+                        .then(() -> gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
+
+                // THEN
+                assertThat(thrown)
+                        .isInstanceOf(PreparationError.class)
+                        .hasMessage("Fails to prepare the standard input stream!")
+                        .hasCauseInstanceOf(IOException.class);
+                verify(gwtMock).givenAContextThatDefinesTheInitialStateOfTheSystem();
+                verifyNoMoreInteractions(gwtMock);
+            }
         }
     }
 
