@@ -312,6 +312,19 @@ class GivenStdinAsFixtureTest {
     @Nested
     class Given_only_primitive_types_to_be_read_by_stdin {
 
+        @AfterEach
+        void verifyMocks() {
+            // THEN
+            InOrder inOrder = inOrder(gwtMock);
+            inOrder
+                    .verify(gwtMock)
+                    .whenAnEventHappensInRelationToAnActionOfTheConsumer();
+            inOrder
+                    .verify(gwtMock)
+                    .thenTheActualResultIsInKeepingWithTheExpectedResult();
+            inOrder.verifyNoMoreInteractions();
+        }
+
         @Test
         void should_prepare_stdin_to_read_a_message_as_a_primitive_type() {
             // WHEN
@@ -327,16 +340,6 @@ class GivenStdinAsFixtureTest {
                         assertThat(result).isEqualTo("input");
                         gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                     });
-
-            // THEN
-            InOrder inOrder = inOrder(gwtMock);
-            inOrder
-                    .verify(gwtMock)
-                    .whenAnEventHappensInRelationToAnActionOfTheConsumer();
-            inOrder
-                    .verify(gwtMock)
-                    .thenTheActualResultIsInKeepingWithTheExpectedResult();
-            inOrder.verifyNoMoreInteractions();
         }
 
         @Test
@@ -355,15 +358,6 @@ class GivenStdinAsFixtureTest {
                         gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                     });
 
-            // THEN
-            InOrder inOrder = inOrder(gwtMock);
-            inOrder
-                    .verify(gwtMock)
-                    .whenAnEventHappensInRelationToAnActionOfTheConsumer();
-            inOrder
-                    .verify(gwtMock)
-                    .thenTheActualResultIsInKeepingWithTheExpectedResult();
-            inOrder.verifyNoMoreInteractions();
         }
     }
 
