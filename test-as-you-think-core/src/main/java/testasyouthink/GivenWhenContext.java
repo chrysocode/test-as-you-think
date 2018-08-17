@@ -27,6 +27,7 @@ import testasyouthink.function.Memoized;
 import testasyouthink.preparation.Preparation;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.function.Supplier;
 
 public class GivenWhenContext<$SystemUnderTest, $Result> {
@@ -39,8 +40,18 @@ public class GivenWhenContext<$SystemUnderTest, $Result> {
         this.preparation = preparation;
         result = Memoized.of(() -> {
             preparation.prepareFixtures();
-            return execution.run();
+            $Result result = execution.run();
+            cleanUp();
+            return result;
         });
+    }
+
+    private void cleanUp() {
+        restoreStandardStreams();
+    }
+
+    private void restoreStandardStreams() {
+        System.setIn(OriginalStandardStreams.STDIN);
     }
 
     public void prepareFixturesSeparately() {
@@ -81,5 +92,10 @@ public class GivenWhenContext<$SystemUnderTest, $Result> {
         return preparation
                 .getStdStreamsPath()
                 .toFile();
+    }
+
+    private static class OriginalStandardStreams {
+
+        private static final InputStream STDIN = System.in;
     }
 }
