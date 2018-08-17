@@ -110,7 +110,7 @@ class GivenStdinAsFixtureTest {
     void should_prepare_stdin_to_read_a_message() {
         // WHEN
         givenSutClass(SystemUnderTest.class)
-                .givenStandardInputStream(stdin -> {
+                .givenStandardInput(stdin -> {
                     stdin.expectToRead("expected");
                     gwtMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
                 })
@@ -135,7 +135,7 @@ class GivenStdinAsFixtureTest {
     void should_prepare_stdin_to_read_a_number_using_a_scanner(final int givenInputNumber) {
         // WHEN
         givenSutClass(SystemUnderTest.class)
-                .givenStandardInputStream(stdin -> {
+                .givenStandardInput(stdin -> {
                     stdin.expectToRead(givenInputNumber);
                     gwtMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
                 })
@@ -160,7 +160,7 @@ class GivenStdinAsFixtureTest {
     void should_prepare_stdin_to_read_a_number_using_a_buffered_reader(final int givenInputNumber) {
         // WHEN
         givenSutClass(SystemUnderTest.class)
-                .givenStandardInputStream(stdin -> {
+                .givenStandardInput(stdin -> {
                     stdin.expectToRead(givenInputNumber);
                     gwtMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
                 })
@@ -184,7 +184,7 @@ class GivenStdinAsFixtureTest {
     void should_prepare_stdin_to_read_messages() {
         // WHEN
         givenSutClass(SystemUnderTest.class)
-                .givenStandardInputStream(stdin -> {
+                .givenStandardInput(stdin -> {
                     stdin.expectToRead(asList("intput #1", "intput #2", "intput #3"));
                     gwtMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
                 })
@@ -212,7 +212,7 @@ class GivenStdinAsFixtureTest {
     void should_prepare_stdin_to_read_different_kinds_of_data() {
         // WHEN
         givenSutClass(SystemUnderTest.class)
-                .givenStandardInputStream(stdin -> {
+                .givenStandardInput(stdin -> {
                     stdin.expectToRead(asList("input", 123, true));
                     gwtMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
                 })
@@ -239,7 +239,7 @@ class GivenStdinAsFixtureTest {
     void should_prepare_stdin_in_several_times_to_read_different_kinds_of_data() {
         // WHEN
         givenSutClass(SystemUnderTest.class)
-                .givenStandardInputStream(stdin -> {
+                .givenStandardInput(stdin -> {
                     stdin.expectToRead("input");
                     stdin.expectToRead(123);
                     stdin.expectToRead(true);
@@ -268,7 +268,7 @@ class GivenStdinAsFixtureTest {
     void should_fail_to_prepare_stdin() {
         // WHEN
         Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
-                .givenStandardInputStream(stdin -> {
+                .givenStandardInput(stdin -> {
                     gwtMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
                     throw new UnexpectedException();
                 })
@@ -416,7 +416,7 @@ class GivenStdinAsFixtureTest {
 
             // WHEN
             givenSutClass(SystemUnderTest.class)
-                    .givenStandardInputStream(stdin -> {
+                    .givenStandardInput(stdin -> {
                         stdin.expectToRead(givenInput.toFile());
                         gwtMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
                     })
@@ -475,7 +475,7 @@ class GivenStdinAsFixtureTest {
 
             // WHEN
             givenSutClass(SystemUnderTest.class)
-                    .givenStandardInputStream(stdin -> {
+                    .givenStandardInput(stdin -> {
                         stdin.expectToRead(givenInput);
                         gwtMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
                     })
@@ -556,7 +556,7 @@ class GivenStdinAsFixtureTest {
             void should_fail_to_prepare_stdin_to_read_a_file() {
                 // WHEN
                 Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
-                        .givenStandardInputStream(stdin -> {
+                        .givenStandardInput(stdin -> {
                             gwtMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
                             stdin.expectToRead(givenInput.toFile());
                         })
@@ -576,7 +576,7 @@ class GivenStdinAsFixtureTest {
             void should_fail_to_prepare_stdin_to_read_a_file_path() {
                 // WHEN
                 Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
-                        .givenStandardInputStream(stdin -> {
+                        .givenStandardInput(stdin -> {
                             gwtMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
                             stdin.expectToRead(givenInput);
                         })

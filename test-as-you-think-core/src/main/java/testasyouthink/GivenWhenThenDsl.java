@@ -78,7 +78,7 @@ public interface GivenWhenThenDsl {
 
             AndGiven<$SystemUnderTest> given(String fixtureSpecification, CheckedConsumer<$SystemUnderTest> givenStep);
 
-            AndGiven<$SystemUnderTest> givenStandardInputStream(CheckedConsumer<Stdin> givenStep);
+            AndGiven<$SystemUnderTest> givenStandardInput(CheckedConsumer<Stdin> givenStep);
 
             AndGiven<$SystemUnderTest> givenStandardInputReading(Object... inputs);
 

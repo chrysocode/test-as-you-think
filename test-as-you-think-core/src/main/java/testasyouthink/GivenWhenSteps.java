@@ -94,7 +94,7 @@ public class GivenWhenSteps<$SystemUnderTest> implements Given<$SystemUnderTest>
     }
 
     @Override
-    public AndGiven<$SystemUnderTest> givenStandardInputStream(CheckedConsumer<Stdin> givenStep) {
+    public AndGiven<$SystemUnderTest> givenStandardInput(CheckedConsumer<Stdin> givenStep) {
         preparation.recordGivenStepForStdin(givenStep);
         return this;
     }
