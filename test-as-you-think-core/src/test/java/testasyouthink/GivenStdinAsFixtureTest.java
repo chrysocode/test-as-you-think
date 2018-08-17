@@ -79,12 +79,24 @@ class GivenStdinAsFixtureTest {
         gwtMock = mock(GivenWhenThenDefinition.class);
     }
 
-    void verifyMocks() {
+    void givenOnceWhenOnceThenOnce() {
         // THEN
         InOrder inOrder = inOrder(gwtMock);
         inOrder
                 .verify(gwtMock)
                 .givenAContextThatDefinesTheInitialStateOfTheSystem();
+        inOrder
+                .verify(gwtMock)
+                .whenAnEventHappensInRelationToAnActionOfTheConsumer();
+        inOrder
+                .verify(gwtMock)
+                .thenTheActualResultIsInKeepingWithTheExpectedResult();
+        inOrder.verifyNoMoreInteractions();
+    }
+
+    void whenOnceThenOnce() {
+        // THEN
+        InOrder inOrder = inOrder(gwtMock);
         inOrder
                 .verify(gwtMock)
                 .whenAnEventHappensInRelationToAnActionOfTheConsumer();
@@ -115,7 +127,7 @@ class GivenStdinAsFixtureTest {
                 });
 
         // THEN
-        verifyMocks();
+        givenOnceWhenOnceThenOnce();
     }
 
     @ParameterizedTest
@@ -140,7 +152,7 @@ class GivenStdinAsFixtureTest {
                 });
 
         // THEN
-        verifyMocks();
+        givenOnceWhenOnceThenOnce();
     }
 
     @ParameterizedTest
@@ -165,7 +177,7 @@ class GivenStdinAsFixtureTest {
                 });
 
         // THEN
-        verifyMocks();
+        givenOnceWhenOnceThenOnce();
     }
 
     @Test
@@ -193,7 +205,7 @@ class GivenStdinAsFixtureTest {
                 });
 
         // THEN
-        verifyMocks();
+        givenOnceWhenOnceThenOnce();
     }
 
     @Test
@@ -220,7 +232,7 @@ class GivenStdinAsFixtureTest {
                 });
 
         // THEN
-        verifyMocks();
+        givenOnceWhenOnceThenOnce();
     }
 
     @Test
@@ -249,7 +261,7 @@ class GivenStdinAsFixtureTest {
                 });
 
         // THEN
-        verifyMocks();
+        givenOnceWhenOnceThenOnce();
     }
 
     @Test
@@ -312,19 +324,6 @@ class GivenStdinAsFixtureTest {
     @Nested
     class Given_only_primitive_types_to_be_read_by_stdin {
 
-        @AfterEach
-        void verifyMocks() {
-            // THEN
-            InOrder inOrder = inOrder(gwtMock);
-            inOrder
-                    .verify(gwtMock)
-                    .whenAnEventHappensInRelationToAnActionOfTheConsumer();
-            inOrder
-                    .verify(gwtMock)
-                    .thenTheActualResultIsInKeepingWithTheExpectedResult();
-            inOrder.verifyNoMoreInteractions();
-        }
-
         @Test
         void should_prepare_stdin_to_read_a_message_as_a_primitive_type() {
             // WHEN
@@ -340,6 +339,9 @@ class GivenStdinAsFixtureTest {
                         assertThat(result).isEqualTo("input");
                         gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                     });
+
+            // THEN
+            whenOnceThenOnce();
         }
 
         @Test
@@ -357,6 +359,9 @@ class GivenStdinAsFixtureTest {
                         assertThat(result).isEqualTo(123);
                         gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                     });
+
+            // THEN
+            whenOnceThenOnce();
         }
 
         @Test
@@ -377,6 +382,9 @@ class GivenStdinAsFixtureTest {
                         assertThat(result).containsExactly("input", 123, true);
                         gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
                     });
+
+            // THEN
+            whenOnceThenOnce();
         }
     }
 
@@ -393,14 +401,18 @@ class GivenStdinAsFixtureTest {
                     .deleteOnExit();
         }
 
-        @Test
-        void should_prepare_stdin_to_read_a_file() throws IOException {
-            // GIVEN
+        private void writeLinesInFile() throws IOException {
             PrintWriter writer = new PrintWriter(new FileWriter(givenInput.toFile()));
             rangeClosed(1, 5)
                     .mapToObj(count -> "line #" + count + "\n")
                     .forEach(writer::write);
             writer.flush();
+        }
+
+        @Test
+        void should_prepare_stdin_to_read_a_file() throws IOException {
+            // GIVEN
+            writeLinesInFile();
 
             // WHEN
             givenSutClass(SystemUnderTest.class)
@@ -425,17 +437,13 @@ class GivenStdinAsFixtureTest {
                     });
 
             // THEN
-            verifyMocks();
+            givenOnceWhenOnceThenOnce();
         }
 
         @Test
         void should_prepare_stdin_to_read_a_file_only() throws IOException {
             // GIVEN
-            PrintWriter writer = new PrintWriter(new FileWriter(givenInput.toFile()));
-            rangeClosed(1, 5)
-                    .mapToObj(count -> "line #" + count + "\n")
-                    .forEach(writer::write);
-            writer.flush();
+            writeLinesInFile();
 
             // WHEN
             givenSutClass(SystemUnderTest.class)
@@ -457,24 +465,13 @@ class GivenStdinAsFixtureTest {
                     });
 
             // THEN
-            InOrder inOrder = inOrder(gwtMock);
-            inOrder
-                    .verify(gwtMock)
-                    .whenAnEventHappensInRelationToAnActionOfTheConsumer();
-            inOrder
-                    .verify(gwtMock)
-                    .thenTheActualResultIsInKeepingWithTheExpectedResult();
-            inOrder.verifyNoMoreInteractions();
+            whenOnceThenOnce();
         }
 
         @Test
         void should_prepare_stdin_to_read_a_file_path() throws IOException {
             // GIVEN
-            PrintWriter writer = new PrintWriter(new FileWriter(givenInput.toFile()));
-            rangeClosed(1, 5)
-                    .mapToObj(count -> "line #" + count + "\n")
-                    .forEach(writer::write);
-            writer.flush();
+            writeLinesInFile();
 
             // WHEN
             givenSutClass(SystemUnderTest.class)
@@ -499,17 +496,13 @@ class GivenStdinAsFixtureTest {
                     });
 
             // THEN
-            verifyMocks();
+            givenOnceWhenOnceThenOnce();
         }
 
         @Test
-        void should_prepare_stdin_to_read_a_path_only() throws IOException {
+        void should_prepare_stdin_to_read_a_file_path_only() throws IOException {
             // GIVEN
-            PrintWriter writer = new PrintWriter(new FileWriter(givenInput.toFile()));
-            rangeClosed(1, 5)
-                    .mapToObj(count -> "line #" + count + "\n")
-                    .forEach(writer::write);
-            writer.flush();
+            writeLinesInFile();
 
             // WHEN
             givenSutClass(SystemUnderTest.class)
@@ -531,14 +524,7 @@ class GivenStdinAsFixtureTest {
                     });
 
             // THEN
-            InOrder inOrder = inOrder(gwtMock);
-            inOrder
-                    .verify(gwtMock)
-                    .whenAnEventHappensInRelationToAnActionOfTheConsumer();
-            inOrder
-                    .verify(gwtMock)
-                    .thenTheActualResultIsInKeepingWithTheExpectedResult();
-            inOrder.verifyNoMoreInteractions();
+            whenOnceThenOnce();
         }
 
         @Nested
