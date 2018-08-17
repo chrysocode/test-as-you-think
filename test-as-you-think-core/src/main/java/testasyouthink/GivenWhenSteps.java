@@ -37,6 +37,7 @@ import testasyouthink.function.Functions;
 import testasyouthink.preparation.Preparation;
 
 import java.io.File;
+import java.nio.file.Path;
 
 import static java.util.Arrays.asList;
 
@@ -106,6 +107,12 @@ public class GivenWhenSteps<$SystemUnderTest> implements Given<$SystemUnderTest>
 
     @Override
     public AndGiven<$SystemUnderTest> givenStandardInputReading(final File input) {
+        preparation.recordGivenStepForStdin(stdin -> stdin.expectToRead(input));
+        return this;
+    }
+
+    @Override
+    public AndGiven<$SystemUnderTest> givenStandardInputReading(final Path input) {
         preparation.recordGivenStepForStdin(stdin -> stdin.expectToRead(input));
         return this;
     }

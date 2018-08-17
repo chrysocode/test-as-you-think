@@ -83,6 +83,8 @@ public interface GivenWhenThenDsl {
             AndGiven<$SystemUnderTest> givenStandardInputReading(Object... inputs);
 
             AndGiven<$SystemUnderTest> givenStandardInputReading(File input);
+
+            AndGiven<$SystemUnderTest> givenStandardInputReading(Path input);
         }
 
         interface AndGiven<$SystemUnderTest> extends GivenArgument<$SystemUnderTest>, When<$SystemUnderTest> {
