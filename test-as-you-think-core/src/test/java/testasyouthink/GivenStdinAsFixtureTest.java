@@ -25,6 +25,7 @@ package testasyouthink;
 import net.bytebuddy.ByteBuddy;
 import net.bytebuddy.agent.ByteBuddyAgent;
 import net.bytebuddy.dynamic.loading.ClassReloadingStrategy;
+import net.bytebuddy.implementation.ExceptionMethod;
 import net.bytebuddy.implementation.FixedValue;
 import net.bytebuddy.implementation.MethodDelegation;
 import org.junit.jupiter.api.AfterEach;
@@ -288,13 +289,6 @@ class GivenStdinAsFixtureTest {
         verifyMocks();
     }
 
-    public static final class FilesForTesting {
-
-        public static Stream<String> lines(Path path) throws IOException {
-            throw new IOException();
-        }
-    }
-
     static class ToPlayWithByteBuddy {
 
         static class WithClassMethod {
@@ -378,13 +372,12 @@ class GivenStdinAsFixtureTest {
             // GIVEN
             ByteBuddyAgent.install();
             new ByteBuddy()
-                    .redefine(FilesForTesting.class)
-                    .name(Files.class.getName())
+                    .redefine(Files.class)
                     .method(named("lines")
                             .and(takesArguments(Path.class))
                             .and(returns(Stream.class))
                             .and(canThrow(IOException.class).and(isStatic())))
-                    .intercept(MethodDelegation.to(FilesForTesting.class))
+                    .intercept(ExceptionMethod.throwing(IOException.class))
                     .make()
                     .load(Files.class.getClassLoader(), ClassReloadingStrategy.fromInstalledAgent());
             File givenInputFile = Files
