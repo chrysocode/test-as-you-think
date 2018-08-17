@@ -92,7 +92,7 @@ public class Preparation<$SystemUnderTest> {
         givenSteps.add(sutPreparation.buildSutSupplier(givenStep));
     }
 
-    public void recordGivenStep(Consumer<Stdin> givenStep) {
+    public void recordGivenStepForStdin(CheckedConsumer<Stdin> givenStep) {
         givenSteps.add(new StdinPreparation().buildStdin(givenStep));
     }
 

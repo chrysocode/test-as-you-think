@@ -23,6 +23,7 @@
 package testasyouthink.preparation;
 
 import testasyouthink.GivenWhenThenDsl.Fixture.Stdin;
+import testasyouthink.function.CheckedConsumer;
 import testasyouthink.function.Functions;
 
 import java.io.ByteArrayInputStream;
@@ -49,9 +50,15 @@ public class StdinPreparation implements Stdin {
         inputsToBeRead = new ArrayList<>();
     }
 
-    <$SystemUnderTest> Consumer<$SystemUnderTest> buildStdin(Consumer<Stdin> givenStep) {
+    <$SystemUnderTest> Consumer<$SystemUnderTest> buildStdin(CheckedConsumer<Stdin> givenStep) {
         return functions.toConsumer(() -> {
-            givenStep.accept(this);
+            try {
+                givenStep.accept(this);
+            } catch (PreparationError preparationError) {
+                throw preparationError;
+            } catch (Throwable throwable) {
+                throw new PreparationError("Fails to prepare the standard input stream!", throwable);
+            }
             redirectStdin();
         });
     }

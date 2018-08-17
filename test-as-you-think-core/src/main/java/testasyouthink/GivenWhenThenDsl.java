@@ -48,7 +48,6 @@ import java.nio.file.Path;
 import java.time.Duration;
 import java.util.Collection;
 import java.util.List;
-import java.util.function.Consumer;
 
 public interface GivenWhenThenDsl {
 
@@ -78,7 +77,7 @@ public interface GivenWhenThenDsl {
 
             AndGiven<$SystemUnderTest> given(String fixtureSpecification, CheckedConsumer<$SystemUnderTest> givenStep);
 
-            AndGiven<$SystemUnderTest> givenStandardInputStream(Consumer<Stdin> givenStep);
+            AndGiven<$SystemUnderTest> givenStandardInputStream(CheckedConsumer<Stdin> givenStep);
         }
 
         interface AndGiven<$SystemUnderTest> extends GivenArgument<$SystemUnderTest>, When<$SystemUnderTest> {

@@ -40,6 +40,7 @@ import testasyouthink.GivenStdinAsFixtureTest.ToPlayWithByteBuddy.WithClassMetho
 import testasyouthink.GivenStdinAsFixtureTest.ToPlayWithByteBuddy.WithInstanceMethod;
 import testasyouthink.fixture.GivenWhenThenDefinition;
 import testasyouthink.fixture.SystemUnderTest;
+import testasyouthink.fixture.UnexpectedException;
 import testasyouthink.preparation.PreparationError;
 
 import java.io.BufferedReader;
@@ -249,6 +250,26 @@ class GivenStdinAsFixtureTest {
 
         // THEN
         verifyMocks();
+    }
+
+    @Test
+    void should_fail_to_prepare_stdin() {
+        // WHEN
+        Throwable thrown = catchThrowable(() -> givenSutClass(SystemUnderTest.class)
+                .givenStandardInputStream(stdin -> {
+                    gwtMock.givenAContextThatDefinesTheInitialStateOfTheSystem();
+                    throw new UnexpectedException();
+                })
+                .whenSutRuns(sut -> gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer())
+                .then(() -> gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult()));
+
+        // THEN
+        assertThat(thrown)
+                .isInstanceOf(PreparationError.class)
+                .hasMessage("Fails to prepare the standard input stream!")
+                .hasCauseInstanceOf(UnexpectedException.class);
+        verify(gwtMock).givenAContextThatDefinesTheInitialStateOfTheSystem();
+        verifyNoMoreInteractions(gwtMock);
     }
 
     static class ToPlayWithByteBuddy {

@@ -36,8 +36,6 @@ import testasyouthink.function.CheckedSupplier;
 import testasyouthink.function.Functions;
 import testasyouthink.preparation.Preparation;
 
-import java.util.function.Consumer;
-
 public class GivenWhenSteps<$SystemUnderTest> implements Given<$SystemUnderTest>, AndGiven<$SystemUnderTest> {
 
     private final Functions functions = Functions.INSTANCE;
@@ -91,8 +89,8 @@ public class GivenWhenSteps<$SystemUnderTest> implements Given<$SystemUnderTest>
     }
 
     @Override
-    public AndGiven<$SystemUnderTest> givenStandardInputStream(Consumer<Stdin> givenStep) {
-        preparation.recordGivenStep(givenStep);
+    public AndGiven<$SystemUnderTest> givenStandardInputStream(CheckedConsumer<Stdin> givenStep) {
+        preparation.recordGivenStepForStdin(givenStep);
         return this;
     }
 
