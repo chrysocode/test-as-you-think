@@ -93,11 +93,7 @@ public class Preparation<$SystemUnderTest> {
     }
 
     public void recordGivenStep(Consumer<Stdin> givenStep) {
-        givenSteps.add(functions.toConsumer(() -> {
-            StdinPreparation stdinPreparation = new StdinPreparation();
-            givenStep.accept(stdinPreparation);
-            stdinPreparation.redirectStdin();
-        }));
+        givenSteps.add(new StdinPreparation().buildStdin(givenStep));
     }
 
     public <$Argument> void recordGivenStep(CheckedSupplier<$Argument> givenStep) {

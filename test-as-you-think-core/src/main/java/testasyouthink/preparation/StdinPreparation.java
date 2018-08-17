@@ -23,6 +23,7 @@
 package testasyouthink.preparation;
 
 import testasyouthink.GivenWhenThenDsl.Fixture.Stdin;
+import testasyouthink.function.Functions;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -31,6 +32,7 @@ import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.function.Consumer;
 
 import static java.nio.file.Files.lines;
 import static java.util.stream.Collectors.joining;
@@ -39,13 +41,21 @@ import static java.util.stream.Collectors.toList;
 public class StdinPreparation implements Stdin {
 
     private static final String END_OF_LINE = "\n";
+    private final Functions functions = Functions.INSTANCE;
     private Collection<String> inputsToBeRead;
 
     StdinPreparation() {
         inputsToBeRead = new ArrayList<>();
     }
 
-    void redirectStdin() {
+    <$SystemUnderTest> Consumer<$SystemUnderTest> buildStdin(Consumer<Stdin> givenStep) {
+        return functions.toConsumer(() -> {
+            givenStep.accept(this);
+            redirectStdin();
+        });
+    }
+
+    private void redirectStdin() {
         InputStream stdinFake = new ByteArrayInputStream(inputsToBeRead
                 .stream()
                 .collect(joining(END_OF_LINE))
