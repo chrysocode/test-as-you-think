@@ -82,6 +82,8 @@ public interface GivenWhenThenDsl {
 
             AndGiven<$SystemUnderTest> givenStandardInputReading(Object... inputs);
 
+            AndGiven<$SystemUnderTest> givenStandardInputReading(Collection<?> inputs);
+
             AndGiven<$SystemUnderTest> givenStandardInputReading(File input);
 
             AndGiven<$SystemUnderTest> givenStandardInputReading(Path input);

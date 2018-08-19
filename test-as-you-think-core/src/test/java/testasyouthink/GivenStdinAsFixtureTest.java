@@ -465,6 +465,29 @@ class GivenStdinAsFixtureTest {
             // THEN
             whenOnceThenOnce();
         }
+
+        @Test
+        void should_prepare_stdin_to_read_a_collection_as_primitive_types() {
+            // WHEN
+            givenSutClass(SystemUnderTest.class)
+                    .givenStandardInputReading(asList("input #1", "input #2", "input #3"))
+                    .when(sut -> {
+                        Scanner scanner = new Scanner(System.in);
+                        List<String> actualInputs = new ArrayList<>();
+                        while (scanner.hasNext()) {
+                            actualInputs.add(scanner.nextLine());
+                        }
+                        gwtMock.whenAnEventHappensInRelationToAnActionOfTheConsumer();
+                        return actualInputs;
+                    })
+                    .then(result -> {
+                        assertThat(result).containsExactly("input #1", "input #2", "input #3");
+                        gwtMock.thenTheActualResultIsInKeepingWithTheExpectedResult();
+                    });
+
+            // THEN
+            whenOnceThenOnce();
+        }
     }
 
     @Nested
