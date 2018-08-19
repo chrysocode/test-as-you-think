@@ -28,6 +28,7 @@ import net.bytebuddy.dynamic.loading.ClassReloadingStrategy;
 import net.bytebuddy.implementation.ExceptionMethod;
 import net.bytebuddy.implementation.FixedValue;
 import net.bytebuddy.implementation.MethodDelegation;
+import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -36,6 +37,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InOrder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import testasyouthink.GivenStdinAsFixtureTest.ToPlayWithByteBuddy.WithClassMethod;
 import testasyouthink.GivenStdinAsFixtureTest.ToPlayWithByteBuddy.WithInstanceMethod;
 import testasyouthink.fixture.GivenWhenThenDefinition;
@@ -52,11 +55,16 @@ import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Scanner;
+import java.util.concurrent.CountDownLatch;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.unmodifiableCollection;
+import static java.util.stream.Collectors.toList;
 import static java.util.stream.IntStream.rangeClosed;
 import static net.bytebuddy.matcher.ElementMatchers.canThrow;
 import static net.bytebuddy.matcher.ElementMatchers.isStatic;
@@ -74,6 +82,7 @@ import static testasyouthink.TestAsYouThink.givenSutClass;
 
 class GivenStdinAsFixtureTest {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(GivenStdinAsFixtureTest.class);
     private GivenWhenThenDefinition gwtMock;
 
     @BeforeEach
@@ -286,38 +295,74 @@ class GivenStdinAsFixtureTest {
         verifyNoMoreInteractions(gwtMock);
     }
 
-    @Nested
-    class Restoring_the_original_stdin {
+    @Test
+    void should_prepare_stdin_for_multiple_threads() throws InterruptedException {
+        // GIVEN
+        final int numberOfThreads = 10;
+        List<GivenWhenThenDefinition> gwtMocks = IntStream
+                .range(0, numberOfThreads)
+                .mapToObj(count -> mock(GivenWhenThenDefinition.class))
+                .collect(toList());
+        CountDownLatch counterOfThreadsToPrepare = new CountDownLatch(numberOfThreads);
+        CountDownLatch callingThreadBlocker = new CountDownLatch(1);
+        CountDownLatch counterOfThreadsToComplete = new CountDownLatch(numberOfThreads);
+        SoftAssertions softly = new SoftAssertions();
 
-        @Test
-        void should_restore_the_original_stdin_after_the_execution_stage() {
-            // GIVEN
-            assertThat(System.in).isEqualTo(ORIGINAL_STANDARD_INPUT);
+        IntStream
+                .range(0, numberOfThreads)
+                .mapToObj(count -> new Thread(() -> {
+                    final Collection<String> alphabet = unmodifiableCollection(IntStream
+                            .rangeClosed(1, 26)
+                            .mapToObj(code -> String.valueOf((char) (96 + code)) + count)
+                            .collect(toList()));
+                    LOGGER.debug("Given alphabet for thread #{}: {}", count, alphabet);
 
-            // WHEN
-            givenSutClass(SystemUnderTest.class)
-                    .givenStandardInput(stdin -> assertThat(System.in).isEqualTo(ORIGINAL_STANDARD_INPUT))
-                    .whenSutRuns(sut -> assertThat(System.in).isNotEqualTo(ORIGINAL_STANDARD_INPUT))
-                    .then(() -> assertThat(System.in).isEqualTo(ORIGINAL_STANDARD_INPUT));
+                    // WHEN
+                    givenSutClass(SystemUnderTest.class)
+                            .givenStandardInputReading(alphabet.toArray())
+                            .when(sut -> {
+                                counterOfThreadsToPrepare.countDown();
+                                callingThreadBlocker.await();
+                                Scanner scanner = new Scanner(System.in);
+                                List<String> scanned = new ArrayList<>();
+                                while (scanner.hasNext()) {
+                                    scanned.add(scanner.nextLine());
+                                }
+                                scanner.close();
+                                LOGGER.debug("Scanned by thread #{}: {}", count, scanned);
+                                gwtMocks
+                                        .get(count)
+                                        .whenAnEventHappensInRelationToAnActionOfTheConsumer();
+                                return unmodifiableCollection(scanned);
+                            })
+                            .then(result -> {
+                                softly
+                                        .assertThat(result)
+                                        .as("result of thread #%s", count)
+                                        .hasSameElementsAs(alphabet);
+                                gwtMocks
+                                        .get(count)
+                                        .thenTheActualResultIsInKeepingWithTheExpectedResult();
+                                counterOfThreadsToComplete.countDown();
+                            });
+                }))
+                .forEach(Thread::start);
+        counterOfThreadsToPrepare.await();
+        callingThreadBlocker.countDown();
+        counterOfThreadsToComplete.await();
 
-            // THEN
-            assertThat(System.in).isEqualTo(ORIGINAL_STANDARD_INPUT);
+        // THEN
+        for (GivenWhenThenDefinition gwt : gwtMocks) {
+            InOrder inOrder = inOrder(gwt);
+            inOrder
+                    .verify(gwt)
+                    .whenAnEventHappensInRelationToAnActionOfTheConsumer();
+            inOrder
+                    .verify(gwt)
+                    .thenTheActualResultIsInKeepingWithTheExpectedResult();
+            inOrder.verifyNoMoreInteractions();
         }
-
-        @Test
-        void should_keep_the_original_stdin_given_no_stdin_preparation() {
-            // GIVEN
-            assertThat(System.in).isEqualTo(ORIGINAL_STANDARD_INPUT);
-
-            // WHEN
-            givenSutClass(SystemUnderTest.class)
-                    .given(() -> assertThat(System.in).isEqualTo(ORIGINAL_STANDARD_INPUT))
-                    .whenSutRuns(sut -> assertThat(System.in).isEqualTo(ORIGINAL_STANDARD_INPUT))
-                    .then(() -> assertThat(System.in).isEqualTo(ORIGINAL_STANDARD_INPUT));
-
-            // THEN
-            assertThat(System.in).isEqualTo(ORIGINAL_STANDARD_INPUT);
-        }
+        softly.assertAll();
     }
 
     static class ToPlayWithByteBuddy {
@@ -363,6 +408,40 @@ class GivenStdinAsFixtureTest {
 
         static {
             ORIGINAL_STANDARD_INPUT = System.in;
+        }
+    }
+
+    @Nested
+    class Restoring_the_original_stdin {
+
+        @Test
+        void should_restore_the_original_stdin_after_the_execution_stage() {
+            // GIVEN
+            assertThat(System.in).isEqualTo(ORIGINAL_STANDARD_INPUT);
+
+            // WHEN
+            givenSutClass(SystemUnderTest.class)
+                    .givenStandardInput(stdin -> assertThat(System.in).isEqualTo(ORIGINAL_STANDARD_INPUT))
+                    .whenSutRuns(sut -> assertThat(System.in).isNotEqualTo(ORIGINAL_STANDARD_INPUT))
+                    .then(() -> assertThat(System.in).isEqualTo(ORIGINAL_STANDARD_INPUT));
+
+            // THEN
+            assertThat(System.in).isEqualTo(ORIGINAL_STANDARD_INPUT);
+        }
+
+        @Test
+        void should_keep_the_original_stdin_given_no_stdin_preparation() {
+            // GIVEN
+            assertThat(System.in).isEqualTo(ORIGINAL_STANDARD_INPUT);
+
+            // WHEN
+            givenSutClass(SystemUnderTest.class)
+                    .given(() -> assertThat(System.in).isEqualTo(ORIGINAL_STANDARD_INPUT))
+                    .whenSutRuns(sut -> assertThat(System.in).isEqualTo(ORIGINAL_STANDARD_INPUT))
+                    .then(() -> assertThat(System.in).isEqualTo(ORIGINAL_STANDARD_INPUT));
+
+            // THEN
+            assertThat(System.in).isEqualTo(ORIGINAL_STANDARD_INPUT);
         }
     }
 
