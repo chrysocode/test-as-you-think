@@ -49,7 +49,6 @@ import testasyouthink.preparation.PreparationError;
 import java.io.BufferedReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.nio.file.Files;
@@ -77,7 +76,6 @@ import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static testasyouthink.GivenStdinAsFixtureTest.KeepOriginalStdin.ORIGINAL_STANDARD_INPUT;
 import static testasyouthink.TestAsYouThink.givenSutClass;
 
 class GivenStdinAsFixtureTest {
@@ -399,49 +397,6 @@ class GivenStdinAsFixtureTest {
                     return "Hello redefined";
                 }
             }
-        }
-    }
-
-    static class KeepOriginalStdin {
-
-        static final InputStream ORIGINAL_STANDARD_INPUT;
-
-        static {
-            ORIGINAL_STANDARD_INPUT = System.in;
-        }
-    }
-
-    @Nested
-    class Restoring_the_original_stdin {
-
-        @Test
-        void should_restore_the_original_stdin_after_the_execution_stage() {
-            // GIVEN
-            assertThat(System.in).isEqualTo(ORIGINAL_STANDARD_INPUT);
-
-            // WHEN
-            givenSutClass(SystemUnderTest.class)
-                    .givenStandardInput(stdin -> assertThat(System.in).isEqualTo(ORIGINAL_STANDARD_INPUT))
-                    .whenSutRuns(sut -> assertThat(System.in).isNotEqualTo(ORIGINAL_STANDARD_INPUT))
-                    .then(() -> assertThat(System.in).isEqualTo(ORIGINAL_STANDARD_INPUT));
-
-            // THEN
-            assertThat(System.in).isEqualTo(ORIGINAL_STANDARD_INPUT);
-        }
-
-        @Test
-        void should_keep_the_original_stdin_given_no_stdin_preparation() {
-            // GIVEN
-            assertThat(System.in).isEqualTo(ORIGINAL_STANDARD_INPUT);
-
-            // WHEN
-            givenSutClass(SystemUnderTest.class)
-                    .given(() -> assertThat(System.in).isEqualTo(ORIGINAL_STANDARD_INPUT))
-                    .whenSutRuns(sut -> assertThat(System.in).isEqualTo(ORIGINAL_STANDARD_INPUT))
-                    .then(() -> assertThat(System.in).isEqualTo(ORIGINAL_STANDARD_INPUT));
-
-            // THEN
-            assertThat(System.in).isEqualTo(ORIGINAL_STANDARD_INPUT);
         }
     }
 
