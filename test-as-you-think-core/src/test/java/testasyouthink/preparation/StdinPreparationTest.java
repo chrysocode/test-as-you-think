@@ -37,7 +37,6 @@ import java.util.Scanner;
 
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
 
 class StdinPreparationTest {
 
@@ -68,8 +67,7 @@ class StdinPreparationTest {
             reader.close();
 
             // THEN
-            assertThat(result).isEmpty();
-            fail("Bug repeated!");
+            assertThat(result).containsExactly("input #1", "input #2", "input #3");
         }
     }
 

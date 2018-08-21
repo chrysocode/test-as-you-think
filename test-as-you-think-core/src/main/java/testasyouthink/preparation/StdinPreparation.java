@@ -41,6 +41,7 @@ import static java.lang.Thread.currentThread;
 import static java.nio.file.Files.lines;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
+import static testasyouthink.preparation.StdinPreparation.Redirections.currentStream;
 
 class StdinPreparation {
 
@@ -48,23 +49,23 @@ class StdinPreparation {
     private static final String PREPARATION_FAILS = "Fails to prepare the standard input stream!";
     private final Functions functions = Functions.INSTANCE;
 
-    <$SystemUnderTest> Consumer<$SystemUnderTest> buildStdin(CheckedConsumer<Stdin> givenStep) {
+    <$SystemUnderTest> Consumer<$SystemUnderTest> buildStdin(final CheckedConsumer<Stdin> givenStep) {
         return functions.toConsumer(() -> {
             try {
-                StdinFake stdinFake = new StdinFake();
-                givenStep.accept(stdinFake);
-                stdinFake.buffer(Redirections.THREAD_TO_STREAMS);
+                StdinRecorder stdinRecorder = new StdinRecorder();
+                givenStep.accept(stdinRecorder);
+                stdinRecorder.buffer();
             } catch (Throwable throwable) {
                 throw new PreparationError(PREPARATION_FAILS, throwable);
             }
         });
     }
 
-    private static class StdinFake implements Stdin {
+    private static class StdinRecorder implements Stdin {
 
         private Collection<String> inputsToBeRead;
 
-        StdinFake() {
+        StdinRecorder() {
             inputsToBeRead = new ArrayList<>();
         }
 
@@ -91,15 +92,15 @@ class StdinPreparation {
             inputsToBeRead.addAll(lines(input).collect(toList()));
         }
 
-        void buffer(Map<Long, InputStream> threadToStreams) {
-            threadToStreams.put(currentThread().getId(), new ByteArrayInputStream(inputsToBeRead
+        private void buffer() {
+            Redirections.THREAD_TO_STREAMS.put(currentThread().getId(), new ByteArrayInputStream(inputsToBeRead
                     .stream()
                     .collect(joining(END_OF_LINE))
                     .getBytes()));
         }
     }
 
-    private static class Redirections {
+    static class Redirections {
 
         private static final Map<Long, InputStream> THREAD_TO_STREAMS;
 
@@ -109,14 +110,84 @@ class StdinPreparation {
         }
 
         private static void commuteStdinOnce() {
-            System.setIn(new InputStream() {
-                @Override
-                public int read() throws IOException {
-                    return THREAD_TO_STREAMS
-                            .get(currentThread().getId())
-                            .read();
-                }
-            });
+            System.setIn(new StdinFake());
+        }
+
+        static InputStream currentStream() {
+            return THREAD_TO_STREAMS.get(currentThread().getId());
+        }
+    }
+
+    private static class StdinFake extends InputStream {
+
+        @Override
+        public int read() throws IOException {
+            return currentStream().read();
+        }
+
+        @Override
+        public int read(byte[] b) throws IOException {
+            return currentStream().read(b);
+        }
+
+        @Override
+        public int read(byte[] b, int off, int len) throws IOException {
+            return currentStream().read(b, off, len);
+        }
+
+        @Override
+        public long skip(long n) throws IOException {
+            return currentStream().skip(n);
+        }
+
+        @Override
+        public int available() throws IOException {
+            return currentStream().available();
+        }
+
+        @Override
+        public void close() throws IOException {
+            currentStream().close();
+        }
+
+        @Override
+        public synchronized void mark(int readlimit) {
+            currentStream().mark(readlimit);
+        }
+
+        @Override
+        public synchronized void reset() throws IOException {
+            currentStream().reset();
+        }
+
+        @Override
+        public boolean markSupported() {
+            return currentStream().markSupported();
+        }
+
+        @Override
+        public int hashCode() {
+            return currentStream().hashCode();
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            return currentStream().equals(obj);
+        }
+
+        @Override
+        protected Object clone() throws CloneNotSupportedException {
+            return super.clone();
+        }
+
+        @Override
+        public String toString() {
+            return currentStream().toString();
+        }
+
+        @Override
+        protected void finalize() throws Throwable {
+            super.finalize();
         }
     }
 }
