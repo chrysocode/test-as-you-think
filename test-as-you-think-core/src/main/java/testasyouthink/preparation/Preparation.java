@@ -34,17 +34,17 @@ import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayDeque;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import static java.lang.Thread.currentThread;
-import static testasyouthink.preparation.Preparation.Redirections.THREAD_TO_REDIRECTIONS;
-import static testasyouthink.preparation.Preparation.Redirections.redirectionsCapturingStandardStreamsSeparately;
-import static testasyouthink.preparation.Preparation.Redirections.redirectionsCapturingStandardStreamsTogether;
+import static testasyouthink.preparation.Preparation.Tee.THREAD_TO_REDIRECTIONS;
+import static testasyouthink.preparation.Preparation.Tee.redirectionsCapturingStandardStreamsSeparately;
+import static testasyouthink.preparation.Preparation.Tee.redirectionsCapturingStandardStreamsTogether;
 
 public class Preparation<$SystemUnderTest> {
 
@@ -162,16 +162,16 @@ public class Preparation<$SystemUnderTest> {
                 .oneRedirection().path;
     }
 
-    static class Redirections {
+    static class Tee {
 
-        static final Map<Long, DoubleRedirection> THREAD_TO_REDIRECTIONS;
+        static final Map<Long, DoubleFileRedirection> THREAD_TO_REDIRECTIONS;
         private static final PrintStream SYSTEM_OUT;
         private static final PrintStream SYSTEM_ERR;
 
         static {
             SYSTEM_OUT = System.out;
             SYSTEM_ERR = System.err;
-            THREAD_TO_REDIRECTIONS = new HashMap<>();
+            THREAD_TO_REDIRECTIONS = new ConcurrentHashMap<>();
 
             commuteStandardStreamsOnce();
         }
@@ -197,23 +197,23 @@ public class Preparation<$SystemUnderTest> {
             }));
         }
 
-        static DoubleRedirection redirectionsCapturingStandardStreamsSeparately() throws IOException {
-            Redirection stdoutRedirection = new Redirection();
-            Redirection stderrRedirection = new Redirection();
-            return new DoubleRedirection(stdoutRedirection, stderrRedirection);
+        static DoubleFileRedirection redirectionsCapturingStandardStreamsSeparately() throws IOException {
+            FileRedirection stdoutRedirection = new FileRedirection();
+            FileRedirection stderrRedirection = new FileRedirection();
+            return new DoubleFileRedirection(stdoutRedirection, stderrRedirection);
         }
 
-        static DoubleRedirection redirectionsCapturingStandardStreamsTogether() throws IOException {
-            return new DoubleRedirection(new Redirection());
+        static DoubleFileRedirection redirectionsCapturingStandardStreamsTogether() throws IOException {
+            return new DoubleFileRedirection(new FileRedirection());
         }
     }
 
-    private static class Redirection {
+    private static class FileRedirection {
 
         private Path path;
         private PrintStream stream;
 
-        Redirection() throws IOException {
+        FileRedirection() throws IOException {
             initializeTemporaryPath();
         }
 
@@ -230,25 +230,25 @@ public class Preparation<$SystemUnderTest> {
         }
     }
 
-    private static class DoubleRedirection {
+    private static class DoubleFileRedirection {
 
-        private Redirection stdoutRedirection;
-        private Redirection stderrRedirection;
+        private FileRedirection stdoutRedirection;
+        private FileRedirection stderrRedirection;
 
-        DoubleRedirection(Redirection stdoutRedirection, Redirection stderrRedirection) {
+        DoubleFileRedirection(FileRedirection stdoutRedirection, FileRedirection stderrRedirection) {
             this.stdoutRedirection = stdoutRedirection;
             this.stderrRedirection = stderrRedirection;
         }
 
-        DoubleRedirection(Redirection sameRedirectionForBoth) {
+        DoubleFileRedirection(FileRedirection sameRedirectionForBoth) {
             this(sameRedirectionForBoth, sameRedirectionForBoth);
         }
 
-        void storeIn(Map<Long, DoubleRedirection> threadToRedirections) {
+        void storeIn(Map<Long, DoubleFileRedirection> threadToRedirections) {
             threadToRedirections.put(currentThread().getId(), this);
         }
 
-        Redirection oneRedirection() {
+        FileRedirection oneRedirection() {
             return stdoutRedirection;
         }
     }
