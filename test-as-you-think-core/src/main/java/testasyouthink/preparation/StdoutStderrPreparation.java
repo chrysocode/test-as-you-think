@@ -32,21 +32,27 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static java.lang.Thread.currentThread;
 
-class StdoutStderrPreparation {
+enum StdoutStderrPreparation {
 
-    static DoubleFileRedirection redirectionsCapturingStandardStreamsSeparately() throws IOException {
+    INSTANCE;
+
+    DoubleFileRedirection redirectionsCapturingStandardStreamsSeparately() throws IOException {
         FileRedirection stdoutRedirection = new FileRedirection();
         FileRedirection stderrRedirection = new FileRedirection();
         return new DoubleFileRedirection(stdoutRedirection, stderrRedirection);
     }
 
-    static DoubleFileRedirection redirectionsCapturingStandardStreamsTogether() throws IOException {
+    DoubleFileRedirection redirectionsCapturingStandardStreamsTogether() throws IOException {
         return new DoubleFileRedirection(new FileRedirection());
+    }
+
+    static Map<Long, DoubleFileRedirection> threadToRedirections() {
+        return Tee.THREAD_TO_REDIRECTIONS;
     }
 
     static class Tee {
 
-        static final Map<Long, DoubleFileRedirection> THREAD_TO_REDIRECTIONS;
+        private static final Map<Long, DoubleFileRedirection> THREAD_TO_REDIRECTIONS;
         private static final PrintStream SYSTEM_OUT;
         private static final PrintStream SYSTEM_ERR;
 

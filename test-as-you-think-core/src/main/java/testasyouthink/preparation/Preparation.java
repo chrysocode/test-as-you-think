@@ -36,14 +36,13 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import static java.lang.Thread.currentThread;
-import static testasyouthink.preparation.StdoutStderrPreparation.Tee.THREAD_TO_REDIRECTIONS;
-import static testasyouthink.preparation.StdoutStderrPreparation.redirectionsCapturingStandardStreamsSeparately;
-import static testasyouthink.preparation.StdoutStderrPreparation.redirectionsCapturingStandardStreamsTogether;
+import static testasyouthink.preparation.StdoutStderrPreparation.threadToRedirections;
 
 public class Preparation<$SystemUnderTest> {
 
     private final Functions functions = Functions.INSTANCE;
     private final SutPreparation sutPreparation = SutPreparation.INSTANCE;
+    private final StdoutStderrPreparation stdoutStderrPreparation = StdoutStderrPreparation.INSTANCE;
     private final ArgumentPreparation argumentPreparation = ArgumentPreparation.INSTANCE;
     private final Queue<Consumer<$SystemUnderTest>> givenSteps;
     private Supplier<$SystemUnderTest> givenSutStep;
@@ -130,28 +129,32 @@ public class Preparation<$SystemUnderTest> {
 
     public void captureStandardStreamsSeparately() {
         if (!standardStreamsCaptured) {
-            recordGivenStep(() -> redirectionsCapturingStandardStreamsSeparately().storeIn(THREAD_TO_REDIRECTIONS));
+            recordGivenStep(() -> stdoutStderrPreparation
+                    .redirectionsCapturingStandardStreamsSeparately()
+                    .storeIn(threadToRedirections()));
             standardStreamsCaptured = true;
         }
     }
 
     public void captureStandardStreamsTogether() {
         if (!standardStreamsCaptured) {
-            recordGivenStep(() -> redirectionsCapturingStandardStreamsTogether().storeIn(THREAD_TO_REDIRECTIONS));
+            recordGivenStep(() -> stdoutStderrPreparation
+                    .redirectionsCapturingStandardStreamsTogether()
+                    .storeIn(threadToRedirections()));
             standardStreamsCaptured = true;
         }
     }
 
     public Path getStdoutPath() {
-        return THREAD_TO_REDIRECTIONS.get(currentThread().getId()).stdoutRedirection.path;
+        return threadToRedirections().get(currentThread().getId()).stdoutRedirection.path;
     }
 
     public Path getStderrPath() {
-        return THREAD_TO_REDIRECTIONS.get(currentThread().getId()).stderrRedirection.path;
+        return threadToRedirections().get(currentThread().getId()).stderrRedirection.path;
     }
 
     public Path getStdStreamsPath() {
-        return THREAD_TO_REDIRECTIONS
+        return threadToRedirections()
                 .get(currentThread().getId())
                 .oneRedirection().path;
     }
