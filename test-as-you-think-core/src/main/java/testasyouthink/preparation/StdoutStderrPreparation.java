@@ -36,21 +36,37 @@ enum StdoutStderrPreparation {
 
     INSTANCE;
 
-    DoubleFileRedirection redirectionsCapturingStandardStreamsSeparately() throws IOException {
+    void captureStandardStreamsSeparately() throws IOException {
         FileRedirection stdoutRedirection = new FileRedirection();
         FileRedirection stderrRedirection = new FileRedirection();
-        return new DoubleFileRedirection(stdoutRedirection, stderrRedirection);
+        new DoubleFileRedirection(stdoutRedirection, stderrRedirection).storeIn(threadToRedirections());
     }
 
-    DoubleFileRedirection redirectionsCapturingStandardStreamsTogether() throws IOException {
-        return new DoubleFileRedirection(new FileRedirection());
+    void captureStandardStreamsTogether() throws IOException {
+        new DoubleFileRedirection(new FileRedirection()).storeIn(threadToRedirections());
     }
 
-    static Map<Long, DoubleFileRedirection> threadToRedirections() {
+    private static Map<Long, DoubleFileRedirection> threadToRedirections() {
         return Tee.THREAD_TO_REDIRECTIONS;
     }
 
-    static class Tee {
+    private DoubleFileRedirection currentRedirections() {
+        return threadToRedirections().get(currentThread().getId());
+    }
+
+    Path getStdoutPath() {
+        return currentRedirections().stdoutRedirection.path;
+    }
+
+    Path getStderrPath() {
+        return currentRedirections().stderrRedirection.path;
+    }
+
+    Path getPathForBothStdoutAndStderr() {
+        return currentRedirections().oneRedirection().path;
+    }
+
+    private static class Tee {
 
         private static final Map<Long, DoubleFileRedirection> THREAD_TO_REDIRECTIONS;
         private static final PrintStream SYSTEM_OUT;
@@ -86,12 +102,12 @@ enum StdoutStderrPreparation {
         }
     }
 
-    static class FileRedirection {
+    private static class FileRedirection {
 
-        Path path;
-        PrintStream stream;
+        private Path path;
+        private PrintStream stream;
 
-        FileRedirection() throws IOException {
+        private FileRedirection() throws IOException {
             initializeTemporaryPath();
         }
 
@@ -103,30 +119,30 @@ enum StdoutStderrPreparation {
             stream = new PrintStream(path.toString());
         }
 
-        void write(int b) {
+        private void write(int b) {
             stream.write(b);
         }
     }
 
-    static class DoubleFileRedirection {
+    private static class DoubleFileRedirection {
 
-        FileRedirection stdoutRedirection;
-        FileRedirection stderrRedirection;
+        private FileRedirection stdoutRedirection;
+        private FileRedirection stderrRedirection;
 
-        DoubleFileRedirection(FileRedirection stdoutRedirection, FileRedirection stderrRedirection) {
+        private DoubleFileRedirection(FileRedirection stdoutRedirection, FileRedirection stderrRedirection) {
             this.stdoutRedirection = stdoutRedirection;
             this.stderrRedirection = stderrRedirection;
         }
 
-        DoubleFileRedirection(FileRedirection sameRedirectionForBoth) {
+        private DoubleFileRedirection(FileRedirection sameRedirectionForBoth) {
             this(sameRedirectionForBoth, sameRedirectionForBoth);
         }
 
-        void storeIn(Map<Long, DoubleFileRedirection> threadToRedirections) {
+        private void storeIn(Map<Long, DoubleFileRedirection> threadToRedirections) {
             threadToRedirections.put(currentThread().getId(), this);
         }
 
-        FileRedirection oneRedirection() {
+        private FileRedirection oneRedirection() {
             return stdoutRedirection;
         }
     }

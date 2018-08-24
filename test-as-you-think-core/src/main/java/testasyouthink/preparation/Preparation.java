@@ -35,9 +35,6 @@ import java.util.Queue;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import static java.lang.Thread.currentThread;
-import static testasyouthink.preparation.StdoutStderrPreparation.threadToRedirections;
-
 public class Preparation<$SystemUnderTest> {
 
     private final Functions functions = Functions.INSTANCE;
@@ -129,33 +126,27 @@ public class Preparation<$SystemUnderTest> {
 
     public void captureStandardStreamsSeparately() {
         if (!standardStreamsCaptured) {
-            recordGivenStep(() -> stdoutStderrPreparation
-                    .redirectionsCapturingStandardStreamsSeparately()
-                    .storeIn(threadToRedirections()));
+            recordGivenStep(stdoutStderrPreparation::captureStandardStreamsSeparately);
             standardStreamsCaptured = true;
         }
     }
 
     public void captureStandardStreamsTogether() {
         if (!standardStreamsCaptured) {
-            recordGivenStep(() -> stdoutStderrPreparation
-                    .redirectionsCapturingStandardStreamsTogether()
-                    .storeIn(threadToRedirections()));
+            recordGivenStep(stdoutStderrPreparation::captureStandardStreamsTogether);
             standardStreamsCaptured = true;
         }
     }
 
     public Path getStdoutPath() {
-        return threadToRedirections().get(currentThread().getId()).stdoutRedirection.path;
+        return stdoutStderrPreparation.getStdoutPath();
     }
 
     public Path getStderrPath() {
-        return threadToRedirections().get(currentThread().getId()).stderrRedirection.path;
+        return stdoutStderrPreparation.getStderrPath();
     }
 
     public Path getStdStreamsPath() {
-        return threadToRedirections()
-                .get(currentThread().getId())
-                .oneRedirection().path;
+        return stdoutStderrPreparation.getPathForBothStdoutAndStderr();
     }
 }
